@@ -8,7 +8,7 @@ export default async function EditorPage({ params }: { params: Promise<{ jobId: 
         <header className="flex items-center justify-between gap-4">
           <div className="flex flex-col gap-1">
             <div className="text-sm text-zinc-600">编辑/导出</div>
-            <h1 className="text-2xl font-semibold tracking-tight">Guitar Tab AI</h1>
+            <h1 className="text-2xl font-semibold tracking-tight">Biubiutab</h1>
           </div>
           <a className="text-sm font-medium text-zinc-900 underline" href="/">
             返回
@@ -19,4 +19,3 @@ export default async function EditorPage({ params }: { params: Promise<{ jobId: 
     </div>
   );
 }
-

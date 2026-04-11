@@ -1,10 +1,23 @@
 import { createReadStream } from "node:fs";
 import { stat } from "node:fs/promises";
+import { createRequire } from "node:module";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 export const runtime = "nodejs";
 
-function safeBasename(filename: string): string | null {
+const require = createRequire(import.meta.url);
+
+function findAppRoot(): string {
+  const here = fileURLToPath(import.meta.url);
+  const marker = `${path.sep}.next${path.sep}`;
+  const idx = here.lastIndexOf(marker);
+  if (idx === -1) return process.cwd();
+  return here.slice(0, idx);
+}
+
+function safeBasename(filename: unknown): string | null {
+  if (typeof filename !== "string" || filename.length === 0) return null;
   const base = path.basename(filename);
   if (!/^[a-zA-Z0-9._-]+$/.test(base)) return null;
   return base;
@@ -22,15 +35,42 @@ function contentType(filename: string): string {
   return "application/octet-stream";
 }
 
-export async function GET(_req: Request, ctx: { params: Promise<{ filename: string }> }) {
-  const { filename } = await ctx.params;
-  const safe = safeBasename(filename);
+export async function GET(_req: Request, ctx: { params: { filename: string } }) {
+  const params = await (ctx.params as unknown as Promise<{ filename: string }>);
+  const safe = safeBasename(params?.filename);
   if (!safe) return new Response("not found", { status: 404 });
 
-  const filePath = path.join(process.cwd(), "node_modules", "@coderline", "alphatab", "dist", "font", safe);
+  const appRoot = findAppRoot();
+  const localFont = path.join(appRoot, "node_modules", "@coderline", "alphatab", "dist", "font", safe);
+  const localFontAlt = path.join(appRoot, "node_modules", "@coderline", "alphatab", "dist", "font", safe);
 
   try {
-    const s = await stat(filePath);
+    const candidates: string[] = [localFont, localFontAlt];
+
+    try {
+      const entry = require.resolve("@coderline/alphatab");
+      const entryDir = path.dirname(entry);
+      candidates.push(
+        path.join(entryDir, "font", safe),
+        path.join(entryDir, "dist", "font", safe),
+        path.join(entryDir, "..", "dist", "font", safe),
+        path.join(entryDir, "..", "font", safe)
+      );
+    } catch {}
+
+    let filePath: string | null = null;
+    let s: { size: number } | null = null;
+    for (const candidate of candidates) {
+      try {
+        s = await stat(candidate);
+        filePath = candidate;
+        break;
+      } catch {
+        continue;
+      }
+    }
+    if (!filePath || !s) return new Response("not found", { status: 404 });
+
     const stream = createReadStream(filePath);
     return new Response(stream as unknown as BodyInit, {
       status: 200,
@@ -44,4 +84,3 @@ export async function GET(_req: Request, ctx: { params: Promise<{ filename: stri
     return new Response("not found", { status: 404 });
   }
 }
-

@@ -26,6 +26,7 @@ class AudioAnalysis:
     key: str
     bar_chords: list[str]
     beat_times: np.ndarray
+    duration_sec: float
 
 
 def _safe_int_bpm(x: float) -> int:
@@ -68,14 +69,19 @@ def _normalize(v: np.ndarray) -> np.ndarray:
 
 def detect_key_from_chroma(chroma_mean: np.ndarray) -> str:
     chroma = _normalize(chroma_mean.astype(np.float32))
-    maj = _normalize(_major_template())
-    minu = _normalize(_minor_template())
+
+    major_profile = _normalize(
+        np.asarray([6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88], dtype=np.float32)
+    )
+    minor_profile = _normalize(
+        np.asarray([6.33, 2.68, 3.52, 5.38, 2.6, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17], dtype=np.float32)
+    )
 
     best_score = -1.0
-    best_key = "C"
+    best_key = "C Major"
     for root in range(12):
-        maj_rot = np.roll(maj, root)
-        min_rot = np.roll(minu, root)
+        maj_rot = np.roll(major_profile, root)
+        min_rot = np.roll(minor_profile, root)
         maj_score = float(np.dot(chroma, maj_rot))
         min_score = float(np.dot(chroma, min_rot))
         if maj_score > best_score:
@@ -87,9 +93,36 @@ def detect_key_from_chroma(chroma_mean: np.ndarray) -> str:
     return best_key
 
 
-def _chord_label(root: int, quality: Literal["maj", "min"]) -> str:
+_CHORD_QUALITIES: list[tuple[str, list[int], float]] = [
+    ("", [0, 4, 7], 0.0),
+    ("m", [0, 3, 7], 0.0),
+    ("7", [0, 4, 7, 10], 0.03),
+    ("maj7", [0, 4, 7, 11], 0.03),
+    ("m7", [0, 3, 7, 10], 0.03),
+    ("sus2", [0, 2, 7], 0.02),
+    ("sus4", [0, 5, 7], 0.02),
+    ("dim", [0, 3, 6], 0.02),
+    ("aug", [0, 4, 8], 0.02),
+    ("add9", [0, 2, 4, 7], 0.05),
+]
+
+
+def _build_quality_templates() -> list[tuple[str, np.ndarray, float]]:
+    out: list[tuple[str, np.ndarray, float]] = []
+    for suffix, intervals, penalty in _CHORD_QUALITIES:
+        t = np.zeros(12, dtype=np.float32)
+        for i in intervals:
+            t[i % 12] = 1.0
+        out.append((suffix, _normalize(t), penalty))
+    return out
+
+
+_QUALITY_TEMPLATES = _build_quality_templates()
+
+
+def _label(root: int, suffix: str) -> str:
     n = _PITCH_CLASSES[root]
-    return n if quality == "maj" else f"{n}m"
+    return n if suffix == "" else f"{n}{suffix}"
 
 
 def detect_chords(
@@ -104,9 +137,6 @@ def detect_chords(
 
     chroma = librosa.feature.chroma_cqt(y=y, sr=sr, hop_length=chroma_hop_length)
     frame_times = librosa.frames_to_time(np.arange(chroma.shape[1]), sr=sr, hop_length=chroma_hop_length)
-
-    maj = _major_template()
-    minu = _minor_template()
 
     events: list[ChordEvent] = []
     beat_count = beat_times.size
@@ -132,14 +162,11 @@ def detect_chords(
         best_score = -1.0
         best_label = "N"
         for root in range(12):
-            maj_score = float(np.dot(bar_chroma, _normalize(np.roll(maj, root))))
-            min_score = float(np.dot(bar_chroma, _normalize(np.roll(minu, root))))
-            if maj_score > best_score:
-                best_score = maj_score
-                best_label = _chord_label(root, "maj")
-            if min_score > best_score:
-                best_score = min_score
-                best_label = _chord_label(root, "min")
+            for suffix, template, penalty in _QUALITY_TEMPLATES:
+                score = float(np.dot(bar_chroma, np.roll(template, root))) - penalty
+                if score > best_score:
+                    best_score = score
+                    best_label = _label(root, suffix)
 
         if best_score < 0.25:
             best_label = "N"
@@ -151,6 +178,7 @@ def detect_chords(
 
 def analyze_audio(audio_path: str, title: str) -> AudioAnalysis:
     y, sr = librosa.load(audio_path, sr=None, mono=True)
+    duration_sec = float(librosa.get_duration(y=y, sr=sr))
     tempo_bpm, beat_times = detect_tempo(y, sr)
 
     if beat_times.size < 2:
@@ -169,4 +197,5 @@ def analyze_audio(audio_path: str, title: str) -> AudioAnalysis:
         key=key,
         bar_chords=bar_chords,
         beat_times=beat_times,
+        duration_sec=duration_sec,
     )

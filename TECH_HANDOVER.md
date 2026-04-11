@@ -1,10 +1,10 @@
-# Guitar Tab AI — 技术交接文档（截至目前）
+# Biubiutab — 技术交接文档（最新版）
 
 本文档面向接手开发的工程师，描述当前代码已实现能力、运行方式、数据流、关键模块、已知问题与下一步建议。
 
 ## 1. 项目目标（当前阶段）
 
-当前实现的是一个 MVP 骨架：用户上传音频 → 异步分析 → 生成和弦谱/结构（Chord Chart）+ 可渲染谱例（alphaTab/alphaTex）→ 支持下载/复制。
+当前实现的是一个 MVP：用户上传音频 → 异步分析 → 自动生成“和弦谱 + 结构 + 简谱（旋律数字谱）”并渲染为吉他六线谱谱例（alphaTab），支持导出 atex / PNG / PDF。
 
 现阶段重点：
 
@@ -27,9 +27,9 @@
 2) Web 将文件落到本地 `storage/uploads`，并返回 `storedFilename`  
 3) Web 调用 AI 服务创建任务 `/jobs`，传入 `audio_path`（本地文件绝对路径）  
 4) 前端轮询 `/jobs/{id}` 直到 succeeded/failed  
-5) succeeded 后获取 `/jobs/{id}/result`，其中包含 `key/tempo/sections/chordpro/alphatex`  
-6) Web 渲染和弦谱（结构段落+每小节和弦），并可选用 alphaTab 渲染 `alphatex`（谱例）  
-7) 支持复制/下载 ChordPro（优先）与 alphaTex（.atex）
+5) succeeded 后获取 `/jobs/{id}/result`，其中包含 `key/tempo/sections/alphatex`  
+6) Web 仅渲染 alphaTab 谱例（六线谱），并在谱例中展示：和弦、和弦按法图、段落、Key/拍号/速度、简谱（以歌词行形式显示在谱表下方）  
+7) 支持复制/下载 alphaTex（.atex），并支持导出图片（PNG）与 PDF（打印）
 
 ## 4. 运行方式（本地开发）
 
@@ -103,7 +103,16 @@ alphaTab 字体资源代理（解决 Font not available / NetworkError）：
   - `core.fontDirectory = "/api/alphatab/font/"`（否则字体 404）
   - `core.useWorkers = false`（避免某些环境下 worker 导致静默不渲染）
   - `player.enablePlayer = false`（当前不做 synth 播放）
+  - `api.settings.notation.elements.set(NotationElement.EffectLyrics, true)`（强制显示 \lyrics，用于展示简谱）
   - 监听 `api.error` 显示错误并回退展示原始 alphatex
+
+### 5.4 导出（PNG / PDF / SVG）
+
+- 入口：编辑页按钮在 [editor-client.tsx](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/components/editor-client.tsx)
+- 实现：通过 alphaTab 渲染结果的 SVG 进行导出：
+  - PNG：将每页 SVG 光栅化为 PNG（2x scale），多页分别下载 `*_pN.png`
+  - PDF：打开浏览器打印窗口，将每页 SVG 注入新窗口并分页打印（用户选择“保存为 PDF”）
+  - SVG：内部工具方法支持逐页导出 svg（目前未在 UI 暴露按钮）
 
 ## 6. AI 服务实现说明（FastAPI）
 
@@ -112,29 +121,29 @@ alphaTab 字体资源代理（解决 Font not available / NetworkError）：
 - `GET /health` → `{ status: "ok" }`
 - `POST /jobs`（body: `{ audio_path, title? }`）→ `{ id, status, progress, message?, error? }`
 - `GET /jobs/{id}` → `{ id, status, progress, message?, error? }`
-- `GET /jobs/{id}/result` → `{ title, artist?, key, tempo, time_signature, sections, alphatex, chordpro? }`
+- `GET /jobs/{id}/result` → `{ title, artist?, key, tempo, time_signature, sections, alphatex }`
 
 实现文件：[main.py](file:///Users/unknownseed/Developer/biubiutab/services/ai/main.py)
 
-### 6.2 处理逻辑（当前：Audio → Chord Chart）
+### 6.2 处理逻辑（当前：Audio → 和弦谱 + 结构 + 简谱 + 六线谱谱例）
 
 核心函数位于 `_run_job()`，流程：
 
 1) 读取音频：`librosa.load(audio_path, sr=None, mono=True)`
 2) 速度检测：`librosa.beat.beat_track`（并做倍速/半速修正）
-3) 和弦识别（MVP）：`chroma_cqt` + 大三和弦/小三和弦模板匹配，输出每小节一个和弦
-4) 调性估计（MVP）：使用全局 chroma 与大/小三模板相关性，输出类似 “C Major”
+3) 调性估计：Krumhansl major/minor profile（更稳健）
+4) 和弦分类（升级版）：`chroma_cqt` + 多种 chord template（maj/m/7/maj7/m7/sus2/sus4/dim/aug/add9），输出每小节一个和弦
 5) 段落检测（MVP 规则）：Intro 前 4 小节；后续基于 4 小节 pattern 重复粗分 Verse/Chorus/Bridge
-6) 格式化输出：
-   - sections（段落 + 每小节和弦）
-   - chordpro（文本导出）
-   - alphatex（用于 alphaTab 渲染的谱例）
+6) 旋律抽取：Basic Pitch 提取音符事件，按拍选取旋律候选，并转为简谱数字（1-7/#/b/-）
+7) 生成 alphatex（六线谱 staff + 和弦按法图 + 段落文字 + 简谱 lyrics）
 
 对应模块：
 
 - 音频分析与和弦/调性：`services/ai/chord_detector.py`
 - 段落检测：`services/ai/section_detector.py`
-- 输出格式：`services/ai/formatters.py`
+- 旋律抽取与简谱转换：`services/ai/melody_detector.py`
+- 和弦按法图（含高把位 firstFret/barre 处理）：`services/ai/chord_shapes.py`
+- 输出格式（alphaTex）：`services/ai/formatters.py`
 
 ### 6.3 依赖
 
@@ -142,6 +151,7 @@ AI 端 requirements：[requirements.txt](file:///Users/unknownseed/Developer/biu
 
 - fastapi / uvicorn / pydantic
 - basic-pitch（带 librosa/scipy/pretty-midi 等依赖）
+  - 额外：librosa 固定在 requirements 里（用于 tempo/key/chroma）
 
 ## 7. 已知问题与现状解释
 
@@ -151,7 +161,12 @@ AI 端 requirements：[requirements.txt](file:///Users/unknownseed/Developer/biu
 
 - 完整混音（鼓/贝斯/键盘/人声同时存在）会让 chroma 被“非吉他和弦信息”污染
 - 倍速/半速 BPM 误判会导致小节切分偏移，从而影响和弦
-- 目前只识别大三/小三，sus/7/maj7 等会被近似
+- 和弦分类仍是模板法（非深度学习分类器），对密集混音/复杂和声仍可能误判
+
+### 7.2 简谱（旋律数字谱）显示注意
+
+- 简谱通过 alphaTex 的 `\\lyrics` 渲染在谱表下方，内容来源是“旋律音高”而非歌词文本。
+- 当前为按拍粒度的简谱（先保证出现与可读），后续可再做：按小节换行、八度点、时值/连线。
 
 因此会出现“谱面看起来专业，但内容不靠谱”的情况。
 
@@ -191,8 +206,8 @@ AI 端 requirements：[requirements.txt](file:///Users/unknownseed/Developer/biu
 
 ### 10.1 这个版本“能做什么”
 
-- 用户上传一段音频后，系统会自动生成一份可视化的吉他谱（六线谱+节奏排版），可在网页中查看并下载。
-- 输出的是可被 alphaTab 渲染的谱面数据（AlphaTex），外观更接近“专业谱面”，便于后续做编辑、导出等能力。
+- 用户上传一段音频后，系统会自动生成一份可视化的吉他六线谱谱例（包含和弦标记、按法图、段落提示、简谱行），可在网页中查看。
+- 支持导出：atex（可复现）、图片 PNG、PDF（打印）。
 
 ### 10.2 这个版本“做不到什么”（当前限制）
 

@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script src="https://cdn.jsdelivr.net/npm/@coderline/alphatab@latest/dist/alphaTab.js"></script>
+</head>
+<body>
+    <div id="alphaTab"></div>
+    <script>
+        const tex = `\\title "Test"
+\\staff {tabs}
+\\tuning (E4 B3 G3 D3 A2 E2)
+\\tempo 70
+\\ts (4 4)
+
+\\chord ("C" 0 1 0 2 3 x)
+
+:4 0.1 { slashed txt "Intro · Key: C Major · 4/4" lyrics "3" ch "C" sd } r r r |
+`;
+        const element = document.getElementById("alphaTab");
+        const api = new alphaTab.AlphaTabApi(element, {
+            core: { engine: 'svg' },
+            notation: {
+                elements: {
+                    effectLyrics: true,
+                    effectPickStroke: true,
+                    effectChordNames: true
+                }
+            }
+        });
+        api.tex(tex);
+    </script>
+</body>
+</html>

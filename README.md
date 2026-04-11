@@ -1,9 +1,9 @@
-# Guitar Tab AI (MVP)
+# Biubiutab (MVP)
 
 ## 工程结构
 
 - apps/web：Next.js 前端 + API 代理
-- services/ai：FastAPI AI 服务（Basic Pitch 转 MIDI → 简单映射 → AlphaTex）
+- services/ai：FastAPI AI 服务（和弦/调性/结构/简谱 → AlphaTex）
 - storage/uploads：本地上传文件目录（运行时自动创建）
 
 ## 本地运行
@@ -34,4 +34,4 @@ AI_BASE_URL=http://127.0.0.1:8001 npm run dev
 - GET /api/uploads/:filename → 音频文件流
 - POST /api/jobs { storedFilename, title? } → { id, status, progress, message? }
 - GET /api/jobs/:id → { id, status, progress, message?, error? }
-- GET /api/jobs/:id/result → { title, tuning, alphatex, tab_text? }
+- GET /api/jobs/:id/result → { title, key, tempo, time_signature, sections, alphatex }

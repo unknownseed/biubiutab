@@ -10,6 +10,7 @@ from pydantic import BaseModel, Field
 
 from chord_detector import analyze_audio
 from formatters import ChordAt, SectionOut, sections_to_alphatex
+from melody_detector import detect_melody, make_beat_grid, melody_to_jianpu
 from section_detector import detect_sections
 
 
@@ -75,7 +76,7 @@ def _storage_dir() -> Path:
     return _repo_root() / "storage" / "ai"
 
 
-app = FastAPI(title="Guitar Tab AI - AI Service")
+app = FastAPI(title="Biubiutab - AI Service")
 _jobs: dict[str, JobState] = {}
 
 
@@ -127,12 +128,23 @@ async def _run_job(job_id: str) -> None:
                 chords.append(ChordAt(chord=chord, bar=bar, beat=1))
             section_out.append(SectionOut(name=s.name, start_bar=s.start_bar, end_bar=s.end_bar, chords=chords))
 
+        job.progress = 78
+        job.message = "Extracting melody"
+
+        melody = await asyncio.to_thread(detect_melody, str(job.audio_path))
+        total_beats = max(1, len(analysis.bar_chords) * 4)
+        beat_grid = make_beat_grid(analysis.tempo_bpm, analysis.duration_sec, total_beats)
+        jianpu = melody_to_jianpu(melody, beat_grid, analysis.key, total_beats)
+        if len(jianpu) > 128:
+            jianpu = jianpu[:128]
+
         alphatex = sections_to_alphatex(
             title=analysis.title,
             tempo=analysis.tempo_bpm,
             time_signature=analysis.time_signature,
             key=analysis.key,
             sections=section_out,
+            jianpu=jianpu,
         )
 
         job.result = JobResult(

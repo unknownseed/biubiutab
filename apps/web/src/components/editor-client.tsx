@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-import AlphaTabViewer from "@/components/alphatab-viewer";
+import AlphaTabViewer, { type AlphaTabViewerHandle } from "./alphatab-viewer";
 
 type JobResponse = {
   id: string;
@@ -59,6 +59,7 @@ export default function EditorClient({ jobId }: { jobId: string }) {
   const [result, setResult] = useState<JobResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [audioFilename, setAudioFilename] = useState<string | null>(null);
+  const viewerRef = useRef<AlphaTabViewerHandle | null>(null);
 
   useEffect(() => {
     setAudioFilename(localStorage.getItem(`job:${jobId}:audio`));
@@ -150,11 +151,27 @@ export default function EditorClient({ jobId }: { jobId: string }) {
               >
                 下载
               </button>
+              <button
+                type="button"
+                className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 disabled:opacity-50"
+                disabled={!result}
+                onClick={() => void viewerRef.current?.exportPng()}
+              >
+                导出图片
+              </button>
+              <button
+                type="button"
+                className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 disabled:opacity-50"
+                disabled={!result}
+                onClick={() => void viewerRef.current?.printPdf()}
+              >
+                导出PDF
+              </button>
             </div>
           </div>
           {error ? <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div> : null}
           {result ? (
-            <AlphaTabViewer tex={result.alphatex} />
+            <AlphaTabViewer ref={viewerRef} tex={result.alphatex} filename={result.title} />
           ) : (
             <div className="text-sm text-zinc-600">等待生成结果…</div>
           )}
