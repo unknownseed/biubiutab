@@ -107,13 +107,25 @@ def pattern_to_alphatex(
             pos16 += _duration_to_16th(t.duration)
             continue
 
+        # NOTE:
+        # We render to a tab staff (`\staff {tabs}`) but want "slash rhythm" style
+        # strums. The `slashed` effect is required to make alphaTab render this as
+        # rhythmic slashes rather than repeated open-string notes.
+        #
+        # If alphaTab crashes on some inputs (observed: bottomY undefined), the web
+        # frontend will automatically retry with a more conservative alphaTex (by
+        # stripping other text-related effects first).
         effects: list[str] = ["slashed"]
         if label and first_strum:
             effects.append(f'txt "{_escape_str(label)}"')
         if jianpu_beats and pos16 % 4 == 0:
             beat_idx = pos16 // 4
             if 0 <= beat_idx < len(jianpu_beats):
-                effects.append(f'lyrics "{_escape_str(jianpu_beats[beat_idx])}"')
+                # Avoid emitting placeholder lyrics (e.g. "-"), which adds lots of
+                # text layout work and may trigger alphaTab edge-case bugs.
+                lyric = jianpu_beats[beat_idx]
+                if lyric and lyric != "-":
+                    effects.append(f'lyrics "{_escape_str(lyric)}"')
         if show_chord_name and first_strum:
             effects.append(f'ch "{_escape_str(chord)}"')
         if t.direction == "d":

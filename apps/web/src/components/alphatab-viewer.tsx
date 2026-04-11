@@ -30,6 +30,58 @@ function serializeSvg(svg: SVGSVGElement): string {
   return serializer.serializeToString(clone);
 }
 
+type SanitizeLevel = "normal" | "noInlineLyrics" | "noTextEffects" | "bareNotes";
+
+function sanitizeAlphaTex(tex: string, level: SanitizeLevel): string {
+  // Defensive alphaTex sanitization.
+  // We prefer to keep rich annotations (lyrics/txt) but alphaTab can crash on some
+  // edge cases (observed: bottomY undefined). In that case we retry with a more
+  // conservative tex.
+  let out = tex
+    // Remove global \lyrics lines (we already emit per-note lyrics effects).
+    .split(/\r?\n/)
+    .filter((line) => !/^\s*\\lyrics\b/.test(line))
+    .join("\n");
+
+  if (level === "noInlineLyrics" || level === "noTextEffects") {
+    // Remove per-note lyrics effects inside `{ ... }`.
+    out = out.replace(/\blyrics\s+"([^"\\]|\\.)*"/g, "").replace(/\s{2,}/g, " ");
+  }
+
+  if (level === "noTextEffects") {
+    // Remove text labels which might include non-ascii chars and trigger layout bugs.
+    out = out
+      .replace(/\btxt\s+"([^"\\]|\\.)*"/g, "")
+      .replace(/\s{2,}/g, " ")
+      .replace(/\{\s+/g, "{ ")
+      .replace(/\s+\}/g, " }");
+  }
+
+  if (level === "bareNotes") {
+    // As a last resort, keep only the minimal subset of per-note effects needed
+    // for a readable rhythm: `slashed` + direction + optional chord name.
+    // This avoids stripping `slashed` (otherwise the tab becomes repeated 0-fret notes,
+    // which looks "wrong" to users).
+    out = out
+      .replace(/\{\s*([^}]*)\}/g, (_m, inner: string) => {
+        const keep: string[] = [];
+        if (/\bslashed\b/.test(inner)) keep.push("slashed");
+        // Keep stroke direction if present
+        if (/\bsd\b/.test(inner)) keep.push("sd");
+        if (/\bsu\b/.test(inner)) keep.push("su");
+        // Keep chord name label if present
+        const ch = inner.match(/\bch\s+"([^"\\]|\\.)*"/);
+        if (ch) keep.push(ch[0]);
+        return keep.length ? `{ ${keep.join(" ")} }` : "";
+      })
+      .replace(/\s{2,}/g, " ")
+      .replace(/\s+\|/g, " |")
+      .replace(/\{\s*\}/g, "");
+  }
+
+  return out.trimEnd() + "\n";
+}
+
 async function svgToPngBlob(svgText: string, width: number, height: number, scale: number): Promise<Blob> {
   const svgBlob = new Blob([svgText], { type: "image/svg+xml;charset=utf-8" });
   const svgUrl = URL.createObjectURL(svgBlob);
@@ -64,6 +116,11 @@ const AlphaTabViewer = forwardRef<AlphaTabViewerHandle, { tex: string; filename?
   const containerRef = useRef<HTMLDivElement | null>(null);
   const apiRef = useRef<{ destroy: () => void; tex: (t: string) => void } | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const retryLevelRef = useRef<SanitizeLevel>("normal");
+  const lastTexRef = useRef<string>("");
+  const modRef = useRef<typeof import("@coderline/alphatab") | null>(null);
+  const retryCountRef = useRef<number>(0);
+  const gaveUpRef = useRef<boolean>(false);
 
   useImperativeHandle(
     ref,
@@ -136,10 +193,124 @@ const AlphaTabViewer = forwardRef<AlphaTabViewerHandle, { tex: string; filename?
 
   useEffect(() => {
     let cancelled = false;
+    lastTexRef.current = tex;
+    retryLevelRef.current = "normal";
+    retryCountRef.current = 0;
+    gaveUpRef.current = false;
+
+    const resetApi = () => {
+      if (cancelled) return;
+      if (apiRef.current) {
+        apiRef.current.destroy();
+        apiRef.current = null;
+      }
+      if (containerRef.current) {
+        containerRef.current.innerHTML = "";
+      }
+      const mod = modRef.current;
+      if (!mod || !containerRef.current) return;
+      // Silence alphaTab internal console logging (we still handle errors via events + UI).
+      mod.Logger.logLevel = mod.LogLevel.None;
+      const api = new mod.AlphaTabApi(containerRef.current, {
+        core: { engine: "svg", fontDirectory: "/api/alphatab/font/", useWorkers: false, logLevel: mod.LogLevel.None },
+        player: { enablePlayer: false },
+        display: { scale: 1.0 },
+      });
+      api.settings.notation.elements.set(mod.NotationElement.EffectLyrics, true);
+      api.settings.notation.elements.set(mod.NotationElement.EffectPickStroke, true);
+      api.settings.notation.elements.set(mod.NotationElement.EffectChordNames, true);
+
+      api.error.on((e: Error) => {
+        if (cancelled) return;
+        const msg = e?.message || String(e);
+        maybeRetryOnBottomY(msg);
+        // If not a bottomY crash, show it.
+        if (!msg.includes("bottomY")) setError(msg);
+      });
+      api.renderFinished.on(() => {
+        if (cancelled) return;
+        setError(null);
+      });
+
+      apiRef.current = api;
+    };
+
+    const tryRenderWithLevel = (level: SanitizeLevel) => {
+      if (cancelled) return;
+      if (!apiRef.current) resetApi();
+      const api = apiRef.current;
+      if (!api) return;
+      retryLevelRef.current = level;
+      const sanitized = sanitizeAlphaTex(lastTexRef.current, level);
+      try {
+        api.tex(sanitized);
+      } catch (e) {
+        const msg = e instanceof Error ? e.message : String(e);
+        maybeRetryOnBottomY(msg);
+        if (!msg.includes("bottomY")) setError(msg);
+      }
+    };
+
+    const maybeRetryOnBottomY = (msg: string) => {
+      if (cancelled) return;
+      if (!msg.includes("bottomY")) return;
+      if (gaveUpRef.current) return;
+      // Avoid infinite loops when alphaTab keeps erroring in an inconsistent state.
+      if (retryCountRef.current >= 4) {
+        setError(
+          `${msg}\n\n（已多次重试仍失败。请点击“下载”把 .atex 发我做最小复现；或直接升级 @coderline/alphatab。）`
+        );
+        // Stop further spam in console by destroying the instance.
+        gaveUpRef.current = true;
+        if (apiRef.current) {
+          apiRef.current.destroy();
+          apiRef.current = null;
+        }
+        if (containerRef.current) containerRef.current.innerHTML = "";
+        return;
+      }
+      retryCountRef.current += 1;
+
+      // Retry with a more conservative alphaTex, to avoid alphaTab internal crash.
+      if (retryLevelRef.current === "normal") {
+        resetApi();
+        tryRenderWithLevel("noInlineLyrics");
+        return;
+      }
+      if (retryLevelRef.current === "noInlineLyrics") {
+        resetApi();
+        tryRenderWithLevel("noTextEffects");
+        return;
+      }
+      if (retryLevelRef.current === "noTextEffects") {
+        resetApi();
+        tryRenderWithLevel("bareNotes");
+      }
+    };
+
+    const onWindowError = (event: ErrorEvent) => {
+      if (cancelled) return;
+      // Some alphaTab runtime errors bypass `api.error`. Surface them to the UI.
+      const msg = event.error instanceof Error ? event.error.message : event.message;
+      if (!msg) return;
+      maybeRetryOnBottomY(msg);
+    };
+    const onUnhandledRejection = (event: PromiseRejectionEvent) => {
+      if (cancelled) return;
+      const reason = event.reason;
+      const msg = reason instanceof Error ? reason.message : String(reason ?? "");
+      maybeRetryOnBottomY(msg);
+    };
+    window.addEventListener("error", onWindowError);
+    window.addEventListener("unhandledrejection", onUnhandledRejection);
+
     const init = async () => {
       const mod = await import("@coderline/alphatab");
       if (cancelled) return;
       if (!containerRef.current) return;
+      modRef.current = mod;
+      // Silence alphaTab internal console logging.
+      mod.Logger.logLevel = mod.LogLevel.None;
 
       if (apiRef.current) {
         apiRef.current.destroy();
@@ -147,29 +318,15 @@ const AlphaTabViewer = forwardRef<AlphaTabViewerHandle, { tex: string; filename?
         containerRef.current.innerHTML = "";
       }
 
-      const api = new mod.AlphaTabApi(containerRef.current, {
-        core: { engine: "svg", fontDirectory: "/api/alphatab/font/", useWorkers: false },
-        player: { enablePlayer: false },
-        display: { scale: 1.0 },
-      });
-      api.settings.notation.elements.set(mod.NotationElement.EffectLyrics, true);
-      api.settings.notation.elements.set(mod.NotationElement.EffectPickStroke, true);
-      api.settings.notation.elements.set(mod.NotationElement.EffectChordNames, true);
-      api.error.on((e: Error) => {
-        if (cancelled) return;
-        setError(e.message || String(e));
-      });
-      api.renderFinished.on(() => {
-        if (cancelled) return;
-        setError(null);
-      });
-      apiRef.current = api;
-      api.tex(tex);
+      resetApi();
+      tryRenderWithLevel("normal");
     };
 
     void init();
     return () => {
       cancelled = true;
+      window.removeEventListener("error", onWindowError);
+      window.removeEventListener("unhandledrejection", onUnhandledRejection);
       if (apiRef.current) {
         apiRef.current.destroy();
         apiRef.current = null;

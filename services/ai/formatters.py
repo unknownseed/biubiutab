@@ -63,8 +63,10 @@ def sections_to_alphatex(
     parts.append(f"\\tempo {tempo}")
     if time_signature:
         parts.append(f"\\ts ({time_signature.replace('/', ' ')})")
-    if jianpu:
-        parts.append(f'\\lyrics "{_escape_lyrics(" ".join(jianpu[:64]))}"')
+    # NOTE:
+    # We render jianpu via per-note `lyrics "..."` effects (see rhythm_patterns.py).
+    # Emitting an additional global `\lyrics "..."` line can confuse alphaTab's
+    # lyrics layout in some scenarios and trigger runtime rendering errors.
     parts.append("")
 
     uniq: list[str] = []
