@@ -4,7 +4,7 @@
 
 ## 1. 项目目标（当前阶段）
 
-当前实现的是一个 MVP 骨架：用户上传音频 → 异步转写 → 生成可渲染的专业谱面（alphaTab）→ 支持下载/复制（alphaTex）。
+当前实现的是一个 MVP 骨架：用户上传音频 → 异步分析 → 生成和弦谱/结构（Chord Chart）+ 可渲染谱例（alphaTab/alphaTex）→ 支持下载/复制。
 
 现阶段重点：
 
@@ -27,9 +27,9 @@
 2) Web 将文件落到本地 `storage/uploads`，并返回 `storedFilename`  
 3) Web 调用 AI 服务创建任务 `/jobs`，传入 `audio_path`（本地文件绝对路径）  
 4) 前端轮询 `/jobs/{id}` 直到 succeeded/failed  
-5) succeeded 后获取 `/jobs/{id}/result`，其中包含 `alphatex`  
-6) Web 使用 alphaTab 渲染 `alphatex` 为专业谱面（SVG）  
-7) 支持复制/下载 `alphatex`（.atex）
+5) succeeded 后获取 `/jobs/{id}/result`，其中包含 `key/tempo/sections/chordpro/alphatex`  
+6) Web 渲染和弦谱（结构段落+每小节和弦），并可选用 alphaTab 渲染 `alphatex`（谱例）  
+7) 支持复制/下载 ChordPro（优先）与 alphaTex（.atex）
 
 ## 4. 运行方式（本地开发）
 
@@ -112,24 +112,29 @@ alphaTab 字体资源代理（解决 Font not available / NetworkError）：
 - `GET /health` → `{ status: "ok" }`
 - `POST /jobs`（body: `{ audio_path, title? }`）→ `{ id, status, progress, message?, error? }`
 - `GET /jobs/{id}` → `{ id, status, progress, message?, error? }`
-- `GET /jobs/{id}/result` → `{ title, tuning, alphatex, tab_text? }`
+- `GET /jobs/{id}/result` → `{ title, artist?, key, tempo, time_signature, sections, alphatex, chordpro? }`
 
 实现文件：[main.py](file:///Users/unknownseed/Developer/biubiutab/services/ai/main.py)
 
-### 6.2 处理逻辑（当前）
+### 6.2 处理逻辑（当前：Audio → Chord Chart）
 
 核心函数位于 `_run_job()`，流程：
 
-1) Basic Pitch 转写：`basic_pitch.inference.predict(audio_path, ...)`
-2) 从返回的 `midi_data` 提取 note events（start/end/pitch/velocity）
-3) 用 librosa 做 tempo 估计（`librosa.beat.beat_track`），并对 BPM 做 50~220 的钳制
-4) 简化映射：把 notes 按时间网格（当前为 8 分音符粒度）量化到 beat step，生成 alphaTex
-5) pitch→(string,fret) 映射：
-   - 标准调弦 E2-A2-D3-G3-B3-E4
-   - 0~5 品优先、同音更粗弦优先（用 score 近似）
-   - 超出吉他可弹范围（E2~E4+24品）的 pitch 会被过滤（避免任务失败）
+1) 读取音频：`librosa.load(audio_path, sr=None, mono=True)`
+2) 速度检测：`librosa.beat.beat_track`（并做倍速/半速修正）
+3) 和弦识别（MVP）：`chroma_cqt` + 大三和弦/小三和弦模板匹配，输出每小节一个和弦
+4) 调性估计（MVP）：使用全局 chroma 与大/小三模板相关性，输出类似 “C Major”
+5) 段落检测（MVP 规则）：Intro 前 4 小节；后续基于 4 小节 pattern 重复粗分 Verse/Chorus/Bridge
+6) 格式化输出：
+   - sections（段落 + 每小节和弦）
+   - chordpro（文本导出）
+   - alphatex（用于 alphaTab 渲染的谱例）
 
-注意：目前输出的是“可渲染谱面”，但音乐性/准确度仍较粗，需要后续算法迭代。
+对应模块：
+
+- 音频分析与和弦/调性：`services/ai/chord_detector.py`
+- 段落检测：`services/ai/section_detector.py`
+- 输出格式：`services/ai/formatters.py`
 
 ### 6.3 依赖
 
@@ -140,20 +145,15 @@ AI 端 requirements：[requirements.txt](file:///Users/unknownseed/Developer/biu
 
 ## 7. 已知问题与现状解释
 
-### 7.1 生成结果“乱”
+### 7.1 和弦不准/段落不准
 
-这是当前阶段预期现象：Basic Pitch 会对整段混音音频做多音转写，会包含伴奏/人声/鼓点谐波等，映射阶段还没有做：
+这是当前阶段预期现象：和弦识别与段落识别为 MVP 简化算法，主要用于快速验证产品形态，尚未做到“商用级准确率”。常见影响因素：
 
-- 主旋律提取/声部选择
-- 节奏/小节精确对齐
-- 和弦识别与可弹指法优化（动态规划）
-- 源分离（分离 guitar stem）
+- 完整混音（鼓/贝斯/键盘/人声同时存在）会让 chroma 被“非吉他和弦信息”污染
+- 倍速/半速 BPM 误判会导致小节切分偏移，从而影响和弦
+- 目前只识别大三/小三，sus/7/maj7 等会被近似
 
 因此会出现“谱面看起来专业，但内容不靠谱”的情况。
-
-### 7.2 “Pitch 101 cannot be mapped…”
-
-已处理：当前会过滤超出吉他范围的 pitch，避免任务失败；同时在 predict 参数中限制频率范围，减少异常高音。
 
 ### 7.3 alphaTab 字体加载失败
 

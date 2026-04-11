@@ -12,11 +12,27 @@ type JobResponse = {
   error?: string | null;
 };
 
-type TabResult = {
+type ChordAt = {
+  chord: string;
+  bar: number;
+  beat: number;
+};
+
+type Section = {
+  name: string;
+  start_bar: number;
+  end_bar: number;
+  chords: ChordAt[];
+};
+
+type JobResult = {
   title: string;
-  tuning: string;
+  artist?: string | null;
+  key: string;
+  tempo: number;
+  time_signature: string;
+  sections: Section[];
   alphatex: string;
-  tab_text?: string | null;
 };
 
 async function getJson<T>(url: string): Promise<T> {
@@ -40,7 +56,7 @@ function downloadText(filename: string, text: string) {
 
 export default function EditorClient({ jobId }: { jobId: string }) {
   const [job, setJob] = useState<JobResponse | null>(null);
-  const [result, setResult] = useState<TabResult | null>(null);
+  const [result, setResult] = useState<JobResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [audioFilename, setAudioFilename] = useState<string | null>(null);
 
@@ -65,7 +81,7 @@ export default function EditorClient({ jobId }: { jobId: string }) {
           return;
         }
         if (latest.status === "succeeded") {
-          const res = await getJson<TabResult>(`/api/jobs/${jobId}/result`);
+          const res = await getJson<JobResult>(`/api/jobs/${jobId}/result`);
           if (cancelled) return;
           if (typeof (res as unknown as { alphatex?: unknown }).alphatex !== "string" || !res.alphatex.trim()) {
             setError("谱面数据为空（后端未返回 alphatex）。请重启 AI 服务与 Web 后重试。");
@@ -109,7 +125,7 @@ export default function EditorClient({ jobId }: { jobId: string }) {
       <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between gap-3">
-            <div className="text-sm font-medium text-zinc-900">六线谱</div>
+            <div className="text-sm font-medium text-zinc-900">谱例</div>
             <div className="flex items-center gap-2">
               <button
                 type="button"

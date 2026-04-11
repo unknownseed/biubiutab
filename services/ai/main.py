@@ -8,6 +8,10 @@ from typing import Literal, Optional
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
+from chord_detector import analyze_audio
+from formatters import ChordAt, SectionOut, sections_to_alphatex
+from section_detector import detect_sections
+
 
 class CreateJobRequest(BaseModel):
     audio_path: str = Field(min_length=1)
@@ -25,132 +29,27 @@ class JobResponse(BaseModel):
     error: Optional[str] = None
 
 
-class TabResult(BaseModel):
+class ChordModel(BaseModel):
+    chord: str
+    bar: int = Field(ge=0)
+    beat: int = Field(ge=1)
+
+
+class SectionModel(BaseModel):
+    name: str
+    start_bar: int = Field(ge=0)
+    end_bar: int = Field(ge=0)
+    chords: list[ChordModel]
+
+
+class JobResult(BaseModel):
     title: str
-    tuning: str
+    artist: Optional[str] = None
+    key: str
+    tempo: int = Field(ge=1)
+    time_signature: str
+    sections: list[SectionModel]
     alphatex: str
-    tab_text: Optional[str] = None
-
-
-_STANDARD_TUNING = [
-    ("E4", 64),
-    ("B3", 59),
-    ("G3", 55),
-    ("D3", 50),
-    ("A2", 45),
-    ("E2", 40),
-]
-
-
-_GUITAR_MIN_PITCH = min(p for _, p in _STANDARD_TUNING)
-_GUITAR_MAX_PITCH = max(p for _, p in _STANDARD_TUNING) + 24
-
-
-def _map_pitch_to_fret_string(pitch: int, used_strings: set[int]) -> tuple[int, int]:
-    candidates: list[tuple[float, int, int]] = []
-    for string, (_, open_pitch) in enumerate(_STANDARD_TUNING, start=1):
-        if string in used_strings:
-            continue
-        fret = pitch - open_pitch
-        if fret < 0 or fret > 24:
-            continue
-        fret_penalty = 0.0
-        if fret > 5:
-            fret_penalty += (fret - 5) * 2.0
-        thickness_bonus = -string * 0.05
-        score = float(fret) + fret_penalty + thickness_bonus
-        candidates.append((score, fret, string))
-
-    if not candidates:
-        for string, (_, open_pitch) in enumerate(_STANDARD_TUNING, start=1):
-            fret = pitch - open_pitch
-            if fret < 0 or fret > 24:
-                continue
-            fret_penalty = 0.0
-            if fret > 5:
-                fret_penalty += (fret - 5) * 2.0
-            thickness_bonus = -string * 0.05
-            score = float(fret) + fret_penalty + thickness_bonus + 1000.0
-            candidates.append((score, fret, string))
-
-    if not candidates:
-        raise ValueError(f"Pitch {pitch} cannot be mapped to standard guitar range")
-
-    _, fret, string = min(candidates, key=lambda x: x[0])
-    return fret, string
-
-
-def _group_notes_to_alphatex(
-    title: str,
-    notes: list[tuple[float, float, int, int]],
-    tempo_bpm: int = 120,
-    time_signature: tuple[int, int] = (4, 4),
-) -> tuple[str, str]:
-    if not notes:
-        raise ValueError("No notes detected")
-
-    beats_per_bar = time_signature[0]
-    steps_per_beat = 2
-    steps_per_bar = beats_per_bar * steps_per_beat
-    step_sec = (60.0 / float(tempo_bpm)) / float(steps_per_beat)
-
-    grid: dict[int, list[tuple[int, int]]] = {}
-    max_step = 0
-    for start, end, pitch, velocity in notes:
-        if end <= start:
-            continue
-        step = int(round(start / step_sec))
-        grid.setdefault(step, []).append((int(pitch), int(velocity)))
-        max_step = max(max_step, step)
-
-    total_steps = max_step + 1
-    if total_steps < 1:
-        raise ValueError("No notes detected")
-
-    header = "\n".join(
-        [
-            f'\\title "{title}"',
-            '\\track "Guitar"',
-            "\\staff {tabs}",
-            f"\\tuning ({' '.join(n for n, _ in _STANDARD_TUNING)})",
-            f"\\tempo {tempo_bpm}",
-        ]
-    )
-
-    parts: list[str] = []
-    parts.append(":8")
-    for i in range(total_steps):
-        events = grid.get(i, [])
-        if not events:
-            parts.append("r")
-        else:
-            events = sorted(events, key=lambda x: (x[1], x[0]), reverse=True)[:6]
-            used_strings: set[int] = set()
-            mapped: list[tuple[int, int]] = []
-            for p, _v in events:
-                if p < _GUITAR_MIN_PITCH or p > _GUITAR_MAX_PITCH:
-                    continue
-                try:
-                    fret, string = _map_pitch_to_fret_string(p, used_strings)
-                except ValueError:
-                    continue
-                used_strings.add(string)
-                mapped.append((fret, string))
-            if not mapped:
-                parts.append("r")
-            else:
-                mapped_str = " ".join(f"{fret}.{string}" for fret, string in mapped)
-                parts.append(mapped_str if len(mapped) == 1 else f"({mapped_str})")
-
-        if (i + 1) % steps_per_bar == 0:
-            parts.append("|")
-
-    if not parts[-1].endswith("|"):
-        parts.append("|")
-
-    alphatex = header + "\n" + " ".join(parts)
-    tuning_label = "Standard (E A D G B E)"
-    return tuning_label, alphatex
 
 
 @dataclass
@@ -162,7 +61,7 @@ class JobState:
     error: Optional[str]
     audio_path: Path
     title: str
-    result: Optional[TabResult]
+    result: Optional[JobResult]
 
 
 def _repo_root() -> Path:
@@ -208,42 +107,51 @@ async def _run_job(job_id: str) -> None:
         title = job.title or job.audio_path.name
 
         job.progress = 10
-        job.message = "Running transcription (Basic Pitch)"
+        job.message = "Analyzing tempo/key/chords"
 
-        def _predict_notes(audio_path: Path) -> tuple[list[tuple[float, float, int, int]], int]:
-            from basic_pitch.inference import predict
-            import librosa
-
-            y, sr = librosa.load(str(audio_path), sr=None, mono=True)
-            tempo, _ = librosa.beat.beat_track(y=y, sr=sr)
-            if not isinstance(tempo, (float, int)) or tempo != tempo:
-                tempo = 120
-            tempo_i = int(round(float(tempo)))
-            if tempo_i < 50:
-                tempo_i = 50
-            if tempo_i > 220:
-                tempo_i = 220
-
-            _, midi_data, _ = predict(
-                str(audio_path),
-                minimum_frequency=70.0,
-                maximum_frequency=1500.0,
-                minimum_note_length=80.0,
-            )
-
-            out: list[tuple[float, float, int, int]] = []
-            for inst in midi_data.instruments:
-                for n in inst.notes:
-                    out.append((float(n.start), float(n.end), int(n.pitch), int(getattr(n, "velocity", 0))))
-            return out, tempo_i
-
-        notes, tempo_bpm = await asyncio.to_thread(_predict_notes, job.audio_path)
+        analysis = await asyncio.to_thread(analyze_audio, str(job.audio_path), title)
 
         job.progress = 65
-        job.message = "Mapping notes to guitar"
+        job.message = "Detecting sections"
 
-        tuning, alphatex = await asyncio.to_thread(_group_notes_to_alphatex, title, notes, tempo_bpm)
-        job.result = TabResult(title=title, tuning=tuning, alphatex=alphatex)
+        sections = detect_sections(analysis.bar_chords)
+
+        section_out: list[SectionOut] = []
+        for s in sections:
+            chords: list[ChordAt] = []
+            for bar in range(s.start_bar, s.end_bar):
+                if 0 <= bar < len(analysis.bar_chords):
+                    chord = analysis.bar_chords[bar]
+                else:
+                    chord = "N"
+                chords.append(ChordAt(chord=chord, bar=bar, beat=1))
+            section_out.append(SectionOut(name=s.name, start_bar=s.start_bar, end_bar=s.end_bar, chords=chords))
+
+        alphatex = sections_to_alphatex(
+            title=analysis.title,
+            tempo=analysis.tempo_bpm,
+            time_signature=analysis.time_signature,
+            key=analysis.key,
+            sections=section_out,
+        )
+
+        job.result = JobResult(
+            title=analysis.title,
+            artist=None,
+            key=analysis.key,
+            tempo=analysis.tempo_bpm,
+            time_signature=analysis.time_signature,
+            sections=[
+                SectionModel(
+                    name=s.name,
+                    start_bar=s.start_bar,
+                    end_bar=s.end_bar,
+                    chords=[ChordModel(chord=c.chord, bar=c.bar, beat=c.beat) for c in s.chords],
+                )
+                for s in section_out
+            ],
+            alphatex=alphatex,
+        )
         job.status = "succeeded"
         job.progress = 100
         job.message = "Done"
@@ -287,8 +195,8 @@ async def get_job(job_id: str) -> JobResponse:
     return _job_to_response(job)
 
 
-@app.get("/jobs/{job_id}/result", response_model=TabResult)
-async def get_job_result(job_id: str) -> TabResult:
+@app.get("/jobs/{job_id}/result", response_model=JobResult)
+async def get_job_result(job_id: str) -> JobResult:
     job = _jobs.get(job_id)
     if not job:
         raise HTTPException(status_code=404, detail="job not found")
