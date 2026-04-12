@@ -1,17 +1,30 @@
 import asyncio
 import os
+import shutil
+import tempfile
+import time
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Literal, Optional
+import json
 
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-from chord_detector import analyze_audio
+from audio_preprocess import extract_harmonic_percussive
+from chord_detector import analyze_audio_multi
 from formatters import ChordAt, SectionOut, build_display_sections_and_arrangement, sections_to_alphatex
+from intro_transcriber import build_intro_bar_overrides
+from melody_tab import (
+    align_melody_to_lyrics,
+    build_vocal_melody_track_alphatex,
+    convert_aligned_melody_to_tab_bars,
+)
 from melody_detector import detect_melody, make_beat_grid, melody_to_jianpu
 from section_detector import detect_sections
+from source_separation import separate_stems
+from vocal_analysis import extract_vocal_melody, transcribe_lyrics
 
 
 class CreateJobRequest(BaseModel):
@@ -52,6 +65,9 @@ class JobResult(BaseModel):
     sections: list[SectionModel]
     arrangement: str
     alphatex: str
+    stems: Optional[dict] = None
+    vocal_melody: Optional[dict] = None
+    lyrics: Optional[dict] = None
 
 
 @dataclass
@@ -91,6 +107,74 @@ def _storage_dir() -> Path:
     return _repo_root() / "storage" / "ai"
 
 
+def _storage_root() -> Path:
+    """
+    Storage root for artifacts matching the required layout:
+      storage/uploads/{job_id}.mp3
+      storage/stems/{job_id}/...
+      storage/temp/{job_id}/...
+      storage/results/{job_id}/...
+    """
+    return _repo_root() / "storage"
+
+
+def _truthy(v: str) -> bool:
+    return (v or "").strip().lower() in {"1", "true", "yes", "y", "on"}
+
+
+def _cleanup_expired(storage_root: Path) -> None:
+    """
+    Best-effort cleanup (non-blocking).
+    - uploads/ + stems/: 24h
+    - results/: 7d
+    - temp/: immediate delete handled by TemporaryDirectory
+    """
+    if not _truthy(os.environ.get("ENABLE_STORAGE_CLEANUP", "1")):
+        return
+    now = time.time()
+    ttl_uploads = 24 * 3600
+    ttl_stems = 24 * 3600
+    ttl_results = 7 * 24 * 3600
+
+    def _rm_path(p: Path) -> None:
+        try:
+            if p.is_dir():
+                shutil.rmtree(p, ignore_errors=True)
+            else:
+                p.unlink(missing_ok=True)
+        except Exception:
+            pass
+
+    # uploads
+    up = storage_root / "uploads"
+    if up.exists():
+        for p in up.iterdir():
+            try:
+                if now - p.stat().st_mtime > ttl_uploads:
+                    _rm_path(p)
+            except Exception:
+                continue
+
+    # stems + results are job directories
+    st = storage_root / "stems"
+    if st.exists():
+        for p in st.iterdir():
+            try:
+                if now - p.stat().st_mtime > ttl_stems:
+                    _rm_path(p)
+            except Exception:
+                continue
+
+    rs = storage_root / "results"
+    if rs.exists():
+        for p in rs.iterdir():
+            try:
+                if now - p.stat().st_mtime > ttl_results:
+                    _rm_path(p)
+            except Exception:
+                continue
+
+
 app = FastAPI(title="Biubiutab - AI Service")
 _jobs: dict[str, JobState] = {}
 
@@ -122,10 +206,154 @@ async def _run_job(job_id: str) -> None:
     try:
         title = _clean_title(job.title or job.audio_path.name)
 
-        job.progress = 10
-        job.message = "Analyzing tempo/key/chords"
+        # Align with required storage layout under repoRoot/storage/
+        storage_root = _storage_root()
+        uploads_dir = storage_root / "uploads"
+        stems_dir = storage_root / "stems" / job.id
+        results_dir = storage_root / "results" / job.id
+        temp_base = storage_root / "temp"
+        for d in (uploads_dir, stems_dir, results_dir, temp_base):
+            d.mkdir(parents=True, exist_ok=True)
 
-        analysis = await asyncio.to_thread(analyze_audio, str(job.audio_path), title)
+        _cleanup_expired(storage_root)
+
+        # Copy original audio to storage/uploads/{job_id}.ext for retention/debug.
+        ext = job.audio_path.suffix.lower() or ".wav"
+        upload_copy = uploads_dir / f"{job.id}{ext}"
+        try:
+            shutil.copy2(job.audio_path, upload_copy)
+        except Exception:
+            upload_copy = job.audio_path
+
+        job.progress = 10
+        job.message = "Separating stems (Demucs)"
+
+        t0 = time.time()
+        stems_tmp: dict[str, str] = {}
+        hpss_tmp: dict[str, str] = {}
+        lyrics: dict | None = None
+        vocal_melody: dict | None = None
+        stems_out: dict[str, str] | None = None
+
+        with tempfile.TemporaryDirectory(prefix=f"{job.id}_", dir=str(temp_base)) as tmp_dir:
+            try:
+                stems_tmp = await asyncio.to_thread(separate_stems, str(upload_copy), tmp_dir)
+            except Exception as e:
+                # Soft fallback: proceed with mix audio.
+                stems_tmp = {}
+                job.message = f"Demucs failed (fallback to mix): {e}"
+
+            job.progress = 25
+            job.message = "Extracting harmonic/percussive (HPSS)"
+
+            # Choose accompaniment stem for HPSS
+            acc_path = stems_tmp.get("other") or stems_tmp.get("no_vocals") or str(upload_copy)
+            try:
+                hpss_tmp = await asyncio.to_thread(extract_harmonic_percussive, acc_path)
+            except Exception as e:
+                hpss_tmp = {}
+                job.message = f"HPSS failed (fallback to accompaniment): {e}"
+
+            harmonic_path = hpss_tmp.get("harmonic_path") or acc_path
+            percussive_path = hpss_tmp.get("percussive_path") or str(upload_copy)
+
+            job.progress = 35
+            job.message = "Analyzing tempo/key/chords"
+
+            try:
+                analysis = await asyncio.to_thread(
+                    analyze_audio_multi,
+                    str(upload_copy),
+                    title,
+                    tempo_path=percussive_path,
+                    chord_path=harmonic_path,
+                    key_path=harmonic_path,
+                )
+            except Exception as e:
+                # Soft fallback to mix for everything.
+                job.message = f"Analysis failed (fallback to mix): {e}"
+                analysis = await asyncio.to_thread(analyze_audio_multi, str(upload_copy), title)
+
+            job.progress = 60
+            job.message = "Transcribing lyrics (vocals)"
+
+            vocals_path = stems_tmp.get("vocals")
+            if vocals_path:
+                lyrics = await asyncio.to_thread(transcribe_lyrics, vocals_path, "zh")
+            else:
+                lyrics = None
+
+            job.progress = 70
+            job.message = "Extracting vocal melody"
+
+            if vocals_path:
+                try:
+                    vocal_melody = await asyncio.to_thread(extract_vocal_melody, vocals_path)
+                except Exception as e:
+                    vocal_melody = {"note_events": [], "midi_path": None, "error": str(e)}
+            else:
+                vocal_melody = None
+
+            # Step 6B/7B MVP: align melody to lyrics and generate a simple vocal melody TAB as alphaTex.
+            # Keep it optional and non-blocking.
+            try:
+                if (
+                    isinstance(vocal_melody, dict)
+                    and isinstance(vocal_melody.get("note_events"), list)
+                    and vocal_melody.get("note_events")
+                    and isinstance(lyrics, dict)
+                    and isinstance(lyrics.get("segments"), list)
+                ):
+                    aligned = align_melody_to_lyrics(vocal_melody["note_events"], lyrics["segments"], "zh")
+                    vocal_melody["aligned_melody"] = aligned
+                    bar_lines = convert_aligned_melody_to_tab_bars(
+                        aligned,
+                        tempo_bpm=analysis.tempo_bpm,
+                        time_signature=analysis.time_signature,
+                        bars=max(1, len(analysis.bar_chords)),
+                        slot=8,
+                        max_fret=int(os.environ.get("MELODY_MAX_FRET", "12")),
+                    )
+                    vocal_melody["alphatex"] = build_vocal_melody_track_alphatex(
+                        tempo_bpm=analysis.tempo_bpm,
+                        time_signature=analysis.time_signature,
+                        bars=max(1, len(analysis.bar_chords)),
+                        bar_lines=bar_lines,
+                    )
+            except Exception:
+                # ignore alignment failures
+                pass
+
+            # Persist artifacts to storage/stems/{job_id}/ (required layout)
+            stems_out = {}
+            for k in ("vocals", "drums", "bass", "other", "no_vocals"):
+                p = stems_tmp.get(k)
+                if not p:
+                    continue
+                dst = stems_dir / f"{k}.wav"
+                try:
+                    shutil.copy2(p, dst)
+                    stems_out[k] = str(dst)
+                except Exception:
+                    pass
+            # HPSS outputs as harmonic.wav / percussive.wav inside stems/{job_id}/
+            if "harmonic_path" in hpss_tmp:
+                try:
+                    dst = stems_dir / "harmonic.wav"
+                    shutil.copy2(hpss_tmp["harmonic_path"], dst)
+                    stems_out["harmonic"] = str(dst)
+                except Exception:
+                    pass
+            if "percussive_path" in hpss_tmp:
+                try:
+                    dst = stems_dir / "percussive.wav"
+                    shutil.copy2(hpss_tmp["percussive_path"], dst)
+                    stems_out["percussive"] = str(dst)
+                except Exception:
+                    pass
+
+            job.progress = 65
+            job.message = "Detecting sections"
 
         job.progress = 65
         job.message = "Detecting sections"
@@ -144,16 +372,52 @@ async def _run_job(job_id: str) -> None:
             section_out.append(SectionOut(name=s.name, start_bar=s.start_bar, end_bar=s.end_bar, chords=chords))
 
         job.progress = 78
-        job.message = "Extracting melody"
+        job.message = "Extracting melody (fallback)"
 
-        melody = await asyncio.to_thread(detect_melody, str(job.audio_path))
+        # Keep existing melody extraction for intro/tab heuristics & as fallback.
+        melody_mix = await asyncio.to_thread(detect_melody, str(upload_copy))
         total_beats = max(1, len(analysis.bar_chords) * 4)
         beat_grid = make_beat_grid(analysis.tempo_bpm, analysis.duration_sec, total_beats)
-        jianpu = melody_to_jianpu(melody, beat_grid, analysis.key, total_beats)
+
+        # Prefer vocal melody (if available) for jianpu; fallback to mix.
+        melody_for_jianpu = melody_mix
+        if isinstance(vocal_melody, dict) and isinstance(vocal_melody.get("note_events"), list) and vocal_melody.get("note_events"):
+            try:
+                from melody_detector import NoteEvent
+
+                melody_for_jianpu = [
+                    NoteEvent(
+                        start_sec=float(e.get("start_sec", 0.0)),
+                        end_sec=float(e.get("end_sec", 0.0)),
+                        pitch=int(e.get("pitch", 0)),
+                        velocity=int(e.get("velocity", 0)),
+                    )
+                    for e in vocal_melody["note_events"]
+                ]
+            except Exception:
+                melody_for_jianpu = melody_mix
+
+        jianpu = melody_to_jianpu(melody_for_jianpu, beat_grid, analysis.key, total_beats)
         if len(jianpu) > 128:
             jianpu = jianpu[:128]
 
         display_sections, arrangement = build_display_sections_and_arrangement(section_out)
+
+        # Intro MVP: try to render the first 8 bars as real TAB notes (from basic-pitch),
+        # fallback to chord-based arpeggios if transcription is insufficient.
+        intro_bars = {}
+        try:
+            intro_bars = build_intro_bar_overrides(
+                melody=melody_mix,
+                tempo_bpm=analysis.tempo_bpm,
+                duration_sec=analysis.duration_sec,
+                time_signature=analysis.time_signature,
+                bar_chords=analysis.bar_chords,
+                bars=int(os.environ.get("INTRO_BARS", "8")),
+                min_notes_per_bar=int(os.environ.get("INTRO_MIN_NOTES_PER_BAR", "2")),
+            )
+        except Exception:
+            intro_bars = {}
 
         alphatex = sections_to_alphatex(
             title=_clean_title(analysis.title),
@@ -162,7 +426,28 @@ async def _run_job(job_id: str) -> None:
             key=analysis.key,
             sections=display_sections,
             jianpu=jianpu,
+            bar_overrides=intro_bars,
+            extra_tracks=vocal_melody.get("alphatex") if isinstance(vocal_melody, dict) else None,
         )
+
+        # Write results artifacts under storage/results/{job_id}/
+        try:
+            results_dir.mkdir(parents=True, exist_ok=True)
+            chord_alphatex = sections_to_alphatex(
+                title=_clean_title(analysis.title),
+                tempo=analysis.tempo_bpm,
+                time_signature=analysis.time_signature,
+                key=analysis.key,
+                sections=display_sections,
+                jianpu=jianpu,
+                bar_overrides=intro_bars,
+                extra_tracks=None,
+            )
+            (results_dir / "chord_chart.alphatex").write_text(chord_alphatex, encoding="utf-8")
+            if isinstance(vocal_melody, dict) and isinstance(vocal_melody.get("alphatex"), str):
+                (results_dir / "melody.alphatex").write_text(vocal_melody["alphatex"], encoding="utf-8")
+        except Exception:
+            pass
 
         job.result = JobResult(
             title=_clean_title(analysis.title),
@@ -181,7 +466,34 @@ async def _run_job(job_id: str) -> None:
             ],
             arrangement=arrangement,
             alphatex=alphatex,
+            stems=stems_out,
+            vocal_melody=vocal_melody,
+            lyrics=lyrics,
         )
+
+        # Persist output.json + lyrics.lrc (best effort)
+        try:
+            (results_dir / "output.json").write_text(
+                json.dumps(job.result.model_dump(), ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+        except Exception:
+            pass
+        try:
+            if isinstance(lyrics, dict) and isinstance(lyrics.get("segments"), list):
+                lines: list[str] = []
+                for seg in lyrics["segments"]:
+                    t = float(seg.get("start", 0.0))
+                    mm = int(t // 60)
+                    ss = int(t % 60)
+                    cs = int(round((t - int(t)) * 100))
+                    txt = (seg.get("text") or "").strip()
+                    if not txt:
+                        continue
+                    lines.append(f"[{mm:02d}:{ss:02d}.{cs:02d}]{txt}")
+                (results_dir / "lyrics.lrc").write_text("\n".join(lines).strip() + "\n", encoding="utf-8")
+        except Exception:
+            pass
         job.status = "succeeded"
         job.progress = 100
         job.message = "Done"

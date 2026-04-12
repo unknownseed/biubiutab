@@ -1,0 +1,162 @@
+"use client";
+
+import Link from "next/link";
+import Image from "next/image";
+import { useEffect, useMemo, useState } from "react";
+import { useHealth } from "./health-provider";
+
+function dotClass(s: "checking" | "online" | "offline" | "degraded") {
+  if (s === "online") return "bg-emerald-500";
+  if (s === "offline") return "bg-red-500";
+  return "bg-orange-400";
+}
+
+export default function Navbar() {
+  const [pinnedOpen, setPinnedOpen] = useState(false);
+  const [hoverOpen, setHoverOpen] = useState(false);
+  const { health, refresh } = useHealth();
+
+  useEffect(() => {
+    const onKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setPinnedOpen(false);
+    };
+    window.addEventListener("keydown", onKeyDown);
+    return () => window.removeEventListener("keydown", onKeyDown);
+  }, []);
+
+  const open = pinnedOpen || hoverOpen;
+  const canHover = useMemo(() => (typeof window === "undefined" ? false : window.matchMedia("(hover: hover)").matches), []);
+
+  const statusText = health.status === "checking" ? "检测中…" : health.ok ? "在线" : "离线";
+  const statusTone =
+    health.ok
+      ? "border-emerald-200 bg-emerald-50 text-emerald-900"
+      : health.status === "offline"
+        ? "border-red-200 bg-red-50 text-red-900"
+        : "border-orange-200 bg-orange-50 text-orange-900";
+
+  const checkedText =
+    health.checkedAt
+      ? new Date(health.checkedAt).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit" })
+      : "-";
+
+  return (
+    <header className="fixed left-0 right-0 top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur">
+      <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-4">
+        <div className="flex items-center gap-3">
+          <Link href="/" className="flex items-center">
+            {/* Place your logo at: apps/web/public/logo.svg (or .png) */}
+            <Image src="/logo.svg" alt="Biubiu Tab" width={160} height={28} className="h-7 w-auto" priority />
+          </Link>
+          <div className="hidden items-center gap-2 text-xs text-slate-600 md:flex">
+            <div
+              className="relative"
+              onMouseEnter={() => {
+                if (canHover) setHoverOpen(true);
+              }}
+              onMouseLeave={() => {
+                if (canHover) setHoverOpen(false);
+              }}
+            >
+              <button
+                type="button"
+                className={`inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-xs font-medium ${statusTone} hover:bg-white`}
+                aria-haspopup="dialog"
+                aria-expanded={open}
+                onClick={() => {
+                  // Mobile: click toggles open. Desktop: click pins.
+                  setPinnedOpen((v) => !v);
+                }}
+              >
+                <span className={`h-1.5 w-1.5 rounded-full ${dotClass(health.status)}`} />
+                <span>AI：{statusText}</span>
+              </button>
+
+              {open ? (
+                <div
+                  className="absolute left-0 top-full mt-2 w-[360px] rounded-2xl border border-slate-200 bg-white p-3 shadow-[0_20px_60px_rgba(2,6,23,0.18)]"
+                  role="dialog"
+                  aria-label="AI 服务状态"
+                >
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className={`h-2 w-2 rounded-full ${dotClass(health.status)}`} />
+                        <div className="text-sm font-semibold text-slate-950">AI 服务：{statusText}</div>
+                        {typeof health.latencyMs === "number" ? (
+                          <div className="rounded-full border border-slate-200 bg-slate-50 px-2 py-0.5 text-[11px] text-slate-600">
+                            {health.latencyMs}ms
+                          </div>
+                        ) : null}
+                      </div>
+                      <div className="mt-1 text-xs text-slate-600">
+                        最近检查：{checkedText}
+                      </div>
+                    </div>
+                    <button
+                      type="button"
+                      className="rounded-lg px-2 py-1 text-xs text-slate-600 hover:bg-slate-50"
+                      onClick={() => setPinnedOpen(false)}
+                    >
+                      关闭
+                    </button>
+                  </div>
+
+                  <div className="mt-3 space-y-2">
+                    <div className="rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-xs text-slate-700">
+                      <div className="flex items-center justify-between gap-2">
+                        <div className="font-medium text-slate-700">AI_BASE_URL</div>
+                        {health.baseUrl ? (
+                          <button
+                            type="button"
+                            className="rounded-md px-2 py-1 text-[11px] text-slate-600 hover:bg-white"
+                            onClick={async () => {
+                              try {
+                                await navigator.clipboard.writeText(health.baseUrl || "");
+                              } catch {
+                                // ignore
+                              }
+                            }}
+                          >
+                            复制
+                          </button>
+                        ) : null}
+                      </div>
+                      <div className="mt-1 break-all font-mono text-[11px] text-slate-600">
+                        {health.baseUrl || "-"}
+                      </div>
+                    </div>
+
+                    {!health.ok && health.error ? (
+                      <div className="rounded-xl border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-800">
+                        <div className="font-medium">错误</div>
+                        <div className="mt-1 break-words text-red-700">{health.error}</div>
+                      </div>
+                    ) : null}
+
+                    <div className="flex items-center justify-between gap-2">
+                      <button
+                        type="button"
+                        className="rounded-lg bg-[color:var(--primary)] px-3 py-1.5 text-xs font-semibold text-white hover:bg-blue-500"
+                        onClick={refresh}
+                      >
+                        立即重试
+                      </button>
+                      <div className="text-[11px] text-slate-500">每 5 秒自动刷新</div>
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+            </div>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2">
+          <div className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700">
+            账号（占位）
+          </div>
+        </div>
+      </div>
+    </header>
+  );
+}

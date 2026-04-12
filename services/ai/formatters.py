@@ -145,6 +145,8 @@ def sections_to_alphatex(
     key: str,
     sections: list[SectionOut],
     jianpu: list[str] | None = None,
+    bar_overrides: dict[int, str] | None = None,
+    extra_tracks: str | None = None,
 ) -> str:
     parts: list[str] = []
     parts.append(f'\\title "{title}"')
@@ -239,9 +241,20 @@ def sections_to_alphatex(
             else:
                 last_display_chord = chord
 
-            line = pattern_to_alphatex(pattern, chord, show_chord_name, label=None, jianpu_beats=jianpu_beats)
-            parts.append(section_prefix + line)
+            override = (bar_overrides or {}).get(c.bar)
+            if override:
+                # override already includes trailing "|" and is assumed to be a single bar line
+                parts.append(section_prefix + override)
+            else:
+                line = pattern_to_alphatex(pattern, chord, show_chord_name, label=None, jianpu_beats=jianpu_beats)
+                parts.append(section_prefix + line)
         is_first_section = False
+        parts.append("")
+
+    # Optional: append extra track definitions (e.g., vocal melody tabs).
+    # Caller is responsible for providing valid alphaTex.
+    if extra_tracks and extra_tracks.strip():
+        parts.append(extra_tracks.strip())
         parts.append("")
 
     return "\n".join(parts).strip() + "\n"

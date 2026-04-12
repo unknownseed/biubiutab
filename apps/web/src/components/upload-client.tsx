@@ -2,6 +2,7 @@
 
 import { useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import { useToast } from "./toast-provider";
 
 type UploadResponse = {
   storedFilename: string;
@@ -49,6 +50,7 @@ async function getJson<T>(url: string): Promise<T> {
 export default function UploadClient() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const toast = useToast();
 
   const [file, setFile] = useState<File | null>(null);
   const [durationSec, setDurationSec] = useState<number | null>(null);
@@ -133,6 +135,7 @@ export default function UploadClient() {
 
     try {
       const upload = await uploadWithProgress(file);
+      toast.push({ title: "上传成功", description: upload.originalFilename, variant: "success" });
       setStatus("processing");
       const created = await postJson<JobResponse>("/api/jobs", {
         storedFilename: upload.storedFilename,
@@ -145,12 +148,14 @@ export default function UploadClient() {
         const latest = await getJson<JobResponse>(`/api/jobs/${created.id}`);
         setJob(latest);
         if (latest.status === "succeeded") {
+          toast.push({ title: "生成完成", description: "已生成谱例，正在打开编辑页…", variant: "success" });
           router.push(`/editor/${latest.id}`);
           return;
         }
         if (latest.status === "failed") {
           setStatus("failed");
           setError(latest.error || "处理失败");
+          toast.push({ title: "生成失败", description: latest.error || "处理失败", variant: "error" });
           return;
         }
         window.setTimeout(() => void poll(), 800);
@@ -159,17 +164,18 @@ export default function UploadClient() {
     } catch (e) {
       setStatus("failed");
       setError(e instanceof Error ? e.message : "未知错误");
+      toast.push({ title: "请求失败", description: e instanceof Error ? e.message : "未知错误", variant: "error" });
     }
   }
 
   return (
-    <section className="rounded-xl border border-zinc-200 bg-white p-5 shadow-sm">
+    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_12px_40px_rgba(2,6,23,0.08)]">
       <div className="flex flex-col gap-3">
         <div className="flex items-center justify-between gap-4">
-          <div className="text-sm font-medium">音频上传</div>
+          <div className="text-sm font-semibold text-slate-950">上传音频</div>
           <button
             type="button"
-            className="rounded-md bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
+            className="rounded-lg bg-[color:var(--primary)] px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-500 disabled:opacity-50"
             onClick={() => fileInputRef.current?.click()}
             disabled={status === "uploading" || status === "processing"}
           >
@@ -178,7 +184,7 @@ export default function UploadClient() {
         </div>
 
         <div
-          className="flex min-h-32 cursor-pointer flex-col items-center justify-center gap-2 rounded-lg border border-dashed border-zinc-300 bg-zinc-50 px-4 py-6 text-center"
+          className="flex min-h-32 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center transition-colors hover:bg-slate-100"
           onClick={() => fileInputRef.current?.click()}
           onDragOver={(e) => e.preventDefault()}
           onDrop={(e) => {
@@ -192,8 +198,8 @@ export default function UploadClient() {
             if (e.key === "Enter" || e.key === " ") fileInputRef.current?.click();
           }}
         >
-          <div className="text-sm text-zinc-700">拖拽文件到这里或点击上传</div>
-          <div className="text-xs text-zinc-500">支持 MP3/WAV，最大 50MB</div>
+          <div className="text-sm text-slate-700">拖拽文件到这里或点击上传</div>
+          <div className="text-xs text-slate-500">支持 MP3/WAV，最大 50MB</div>
         </div>
 
         <input
@@ -206,14 +212,14 @@ export default function UploadClient() {
 
         <div className="flex flex-col gap-2 text-sm">
           <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="text-zinc-700">
+            <div className="text-slate-700">
               {file ? (
                 <span className="font-medium">{file.name}</span>
               ) : (
-                <span className="text-zinc-500">未选择文件</span>
+                <span className="text-slate-500">未选择文件</span>
               )}
             </div>
-            <div className="text-zinc-500">
+            <div className="text-slate-500">
               {file ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : ""}
               {durationSec != null ? ` · ${formatSeconds(durationSec)}` : ""}
             </div>
@@ -221,37 +227,39 @@ export default function UploadClient() {
 
           {status === "uploading" ? (
             <div className="flex flex-col gap-1">
-              <div className="flex items-center justify-between text-xs text-zinc-600">
+              <div className="flex items-center justify-between text-xs text-slate-600">
                 <span>上传中</span>
                 <span>{uploadProgress}%</span>
               </div>
-              <div className="h-2 overflow-hidden rounded bg-zinc-200">
-                <div className="h-2 bg-zinc-900" style={{ width: `${uploadProgress}%` }} />
+              <div className="h-2 overflow-hidden rounded bg-slate-200">
+                <div className="h-2 bg-[color:var(--primary)]" style={{ width: `${uploadProgress}%` }} />
               </div>
             </div>
           ) : null}
 
           {status === "processing" && job ? (
             <div className="flex flex-col gap-1">
-              <div className="flex items-center justify-between text-xs text-zinc-600">
+              <div className="flex items-center justify-between text-xs text-slate-600">
                 <span>{job.message || "处理中"}</span>
                 <span>{job.progress}%</span>
               </div>
-              <div className="h-2 overflow-hidden rounded bg-zinc-200">
-                <div className="h-2 bg-zinc-900" style={{ width: `${job.progress}%` }} />
+              <div className="h-2 overflow-hidden rounded bg-slate-200">
+                <div className="h-2 bg-[color:var(--accent)]" style={{ width: `${job.progress}%` }} />
               </div>
             </div>
           ) : null}
 
-          {error ? <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div> : null}
+          {error ? (
+            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>
+          ) : null}
 
           <button
             type="button"
-            className="mt-1 rounded-md border border-zinc-300 bg-white px-3 py-2 text-sm font-medium text-zinc-900 disabled:opacity-50"
+            className="mt-1 inline-flex items-center justify-center rounded-lg bg-[color:var(--primary)] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-500 disabled:opacity-50"
             onClick={() => void start()}
             disabled={!file || status === "uploading" || status === "processing"}
           >
-            开始生成
+            开始生成谱例
           </button>
         </div>
       </div>

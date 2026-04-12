@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 
 import AlphaTabViewer, { type AlphaTabViewerHandle } from "./alphatab-viewer";
+import { useToast } from "./toast-provider";
 
 type JobResponse = {
   id: string;
@@ -59,18 +60,16 @@ export default function EditorClient({ jobId }: { jobId: string }) {
   const [job, setJob] = useState<JobResponse | null>(null);
   const [result, setResult] = useState<JobResult | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const [audioFilename, setAudioFilename] = useState<string | null>(null);
   const viewerRef = useRef<AlphaTabViewerHandle | null>(null);
   const [downloadOpen, setDownloadOpen] = useState(false);
-
-  useEffect(() => {
-    setAudioFilename(localStorage.getItem(`job:${jobId}:audio`));
-  }, [jobId]);
+  const toast = useToast();
 
   const audioSrc = useMemo(() => {
+    if (typeof window === "undefined") return null;
+    const audioFilename = localStorage.getItem(`job:${jobId}:audio`);
     if (!audioFilename) return null;
     return `/api/uploads/${encodeURIComponent(audioFilename)}`;
-  }, [audioFilename]);
+  }, [jobId]);
 
   useEffect(() => {
     let cancelled = false;
@@ -81,6 +80,7 @@ export default function EditorClient({ jobId }: { jobId: string }) {
         setJob(latest);
         if (latest.status === "failed") {
           setError(latest.error || "处理失败");
+          toast.push({ title: "生成失败", description: latest.error || "处理失败", variant: "error" });
           return;
         }
         if (latest.status === "succeeded") {
@@ -91,28 +91,30 @@ export default function EditorClient({ jobId }: { jobId: string }) {
             return;
           }
           setResult(res);
+          toast.push({ title: "谱例已就绪", description: "你可以开始编辑或导出。", variant: "success" });
           return;
         }
         window.setTimeout(() => void poll(), 800);
       } catch (e) {
         if (cancelled) return;
         setError(e instanceof Error ? e.message : "未知错误");
+        toast.push({ title: "请求失败", description: e instanceof Error ? e.message : "未知错误", variant: "error" });
       }
     };
     void poll();
     return () => {
       cancelled = true;
     };
-  }, [jobId]);
+  }, [jobId, toast]);
 
   return (
     <section className="flex flex-col gap-4">
-      <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_12px_40px_rgba(2,6,23,0.08)]">
         <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between gap-3">
-            <div className="text-sm font-medium text-zinc-900">播放</div>
+            <div className="text-sm font-semibold text-slate-950">播放</div>
             {job ? (
-              <div className="text-xs text-zinc-600">
+              <div className="text-xs text-slate-600">
                 {job.status === "processing" ? `${job.message || "处理中"} · ${job.progress}%` : job.status}
               </div>
             ) : null}
@@ -120,19 +122,19 @@ export default function EditorClient({ jobId }: { jobId: string }) {
           {audioSrc ? (
             <audio className="w-full" controls src={audioSrc} />
           ) : (
-            <div className="text-sm text-zinc-600">未找到音频文件（本地开发模式下需从首页进入）。</div>
+            <div className="text-sm text-slate-600">未找到音频文件（本地开发模式下需从首页进入）。</div>
           )}
         </div>
       </div>
 
-      <div className="rounded-xl border border-zinc-200 bg-white p-4 shadow-sm">
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_12px_40px_rgba(2,6,23,0.08)]">
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between gap-3">
-            <div className="text-sm font-medium text-zinc-900">谱例</div>
+            <div className="text-sm font-semibold text-slate-950">谱例</div>
             <div className="relative flex items-center gap-2">
               <button
                 type="button"
-                className="rounded-md bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
+                className="rounded-lg bg-[color:var(--primary)] px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-500 disabled:opacity-50"
                 disabled={!result}
                 onClick={() => {
                   if (!result) return;
@@ -143,10 +145,10 @@ export default function EditorClient({ jobId }: { jobId: string }) {
               </button>
 
               {downloadOpen && result ? (
-                <div className="absolute right-0 top-full z-10 mt-2 w-44 overflow-hidden rounded-md border border-zinc-200 bg-white shadow-lg">
+                <div className="absolute right-0 top-full z-10 mt-2 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_12px_40px_rgba(2,6,23,0.12)]">
                   <button
                     type="button"
-                    className="block w-full px-3 py-2 text-left text-sm text-zinc-900 hover:bg-zinc-50"
+                    className="block w-full px-3 py-2 text-left text-sm text-slate-800 hover:bg-slate-50"
                     onClick={() => {
                       const safe = (result.title || "tab").replaceAll(/[^a-zA-Z0-9._-]+/g, "_");
                       downloadText(`${safe}.atex`, result.alphatex);
@@ -157,7 +159,7 @@ export default function EditorClient({ jobId }: { jobId: string }) {
                   </button>
                   <button
                     type="button"
-                    className="block w-full px-3 py-2 text-left text-sm text-zinc-900 hover:bg-zinc-50"
+                    className="block w-full px-3 py-2 text-left text-sm text-slate-800 hover:bg-slate-50"
                     onClick={() => {
                       void viewerRef.current?.exportPng();
                       setDownloadOpen(false);
@@ -167,7 +169,7 @@ export default function EditorClient({ jobId }: { jobId: string }) {
                   </button>
                   <button
                     type="button"
-                    className="block w-full px-3 py-2 text-left text-sm text-zinc-900 hover:bg-zinc-50"
+                    className="block w-full px-3 py-2 text-left text-sm text-slate-800 hover:bg-slate-50"
                     onClick={() => {
                       void viewerRef.current?.printPdf();
                       setDownloadOpen(false);
@@ -175,12 +177,14 @@ export default function EditorClient({ jobId }: { jobId: string }) {
                   >
                     导出 PDF
                   </button>
-                  <div className="border-t border-zinc-200 px-3 py-2 text-xs text-zinc-500">GP4（即将支持）</div>
+                  <div className="border-t border-slate-200 px-3 py-2 text-xs text-slate-500">GP4（即将支持）</div>
                 </div>
               ) : null}
             </div>
           </div>
-          {error ? <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div> : null}
+          {error ? (
+            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>
+          ) : null}
           {result ? (
             <AlphaTabViewer
               ref={viewerRef}
@@ -193,7 +197,9 @@ export default function EditorClient({ jobId }: { jobId: string }) {
               arrangementText={result.arrangement}
             />
           ) : (
-            <div className="text-sm text-zinc-600">等待生成结果…</div>
+            <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-6 text-sm text-slate-600">
+              {job?.status === "processing" ? "生成中…请稍候" : "还没有谱例。返回上传页生成一个新的谱例。"}
+            </div>
           )}
         </div>
       </div>

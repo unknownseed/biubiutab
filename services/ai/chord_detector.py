@@ -236,17 +236,44 @@ def detect_chords(
 
 
 def analyze_audio(audio_path: str, title: str) -> AudioAnalysis:
-    y, sr = librosa.load(audio_path, sr=None, mono=True)
-    duration_sec = float(librosa.get_duration(y=y, sr=sr))
-    tempo_bpm, beat_times = detect_tempo(y, sr)
+    return analyze_audio_multi(audio_path, title, tempo_path=audio_path, chord_path=audio_path, key_path=audio_path)
 
+
+def analyze_audio_multi(
+    audio_path: str,
+    title: str,
+    *,
+    tempo_path: str | None = None,
+    chord_path: str | None = None,
+    key_path: str | None = None,
+) -> AudioAnalysis:
+    """
+    Multi-input analysis:
+    - tempo_path: best source for tempo / beat tracking (e.g., mix or percussive stem)
+    - chord_path: best source for chord recognition (e.g., harmonic stem)
+    - key_path: best source for key estimation (e.g., harmonic stem)
+
+    Backward compatible: `analyze_audio()` calls this with all paths = audio_path.
+    """
+    tempo_path = tempo_path or audio_path
+    chord_path = chord_path or audio_path
+    key_path = key_path or audio_path
+
+    # Tempo / beat grid
+    y_tempo, sr_tempo = librosa.load(tempo_path, sr=None, mono=True)
+    duration_sec = float(librosa.get_duration(y=y_tempo, sr=sr_tempo))
+    tempo_bpm, beat_times = detect_tempo(y_tempo, sr_tempo)
     if beat_times.size < 2:
-        beat_times = np.asarray([0.0, float(librosa.get_duration(y=y, sr=sr))], dtype=np.float32)
+        beat_times = np.asarray([0.0, float(duration_sec)], dtype=np.float32)
 
-    chords = detect_chords(y, sr, beat_times, beats_per_bar=4, audio_path=audio_path)
+    # Chords (prefer madmom via audio_path=chord_path)
+    y_chord, sr_chord = librosa.load(chord_path, sr=None, mono=True)
+    chords = detect_chords(y_chord, sr_chord, beat_times, beats_per_bar=4, audio_path=chord_path)
     bar_chords = [c.chord for c in chords]
 
-    chroma = librosa.feature.chroma_cqt(y=y, sr=sr)
+    # Key (from chroma of key_path)
+    y_key, sr_key = librosa.load(key_path, sr=None, mono=True)
+    chroma = librosa.feature.chroma_cqt(y=y_key, sr=sr_key)
     key = detect_key_from_chroma(np.mean(chroma, axis=1))
 
     return AudioAnalysis(
