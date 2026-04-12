@@ -147,6 +147,7 @@ def sections_to_alphatex(
     jianpu: list[str] | None = None,
     bar_overrides: dict[int, str] | None = None,
     extra_tracks: str | None = None,
+    rhythm_energy: float | None = None,
 ) -> str:
     parts: list[str] = []
     parts.append(f'\\title "{title}"')
@@ -214,7 +215,7 @@ def sections_to_alphatex(
     if uniq:
         parts.append("")
 
-    pattern = select_pattern(tempo)
+    pattern = select_pattern(tempo, rhythm_energy)
 
     is_first_section = True
     # If a bar is 'N', we interpret it as "hold previous chord" for display,

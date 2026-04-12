@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import AlphaTabViewer, { type AlphaTabViewerHandle } from "./alphatab-viewer";
 import { useToast } from "./toast-provider";
+import TimelineViewer, { type VisualizationPayload } from "./timeline-viewer";
 
 type JobResponse = {
   id: string;
@@ -35,6 +36,9 @@ type JobResult = {
   sections: Section[];
   arrangement: string;
   alphatex: string;
+  metadata?: {
+    visualization?: VisualizationPayload | null;
+  } | null;
 };
 
 async function getJson<T>(url: string): Promise<T> {
@@ -62,14 +66,33 @@ export default function EditorClient({ jobId }: { jobId: string }) {
   const [error, setError] = useState<string | null>(null);
   const viewerRef = useRef<AlphaTabViewerHandle | null>(null);
   const [downloadOpen, setDownloadOpen] = useState(false);
+  const [audioSrc, setAudioSrc] = useState<string | null>(null);
   const toast = useToast();
 
-  const audioSrc = useMemo(() => {
-    if (typeof window === "undefined") return null;
-    const audioFilename = localStorage.getItem(`job:${jobId}:audio`);
-    if (!audioFilename) return null;
-    return `/api/uploads/${encodeURIComponent(audioFilename)}`;
+  useEffect(() => {
+    // Avoid hydration mismatch: localStorage is client-only, so we read it after mount.
+    window.setTimeout(() => {
+      const audioFilename = localStorage.getItem(`job:${jobId}:audio`);
+      setAudioSrc(audioFilename ? `/api/uploads/${encodeURIComponent(audioFilename)}` : null);
+    }, 0);
   }, [jobId]);
+
+  const [audioTime, setAudioTime] = useState(0);
+  const [audioDuration, setAudioDuration] = useState(0);
+  const audioElRef = useRef<HTMLAudioElement | null>(null);
+  const audioRef = useCallback((el: HTMLAudioElement | null) => {
+    audioElRef.current = el;
+  }, []);
+
+  const onSeek = useCallback(
+    (t: number) => {
+      const el = audioElRef.current;
+      if (!el || !Number.isFinite(t)) return;
+      el.currentTime = t;
+      void el.play().catch(() => {});
+    },
+    []
+  );
 
   useEffect(() => {
     let cancelled = false;
@@ -120,12 +143,23 @@ export default function EditorClient({ jobId }: { jobId: string }) {
             ) : null}
           </div>
           {audioSrc ? (
-            <audio className="w-full" controls src={audioSrc} />
+            <audio
+              ref={audioRef}
+              className="w-full"
+              controls
+              src={audioSrc}
+              onLoadedMetadata={(e) => setAudioDuration((e.currentTarget as HTMLAudioElement).duration || 0)}
+              onTimeUpdate={(e) => setAudioTime((e.currentTarget as HTMLAudioElement).currentTime || 0)}
+            />
           ) : (
             <div className="text-sm text-slate-600">未找到音频文件（本地开发模式下需从首页进入）。</div>
           )}
         </div>
       </div>
+
+      {result?.metadata?.visualization ? (
+        <TimelineViewer viz={result.metadata.visualization} currentTime={audioTime} durationSec={audioDuration} onSeek={onSeek} />
+      ) : null}
 
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_12px_40px_rgba(2,6,23,0.08)]">
         <div className="flex flex-col gap-3">

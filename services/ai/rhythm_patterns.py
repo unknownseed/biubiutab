@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+import os
 from typing import Literal
 
 
@@ -23,6 +24,23 @@ class RhythmPattern:
 
 
 STRUMMING_PATTERNS: dict[str, RhythmPattern] = {
+    "fingerpick_8th": RhythmPattern(
+        notation="P i m a (8th)",
+        tokens=[
+            # Render as slashed rhythm (tab staff) but pick-direction is not used;
+            # the visual pattern is conveyed by the timing density.
+            RhythmToken("strum", 8, "d"),
+            RhythmToken("strum", 8, "u"),
+            RhythmToken("strum", 8, "d"),
+            RhythmToken("strum", 8, "u"),
+            RhythmToken("strum", 8, "d"),
+            RhythmToken("strum", 8, "u"),
+            RhythmToken("strum", 8, "d"),
+            RhythmToken("strum", 8, "u"),
+        ],
+        bpm_range=(50, 110),
+        description="低能量：用更平稳的 8 分分解/拨弦密度（MVP）",
+    ),
     "ballad": RhythmPattern(
         notation="D - D - D - D -",
         tokens=[
@@ -77,11 +95,40 @@ STRUMMING_PATTERNS: dict[str, RhythmPattern] = {
 }
 
 
-def select_pattern(bpm: int) -> RhythmPattern:
-    for p in STRUMMING_PATTERNS.values():
-        lo, hi = p.bpm_range
-        if lo <= bpm <= hi:
-            return p
+def select_pattern(bpm: int, energy: float | None = None) -> RhythmPattern:
+    """
+    Step 8A: 根据 BPM + percussive 能量（0~1）选择节奏型。
+
+    - energy 越低：更像分解/轻触（fingerpick_8th）
+    - energy 中等：标准民谣扫弦（folk_basic / soul）
+    - energy 高：更密集或更直接（pop_16th）
+    """
+    if energy is None:
+        for p in STRUMMING_PATTERNS.values():
+            lo, hi = p.bpm_range
+            if lo <= bpm <= hi:
+                return p
+        return STRUMMING_PATTERNS["folk_basic"]
+
+    e = max(0.0, min(1.0, float(energy)))
+
+    # Heuristics (tuned for MVP; can be refined later with more signals):
+    low = float(os.environ.get("RHYTHM_ENERGY_LOW") or "0.25")
+    high = float(os.environ.get("RHYTHM_ENERGY_HIGH") or "0.55")
+    # Ensure sane ordering
+    low = max(0.0, min(1.0, low))
+    high = max(low, min(1.0, high))
+
+    if e < low:
+        return STRUMMING_PATTERNS["fingerpick_8th"]
+    if e < high:
+        # Moderate groove: prefer folk; if bpm mid-range, soul can feel better.
+        if 78 <= bpm <= 110:
+            return STRUMMING_PATTERNS["soul"]
+        return STRUMMING_PATTERNS["folk_basic"]
+    # High energy: dense
+    if bpm >= 105:
+        return STRUMMING_PATTERNS["pop_16th"]
     return STRUMMING_PATTERNS["folk_basic"]
 
 

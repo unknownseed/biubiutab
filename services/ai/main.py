@@ -12,7 +12,7 @@ import json
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
-from audio_preprocess import extract_harmonic_percussive
+from audio_preprocess import compute_percussive_energy, extract_harmonic_percussive
 from chord_detector import analyze_audio_multi
 from formatters import ChordAt, SectionOut, build_display_sections_and_arrangement, sections_to_alphatex
 from intro_transcriber import build_intro_bar_overrides
@@ -25,6 +25,7 @@ from melody_detector import detect_melody, make_beat_grid, melody_to_jianpu
 from section_detector import detect_sections
 from source_separation import separate_stems
 from vocal_analysis import extract_vocal_melody, transcribe_lyrics
+from waveform import compute_waveform_peaks
 
 
 class CreateJobRequest(BaseModel):
@@ -68,6 +69,7 @@ class JobResult(BaseModel):
     stems: Optional[dict] = None
     vocal_melody: Optional[dict] = None
     lyrics: Optional[dict] = None
+    metadata: Optional[dict] = None
 
 
 @dataclass
@@ -231,9 +233,11 @@ async def _run_job(job_id: str) -> None:
         t0 = time.time()
         stems_tmp: dict[str, str] = {}
         hpss_tmp: dict[str, str] = {}
+        rhythm_energy: float | None = None
         lyrics: dict | None = None
         vocal_melody: dict | None = None
         stems_out: dict[str, str] | None = None
+        visualization: dict | None = None
 
         with tempfile.TemporaryDirectory(prefix=f"{job.id}_", dir=str(temp_base)) as tmp_dir:
             try:
@@ -256,6 +260,10 @@ async def _run_job(job_id: str) -> None:
 
             harmonic_path = hpss_tmp.get("harmonic_path") or acc_path
             percussive_path = hpss_tmp.get("percussive_path") or str(upload_copy)
+            try:
+                rhythm_energy = await asyncio.to_thread(compute_percussive_energy, percussive_path)
+            except Exception:
+                rhythm_energy = None
 
             job.progress = 35
             job.message = "Analyzing tempo/key/chords"
@@ -352,6 +360,35 @@ async def _run_job(job_id: str) -> None:
                 except Exception:
                     pass
 
+            # Build visualization payload (best-effort):
+            # - waveform peaks from other/no_vocals (as requested)
+            # - beats, bar-level chord timeline
+            # - lyrics segments timeline
+            try:
+                waveform_src = stems_out.get("other") or stems_out.get("no_vocals") or acc_path
+                waveform = await asyncio.to_thread(compute_waveform_peaks, waveform_src)
+                beats = [float(x) for x in getattr(analysis, "beat_times", [])] if analysis else []
+                bars: list[dict] = []
+                beats_per_bar = 4
+                if beats and len(beats) >= beats_per_bar + 1:
+                    bar_count = max(1, (len(beats) - 1) // beats_per_bar)
+                    for bi in range(bar_count):
+                        b0 = bi * beats_per_bar
+                        b1 = min(b0 + beats_per_bar, len(beats) - 1)
+                        start_t = float(beats[b0])
+                        end_t = float(beats[b1])
+                        chord = analysis.bar_chords[bi] if analysis and bi < len(analysis.bar_chords) else "N"
+                        bars.append({"bar": bi, "start": start_t, "end": end_t, "chord": chord})
+
+                visualization = {
+                    "waveform": waveform,
+                    "beats": beats,
+                    "bars": bars,
+                    "lyrics_segments": lyrics.get("segments") if isinstance(lyrics, dict) else None,
+                }
+            except Exception:
+                visualization = None
+
             job.progress = 65
             job.message = "Detecting sections"
 
@@ -428,6 +465,7 @@ async def _run_job(job_id: str) -> None:
             jianpu=jianpu,
             bar_overrides=intro_bars,
             extra_tracks=vocal_melody.get("alphatex") if isinstance(vocal_melody, dict) else None,
+            rhythm_energy=rhythm_energy,
         )
 
         # Write results artifacts under storage/results/{job_id}/
@@ -442,6 +480,7 @@ async def _run_job(job_id: str) -> None:
                 jianpu=jianpu,
                 bar_overrides=intro_bars,
                 extra_tracks=None,
+                rhythm_energy=rhythm_energy,
             )
             (results_dir / "chord_chart.alphatex").write_text(chord_alphatex, encoding="utf-8")
             if isinstance(vocal_melody, dict) and isinstance(vocal_melody.get("alphatex"), str):
@@ -469,6 +508,12 @@ async def _run_job(job_id: str) -> None:
             stems=stems_out,
             vocal_melody=vocal_melody,
             lyrics=lyrics,
+            metadata={
+                "rhythm_energy": rhythm_energy,
+                "rhythm_energy_low": float(os.environ.get("RHYTHM_ENERGY_LOW", "0.25")),
+                "rhythm_energy_high": float(os.environ.get("RHYTHM_ENERGY_HIGH", "0.55")),
+                "visualization": visualization,
+            },
         )
 
         # Persist output.json + lyrics.lrc (best effort)
