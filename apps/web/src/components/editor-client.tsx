@@ -60,6 +60,7 @@ export default function EditorClient({ jobId }: { jobId: string }) {
   const [error, setError] = useState<string | null>(null);
   const [audioFilename, setAudioFilename] = useState<string | null>(null);
   const viewerRef = useRef<AlphaTabViewerHandle | null>(null);
+  const [downloadOpen, setDownloadOpen] = useState(false);
 
   useEffect(() => {
     setAudioFilename(localStorage.getItem(`job:${jobId}:audio`));
@@ -127,51 +128,67 @@ export default function EditorClient({ jobId }: { jobId: string }) {
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between gap-3">
             <div className="text-sm font-medium text-zinc-900">谱例</div>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 disabled:opacity-50"
-                disabled={!result}
-                onClick={() => {
-                  if (!result) return;
-                  void navigator.clipboard.writeText(result.alphatex);
-                }}
-              >
-                复制
-              </button>
+            <div className="relative flex items-center gap-2">
               <button
                 type="button"
                 className="rounded-md bg-zinc-900 px-3 py-1.5 text-sm font-medium text-white disabled:opacity-50"
                 disabled={!result}
                 onClick={() => {
                   if (!result) return;
-                  const safe = (result.title || "tab").replaceAll(/[^a-zA-Z0-9._-]+/g, "_");
-                  downloadText(`${safe}.atex`, result.alphatex);
+                  setDownloadOpen((v) => !v);
                 }}
               >
                 下载
               </button>
-              <button
-                type="button"
-                className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 disabled:opacity-50"
-                disabled={!result}
-                onClick={() => void viewerRef.current?.exportPng()}
-              >
-                导出图片
-              </button>
-              <button
-                type="button"
-                className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 disabled:opacity-50"
-                disabled={!result}
-                onClick={() => void viewerRef.current?.printPdf()}
-              >
-                导出PDF
-              </button>
+
+              {downloadOpen && result ? (
+                <div className="absolute right-0 top-full z-10 mt-2 w-44 overflow-hidden rounded-md border border-zinc-200 bg-white shadow-lg">
+                  <button
+                    type="button"
+                    className="block w-full px-3 py-2 text-left text-sm text-zinc-900 hover:bg-zinc-50"
+                    onClick={() => {
+                      const safe = (result.title || "tab").replaceAll(/[^a-zA-Z0-9._-]+/g, "_");
+                      downloadText(`${safe}.atex`, result.alphatex);
+                      setDownloadOpen(false);
+                    }}
+                  >
+                    下载 .atex
+                  </button>
+                  <button
+                    type="button"
+                    className="block w-full px-3 py-2 text-left text-sm text-zinc-900 hover:bg-zinc-50"
+                    onClick={() => {
+                      void viewerRef.current?.exportPng();
+                      setDownloadOpen(false);
+                    }}
+                  >
+                    导出图片（PNG）
+                  </button>
+                  <button
+                    type="button"
+                    className="block w-full px-3 py-2 text-left text-sm text-zinc-900 hover:bg-zinc-50"
+                    onClick={() => {
+                      void viewerRef.current?.printPdf();
+                      setDownloadOpen(false);
+                    }}
+                  >
+                    导出 PDF
+                  </button>
+                  <div className="border-t border-zinc-200 px-3 py-2 text-xs text-zinc-500">GP4（即将支持）</div>
+                </div>
+              ) : null}
             </div>
           </div>
           {error ? <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div> : null}
           {result ? (
-            <AlphaTabViewer ref={viewerRef} tex={result.alphatex} filename={result.title} />
+            <AlphaTabViewer
+              ref={viewerRef}
+              tex={result.alphatex}
+              filename={result.title}
+              titleText={result.title}
+              keyText={result.key}
+              tempoBpm={result.tempo}
+            />
           ) : (
             <div className="text-sm text-zinc-600">等待生成结果…</div>
           )}

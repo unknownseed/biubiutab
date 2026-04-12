@@ -92,15 +92,46 @@ _E_PC = _NOTE_TO_PC["E"]
 _A_PC = _NOTE_TO_PC["A"]
 
 
-def _score_shape(frets: list[str]) -> tuple[int, int, int, int]:
+def _estimate_barre_penalty(frets: list[str]) -> int:
+    """
+    Heuristic for "likely barre".
+    We intentionally keep this simple: if the minimum fretted note is used on >=2 strings
+    and there are no open strings, this is usually a barre shape.
+    """
+    numeric = [int(x) for x in frets if x not in ("x", "0")]
+    if not numeric:
+        return 0
+    first = min(numeric)
+    if "0" in frets:
+        return 0
+    return 1 if sum(1 for x in frets if x == str(first)) >= 2 else 0
+
+
+def _score_shape(frets: list[str]) -> tuple[int, int, int, int, int]:
+    """
+    Smaller tuple is better (lexicographic).
+
+    Preferences:
+    - Keep within a small fret span (handled elsewhere but still scored).
+    - Prefer non-barre shapes, especially on higher positions.
+    - Prefer fewer muted strings.
+    - Prefer lower overall positions.
+    - Prefer more open strings (implicitly via lower sum of frets).
+    """
     vals = [int(f) for f in frets if f not in ("x",)]
     non_zero = [v for v in vals if v > 0]
     if not vals:
-        return (999, 999, 999, 999)
+        return (999, 999, 999, 999, 999)
     max_f = max(vals)
     span = (max(non_zero) - min(non_zero)) if non_zero else 0
     mute = sum(1 for f in frets if f == "x")
-    return (span, mute, max_f, sum(vals))
+
+    barre = _estimate_barre_penalty(frets)
+    # For high-position chords (>= 5th fret), avoid barre more aggressively.
+    if non_zero and min(non_zero) >= 5:
+        barre *= 3
+
+    return (span, barre, mute, max_f, sum(vals))
 
 
 def _e_shape(root_pc: int, quality: str) -> Optional[list[str]]:
@@ -137,14 +168,29 @@ def chord_shape_for_label(label: str) -> Optional[ChordShape]:
     key = label.strip()
     if not key or key == "N":
         return None
+    # Hard constraint: keep fingerings within a 4-fret "box" (inclusive),
+    # i.e. max_fret - min_fret <= 3.
+    def _within_four_frets(frets_high_to_low: list[str]) -> bool:
+        numeric = [int(x) for x in frets_high_to_low if x not in ("x", "0")]
+        if not numeric:
+            return True
+        return max(numeric) - min(numeric) <= 3
+
     direct = _SHAPES.get(key)
-    if direct:
+    if direct and _within_four_frets(direct.frets_high_to_low):
         return direct
 
     parsed = _parse_chord_label(key)
     if not parsed:
         return None
     root_pc, suffix, pcs = parsed
+
+    # Prefer low-position shapes (<= 4th fret) when possible.
+    compact = _generate_compact_shape(root_pc, pcs, span_max=3, max_fret=4, min_strings=3)
+    if compact:
+        return ChordShape(name=key, frets_high_to_low=compact)
+
+    # Fallback: allow higher positions but still keep within a 4-fret box.
     compact = _generate_compact_shape(root_pc, pcs, span_max=3, max_fret=12, min_strings=3)
     if compact:
         return ChordShape(name=key, frets_high_to_low=compact)
@@ -152,7 +198,7 @@ def chord_shape_for_label(label: str) -> Optional[ChordShape]:
     if suffix in {"", "m", "7", "maj7", "m7"}:
         e = _e_shape(root_pc, suffix)
         a = _a_shape(root_pc, suffix)
-        candidates = [c for c in [e, a] if c]
+        candidates = [c for c in [e, a] if c and _within_four_frets(c)]
         if candidates:
             best = min(candidates, key=_score_shape)
             return ChordShape(name=key, frets_high_to_low=best)
@@ -313,8 +359,8 @@ def _generate_compact_shape(root_pc: int, target_pcs: set[int], span_max: int, m
                                 out = [("x" if f is None else str(int(f))) for f in picks]
                                 score = _score_shape(out)
                                 if not bass_ok:
-                                    score = (score[0], score[1] + 2, score[2], score[3])
-                                score = (score[0], score[1], score[2] + start, score[3])
+                                    score = (score[0], score[1], score[2] + 2, score[3], score[4])
+                                score = (score[0], score[1], score[2], score[3] + start, score[4])
 
                                 if best is None or score < best[0]:
                                     best = (score, out)

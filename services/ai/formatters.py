@@ -21,6 +21,23 @@ class SectionOut:
     chords: list[ChordAt]
 
 
+def _key_to_do_text(key: str) -> str:
+    """
+    Convert 'C Major' / 'A Minor' into jianpu style '1=C（C大调）' / '1=A（A小调）'.
+    """
+    k = (key or "").strip()
+    if not k:
+        return ""
+    parts = k.split()
+    if not parts:
+        return ""
+    tonic = parts[0]
+    mode = parts[1].lower() if len(parts) > 1 else ""
+    if mode == "minor":
+        return f"1={tonic}（{tonic}小调）"
+    return f"1={tonic}（{tonic}大调）"
+
+
 def sections_to_chordpro(title: str, key: str, tempo: int, sections: list[SectionOut]) -> str:
     lines: list[str] = []
     lines.append(f"{{title:{title}}}")
@@ -57,12 +74,21 @@ def sections_to_alphatex(
 ) -> str:
     parts: list[str] = []
     parts.append(f'\\title "{title}"')
+    do_text = _key_to_do_text(key)
+    if do_text:
+        parts.append(f'\\subtitle "{do_text}"')
     parts.append('\\track "Guitar"')
     parts.append("\\staff {tabs}")
     parts.append("\\tuning (E4 B3 G3 D3 A2 E2)")
     parts.append(f"\\tempo {tempo}")
     if time_signature:
         parts.append(f"\\ts ({time_signature.replace('/', ' ')})")
+    # Display preference:
+    # - 4 bars per system (line), which makes it easy to paginate as 5 systems/page (20 bars).
+    parts.append("\\defaultSystemsLayout 4")
+    # Show chord diagrams inline with bars instead of a big list on the first page.
+    # (The viewer further disables "on top" rendering via settings.)
+    parts.append("\\chordDiagramsInScore true")
     # NOTE:
     # We render jianpu via per-note `lyrics "..."` effects (see rhythm_patterns.py).
     # Emitting an additional global `\lyrics "..."` line can confuse alphaTab's
@@ -91,12 +117,14 @@ def sections_to_alphatex(
             first = min(numeric)
             highest = max(numeric)
             span = highest - first
-            if highest > 5 and first > 0:
+            # If the chord is played in higher positions, show the base fret number
+            # next to the diagram via `firstfret`.
+            if first >= 5:
                 props.append(f"firstfret {first}")
             if first > 0 and sum(1 for x in frets_list if x == str(first)) >= 2 and "0" not in frets_list:
                 props.append(f"barre {first}")
-            if span > 3:
-                props.append("showdiagram false")
+            # With our chord generator constraints, span should always be <= 3 (4-fret box).
+            # Keep diagrams enabled.
 
         prop_text = f" {{{' '.join(props)}}}" if props else ""
         parts.append(f'\\chord ("{shape.name}" {frets}){prop_text}')

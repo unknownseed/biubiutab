@@ -65,6 +65,20 @@ class JobState:
     result: Optional[JobResult]
 
 
+def _clean_title(title: str) -> str:
+    """
+    Normalize user-facing title.
+    - Remove common audio file extensions (.mp3/.wav).
+    """
+    t = (title or "").strip()
+    if not t:
+        return t
+    base, ext = os.path.splitext(t)
+    if ext.lower() in {".mp3", ".wav"} and base.strip():
+        return base.strip()
+    return t
+
+
 def _repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
 
@@ -105,7 +119,7 @@ async def _run_job(job_id: str) -> None:
     job.message = "Loading audio"
 
     try:
-        title = job.title or job.audio_path.name
+        title = _clean_title(job.title or job.audio_path.name)
 
         job.progress = 10
         job.message = "Analyzing tempo/key/chords"
@@ -139,7 +153,7 @@ async def _run_job(job_id: str) -> None:
             jianpu = jianpu[:128]
 
         alphatex = sections_to_alphatex(
-            title=analysis.title,
+            title=_clean_title(analysis.title),
             tempo=analysis.tempo_bpm,
             time_signature=analysis.time_signature,
             key=analysis.key,
@@ -148,7 +162,7 @@ async def _run_job(job_id: str) -> None:
         )
 
         job.result = JobResult(
-            title=analysis.title,
+            title=_clean_title(analysis.title),
             artist=None,
             key=analysis.key,
             tempo=analysis.tempo_bpm,
@@ -183,7 +197,7 @@ async def create_job(req: CreateJobRequest) -> JobResponse:
     storage.mkdir(parents=True, exist_ok=True)
 
     job_id = uuid.uuid4().hex
-    title = (req.title or "").strip() or audio_path.name
+    title = _clean_title((req.title or "").strip() or audio_path.name)
     state = JobState(
         id=job_id,
         status="queued",
