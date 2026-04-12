@@ -129,8 +129,15 @@ function keyToDoText(key: string | undefined): string {
 
 const AlphaTabViewer = forwardRef<
   AlphaTabViewerHandle,
-  { tex: string; filename?: string; titleText?: string; keyText?: string; tempoBpm?: number }
->(function AlphaTabViewer({ tex, filename, titleText, keyText, tempoBpm }, ref) {
+  {
+    tex: string;
+    filename?: string;
+    titleText?: string;
+    keyText?: string;
+    tempoBpm?: number;
+    arrangementText?: string;
+  }
+>(function AlphaTabViewer({ tex, filename, titleText, keyText, tempoBpm, arrangementText }, ref) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const pageRef = useRef<HTMLDivElement | null>(null);
   const apiRef = useRef<{ destroy: () => void; tex: (t: string) => void } | null>(null);
@@ -161,6 +168,22 @@ const AlphaTabViewer = forwardRef<
     // User requirement: show quarter-note tempo marker.
     return `♩ = ${Math.round(tempoBpm)}`;
   }, [tempoBpm]);
+
+  const displaySectionsText = useMemo(() => {
+    const t = (arrangementText || "").replace(/^演奏顺序：\s*/, "").trim();
+    if (!t) return "";
+    const raw = t.split("→").map((s) => s.trim()).filter(Boolean);
+    const seen = new Set<string>();
+    const uniq: string[] = [];
+    for (const item of raw) {
+      const base = item.split("×", 1)[0].trim();
+      if (!base) continue;
+      if (seen.has(base)) continue;
+      seen.add(base);
+      uniq.push(base);
+    }
+    return uniq.length ? `段落：${uniq.join(" / ")}` : "";
+  }, [arrangementText]);
 
   useImperativeHandle(
     ref,
@@ -279,6 +302,7 @@ const AlphaTabViewer = forwardRef<
       api.settings.notation.elements.set(mod.NotationElement.EffectLyrics, true);
       api.settings.notation.elements.set(mod.NotationElement.EffectPickStroke, true);
       api.settings.notation.elements.set(mod.NotationElement.EffectChordNames, true);
+      api.settings.notation.elements.set(mod.NotationElement.EffectText, true);
 
       // Hide the "chord diagram list" that alphaTab usually shows near the score title area.
       // We want diagrams to be inline per bar instead.
@@ -380,6 +404,14 @@ const AlphaTabViewer = forwardRef<
 
           {/* Tuning (below key, aligned left) */}
           <div className="text-sm text-zinc-700">Guitar Standard Tuning</div>
+
+          {/* Play order text (no repeats symbols - lyrics-friendly) */}
+          {arrangementText ? (
+            <div className="text-xs leading-relaxed text-zinc-600">{arrangementText}</div>
+          ) : null}
+          {displaySectionsText ? (
+            <div className="text-xs leading-relaxed text-zinc-600">{displaySectionsText}</div>
+          ) : null}
 
           <div className="mt-2 overflow-auto rounded-md border border-zinc-100 bg-white">
             <div ref={pageRef} />

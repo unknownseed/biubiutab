@@ -1,0 +1,20 @@
+# Build prerequisites (needed for madmom native extensions)
+setuptools>=65,<81
+wheel
+
+# IMPORTANT:
+# - madmom 0.16.1 is not compatible with NumPy 2.x and often needs legacy Cython.
+# - Installing these first avoids "No module named Cython" during metadata generation.
+Cython>=0.29.36,<3
+numpy>=1.23,<1.24
+scipy>=1.8,<1.14
+
+# chord recognition (DL)
+madmom==0.16.1
+
+# NOTE:
+# pip resolves/builds packages BEFORE installing them when using a single requirements file,
+# so madmom's metadata step may still fail to import Cython even though it's listed above.
+# Install in two steps (see instructions from the assistant):
+#   pip install -r requirements-madmom.txt --no-build-isolation --no-deps   (or install Cython/numpy/scipy explicitly)
+#   pip install madmom==0.16.1 --no-build-isolation --no-use-pep517

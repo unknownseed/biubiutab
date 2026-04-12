@@ -32,6 +32,7 @@ type JobResult = {
   tempo: number;
   time_signature: string;
   sections: Section[];
+  arrangement: string;
   alphatex: string;
 };
 
@@ -188,6 +189,7 @@ export default function EditorClient({ jobId }: { jobId: string }) {
               titleText={result.title}
               keyText={result.key}
               tempoBpm={result.tempo}
+              arrangementText={result.arrangement}
             />
           ) : (
             <div className="text-sm text-zinc-600">等待生成结果…</div>

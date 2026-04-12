@@ -21,6 +21,66 @@ class SectionOut:
     chords: list[ChordAt]
 
 
+def build_display_sections_and_arrangement(sections: list[SectionOut]) -> tuple[list[SectionOut], str]:
+    """
+    Future-proof for lyrics:
+    - We DO NOT use repeat symbols (\ro/\rc/\ae), because lyrics would become ambiguous.
+    - Instead, we dedupe repeated sections (Intro/Verse/Chorus/Bridge/Outro) so each unique
+      section is shown once in the sheet.
+    - We output the play order as plain text (arrangement) for the user to follow.
+
+    "Strict" dedupe rule:
+    - sections are considered the same if their per-bar chord sequence is identical.
+    """
+
+    if not sections:
+        return ([], "")
+
+    # Keep the arrangement (play order) as a sequence of base section names.
+    order: list[str] = [(s.name.strip() or "Section") for s in sections]
+
+    # Dedupe for display: show each base section only once (lyrics-friendly),
+    # taking the first occurrence as the canonical content.
+    seen_names: set[str] = set()
+    display_sections: list[SectionOut] = []
+    for s in sections:
+        base = s.name.strip() or "Section"
+        if base in seen_names:
+            continue
+        seen_names.add(base)
+        display_sections.append(
+            SectionOut(
+                name=base,
+                start_bar=s.start_bar,
+                end_bar=s.end_bar,
+                chords=s.chords,
+            )
+        )
+
+    # Compact consecutive duplicates in the order: Verse → Verse → Verse becomes Verse×3.
+    compact: list[str] = []
+    for name in order:
+        if not compact:
+            compact.append(name)
+            continue
+        last = compact[-1]
+        if last == name:
+            # upgrade to ×2 / increment
+            if "×" in last:
+                base_name, cnt = last.split("×", 1)
+                try:
+                    compact[-1] = f"{base_name}×{int(cnt) + 1}"
+                except Exception:
+                    compact[-1] = f"{name}×2"
+            else:
+                compact[-1] = f"{name}×2"
+        else:
+            compact.append(name)
+
+    arrangement = "演奏顺序：" + " → ".join(compact)
+    return display_sections, arrangement
+
+
 def _key_to_do_text(key: str) -> str:
     """
     Convert 'C Major' / 'A Minor' into jianpu style '1=C（C大调）' / '1=A（A小调）'.

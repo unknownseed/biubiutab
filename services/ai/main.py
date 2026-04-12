@@ -9,7 +9,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 from chord_detector import analyze_audio
-from formatters import ChordAt, SectionOut, sections_to_alphatex
+from formatters import ChordAt, SectionOut, build_display_sections_and_arrangement, sections_to_alphatex
 from melody_detector import detect_melody, make_beat_grid, melody_to_jianpu
 from section_detector import detect_sections
 
@@ -50,6 +50,7 @@ class JobResult(BaseModel):
     tempo: int = Field(ge=1)
     time_signature: str
     sections: list[SectionModel]
+    arrangement: str
     alphatex: str
 
 
@@ -152,12 +153,14 @@ async def _run_job(job_id: str) -> None:
         if len(jianpu) > 128:
             jianpu = jianpu[:128]
 
+        display_sections, arrangement = build_display_sections_and_arrangement(section_out)
+
         alphatex = sections_to_alphatex(
             title=_clean_title(analysis.title),
             tempo=analysis.tempo_bpm,
             time_signature=analysis.time_signature,
             key=analysis.key,
-            sections=section_out,
+            sections=display_sections,
             jianpu=jianpu,
         )
 
@@ -174,8 +177,9 @@ async def _run_job(job_id: str) -> None:
                     end_bar=s.end_bar,
                     chords=[ChordModel(chord=c.chord, bar=c.bar, beat=c.beat) for c in s.chords],
                 )
-                for s in section_out
+                for s in display_sections
             ],
+            arrangement=arrangement,
             alphatex=alphatex,
         )
         job.status = "succeeded"

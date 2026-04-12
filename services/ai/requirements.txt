@@ -3,3 +3,9 @@ uvicorn[standard]==0.34.2
 pydantic==2.11.3
 basic-pitch==0.4.0
 librosa==0.11.0
+setuptools>=65,<81
+numpy>=1.23,<1.24
+
+# NOTE:
+# madmom requires native builds on macOS and has stricter build-time requirements.
+# To keep the default install reliable, madmom is moved to requirements-madmom.txt.
