@@ -189,6 +189,7 @@ export default function EditorClient({ jobId }: { jobId: string }) {
               titleText={result.title}
               keyText={result.key}
               tempoBpm={result.tempo}
+              timeSignatureText={result.time_signature}
               arrangementText={result.arrangement}
             />
           ) : (

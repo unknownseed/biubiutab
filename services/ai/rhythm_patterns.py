@@ -128,10 +128,13 @@ def pattern_to_alphatex(
                     effects.append(f'lyrics "{_escape_str(lyric)}"')
         if show_chord_name and first_strum:
             effects.append(f'ch "{_escape_str(chord)}"')
+        # Put strumming direction below chord diagrams by rendering it as a lyrics line.
+        # We keep it ASCII to avoid font issues across platforms (Render/Linux).
+        # alphaTex supports `lyrics <line> "<text>"` per beat.
         if t.direction == "d":
-            effects.append("sd")
+            effects.append('lyrics 1 "v"')
         else:
-            effects.append("su")
+            effects.append('lyrics 1 "^"')
         parts.append(f'0.1 {{ {" ".join(effects)} }}' if effects else "0.1")
         first_strum = False
         pos16 += _duration_to_16th(t.duration)

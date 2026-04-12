@@ -225,7 +225,8 @@ def sections_to_alphatex(
             # This shows above the staff at the start bar.
             section_prefix = ""
             if idx == 0:
-                section_prefix = f'\\section "{_escape_section(s.name)}" '
+                marker = _section_marker_letter(s.name)
+                section_prefix = f'\\section "{_escape_section(marker)}" "{_escape_section(s.name)}" '
             jianpu_beats = _slice_jianpu(jianpu, c.bar * 4, 4) if jianpu else None
             chord = c.chord
             show_chord_name = True
@@ -237,12 +238,6 @@ def sections_to_alphatex(
                 showed_initial_fallback = True
             else:
                 last_display_chord = chord
-
-            # Spacing: section markers should not collide with chord names.
-            # On the first bar of a section, we hide chord names; the chord diagram (inline)
-            # and following bars provide the harmonic context.
-            if idx == 0:
-                show_chord_name = False
 
             line = pattern_to_alphatex(pattern, chord, show_chord_name, label=None, jianpu_beats=jianpu_beats)
             parts.append(section_prefix + line)
@@ -274,3 +269,18 @@ def _bar_to_alphatex(pattern: RhythmPattern, chord: str, label: str | None, jian
 
 def _escape_section(text: str) -> str:
     return (text or "").replace("\\", "\\\\").replace('"', '\\"')
+
+
+def _section_marker_letter(name: str) -> str:
+    n = (name or "").strip().lower()
+    if n.startswith("intro"):
+        return "I"
+    if n.startswith("verse"):
+        return "V"
+    if n.startswith("chorus"):
+        return "C"
+    if n.startswith("bridge"):
+        return "B"
+    if n.startswith("outro"):
+        return "O"
+    return (name[:1] or "S").upper()

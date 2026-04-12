@@ -40,7 +40,9 @@ function sanitizeAlphaTex(tex: string, level: SanitizeLevel): string {
   let out = tex
     // Remove global \lyrics lines (we already emit per-note lyrics effects).
     .split(/\r?\n/)
+    // Also remove global tempo display from score (we show it in the header UI).
     .filter((line) => !/^\s*\\lyrics\b/.test(line))
+    .filter((line) => !/^\s*\\tempo\b/.test(line))
     .join("\n");
 
   if (level === "noInlineLyrics" || level === "noTextEffects") {
@@ -135,11 +137,10 @@ const AlphaTabViewer = forwardRef<
     titleText?: string;
     keyText?: string;
     tempoBpm?: number;
+    timeSignatureText?: string;
     arrangementText?: string;
   }
->(function AlphaTabViewer({ tex, filename, titleText, keyText, tempoBpm, arrangementText }, ref) {
-  // tempoBpm is kept in props for future use (e.g. export metadata), but currently not displayed in header.
-  void tempoBpm;
+>(function AlphaTabViewer({ tex, filename, titleText, keyText, tempoBpm, timeSignatureText, arrangementText }, ref) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const pageRef = useRef<HTMLDivElement | null>(null);
   const apiRef = useRef<{ destroy: () => void; tex: (t: string) => void } | null>(null);
@@ -164,6 +165,16 @@ const AlphaTabViewer = forwardRef<
     return base || "score";
   }, [titleText, filename]);
   const displayKey = useMemo(() => keyToDoText(keyText), [keyText]);
+  const displayTempo = useMemo(() => {
+    if (!tempoBpm || !Number.isFinite(tempoBpm) || tempoBpm <= 0) return "";
+    return `♩ = ${Math.round(tempoBpm)}`;
+  }, [tempoBpm]);
+  const displayTimeSignature = useMemo(() => {
+    const ts = (timeSignatureText || "").trim();
+    if (!ts) return "";
+    // Expected formats: "4/4", "3/4", "6/8"
+    return ts.includes("/") ? `${ts}拍` : ts;
+  }, [timeSignatureText]);
 
   useImperativeHandle(
     ref,
@@ -261,6 +272,8 @@ const AlphaTabViewer = forwardRef<
         display: {
           scale: 1.0,
           layoutMode: mod.LayoutMode.Page,
+          // Show TAB only (no standard score), and render rhythm directly on TAB.
+          staveProfile: mod.StaveProfile.Tab,
           barsPerRow: BARS_PER_ROW,
           startBar: pageStartBar,
           barCount: BARS_PER_PAGE,
@@ -282,9 +295,34 @@ const AlphaTabViewer = forwardRef<
       api.settings.notation.elements.set(mod.NotationElement.EffectLyrics, true);
       // Enable section markers added via alphaTex `\section`.
       api.settings.notation.elements.set(mod.NotationElement.EffectMarker, true);
-      api.settings.notation.elements.set(mod.NotationElement.EffectPickStroke, true);
+      // We render strumming direction as lyrics line (below chord diagrams), not as pick-stroke glyphs.
+      api.settings.notation.elements.set(mod.NotationElement.EffectPickStroke, false);
       api.settings.notation.elements.set(mod.NotationElement.EffectChordNames, true);
+      // Hide tempo/time-signature rendering inside the score (we show them in the header).
+      api.settings.notation.elements.set(mod.NotationElement.EffectTempo, false);
+      api.settings.notation.elements.set(mod.NotationElement.StandardNotationTimeSignature, false);
+      api.settings.notation.elements.set(mod.NotationElement.GuitarTabsTimeSignature, false);
+      api.settings.notation.elements.set(mod.NotationElement.SlashTimeSignature, false);
+      api.settings.notation.elements.set(mod.NotationElement.NumberedTimeSignature, false);
       // Section markers are rendered via `\section` bar metadata, no need for beat text labels.
+
+      // Spacing tweaks:
+      // - Make section markers slightly smaller to reduce collision with chord names.
+      const markerFont = api.settings.display.resources.elementFonts.get(mod.NotationElement.EffectMarker);
+      if (markerFont) {
+        api.settings.display.resources.elementFonts.set(mod.NotationElement.EffectMarker, markerFont.withSize(11));
+      }
+      const chordNameFont = api.settings.display.resources.elementFonts.get(mod.NotationElement.EffectChordNames);
+      if (chordNameFont) {
+        api.settings.display.resources.elementFonts.set(mod.NotationElement.EffectChordNames, chordNameFont.withSize(11));
+      }
+      // Make chord diagrams a bit more compact (visually closer to a 4-fret box).
+      const es = api.settings.display.resources.engravingSettings;
+      es.chordDiagramFretHeight *= 0.7;
+      es.chordDiagramFretSpacing *= 0.7;
+      es.chordDiagramNutHeight *= 0.7;
+      es.chordDiagramPaddingY *= 0.8;
+      es.chordDiagramStringSpacing *= 0.85;
 
       // Hide the "chord diagram list" that alphaTab usually shows near the score title area.
       // We want diagrams to be inline per bar instead.
@@ -380,7 +418,11 @@ const AlphaTabViewer = forwardRef<
 
           {/* Key + Tempo (same row) */}
           <div className="flex items-start justify-between gap-6">
-            <div className="text-sm text-zinc-700">{displayKey}</div>
+            <div className="flex items-center gap-3 text-sm text-zinc-700">
+              <div>{displayKey}</div>
+              {displayTimeSignature ? <div className="whitespace-nowrap text-zinc-600">{displayTimeSignature}</div> : null}
+              {displayTempo ? <div className="whitespace-nowrap text-zinc-600">{displayTempo}</div> : null}
+            </div>
           </div>
 
           {/* Tuning (below key, aligned left) */}
