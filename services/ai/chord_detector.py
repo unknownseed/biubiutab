@@ -1,10 +1,27 @@
+"""
+和弦检测器（默认 madmom，保留 librosa 旧版作为回归/降级）
+
+- 新版：madmom (DeepChroma + CRF) -> 更高准确度
+- 旧版：librosa chroma 模板匹配 -> 作为 fallback（见 chord_detector_librosa.py）
+"""
+
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass
-from typing import Literal
+from typing import Literal, Optional
 
 import librosa
 import numpy as np
+
+import chord_detector_librosa as _legacy
+
+try:
+    from chord_detector_madmom import detect_chords_madmom, simplify_chord_name
+
+    _HAVE_MADMOM = True
+except Exception:
+    _HAVE_MADMOM = False
 
 
 PitchClassName = Literal["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"]
@@ -30,113 +47,40 @@ class AudioAnalysis:
 
 
 def _safe_int_bpm(x: float) -> int:
-    if not isinstance(x, (float, int)) or x != x:
-        return 120
-    v = int(round(float(x)))
-    if v < 50:
-        return 50
-    if v > 220:
-        return 220
-    if v > 120 and 60 <= (v // 2) <= 120:
-        return v // 2
-    if v < 60 and 60 <= (v * 2) <= 160:
-        return v * 2
-    return v
+    return _legacy._safe_int_bpm(x)
 
 
 def detect_tempo(y: np.ndarray, sr: int) -> tuple[int, np.ndarray]:
-    tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
-    beat_times = librosa.frames_to_time(beats, sr=sr)
-    return _safe_int_bpm(float(tempo)), beat_times
-
-
-def _major_template() -> np.ndarray:
-    t = np.zeros(12, dtype=np.float32)
-    t[[0, 4, 7]] = 1.0
-    return t
-
-
-def _minor_template() -> np.ndarray:
-    t = np.zeros(12, dtype=np.float32)
-    t[[0, 3, 7]] = 1.0
-    return t
+    return _legacy.detect_tempo(y, sr)
 
 
 def _normalize(v: np.ndarray) -> np.ndarray:
-    s = float(np.linalg.norm(v) + 1e-9)
-    return (v / s).astype(np.float32)
+    return _legacy._normalize(v)
 
 
 def detect_key_from_chroma(chroma_mean: np.ndarray) -> str:
-    chroma = _normalize(chroma_mean.astype(np.float32))
-
-    major_profile = _normalize(
-        np.asarray([6.35, 2.23, 3.48, 2.33, 4.38, 4.09, 2.52, 5.19, 2.39, 3.66, 2.29, 2.88], dtype=np.float32)
-    )
-    minor_profile = _normalize(
-        np.asarray([6.33, 2.68, 3.52, 5.38, 2.6, 3.53, 2.54, 4.75, 3.98, 2.69, 3.34, 3.17], dtype=np.float32)
-    )
-
-    best_score = -1.0
-    best_key = "C Major"
-    for root in range(12):
-        maj_rot = np.roll(major_profile, root)
-        min_rot = np.roll(minor_profile, root)
-        maj_score = float(np.dot(chroma, maj_rot))
-        min_score = float(np.dot(chroma, min_rot))
-        if maj_score > best_score:
-            best_score = maj_score
-            best_key = f"{_PITCH_CLASSES[root]} Major"
-        if min_score > best_score:
-            best_score = min_score
-            best_key = f"{_PITCH_CLASSES[root]} Minor"
-    return best_key
+    return _legacy.detect_key_from_chroma(chroma_mean)
 
 
-_CHORD_QUALITIES: list[tuple[str, list[int], float]] = [
-    ("", [0, 4, 7], 0.0),
-    ("m", [0, 3, 7], 0.0),
-    ("7", [0, 4, 7, 10], 0.03),
-    ("maj7", [0, 4, 7, 11], 0.03),
-    ("m7", [0, 3, 7, 10], 0.03),
-    ("sus2", [0, 2, 7], 0.02),
-    ("sus4", [0, 5, 7], 0.02),
-    ("dim", [0, 3, 6], 0.02),
-    ("aug", [0, 4, 8], 0.02),
-    ("add9", [0, 2, 4, 7], 0.05),
-]
-
-
-def _build_quality_templates() -> list[tuple[str, np.ndarray, float]]:
-    out: list[tuple[str, np.ndarray, float]] = []
-    for suffix, intervals, penalty in _CHORD_QUALITIES:
-        t = np.zeros(12, dtype=np.float32)
-        for i in intervals:
-            t[i % 12] = 1.0
-        out.append((suffix, _normalize(t), penalty))
-    return out
-
-
-_QUALITY_TEMPLATES = _build_quality_templates()
-
-
-def _label(root: int, suffix: str) -> str:
-    n = _PITCH_CLASSES[root]
-    return n if suffix == "" else f"{n}{suffix}"
-
-
-def detect_chords(
-    y: np.ndarray,
-    sr: int,
-    beat_times: np.ndarray,
-    beats_per_bar: int = 4,
-    chroma_hop_length: int = 512,
-) -> list[ChordEvent]:
-    if beat_times.size < 2:
+def _detect_chords_madmom_to_bars(audio_path: str, beat_times: np.ndarray, beats_per_bar: int) -> list[ChordEvent]:
+    """
+    Run madmom on the whole track (segment-level), then map to bar-level chords by bar midpoint.
+    """
+    segs = detect_chords_madmom(audio_path)
+    if not segs or beat_times.size < 2:
         return []
 
-    chroma = librosa.feature.chroma_cqt(y=y, sr=sr, hop_length=chroma_hop_length)
-    frame_times = librosa.frames_to_time(np.arange(chroma.shape[1]), sr=sr, hop_length=chroma_hop_length)
+    # Convert segments to arrays for fast lookup (start/end/label)
+    seg_starts = [float(s["time"]) for s in segs]
+    seg_ends = [float(s.get("end", float(s["time"]) + float(s.get("duration", 0.0)))) for s in segs]
+    seg_labels = [simplify_chord_name(str(s["chord"])) for s in segs]
+
+    # Precompute chroma for confidence estimation (single pass).
+    y, sr = librosa.load(audio_path, sr=None, mono=True)
+    chroma = librosa.feature.chroma_cqt(y=y, sr=sr, hop_length=512)
+    frame_times = librosa.frames_to_time(np.arange(chroma.shape[1]), sr=sr, hop_length=512)
+    conf_th = float(os.environ.get("CHORD_MIN_CONFIDENCE", "0.28"))
+    quality_delta = float(os.environ.get("CHORD_QUALITY_DELTA", "0.03"))
 
     events: list[ChordEvent] = []
     beat_count = beat_times.size
@@ -144,6 +88,7 @@ def detect_chords(
     if bar_count < 1:
         bar_count = 1
 
+    seg_idx = 0
     for bar in range(bar_count):
         start_beat = bar * beats_per_bar
         end_beat = min(start_beat + beats_per_bar, beat_count - 1)
@@ -152,28 +97,142 @@ def detect_chords(
         if end_t <= start_t:
             continue
 
-        idx = np.where((frame_times >= start_t) & (frame_times < end_t))[0]
-        if idx.size == 0:
-            continue
+        mid = (start_t + end_t) / 2.0
+        while seg_idx + 1 < len(seg_starts) and seg_starts[seg_idx + 1] <= mid:
+            seg_idx += 1
+        # ensure segment covers mid (if gaps, advance)
+        while seg_idx + 1 < len(seg_starts) and seg_ends[seg_idx] <= mid:
+            seg_idx += 1
 
-        bar_chroma = np.mean(chroma[:, idx], axis=1)
-        bar_chroma = _normalize(bar_chroma)
+        chord = seg_labels[seg_idx] if 0 <= seg_idx < len(seg_labels) else "N"
+        # madmom may output "N" / "NoChord" variants; normalize to "N"
+        if chord.lower() in {"n", "no_chord", "nochord", "none"}:
+            chord = "N"
 
-        best_score = -1.0
-        best_label = "N"
-        for root in range(12):
-            for suffix, template, penalty in _QUALITY_TEMPLATES:
-                score = float(np.dot(bar_chroma, np.roll(template, root))) - penalty
-                if score > best_score:
-                    best_score = score
-                    best_label = _label(root, suffix)
+        # Confidence gating + chord quality refinement (lyrics-friendly):
+        # - refine triads to 7th chords if the chroma evidence is strong enough
+        # - if confidence is below threshold, output 'N' to avoid incorrect chords.
+        if chord != "N":
+            try:
+                chord, conf = _refine_and_score_bar_chord(chroma, frame_times, start_t, end_t, chord, quality_delta)
+                if conf < conf_th:
+                    chord = "N"
+            except Exception:
+                # On any failure, keep chord (do not block the pipeline).
+                pass
 
-        if best_score < 0.25:
-            best_label = "N"
-
-        events.append(ChordEvent(start_sec=start_t, end_sec=end_t, chord=best_label))
+        events.append(ChordEvent(start_sec=start_t, end_sec=end_t, chord=chord))
 
     return events
+
+
+def _bar_chroma_slice(chroma: np.ndarray, frame_times: np.ndarray, start_t: float, end_t: float) -> np.ndarray | None:
+    idx = np.where((frame_times >= start_t) & (frame_times < end_t))[0]
+    if idx.size == 0:
+        return None
+    v = np.mean(chroma[:, idx], axis=1)
+    return _normalize(v)
+
+
+def _score_template(bar_chroma: np.ndarray, root_idx: int, intervals: list[int]) -> float:
+    t = np.zeros(12, dtype=np.float32)
+    for i in intervals:
+        t[i % 12] = 1.0
+    t = _normalize(t)
+    return float(np.dot(bar_chroma, np.roll(t, root_idx)))
+
+
+def _refine_and_score_bar_chord(
+    chroma: np.ndarray,
+    frame_times: np.ndarray,
+    start_t: float,
+    end_t: float,
+    chord: str,
+    quality_delta: float,
+) -> tuple[str, float]:
+    """
+    Estimate confidence and (optionally) refine chord quality.
+
+    Why:
+    - madmom maj/min model mostly outputs triads (C / Cm).
+    - Users want 7th chords (C7 / Cmaj7 / Cm7).
+    - We refine only when evidence is strong, otherwise keep triad.
+
+    Returns:
+        (refined_chord, score)
+    """
+    bar_chroma = _bar_chroma_slice(chroma, frame_times, start_t, end_t)
+    if bar_chroma is None:
+        return chord, 0.0
+
+    # Parse chord: "C" or "Cm"
+    root = chord
+    minor = False
+    if chord.endswith("m") and len(chord) > 1:
+        root = chord[:-1]
+        minor = True
+    if root not in _PITCH_CLASSES:
+        return chord, 0.0
+    root_idx = _PITCH_CLASSES.index(root)
+
+    # Triad base score
+    base_intervals = [0, 3, 7] if minor else [0, 4, 7]
+    base_score = _score_template(bar_chroma, root_idx, base_intervals)
+
+    best = (chord, base_score)
+
+    # Candidate chord qualities to try.
+    # NOTE: we keep this conservative: only upgrade if the evidence is sufficiently stronger.
+    candidates: list[tuple[str, list[int]]] = []
+
+    # Common extensions
+    if minor:
+        candidates.append((f"{root}m7", [0, 3, 7, 10]))
+    else:
+        candidates.append((f"{root}7", [0, 4, 7, 10]))
+        candidates.append((f"{root}maj7", [0, 4, 7, 11]))
+        candidates.append((f"{root}add9", [0, 2, 4, 7]))
+
+    # Suspended chords (root-based, not "minor suspended")
+    candidates.append((f"{root}sus2", [0, 2, 7]))
+    candidates.append((f"{root}sus4", [0, 5, 7]))
+
+    # Diminished / Augmented
+    candidates.append((f"{root}dim", [0, 3, 6]))
+    candidates.append((f"{root}aug", [0, 4, 8]))
+
+    for label, intervals in candidates:
+        s = _score_template(bar_chroma, root_idx, intervals)
+        if s >= best[1] + quality_delta:
+            best = (label, s)
+
+    return best
+
+
+def detect_chords(
+    y: np.ndarray,
+    sr: int,
+    beat_times: np.ndarray,
+    beats_per_bar: int = 4,
+    chroma_hop_length: int = 512,
+    *,
+    audio_path: Optional[str] = None,
+) -> list[ChordEvent]:
+    """
+    Detect bar-level chords.
+
+    Selection:
+    - If CHORD_DETECTOR=librosa -> always use legacy
+    - Else (default): use madmom if available AND audio_path is provided; fallback to legacy.
+    """
+    prefer = (os.environ.get("CHORD_DETECTOR") or "madmom").lower().strip()
+    if prefer != "librosa" and _HAVE_MADMOM and audio_path:
+        try:
+            return _detect_chords_madmom_to_bars(audio_path, beat_times, beats_per_bar)
+        except Exception:
+            # fallback to legacy
+            pass
+    return _legacy.detect_chords(y, sr, beat_times, beats_per_bar=beats_per_bar, chroma_hop_length=chroma_hop_length)
 
 
 def analyze_audio(audio_path: str, title: str) -> AudioAnalysis:
@@ -184,7 +243,7 @@ def analyze_audio(audio_path: str, title: str) -> AudioAnalysis:
     if beat_times.size < 2:
         beat_times = np.asarray([0.0, float(librosa.get_duration(y=y, sr=sr))], dtype=np.float32)
 
-    chords = detect_chords(y, sr, beat_times, beats_per_bar=4)
+    chords = detect_chords(y, sr, beat_times, beats_per_bar=4, audio_path=audio_path)
     bar_chords = [c.chord for c in chords]
 
     chroma = librosa.feature.chroma_cqt(y=y, sr=sr)

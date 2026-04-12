@@ -98,6 +98,20 @@ def _key_to_do_text(key: str) -> str:
     return f"1={tonic}（{tonic}大调）"
 
 
+def _fallback_chord_from_key(key: str) -> str:
+    """
+    If chord detection is uncertain ('N'), we show a playable default:
+    - Use tonic chord from detected key: C Major -> C, A Minor -> Am.
+    """
+    k = (key or "").strip()
+    if not k:
+        return "C"
+    parts = k.split()
+    tonic = parts[0] if parts else "C"
+    mode = parts[1].lower() if len(parts) > 1 else ""
+    return f"{tonic}m" if mode == "minor" else tonic
+
+
 def sections_to_chordpro(title: str, key: str, tempo: int, sections: list[SectionOut]) -> str:
     lines: list[str] = []
     lines.append(f"{{title:{title}}}")
@@ -155,8 +169,15 @@ def sections_to_alphatex(
     # lyrics layout in some scenarios and trigger runtime rendering errors.
     parts.append("")
 
+    # Chord diagrams to include:
+    # - all detected chords (excluding N)
+    # - plus a fallback tonic chord (used when uncertain bars are rendered as "hold previous")
     uniq: list[str] = []
     seen: set[str] = set()
+    tonic_fallback = _fallback_chord_from_key(key)
+    if tonic_fallback and tonic_fallback != "N":
+        seen.add(tonic_fallback)
+        uniq.append(tonic_fallback)
     for s in sections:
         for c in s.chords:
             if c.chord == "N":
@@ -194,13 +215,37 @@ def sections_to_alphatex(
     pattern = select_pattern(tempo)
 
     is_first_section = True
+    # If a bar is 'N', we interpret it as "hold previous chord" for display,
+    # and as a last resort (at the beginning) use the tonic chord from key.
+    last_display_chord = tonic_fallback
+    showed_initial_fallback = False
     for s in sections:
         for idx, c in enumerate(s.chords):
-            label: str | None = None
+            # Put section label onto the sheet as proper alphaTex section marker.
+            # This shows above the staff at the start bar.
+            section_prefix = ""
             if idx == 0:
-                label = f"{s.name} · Key: {key} · {time_signature}" if is_first_section else s.name
+                section_prefix = f'\\section "{_escape_section(s.name)}" '
             jianpu_beats = _slice_jianpu(jianpu, c.bar * 4, 4) if jianpu else None
-            parts.append(_bar_to_alphatex(pattern, c.chord, label, jianpu_beats))
+            chord = c.chord
+            show_chord_name = True
+            if chord == "N":
+                # Hold previous chord for user playability.
+                chord = last_display_chord or tonic_fallback
+                # Only show the chord name on the first time we need the fallback.
+                show_chord_name = not showed_initial_fallback
+                showed_initial_fallback = True
+            else:
+                last_display_chord = chord
+
+            # Spacing: section markers should not collide with chord names.
+            # On the first bar of a section, we hide chord names; the chord diagram (inline)
+            # and following bars provide the harmonic context.
+            if idx == 0:
+                show_chord_name = False
+
+            line = pattern_to_alphatex(pattern, chord, show_chord_name, label=None, jianpu_beats=jianpu_beats)
+            parts.append(section_prefix + line)
         is_first_section = False
         parts.append("")
 
@@ -225,3 +270,7 @@ def _slice_jianpu(jianpu: list[str], start: int, length: int) -> list[str]:
 def _bar_to_alphatex(pattern: RhythmPattern, chord: str, label: str | None, jianpu_beats: list[str] | None) -> str:
     show_chord_name = chord != "N"
     return pattern_to_alphatex(pattern, chord, show_chord_name, label=label, jianpu_beats=jianpu_beats)
+
+
+def _escape_section(text: str) -> str:
+    return (text or "").replace("\\", "\\\\").replace('"', '\\"')

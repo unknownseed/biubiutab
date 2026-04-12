@@ -138,6 +138,8 @@ const AlphaTabViewer = forwardRef<
     arrangementText?: string;
   }
 >(function AlphaTabViewer({ tex, filename, titleText, keyText, tempoBpm, arrangementText }, ref) {
+  // tempoBpm is kept in props for future use (e.g. export metadata), but currently not displayed in header.
+  void tempoBpm;
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const pageRef = useRef<HTMLDivElement | null>(null);
   const apiRef = useRef<{ destroy: () => void; tex: (t: string) => void } | null>(null);
@@ -162,28 +164,6 @@ const AlphaTabViewer = forwardRef<
     return base || "score";
   }, [titleText, filename]);
   const displayKey = useMemo(() => keyToDoText(keyText), [keyText]);
-  const displayTempo = useMemo(() => {
-    if (!tempoBpm || !Number.isFinite(tempoBpm) || tempoBpm <= 0) return "";
-    // Use a music symbol instead of plain text, to match the common tempo marker style.
-    // User requirement: show quarter-note tempo marker.
-    return `♩ = ${Math.round(tempoBpm)}`;
-  }, [tempoBpm]);
-
-  const displaySectionsText = useMemo(() => {
-    const t = (arrangementText || "").replace(/^演奏顺序：\s*/, "").trim();
-    if (!t) return "";
-    const raw = t.split("→").map((s) => s.trim()).filter(Boolean);
-    const seen = new Set<string>();
-    const uniq: string[] = [];
-    for (const item of raw) {
-      const base = item.split("×", 1)[0].trim();
-      if (!base) continue;
-      if (seen.has(base)) continue;
-      seen.add(base);
-      uniq.push(base);
-    }
-    return uniq.length ? `段落：${uniq.join(" / ")}` : "";
-  }, [arrangementText]);
 
   useImperativeHandle(
     ref,
@@ -300,9 +280,11 @@ const AlphaTabViewer = forwardRef<
       api.settings.notation.elements.set(mod.NotationElement.GuitarTuning, false);
 
       api.settings.notation.elements.set(mod.NotationElement.EffectLyrics, true);
+      // Enable section markers added via alphaTex `\section`.
+      api.settings.notation.elements.set(mod.NotationElement.EffectMarker, true);
       api.settings.notation.elements.set(mod.NotationElement.EffectPickStroke, true);
       api.settings.notation.elements.set(mod.NotationElement.EffectChordNames, true);
-      api.settings.notation.elements.set(mod.NotationElement.EffectText, true);
+      // Section markers are rendered via `\section` bar metadata, no need for beat text labels.
 
       // Hide the "chord diagram list" that alphaTab usually shows near the score title area.
       // We want diagrams to be inline per bar instead.
@@ -399,7 +381,6 @@ const AlphaTabViewer = forwardRef<
           {/* Key + Tempo (same row) */}
           <div className="flex items-start justify-between gap-6">
             <div className="text-sm text-zinc-700">{displayKey}</div>
-            {displayTempo ? <div className="whitespace-nowrap text-sm text-zinc-700">{displayTempo}</div> : null}
           </div>
 
           {/* Tuning (below key, aligned left) */}
@@ -408,9 +389,6 @@ const AlphaTabViewer = forwardRef<
           {/* Play order text (no repeats symbols - lyrics-friendly) */}
           {arrangementText ? (
             <div className="text-xs leading-relaxed text-zinc-600">{arrangementText}</div>
-          ) : null}
-          {displaySectionsText ? (
-            <div className="text-xs leading-relaxed text-zinc-600">{displaySectionsText}</div>
           ) : null}
 
           <div className="mt-2 overflow-auto rounded-md border border-zinc-100 bg-white">
