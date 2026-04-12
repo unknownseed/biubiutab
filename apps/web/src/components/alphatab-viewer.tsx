@@ -45,6 +45,14 @@ function sanitizeAlphaTex(tex: string, level: SanitizeLevel): string {
     .filter((line) => !/^\s*\\tempo\b/.test(line))
     .join("\n");
 
+  // GLOBAL FIX: Remove `slashed` entirely. In AlphaTab (1.8.2), the `slashed` effect
+  // has a layout bug that causes a fatal `bottomY` crash when `IntersectionObserver`
+  // triggers a re-render. Removing it allows the score to render smoothly without
+  // crashing or resorting to severe downgrades that hide chord diagrams.
+  out = out.replace(/\bslashed\b/g, "");
+
+  if (level === "normal") return out;
+
   if (level === "noInlineLyrics" || level === "noTextEffects") {
     // Remove ALL per-note lyrics effects inside `{ ... }`.
     // This strips `lyrics "..."`, `lyrics 1 "..."`, and `lyrics 2 "..."`.
@@ -62,17 +70,18 @@ function sanitizeAlphaTex(tex: string, level: SanitizeLevel): string {
   }
 
   if (level === "bareNotes") {
-    // As a last resort, keep only the minimal subset of per-note effects needed
-    // for a readable rhythm: `slashed` + direction.
-    // This avoids stripping `slashed` (otherwise the tab becomes repeated 0-fret notes,
-    // which looks "wrong" to users).
+    // As a last resort, keep only the minimal subset of per-note effects.
+    // We prioritize keeping `ch` (chord diagrams) over `slashed`, because the combination
+    // of `slashed` + `ch` is known to trigger AlphaTab layout crashes.
     out = out
       .replace(/\{\s*([^}]*)\}/g, (_m, inner: string) => {
         const keep: string[] = [];
-        if (/\bslashed\b/.test(inner)) keep.push("slashed");
         // Keep stroke direction if present
         if (/\bsd\b/.test(inner)) keep.push("sd");
         if (/\bsu\b/.test(inner)) keep.push("su");
+        // Keep chord name label if present
+        const chMatch = inner.match(/\bch\s+"([^"\\]|\\.)*"/);
+        if (chMatch) keep.push(chMatch[0]);
         return keep.length ? `{ ${keep.join(" ")} }` : "";
       })
       .replace(/\s{2,}/g, " ")
