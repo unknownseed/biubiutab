@@ -88,6 +88,8 @@ def _render_bar_tokens_8th(
     beat_sec: float,
     beats_per_bar: int,
     chord_name: str,
+    jianpu_beats: list[str] | None = None,
+    lyrics_beats: list[str | None] | None = None,
 ) -> tuple[str, int]:
     """
     Render a single bar as 8th-note tokens.
@@ -99,78 +101,169 @@ def _render_bar_tokens_8th(
 
     # 8th grid => 2 slots per beat
     slots = beats_per_bar * 2
+    pending_chord = chord_name if chord_name and chord_name != "N" else None
+
+    pending_lyric: str | None = None
+    pending_text: str | None = None
+
     for i in range(slots):
         t0 = bar_start + i * (beat_sec / 2.0)
         t1 = bar_start + (i + 1) * (beat_sec / 2.0)
         n = _best_note_for_window(events, t0, t1)
-        if n is None:
-            tokens.append("r")
-            continue
-        pos = _choose_position(n.pitch, prev_pos)
+        
+        pos = None
+        if n is not None:
+            pos = _choose_position(n.pitch, prev_pos)
+
+        if i % 2 == 0:
+            beat_idx = i // 2
+            if jianpu_beats and 0 <= beat_idx < len(jianpu_beats):
+                l = jianpu_beats[beat_idx]
+                if l and l != "-":
+                    if pending_lyric:
+                        pending_lyric += f" {l}"
+                    else:
+                        pending_lyric = l
+            if lyrics_beats and 0 <= beat_idx < len(lyrics_beats):
+                txt = lyrics_beats[beat_idx]
+                if txt:
+                    if pending_text:
+                        pending_text += f" {txt}"
+                    else:
+                        pending_text = txt
+
         if pos is None:
             tokens.append("r")
             continue
+
         prev_pos = pos
         note_count += 1
+        base_token = f"{pos.fret}.{pos.string}"
 
-        if i == 0 and chord_name and chord_name != "N":
-            tokens.append(f'{pos.fret}.{pos.string} {{ ch "{_escape(chord_name)}" }}')
+        effects = []
+        if pending_chord:
+            effects.append(f'ch "{_escape(pending_chord)}"')
+            pending_chord = None
+
+        esc_lyric = _escape(pending_lyric) if pending_lyric else ""
+        if esc_lyric:
+            effects.append(f'lyrics "{esc_lyric}"')
+        pending_lyric = None
+
+        esc_text = _escape(pending_text) if pending_text else ""
+        if esc_text:
+            if not esc_lyric:
+                effects.append('lyrics "\xa0"')
+            effects.append('lyrics 1 "\xa0"')
+            effects.append(f'lyrics 2 "{esc_text}"')
+        pending_text = None
+
+        if effects:
+            tokens.append(f"{base_token} {{ {' '.join(effects)} }}")
         else:
-            tokens.append(f"{pos.fret}.{pos.string}")
+            tokens.append(base_token)
 
     return (":8 " + " ".join(tokens) + " |", note_count)
 
 
 def _escape(s: str) -> str:
-    return (s or "").replace("\\", "\\\\").replace('"', '\\"')
+    return (s or "").replace("\\", "\\\\").replace('"', '\\"').replace("\r", " ").replace("\n", " ").strip()
 
 
-def _arpeggio_bar_from_chord(chord: str, beats_per_bar: int) -> str:
+def _arpeggio_bar_from_chord(
+    chord: str,
+    beats_per_bar: int,
+    jianpu_beats: list[str] | None = None,
+    lyrics_beats: list[str | None] | None = None,
+) -> str:
     """
     Fallback: use chord fingering to generate a simple 8th-note arpeggio.
     """
     shape = chord_shape_for_label(chord) if chord and chord != "N" else None
-    # Default to a "hold" on a safe middle string if no shape.
-    if not shape:
-        return f':8 0.3 {{ ch "{_escape(chord or "N")}" }} ' + " ".join(["r"] * (beats_per_bar * 2 - 1)) + " |"
-
-    frets_high_to_low = shape.frets_high_to_low  # len=6, highE..lowE
-    # Convert to (string,fret) pairs, prefer bass->treble for arpeggio
+    
     available: list[TabNote] = []
-    for i, f in enumerate(frets_high_to_low, start=1):
-        string = i  # 1..6 (1=high E)
-        if f == "x":
-            continue
-        try:
-            fret = int(f)
-        except Exception:
-            continue
-        available.append(TabNote(string=string, fret=fret))
+    if shape:
+        frets_high_to_low = shape.frets_high_to_low  # len=6, highE..lowE
+        for i, f in enumerate(frets_high_to_low, start=1):
+            string = i
+            if f != "x":
+                try:
+                    available.append(TabNote(string=string, fret=int(f)))
+                except Exception:
+                    pass
 
-    if not available:
-        return f':8 0.3 {{ ch "{_escape(chord)}" }} ' + " ".join(["r"] * (beats_per_bar * 2 - 1)) + " |"
-
-    # Arpeggio string order (bass-ish -> treble-ish), then bounce back.
-    # We try to use strings 6..2 if present; otherwise whatever is available.
-    preferred_order = [6, 5, 4, 3, 2, 3, 4, 5]
-    # Build lookup
-    by_string = {n.string: n for n in available}
     seq: list[TabNote] = []
-    for s in preferred_order:
-        if s in by_string:
-            seq.append(by_string[s])
-    if not seq:
-        seq = available
+    if available:
+        preferred_order = [6, 5, 4, 3, 2, 3, 4, 5]
+        by_string = {n.string: n for n in available}
+        for s in preferred_order:
+            if s in by_string:
+                seq.append(by_string[s])
+        if not seq:
+            seq = available
+    else:
+        # Default to a "hold" on a safe middle string if no shape.
+        seq = [TabNote(string=3, fret=0)]
+        available = []
 
-    # Ensure length matches 8th slots
     slots = beats_per_bar * 2
     out_notes = [seq[i % len(seq)] for i in range(slots)]
+    if not available:
+        # if we fallback to the default hold, we only play the first note
+        out_notes = [seq[0]] + [None] * (slots - 1)
+
     tokens: list[str] = []
+    pending_chord = chord if chord and chord != "N" else None
+    pending_lyric: str | None = None
+    pending_text: str | None = None
+
     for i, pos in enumerate(out_notes):
-        if i == 0:
-            tokens.append(f'{pos.fret}.{pos.string} {{ ch "{_escape(chord)}" }}')
+        if i % 2 == 0:
+            beat_idx = i // 2
+            if jianpu_beats and 0 <= beat_idx < len(jianpu_beats):
+                l = jianpu_beats[beat_idx]
+                if l and l != "-":
+                    if pending_lyric:
+                        pending_lyric += f" {l}"
+                    else:
+                        pending_lyric = l
+            if lyrics_beats and 0 <= beat_idx < len(lyrics_beats):
+                txt = lyrics_beats[beat_idx]
+                if txt:
+                    if pending_text:
+                        pending_text += f" {txt}"
+                    else:
+                        pending_text = txt
+
+        if pos is None:
+            tokens.append("r")
+            continue
+
+        base_token = f"{pos.fret}.{pos.string}"
+            
+        effects = []
+        if pending_chord:
+            effects.append(f'ch "{_escape(pending_chord)}"')
+            pending_chord = None
+
+        esc_lyric = _escape(pending_lyric) if pending_lyric else ""
+        if esc_lyric:
+            effects.append(f'lyrics "{esc_lyric}"')
+        pending_lyric = None
+
+        esc_text = _escape(pending_text) if pending_text else ""
+        if esc_text:
+            if not esc_lyric:
+                effects.append('lyrics "\xa0"')
+            effects.append('lyrics 1 "\xa0"')
+            effects.append(f'lyrics 2 "{esc_text}"')
+        pending_text = None
+
+        if effects:
+            tokens.append(f"{base_token} {{ {' '.join(effects)} }}")
         else:
-            tokens.append(f"{pos.fret}.{pos.string}")
+            tokens.append(base_token)
+
     return ":8 " + " ".join(tokens) + " |"
 
 
@@ -183,6 +276,8 @@ def build_intro_bar_overrides(
     *,
     bars: int = 8,
     min_notes_per_bar: int = 2,
+    jianpu_beats: list[str] | None = None,
+    lyrics_beats: list[str | None] | None = None,
 ) -> Dict[int, str]:
     """
     Returns a map of {bar_index: alphatex_bar_line} for the first `bars` bars.
@@ -197,9 +292,17 @@ def build_intro_bar_overrides(
     for bar in range(min(bars, max(0, len(bar_chords)) or bars)):
         chord = bar_chords[bar] if 0 <= bar < len(bar_chords) else "N"
         bar_start = float(bar) * beats_per_bar * beat_sec
-        line, note_count = _render_bar_tokens_8th(events, bar_start, beat_sec, beats_per_bar, chord)
+        
+        j_beats = None
+        if jianpu_beats:
+            j_beats = jianpu_beats[bar * beats_per_bar : (bar + 1) * beats_per_bar]
+        l_beats = None
+        if lyrics_beats:
+            l_beats = lyrics_beats[bar * beats_per_bar : (bar + 1) * beats_per_bar]
+
+        line, note_count = _render_bar_tokens_8th(events, bar_start, beat_sec, beats_per_bar, chord, j_beats, l_beats)
         if note_count < min_notes_per_bar:
-            line = _arpeggio_bar_from_chord(chord, beats_per_bar)
+            line = _arpeggio_bar_from_chord(chord, beats_per_bar, j_beats, l_beats)
         overrides[bar] = line
     return overrides
 

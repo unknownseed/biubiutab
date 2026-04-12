@@ -138,16 +138,39 @@ def pattern_to_alphatex(
     show_chord_name: bool,
     label: str | None = None,
     jianpu_beats: list[str] | None = None,
+    lyrics_beats: list[str | None] | None = None,
 ) -> str:
     parts: list[str] = []
     current_duration: int | None = None
 
     first_strum = True
     pos16 = 0
+    pending_lyric: str | None = None
+    pending_text: str | None = None
+
     for t in pattern.tokens:
         if current_duration != t.duration:
             parts.append(f":{t.duration}")
             current_duration = t.duration
+
+        # Accumulate lyrics that fall on rests so we can attach them to the next note
+        if pos16 % 4 == 0:
+            beat_idx = pos16 // 4
+            if jianpu_beats and 0 <= beat_idx < len(jianpu_beats):
+                l = jianpu_beats[beat_idx]
+                if l and l != "-":
+                    if pending_lyric:
+                        pending_lyric += f" {l}"
+                    else:
+                        pending_lyric = l
+            
+            if lyrics_beats and 0 <= beat_idx < len(lyrics_beats):
+                txt = lyrics_beats[beat_idx]
+                if txt:
+                    if pending_text:
+                        pending_text += f" {txt}"
+                    else:
+                        pending_text = txt
 
         if t.kind == "rest":
             parts.append("r")
@@ -165,23 +188,34 @@ def pattern_to_alphatex(
         effects: list[str] = ["slashed"]
         if label and first_strum:
             effects.append(f'txt "{_escape_str(label)}"')
-        if jianpu_beats and pos16 % 4 == 0:
-            beat_idx = pos16 // 4
-            if 0 <= beat_idx < len(jianpu_beats):
-                # Avoid emitting placeholder lyrics (e.g. "-"), which adds lots of
-                # text layout work and may trigger alphaTab edge-case bugs.
-                lyric = jianpu_beats[beat_idx]
-                if lyric and lyric != "-":
-                    effects.append(f'lyrics "{_escape_str(lyric)}"')
-        if show_chord_name and first_strum:
-            effects.append(f'ch "{_escape_str(chord)}"')
+            
+        esc_lyric = _escape_str(pending_lyric) if pending_lyric else ""
+        if esc_lyric:
+            effects.append(f'lyrics "{esc_lyric}"')
+        pending_lyric = None
+
+        has_lyrics_1 = False
         # Put strumming direction below chord diagrams by rendering it as a lyrics line.
         # We keep it ASCII to avoid font issues across platforms (Render/Linux).
         # alphaTex supports `lyrics <line> "<text>"` per beat.
         if t.direction == "d":
             effects.append('lyrics 1 "v"')
+            has_lyrics_1 = True
         else:
             effects.append('lyrics 1 "^"')
+            has_lyrics_1 = True
+
+        esc_text = _escape_str(pending_text) if pending_text else ""
+        if esc_text:
+            if not esc_lyric:
+                effects.append('lyrics "\xa0"')
+            if not has_lyrics_1:
+                effects.append('lyrics 1 "\xa0"')
+            effects.append(f'lyrics 2 "{esc_text}"')
+        pending_text = None
+
+        if show_chord_name and first_strum:
+            effects.append(f'ch "{_escape_str(chord)}"')
         parts.append(f'0.1 {{ {" ".join(effects)} }}' if effects else "0.1")
         first_strum = False
         pos16 += _duration_to_16th(t.duration)
@@ -191,7 +225,7 @@ def pattern_to_alphatex(
 
 
 def _escape_str(s: str) -> str:
-    return s.replace("\\", "\\\\").replace('"', '\\"')
+    return (s or "").replace("\\", "\\\\").replace('"', '\\"').replace("\r", " ").replace("\n", " ").strip()
 
 
 def _duration_to_16th(duration: int) -> int:

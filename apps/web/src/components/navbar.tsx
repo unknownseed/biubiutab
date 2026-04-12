@@ -28,25 +28,18 @@ export default function Navbar() {
   const canHover = useMemo(() => (typeof window === "undefined" ? false : window.matchMedia("(hover: hover)").matches), []);
 
   const statusText = health.status === "checking" ? "检测中…" : health.ok ? "在线" : "离线";
-  const statusTone =
-    health.ok
-      ? "border-emerald-200 bg-emerald-50 text-emerald-900"
-      : health.status === "offline"
-        ? "border-red-200 bg-red-50 text-red-900"
-        : "border-orange-200 bg-orange-50 text-orange-900";
-
   const checkedText =
     health.checkedAt
       ? new Date(health.checkedAt).toLocaleTimeString(undefined, { hour: "2-digit", minute: "2-digit", second: "2-digit" })
       : "-";
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-40 border-b border-slate-200 bg-white/80 backdrop-blur">
+    <header className="fixed left-0 right-0 top-0 z-40 border-b border-white/10 bg-[#000F27]">
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-4">
         <div className="flex items-center gap-3">
           <Link href="/" className="flex items-center">
-            {/* Place your logo at: apps/web/public/logo.svg (or .png) */}
-            <Image src="/logo.svg" alt="Biubiu Tab" width={160} height={28} className="h-7 w-auto" priority />
+            {/* Place your logo at: apps/web/public/logo.png */}
+            <Image src="/logo.png" alt="Biubiu Tab" width={160} height={28} className="h-7 w-auto" priority />
           </Link>
           <div className="hidden items-center gap-2 text-xs text-slate-600 md:flex">
             <div
@@ -60,7 +53,7 @@ export default function Navbar() {
             >
               <button
                 type="button"
-                className={`inline-flex items-center gap-2 rounded-full border px-2.5 py-1 text-xs font-medium ${statusTone} hover:bg-white`}
+                className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-2.5 py-1 text-xs font-medium text-white hover:bg-white/10"
                 aria-haspopup="dialog"
                 aria-expanded={open}
                 onClick={() => {
@@ -69,7 +62,7 @@ export default function Navbar() {
                 }}
               >
                 <span className={`h-1.5 w-1.5 rounded-full ${dotClass(health.status)}`} />
-                <span>AI：{statusText}</span>
+                <span className="text-white">AI：{statusText}</span>
               </button>
 
               {open ? (
@@ -152,7 +145,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-sm font-medium text-slate-700">
+          <div className="rounded-lg border border-white/15 bg-white/5 px-3 py-1.5 text-sm font-medium text-slate-100">
             账号（占位）
           </div>
         </div>

@@ -1,0 +1,4 @@
+- [x] Python 端输出的 AlphaTex 中的空白歌词占位符能被 AlphaTab 解析器正确读取，不再报错 `Error parsing alphaTex`。
+- [x] 字体 API（`/api/alphatab/font/*`）可以响应正确的字体文件并附带正确的 Content-Type。
+- [x] `alphatab-viewer.tsx` 组件在挂载时调用 `preloadFonts()`，并且可以捕捉并重试 `bottomY` 错误。
+- [x] 原有 `alphatab-viewer.tsx` 的复杂功能（如导出 SVG/PNG、打印 PDF、分页展示、标题调号等外围 UI）不能因引入预加载逻辑而被破坏。

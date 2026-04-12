@@ -138,6 +138,17 @@ def sections_to_chordpro(title: str, key: str, tempo: int, sections: list[Sectio
     return "\n".join(lines).strip() + "\n"
 
 
+def _slice_lyrics_beats(lyrics_beats: list[str | None], start: int, length: int) -> list[str | None]:
+    out: list[str | None] = []
+    for i in range(length):
+        idx = start + i
+        if 0 <= idx < len(lyrics_beats):
+            out.append(lyrics_beats[idx])
+        else:
+            out.append(None)
+    return out
+
+
 def sections_to_alphatex(
     title: str,
     tempo: int,
@@ -145,6 +156,7 @@ def sections_to_alphatex(
     key: str,
     sections: list[SectionOut],
     jianpu: list[str] | None = None,
+    lyrics_beats: list[str | None] | None = None,
     bar_overrides: dict[int, str] | None = None,
     extra_tracks: str | None = None,
     rhythm_energy: float | None = None,
@@ -231,6 +243,7 @@ def sections_to_alphatex(
                 marker = _section_marker_letter(s.name)
                 section_prefix = f'\\section "{_escape_section(marker)}" "{_escape_section(s.name)}" '
             jianpu_beats = _slice_jianpu(jianpu, c.bar * 4, 4) if jianpu else None
+            actual_lyrics_beats = _slice_lyrics_beats(lyrics_beats, c.bar * 4, 4) if lyrics_beats else None
             chord = c.chord
             show_chord_name = True
             if chord == "N":
@@ -247,7 +260,7 @@ def sections_to_alphatex(
                 # override already includes trailing "|" and is assumed to be a single bar line
                 parts.append(section_prefix + override)
             else:
-                line = pattern_to_alphatex(pattern, chord, show_chord_name, label=None, jianpu_beats=jianpu_beats)
+                line = pattern_to_alphatex(pattern, chord, show_chord_name, label=None, jianpu_beats=jianpu_beats, lyrics_beats=actual_lyrics_beats)
                 parts.append(section_prefix + line)
         is_first_section = False
         parts.append("")
@@ -281,8 +294,8 @@ def _bar_to_alphatex(pattern: RhythmPattern, chord: str, label: str | None, jian
     return pattern_to_alphatex(pattern, chord, show_chord_name, label=label, jianpu_beats=jianpu_beats)
 
 
-def _escape_section(text: str) -> str:
-    return (text or "").replace("\\", "\\\\").replace('"', '\\"')
+def _escape_section(s: str) -> str:
+    return (s or "").replace("\\", "\\\\").replace('"', '\\"').replace("\r", " ").replace("\n", " ").strip()
 
 
 def _section_marker_letter(name: str) -> str:

@@ -35,10 +35,13 @@ function contentType(filename: string): string {
   return "application/octet-stream";
 }
 
-export async function GET(_req: Request, ctx: { params: { filename: string } }) {
-  const params = await (ctx.params as unknown as Promise<{ filename: string }>);
+export async function GET(_req: Request, ctx: { params: Promise<{ filename: string }> }) {
+  const params = await ctx.params;
   const safe = safeBasename(params?.filename);
-  if (!safe) return new Response("not found", { status: 404 });
+  if (!safe) {
+    console.error(`[Font API] Invalid filename requested: ${params?.filename}`);
+    return new Response("not found", { status: 404 });
+  }
 
   const appRoot = findAppRoot();
   const localFont = path.join(appRoot, "node_modules", "@coderline", "alphatab", "dist", "font", safe);
@@ -69,7 +72,12 @@ export async function GET(_req: Request, ctx: { params: { filename: string } }) 
         continue;
       }
     }
-    if (!filePath || !s) return new Response("not found", { status: 404 });
+    if (!filePath || !s) {
+      console.error(`[Font API] Font not found: ${safe}. Looked in:`, candidates);
+      return new Response("not found", { status: 404 });
+    }
+
+    console.log(`[Font API] Serving font: ${safe} from ${filePath}`);
 
     const stream = createReadStream(filePath);
     return new Response(stream as unknown as BodyInit, {
@@ -78,9 +86,24 @@ export async function GET(_req: Request, ctx: { params: { filename: string } }) 
         "content-type": contentType(safe),
         "content-length": String(s.size),
         "cache-control": "public, max-age=31536000, immutable",
+        "access-control-allow-origin": "*",
+        "access-control-allow-methods": "GET, OPTIONS",
+        "access-control-allow-headers": "Content-Type",
       },
     });
-  } catch {
+  } catch (error) {
+    console.error(`[Font API] Error serving font ${safe}:`, error);
     return new Response("not found", { status: 404 });
   }
+}
+
+export async function OPTIONS(req: Request) {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      "access-control-allow-origin": "*",
+      "access-control-allow-methods": "GET, OPTIONS",
+      "access-control-allow-headers": "Content-Type",
+    },
+  });
 }

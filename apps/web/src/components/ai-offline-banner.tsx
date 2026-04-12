@@ -16,7 +16,7 @@ export default function AiOfflineBanner() {
   if (!shouldShow) return null;
 
   return (
-    <div className="sticky top-14 z-30 border-b border-slate-800 bg-slate-950">
+    <div className="sticky top-14 z-30 border-b border-white/10 bg-[#000F27]">
       <div className="mx-auto flex w-full max-w-6xl items-start justify-between gap-4 px-4 py-2">
         <div className="min-w-0">
           <div className="text-sm font-semibold text-white">AI 服务离线</div>

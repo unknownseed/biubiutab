@@ -1,8 +1,9 @@
 "use client";
 
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useToast } from "./toast-provider";
+import TimelineViewer, { type VisualizationPayload } from "./timeline-viewer";
 
 type UploadResponse = {
   storedFilename: string;
@@ -16,7 +17,61 @@ type JobResponse = {
   progress: number;
   message?: string | null;
   error?: string | null;
+  preview?: unknown;
 };
+
+type PreviewStep = "queued" | "loading" | "demucs" | "hpss" | "analysis" | "lyrics" | "melody" | "sections" | "done" | "failed";
+
+function stepLabel(s: PreviewStep | string) {
+  switch (s as PreviewStep) {
+    case "queued":
+      return "排队中";
+    case "loading":
+      return "读取音频";
+    case "demucs":
+      return "音源分离";
+    case "hpss":
+      return "HPSS 分离";
+    case "analysis":
+      return "和弦/节拍";
+    case "lyrics":
+      return "歌词识别";
+    case "melody":
+      return "旋律提取";
+    case "sections":
+      return "段落检测";
+    case "done":
+      return "完成";
+    case "failed":
+      return "失败";
+    default:
+      return String(s);
+  }
+}
+
+function getPreviewStep(preview: unknown): string {
+  if (!preview || typeof preview !== "object") return "loading";
+  const p = preview as Record<string, unknown>;
+  return typeof p.step === "string" ? p.step : "loading";
+}
+
+function asViz(preview: unknown): VisualizationPayload | null {
+  if (!preview || typeof preview !== "object") return null;
+  const p = preview as Record<string, unknown>;
+  const viz: VisualizationPayload = {};
+  if (p.waveform && typeof p.waveform === "object") {
+    const w = p.waveform as Record<string, unknown>;
+    if (typeof w.duration_sec === "number" && Array.isArray(w.peaks)) {
+      viz.waveform = { duration_sec: w.duration_sec, peaks: w.peaks as number[] };
+    }
+  }
+  if (Array.isArray(p.beats)) viz.beats = p.beats as number[];
+  if (Array.isArray(p.bars))
+    viz.bars = p.bars as unknown as Array<{ bar: number; start: number; end: number; chord: string }>;
+  if (Array.isArray(p.lyrics_segments))
+    viz.lyrics_segments = p.lyrics_segments as unknown as Array<{ start?: number; end?: number; text?: string }>;
+  return Object.keys(viz).length ? viz : null;
+}
 
 function formatSeconds(seconds: number): string {
   if (!Number.isFinite(seconds) || seconds < 0) return "-";
@@ -51,6 +106,7 @@ export default function UploadClient() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const toast = useToast();
+  const audioElRef = useRef<HTMLAudioElement | null>(null);
 
   const [file, setFile] = useState<File | null>(null);
   const [durationSec, setDurationSec] = useState<number | null>(null);
@@ -58,12 +114,30 @@ export default function UploadClient() {
   const [status, setStatus] = useState<"idle" | "uploading" | "processing" | "failed">("idle");
   const [error, setError] = useState<string | null>(null);
   const [job, setJob] = useState<JobResponse | null>(null);
+  const [preview, setPreview] = useState<unknown>(null);
+  const [audioSrc, setAudioSrc] = useState<string | null>(null);
+  const [audioTime, setAudioTime] = useState(0);
+  const [audioDuration, setAudioDuration] = useState(0);
 
   const canStart = useMemo(() => {
     if (!file) return false;
     const isAllowed = file.type === "audio/mpeg" || file.type === "audio/wav" || file.name.endsWith(".mp3") || file.name.endsWith(".wav");
     return isAllowed && file.size <= 50 * 1024 * 1024;
   }, [file]);
+
+  const viz = useMemo(() => asViz(preview), [preview]);
+  const previewStep = useMemo(() => getPreviewStep(preview), [preview]);
+
+  const audioRef = useCallback((el: HTMLAudioElement | null) => {
+    audioElRef.current = el;
+  }, []);
+
+  const onSeek = useCallback((t: number) => {
+    const el = audioElRef.current;
+    if (!el || !Number.isFinite(t)) return;
+    el.currentTime = t;
+    void el.play().catch(() => {});
+  }, []);
 
   async function readDuration(nextFile: File) {
     const url = URL.createObjectURL(nextFile);
@@ -86,6 +160,10 @@ export default function UploadClient() {
   function onPickFile(nextFile: File | null) {
     setError(null);
     setJob(null);
+    setPreview(null);
+    setAudioSrc(null);
+    setAudioTime(0);
+    setAudioDuration(0);
     setUploadProgress(0);
     setStatus("idle");
     setFile(nextFile);
@@ -137,6 +215,7 @@ export default function UploadClient() {
       const upload = await uploadWithProgress(file);
       toast.push({ title: "上传成功", description: upload.originalFilename, variant: "success" });
       setStatus("processing");
+      setAudioSrc(`/api/uploads/${encodeURIComponent(upload.storedFilename)}`);
       const created = await postJson<JobResponse>("/api/jobs", {
         storedFilename: upload.storedFilename,
         title: upload.originalFilename,
@@ -147,7 +226,11 @@ export default function UploadClient() {
       const poll = async () => {
         const latest = await getJson<JobResponse>(`/api/jobs/${created.id}`);
         setJob(latest);
+        setPreview(latest.preview ?? null);
         if (latest.status === "succeeded") {
+          // Hide in-progress timeline immediately once done (before navigation).
+          setStatus("idle");
+          setPreview(null);
           toast.push({ title: "生成完成", description: "已生成谱例，正在打开编辑页…", variant: "success" });
           router.push(`/editor/${latest.id}`);
           return;
@@ -246,6 +329,40 @@ export default function UploadClient() {
               <div className="h-2 overflow-hidden rounded bg-slate-200">
                 <div className="h-2 bg-[color:var(--accent)]" style={{ width: `${job.progress}%` }} />
               </div>
+            </div>
+          ) : null}
+
+          {status === "processing" ? (
+            <div className="mt-2 space-y-3">
+              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                <div className="flex items-center justify-between gap-3">
+                  <div className="text-sm font-semibold text-slate-800">实时分析</div>
+                  <div className="text-xs text-slate-500">
+                    当前步骤：
+                    <span className="ml-1 font-medium text-slate-700">
+                      {stepLabel(previewStep)}
+                    </span>
+                  </div>
+                </div>
+                {audioSrc ? (
+                  <audio
+                    ref={audioRef}
+                    className="mt-2 w-full"
+                    controls
+                    src={audioSrc}
+                    onLoadedMetadata={(e) => setAudioDuration((e.currentTarget as HTMLAudioElement).duration || 0)}
+                    onTimeUpdate={(e) => setAudioTime((e.currentTarget as HTMLAudioElement).currentTime || 0)}
+                  />
+                ) : (
+                  <div className="mt-2 text-xs text-slate-500">音频预览加载中…</div>
+                )}
+              </div>
+
+              {viz ? (
+                <TimelineViewer viz={viz} currentTime={audioTime} durationSec={audioDuration} onSeek={onSeek} />
+              ) : (
+                <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600">正在准备波形/和弦/歌词预览…</div>
+              )}
             </div>
           ) : null}
 

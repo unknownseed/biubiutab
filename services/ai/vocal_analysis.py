@@ -3,7 +3,7 @@ from __future__ import annotations
 import logging
 import os
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional, Union
 
 from melody_detector import NoteEvent
 
@@ -70,8 +70,70 @@ def transcribe_lyrics(audio_path: str, language: str = "zh") -> Dict[str, Any]:
         return out
     except Exception as e:
         logger.exception("[whisper] failed: %s", e)
-        # soft-fail: keep pipeline running
-        return {"text": "", "segments": [], "error": str(e)}
+        return {"text": "", "segments": [], "language": None, "error": str(e)}
+
+
+def lyrics_to_beats(segments: List[Dict[str, Any]], beat_times: Any, beats: int) -> List[Optional[str]]:
+    """
+    Map faster-whisper text segments to the closest beat in a beat grid.
+    Distributes words evenly across the beats that fall within the segment.
+    Returns a list of length `beats`, where each element is the lyric string or None.
+    """
+    out: List[Optional[str]] = [None] * beats
+    if not segments or beats == 0 or len(beat_times) == 0:
+        return out
+
+    for seg in segments:
+        start = float(seg.get("start", 0.0))
+        end = float(seg.get("end", start + 2.0))
+        text = str(seg.get("text", "")).strip()
+        if not text:
+            continue
+
+        # Split into words (or characters if Chinese)
+        # A simple heuristic: if it contains spaces, split by space; else treat as chars.
+        if " " in text:
+            words = text.split()
+        else:
+            words = list(text)
+
+        if not words:
+            continue
+
+        # Find all beats within this segment
+        seg_beats = []
+        for i in range(beats):
+            if i >= len(beat_times):
+                break
+            bt = float(beat_times[i])
+            if start - 0.5 <= bt <= end + 0.5:
+                seg_beats.append(i)
+
+        if not seg_beats:
+            # If no beats found, just map to the closest one
+            best_diff = 999.0
+            best_i = -1
+            for i in range(beats):
+                if i >= len(beat_times):
+                    break
+                diff = abs(float(beat_times[i]) - start)
+                if diff < best_diff:
+                    best_diff = diff
+                    best_i = i
+            if best_i >= 0:
+                seg_beats = [best_i]
+
+        # Distribute words across the found beats
+        if seg_beats:
+            step = max(1, len(seg_beats) / len(words))
+            for idx, word in enumerate(words):
+                beat_idx = seg_beats[min(len(seg_beats) - 1, int(idx * step))]
+                if out[beat_idx]:
+                    out[beat_idx] = str(out[beat_idx]) + " " + word
+                else:
+                    out[beat_idx] = word
+
+    return out
 
 
 def extract_vocal_melody(audio_path: str) -> Dict[str, Any]:

@@ -24,7 +24,7 @@ from melody_tab import (
 from melody_detector import detect_melody, make_beat_grid, melody_to_jianpu
 from section_detector import detect_sections
 from source_separation import separate_stems
-from vocal_analysis import extract_vocal_melody, transcribe_lyrics
+from vocal_analysis import extract_vocal_melody, lyrics_to_beats, transcribe_lyrics
 from waveform import compute_waveform_peaks
 
 
@@ -42,6 +42,7 @@ class JobResponse(BaseModel):
     progress: int = Field(ge=0, le=100)
     message: Optional[str] = None
     error: Optional[str] = None
+    preview: Optional[dict] = None
 
 
 class ChordModel(BaseModel):
@@ -82,6 +83,7 @@ class JobState:
     audio_path: Path
     title: str
     result: Optional[JobResult]
+    preview: Optional[dict]
 
 
 def _clean_title(title: str) -> str:
@@ -193,6 +195,7 @@ def _job_to_response(job: JobState) -> JobResponse:
         progress=job.progress,
         message=job.message,
         error=job.error,
+        preview=job.preview,
     )
 
 
@@ -204,6 +207,7 @@ async def _run_job(job_id: str) -> None:
     job.status = "processing"
     job.progress = 1
     job.message = "Loading audio"
+    job.preview = {"step": "loading"}
 
     try:
         title = _clean_title(job.title or job.audio_path.name)
@@ -229,6 +233,7 @@ async def _run_job(job_id: str) -> None:
 
         job.progress = 10
         job.message = "Separating stems (Demucs)"
+        job.preview = {"step": "demucs"}
 
         t0 = time.time()
         stems_tmp: dict[str, str] = {}
@@ -249,6 +254,7 @@ async def _run_job(job_id: str) -> None:
 
             job.progress = 25
             job.message = "Extracting harmonic/percussive (HPSS)"
+            job.preview = {"step": "hpss"}
 
             # Choose accompaniment stem for HPSS
             acc_path = stems_tmp.get("other") or stems_tmp.get("no_vocals") or str(upload_copy)
@@ -265,8 +271,20 @@ async def _run_job(job_id: str) -> None:
             except Exception:
                 rhythm_energy = None
 
+            # Preview waveform as soon as we have an accompaniment track (other/no_vocals preferred)
+            try:
+                waveform_src = stems_tmp.get("other") or stems_tmp.get("no_vocals") or acc_path
+                job.preview = {
+                    "step": "hpss",
+                    "waveform": await asyncio.to_thread(compute_waveform_peaks, waveform_src),
+                    "rhythm_energy": rhythm_energy,
+                }
+            except Exception:
+                pass
+
             job.progress = 35
             job.message = "Analyzing tempo/key/chords"
+            job.preview = {**(job.preview or {}), "step": "analysis"}
 
             try:
                 analysis = await asyncio.to_thread(
@@ -282,8 +300,27 @@ async def _run_job(job_id: str) -> None:
                 job.message = f"Analysis failed (fallback to mix): {e}"
                 analysis = await asyncio.to_thread(analyze_audio_multi, str(upload_copy), title)
 
+            # Update preview with bar-level chords on a timeline
+            try:
+                beats = [float(x) for x in getattr(analysis, "beat_times", [])] if analysis else []
+                bars: list[dict] = []
+                beats_per_bar = 4
+                if beats and len(beats) >= beats_per_bar + 1:
+                    bar_count = max(1, (len(beats) - 1) // beats_per_bar)
+                    for bi in range(bar_count):
+                        b0 = bi * beats_per_bar
+                        b1 = min(b0 + beats_per_bar, len(beats) - 1)
+                        start_t = float(beats[b0])
+                        end_t = float(beats[b1])
+                        chord = analysis.bar_chords[bi] if analysis and bi < len(analysis.bar_chords) else "N"
+                        bars.append({"bar": bi, "start": start_t, "end": end_t, "chord": chord})
+                job.preview = {**(job.preview or {}), "step": "analysis", "beats": beats, "bars": bars}
+            except Exception:
+                pass
+
             job.progress = 60
             job.message = "Transcribing lyrics (vocals)"
+            job.preview = {**(job.preview or {}), "step": "lyrics"}
 
             vocals_path = stems_tmp.get("vocals")
             if vocals_path:
@@ -291,8 +328,19 @@ async def _run_job(job_id: str) -> None:
             else:
                 lyrics = None
 
+            # Add lyrics timeline to preview
+            try:
+                job.preview = {
+                    **(job.preview or {}),
+                    "step": "lyrics",
+                    "lyrics_segments": lyrics.get("segments") if isinstance(lyrics, dict) else None,
+                }
+            except Exception:
+                pass
+
             job.progress = 70
             job.message = "Extracting vocal melody"
+            job.preview = {**(job.preview or {}), "step": "melody"}
 
             if vocals_path:
                 try:
@@ -391,6 +439,7 @@ async def _run_job(job_id: str) -> None:
 
             job.progress = 65
             job.message = "Detecting sections"
+            job.preview = {**(job.preview or {}), "step": "sections"}
 
         job.progress = 65
         job.message = "Detecting sections"
@@ -415,6 +464,10 @@ async def _run_job(job_id: str) -> None:
         melody_mix = await asyncio.to_thread(detect_melody, str(upload_copy))
         total_beats = max(1, len(analysis.bar_chords) * 4)
         beat_grid = make_beat_grid(analysis.tempo_bpm, analysis.duration_sec, total_beats)
+
+        lyrics_beats = None
+        if isinstance(lyrics, dict) and isinstance(lyrics.get("segments"), list):
+            lyrics_beats = lyrics_to_beats(lyrics["segments"], beat_grid, total_beats)
 
         # Prefer vocal melody (if available) for jianpu; fallback to mix.
         melody_for_jianpu = melody_mix
@@ -452,6 +505,8 @@ async def _run_job(job_id: str) -> None:
                 bar_chords=analysis.bar_chords,
                 bars=int(os.environ.get("INTRO_BARS", "8")),
                 min_notes_per_bar=int(os.environ.get("INTRO_MIN_NOTES_PER_BAR", "2")),
+                jianpu_beats=jianpu,
+                lyrics_beats=lyrics_beats,
             )
         except Exception:
             intro_bars = {}
@@ -463,8 +518,9 @@ async def _run_job(job_id: str) -> None:
             key=analysis.key,
             sections=display_sections,
             jianpu=jianpu,
+            lyrics_beats=lyrics_beats,
             bar_overrides=intro_bars,
-            extra_tracks=vocal_melody.get("alphatex") if isinstance(vocal_melody, dict) else None,
+            extra_tracks=None,
             rhythm_energy=rhythm_energy,
         )
 
@@ -478,6 +534,7 @@ async def _run_job(job_id: str) -> None:
                 key=analysis.key,
                 sections=display_sections,
                 jianpu=jianpu,
+                lyrics_beats=lyrics_beats,
                 bar_overrides=intro_bars,
                 extra_tracks=None,
                 rhythm_energy=rhythm_energy,
@@ -542,10 +599,12 @@ async def _run_job(job_id: str) -> None:
         job.status = "succeeded"
         job.progress = 100
         job.message = "Done"
+        job.preview = {**(job.preview or {}), "step": "done"}
     except Exception as e:
         job.status = "failed"
         job.error = str(e)
         job.message = "Failed"
+        job.preview = {**(job.preview or {}), "step": "failed"}
 
 
 @app.post("/jobs", response_model=JobResponse)
@@ -568,6 +627,7 @@ async def create_job(req: CreateJobRequest) -> JobResponse:
         audio_path=audio_path,
         title=title,
         result=None,
+        preview={"step": "queued"},
     )
     _jobs[job_id] = state
     asyncio.create_task(_run_job(job_id))

@@ -50,9 +50,13 @@ export default function TimelineViewer({
     const resize = () => {
       const w = canvas.clientWidth;
       const h = canvas.clientHeight;
-      canvas.width = Math.max(1, Math.floor(w * dpr));
-      canvas.height = Math.max(1, Math.floor(h * dpr));
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      const nextW = Math.max(1, Math.floor(w * dpr));
+      const nextH = Math.max(1, Math.floor(h * dpr));
+      if (canvas.width !== nextW || canvas.height !== nextH) {
+        canvas.width = nextW;
+        canvas.height = nextH;
+        ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
     };
     resize();
 
@@ -79,16 +83,16 @@ export default function TimelineViewer({
       ctx.lineWidth = 1;
       if (peaks.length > 0) {
         const step = w / peaks.length;
+        ctx.beginPath();
         for (let i = 0; i < peaks.length; i++) {
           const p = clamp(peaks[i] ?? 0, 0, 1);
           const x = i * step;
           const y1 = waveMid - p * (waveH / 2);
           const y2 = waveMid + p * (waveH / 2);
-          ctx.beginPath();
           ctx.moveTo(x, y1);
           ctx.lineTo(x, y2);
-          ctx.stroke();
         }
+        ctx.stroke();
       } else {
         ctx.fillStyle = "#e2e8f0";
         ctx.fillRect(0, waveTop, w, waveH);
@@ -99,13 +103,13 @@ export default function TimelineViewer({
       if (duration > 0 && beats.length > 0) {
         ctx.strokeStyle = "rgba(15, 23, 42, 0.10)";
         ctx.lineWidth = 1;
+        ctx.beginPath();
         for (const bt of beats) {
           const x = (bt / duration) * w;
-          ctx.beginPath();
           ctx.moveTo(x, waveTop);
           ctx.lineTo(x, waveTop + waveH + chordH + lyricH + 8);
-          ctx.stroke();
         }
+        ctx.stroke();
       }
 
       // chord bars

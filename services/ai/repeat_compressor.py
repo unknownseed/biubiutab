@@ -16,7 +16,7 @@ class BarLine:
 
 
 _TXT_RE = re.compile(r'\btxt\s+"([^"\\]|\\.)*"')
-_LYRICS_RE = re.compile(r'\blyrics\s+"([^"\\]|\\.)*"')
+_LYRICS_RE = re.compile(r'\blyrics(?:\s+2)?\s+"([^"\\]|\\.)*"')
 _WS_RE = re.compile(r"\s+")
 
 
