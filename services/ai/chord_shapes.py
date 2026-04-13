@@ -131,7 +131,7 @@ def _score_shape(frets: list[str]) -> tuple[int, int, int, int, int]:
     if non_zero and min(non_zero) >= 5:
         barre *= 3
 
-    return (span, barre, mute, max_f, sum(vals))
+    return (mute, barre, span, max_f, sum(vals))
 
 
 def _e_shape(root_pc: int, quality: str) -> Optional[list[str]]:
@@ -183,15 +183,15 @@ def chord_shape_for_label(label: str) -> Optional[ChordShape]:
     parsed = _parse_chord_label(key)
     if not parsed:
         return None
-    root_pc, suffix, pcs = parsed
+    root_pc, suffix, pcs, bass_pc = parsed
 
     # Prefer low-position shapes (<= 4th fret) when possible.
-    compact = _generate_compact_shape(root_pc, pcs, span_max=3, max_fret=4, min_strings=3)
+    compact = _generate_compact_shape(root_pc, pcs, span_max=3, max_fret=4, min_strings=3, bass_pc=bass_pc)
     if compact:
         return ChordShape(name=key, frets_high_to_low=compact)
 
     # Fallback: allow higher positions but still keep within a 4-fret box.
-    compact = _generate_compact_shape(root_pc, pcs, span_max=3, max_fret=12, min_strings=3)
+    compact = _generate_compact_shape(root_pc, pcs, span_max=3, max_fret=12, min_strings=3, bass_pc=bass_pc)
     if compact:
         return ChordShape(name=key, frets_high_to_low=compact)
 
@@ -205,10 +205,16 @@ def chord_shape_for_label(label: str) -> Optional[ChordShape]:
     return None
 
 
-def _parse_chord_label(label: str) -> Optional[tuple[int, str, set[int]]]:
+def _parse_chord_label(label: str) -> Optional[tuple[int, str, set[int], Optional[int]]]:
     s = label.strip()
     if not s:
         return None
+
+    # check for inversion like /B or /F#
+    bass_pc = None
+    if "/" in s:
+        s, bass_str = s.split("/", 1)
+        bass_pc = _NOTE_TO_PC.get(bass_str.strip())
 
     root = s[0].upper()
     rest = s[1:]
@@ -224,7 +230,9 @@ def _parse_chord_label(label: str) -> Optional[tuple[int, str, set[int]]]:
     for q, intervals in _QUALITY_INTERVALS:
         if suffix == q:
             pcs = {(root_pc + i) % 12 for i in intervals}
-            return root_pc, suffix, pcs
+            if bass_pc is not None:
+                pcs.add(bass_pc)
+            return root_pc, suffix, pcs, bass_pc
     return None
 
 
@@ -290,7 +298,7 @@ def _generate_shape_for_pitch_classes(root_pc: int, target_pcs: set[int], max_fr
     return None
 
 
-def _generate_compact_shape(root_pc: int, target_pcs: set[int], span_max: int, max_fret: int, min_strings: int) -> Optional[list[str]]:
+def _generate_compact_shape(root_pc: int, target_pcs: set[int], span_max: int, max_fret: int, min_strings: int, bass_pc: Optional[int] = None) -> Optional[list[str]]:
     open_midis = _STANDARD_TUNING_OPEN_MIDI_HIGH_TO_LOW
 
     def pc_for(string_idx: int, fret: int) -> int:
@@ -348,18 +356,20 @@ def _generate_compact_shape(root_pc: int, target_pcs: set[int], span_max: int, m
                                 if len(pcs_played & target_pcs) < 2:
                                     continue
 
+                                target_bass_pc = bass_pc if bass_pc is not None else root_pc
                                 bass_ok = False
                                 for si in range(5, -1, -1):
                                     f = picks[si]
                                     if f is None:
                                         continue
-                                    bass_ok = pc_for(si, int(f)) == root_pc
+                                    bass_ok = pc_for(si, int(f)) == target_bass_pc
                                     break
 
                                 out = [("x" if f is None else str(int(f))) for f in picks]
                                 score = _score_shape(out)
                                 if not bass_ok:
-                                    score = (score[0], score[1], score[2] + 2, score[3], score[4])
+                                    # heavily penalize if the target bass is not played at the bottom
+                                    score = (score[0] + 100, score[1], score[2], score[3], score[4])
                                 score = (score[0], score[1], score[2], score[3] + start, score[4])
 
                                 if best is None or score < best[0]:

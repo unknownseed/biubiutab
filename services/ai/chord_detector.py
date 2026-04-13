@@ -35,7 +35,7 @@ class ChordEvent:
     chord: str
 
 
-@dataclass(frozen=True)
+@dataclass(frozen=False)
 class AudioAnalysis:
     title: str
     tempo_bpm: int
@@ -182,7 +182,9 @@ def _refine_and_score_bar_chord(
     best = (chord, base_score)
 
     # Candidate chord qualities to try.
-    # NOTE: we keep this conservative: only upgrade if the evidence is sufficiently stronger.
+    # NOTE: Per user request, we restrict the vocabulary to basic triads, 7th chords, and sus2
+    # to cater to beginner/intermediate guitar players.
+    # Advanced chords like add9, dim, aug, sus4 are intentionally excluded.
     candidates: list[tuple[str, list[int]]] = []
 
     # Common extensions
@@ -191,15 +193,9 @@ def _refine_and_score_bar_chord(
     else:
         candidates.append((f"{root}7", [0, 4, 7, 10]))
         candidates.append((f"{root}maj7", [0, 4, 7, 11]))
-        candidates.append((f"{root}add9", [0, 2, 4, 7]))
 
-    # Suspended chords (root-based, not "minor suspended")
+    # Suspended chords (root-based)
     candidates.append((f"{root}sus2", [0, 2, 7]))
-    candidates.append((f"{root}sus4", [0, 5, 7]))
-
-    # Diminished / Augmented
-    candidates.append((f"{root}dim", [0, 3, 6]))
-    candidates.append((f"{root}aug", [0, 4, 8]))
 
     for label, intervals in candidates:
         s = _score_template(bar_chroma, root_idx, intervals)

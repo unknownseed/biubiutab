@@ -5,6 +5,8 @@ import os
 from typing import Literal
 
 
+from chord_shapes import chord_shape_for_label
+
 StrumDir = Literal["d", "u"]
 
 
@@ -29,14 +31,14 @@ STRUMMING_PATTERNS: dict[str, RhythmPattern] = {
     "fingerpick_8th": RhythmPattern(
         notation="P i m a (8th)",
         tokens=[
-            RhythmToken("strum", 8, "d", note_override="0.4"), # Bass (D string)
-            RhythmToken("strum", 8, "u", note_override="0.3"), # G
-            RhythmToken("strum", 8, "d", note_override="0.2"), # B
-            RhythmToken("strum", 8, "u", note_override="0.1"), # e
-            RhythmToken("strum", 8, "d", note_override="0.3"), # G
-            RhythmToken("strum", 8, "u", note_override="0.2"), # B
-            RhythmToken("strum", 8, "d", note_override="0.3"), # G
-            RhythmToken("strum", 8, "u", note_override="0.2"), # B
+            RhythmToken("strum", 8, "d", note_override="bass"), # Bass (T, p)
+            RhythmToken("strum", 8, "u", note_override="str_3"), # G (i)
+            RhythmToken("strum", 8, "d", note_override="str_2"), # B (m)
+            RhythmToken("strum", 8, "u", note_override="str_1"), # e (a)
+            RhythmToken("strum", 8, "d", note_override="str_3"), # G (i)
+            RhythmToken("strum", 8, "u", note_override="str_2"), # B (m)
+            RhythmToken("strum", 8, "d", note_override="str_3"), # G (i)
+            RhythmToken("strum", 8, "u", note_override="str_2"), # B (m)
         ],
         bpm_range=(50, 110),
         description="低能量：用更平稳的 8 分分解拨弦",
@@ -45,13 +47,37 @@ STRUMMING_PATTERNS: dict[str, RhythmPattern] = {
     "fingerpick_4th": RhythmPattern(
         notation="P i m a (4th)",
         tokens=[
-            RhythmToken("strum", 4, "d", note_override="0.4"), # Bass
-            RhythmToken("strum", 4, "u", note_override="0.3"), # G
-            RhythmToken("strum", 4, "d", note_override="0.2"), # B
-            RhythmToken("strum", 4, "u", note_override="0.1"), # e
+            RhythmToken("strum", 4, "d", note_override="bass"), # Bass
+            RhythmToken("strum", 4, "u", note_override="str_3"), # G
+            RhythmToken("strum", 4, "d", note_override="str_2"), # B
+            RhythmToken("strum", 4, "u", note_override="str_1"), # e
         ],
         bpm_range=(100, 160),
         description="极低能量：4分分解拨弦",
+        is_arpeggio=True,
+    ),
+    "fingerpick_16th": RhythmPattern(
+        notation="P i m a (16th)",
+        tokens=[
+            RhythmToken("strum", 16, "d", note_override="bass"),
+            RhythmToken("strum", 16, "u", note_override="str_3"),
+            RhythmToken("strum", 16, "d", note_override="str_2"),
+            RhythmToken("strum", 16, "u", note_override="str_1"),
+            RhythmToken("strum", 16, "d", note_override="bass"),
+            RhythmToken("strum", 16, "u", note_override="str_3"),
+            RhythmToken("strum", 16, "d", note_override="str_2"),
+            RhythmToken("strum", 16, "u", note_override="str_1"),
+            RhythmToken("strum", 16, "d", note_override="bass"),
+            RhythmToken("strum", 16, "u", note_override="str_3"),
+            RhythmToken("strum", 16, "d", note_override="str_2"),
+            RhythmToken("strum", 16, "u", note_override="str_1"),
+            RhythmToken("strum", 16, "d", note_override="bass"),
+            RhythmToken("strum", 16, "u", note_override="str_3"),
+            RhythmToken("strum", 16, "d", note_override="str_2"),
+            RhythmToken("strum", 16, "u", note_override="str_1"),
+        ],
+        bpm_range=(60, 90),
+        description="中低能量：慢歌 16 分分解拨弦",
         is_arpeggio=True,
     ),
     "ballad": RhythmPattern(
@@ -83,6 +109,30 @@ STRUMMING_PATTERNS: dict[str, RhythmPattern] = {
         ],
         bpm_range=(70, 120),
         description="万能八分民谣节奏",
+    ),
+    "folk_16th": RhythmPattern(
+        notation="D - D U - U D U (16th)",
+        tokens=[
+            RhythmToken("strum", 16, "d"),
+            RhythmToken("rest", 16),
+            RhythmToken("strum", 16, "d"),
+            RhythmToken("strum", 16, "u"),
+            RhythmToken("rest", 16),
+            RhythmToken("strum", 16, "u"),
+            RhythmToken("strum", 16, "d"),
+            RhythmToken("strum", 16, "u"),
+            
+            RhythmToken("strum", 16, "d"),
+            RhythmToken("rest", 16),
+            RhythmToken("strum", 16, "d"),
+            RhythmToken("strum", 16, "u"),
+            RhythmToken("rest", 16),
+            RhythmToken("strum", 16, "u"),
+            RhythmToken("strum", 16, "d"),
+            RhythmToken("strum", 16, "u"),
+        ],
+        bpm_range=(60, 95),
+        description="慢歌 16 分民谣扫弦",
     ),
     "pop_16th": RhythmPattern(
         notation="D U D U D U D U (16th)",
@@ -145,17 +195,53 @@ def select_pattern(bpm: int, energy: float | None = None, section_name: str = ""
     if e < low:
         if bpm >= 110:
             return STRUMMING_PATTERNS["fingerpick_4th"]
+        elif bpm < 85:
+            return STRUMMING_PATTERNS["fingerpick_16th"]
         return STRUMMING_PATTERNS["fingerpick_8th"]
     if e < high:
         # Moderate groove: prefer folk; if bpm mid-range, soul can feel better.
-        if 78 <= bpm <= 110:
+        if bpm < 90:
+            return STRUMMING_PATTERNS["folk_16th"]
+        if 90 <= bpm <= 110:
             return STRUMMING_PATTERNS["soul"]
         return STRUMMING_PATTERNS["folk_basic"]
     # High energy: dense
     if bpm >= 105:
         return STRUMMING_PATTERNS["pop_16th"]
+    if bpm < 90:
+        return STRUMMING_PATTERNS["folk_16th"]
     return STRUMMING_PATTERNS["folk_basic"]
 
+
+def _resolve_arpeggio_note(chord_label: str, pattern_str: str) -> str:
+    shape = chord_shape_for_label(chord_label)
+    if not shape:
+        return "0.1" # fallback if chord unknown
+        
+    frets = shape.frets_high_to_low
+    # strings: 1=e, 2=B, 3=G, 4=D, 5=A, 6=E
+    # frets indices: 0=e, 1=B, 2=G, 3=D, 4=A, 5=E
+    
+    # Find bass string (highest index that is not 'x')
+    bass_idx = 5
+    while bass_idx >= 0 and frets[bass_idx] == "x":
+        bass_idx -= 1
+        
+    bass_str = bass_idx + 1
+    bass_fret = frets[bass_idx]
+    
+    if pattern_str == "bass":
+        return f"{bass_fret}.{bass_str}"
+    
+    # other strings: "str_3" -> string 3 -> index 2
+    if pattern_str.startswith("str_"):
+        s = int(pattern_str.split("_")[1])
+        f = frets[s - 1]
+        if f == "x":
+            return f"0.{s}" # fallback to open if muted
+        return f"{f}.{s}"
+        
+    return "0.1"
 
 def pattern_to_alphatex(
     pattern: RhythmPattern,
@@ -225,7 +311,11 @@ def pattern_to_alphatex(
         if show_chord_name and first_strum:
             effects.append(f'ch "{_escape_str(chord)}"')
             
-        note_str = t.note_override if getattr(pattern, "is_arpeggio", False) and t.note_override else "0.1"
+        if getattr(pattern, "is_arpeggio", False) and t.note_override:
+            note_str = _resolve_arpeggio_note(chord, t.note_override)
+        else:
+            note_str = "0.1"
+            
         parts.append(f'{note_str} {{ {" ".join(effects)} }}' if effects else note_str)
         first_strum = False
         pos16 += _duration_to_16th(t.duration)

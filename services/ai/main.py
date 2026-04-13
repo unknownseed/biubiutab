@@ -13,6 +13,7 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel, Field
 
 from audio_preprocess import compute_percussive_energy, extract_harmonic_percussive
+from voice_leading import apply_voice_leading
 from chord_detector import analyze_audio_multi
 from formatters import ChordAt, SectionOut, build_display_sections_and_arrangement, sections_to_alphatex
 from intro_transcriber import build_intro_bar_overrides
@@ -299,6 +300,10 @@ async def _run_job(job_id: str) -> None:
                 # Soft fallback to mix for everything.
                 job.message = f"Analysis failed (fallback to mix): {e}"
                 analysis = await asyncio.to_thread(analyze_audio_multi, str(upload_copy), title)
+
+            if analysis:
+                # Apply voice leading to make bass progressions more natural
+                analysis.bar_chords = apply_voice_leading(analysis.bar_chords)
 
             # Update preview with bar-level chords on a timeline
             try:
