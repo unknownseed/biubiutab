@@ -254,44 +254,47 @@ export default function UploadClient() {
   return (
     <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_12px_40px_rgba(2,6,23,0.08)]">
       <div className="flex flex-col gap-3">
-        <div className="flex items-center justify-between gap-4">
-          <div className="text-sm font-semibold text-slate-950">上传音频</div>
-          <button
-            type="button"
-            className="rounded-lg bg-[color:var(--primary)] px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-500 disabled:opacity-50"
-            onClick={() => fileInputRef.current?.click()}
-            disabled={status === "uploading" || status === "processing"}
-          >
-            选择文件
-          </button>
-        </div>
+        {status !== "uploading" && status !== "processing" && (
+          <>
+            <div className="flex items-center justify-between gap-4">
+              <div className="text-sm font-semibold text-slate-950">上传音频</div>
+              <button
+                type="button"
+                className="rounded-lg bg-[color:var(--primary)] px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-500"
+                onClick={() => fileInputRef.current?.click()}
+              >
+                选择文件
+              </button>
+            </div>
 
-        <div
-          className="flex min-h-32 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center transition-colors hover:bg-slate-100"
-          onClick={() => fileInputRef.current?.click()}
-          onDragOver={(e) => e.preventDefault()}
-          onDrop={(e) => {
-            e.preventDefault();
-            const dropped = e.dataTransfer.files?.[0] ?? null;
-            onPickFile(dropped);
-          }}
-          role="button"
-          tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === "Enter" || e.key === " ") fileInputRef.current?.click();
-          }}
-        >
-          <div className="text-sm text-slate-700">拖拽文件到这里或点击上传</div>
-          <div className="text-xs text-slate-500">支持 MP3/WAV，最大 50MB</div>
-        </div>
+            <div
+              className="flex min-h-32 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center transition-colors hover:bg-slate-100"
+              onClick={() => fileInputRef.current?.click()}
+              onDragOver={(e) => e.preventDefault()}
+              onDrop={(e) => {
+                e.preventDefault();
+                const dropped = e.dataTransfer.files?.[0] ?? null;
+                onPickFile(dropped);
+              }}
+              role="button"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === " ") fileInputRef.current?.click();
+              }}
+            >
+              <div className="text-sm text-slate-700">拖拽文件到这里或点击上传</div>
+              <div className="text-xs text-slate-500">支持 MP3/WAV，最大 50MB</div>
+            </div>
 
-        <input
-          ref={fileInputRef}
-          type="file"
-          accept=".mp3,.wav,audio/mpeg,audio/wav"
-          className="hidden"
-          onChange={(e) => onPickFile(e.target.files?.[0] ?? null)}
-        />
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".mp3,.wav,audio/mpeg,audio/wav"
+              className="hidden"
+              onChange={(e) => onPickFile(e.target.files?.[0] ?? null)}
+            />
+          </>
+        )}
 
         <div className="flex flex-col gap-2 text-sm">
           <div className="flex flex-wrap items-center justify-between gap-2">

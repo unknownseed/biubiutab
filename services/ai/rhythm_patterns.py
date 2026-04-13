@@ -13,6 +13,7 @@ class RhythmToken:
     kind: Literal["strum", "rest"]
     duration: int
     direction: StrumDir | None = None
+    note_override: str | None = None
 
 
 @dataclass(frozen=True)
@@ -21,25 +22,37 @@ class RhythmPattern:
     tokens: list[RhythmToken]
     bpm_range: tuple[int, int]
     description: str
+    is_arpeggio: bool = False
 
 
 STRUMMING_PATTERNS: dict[str, RhythmPattern] = {
     "fingerpick_8th": RhythmPattern(
         notation="P i m a (8th)",
         tokens=[
-            # Render as slashed rhythm (tab staff) but pick-direction is not used;
-            # the visual pattern is conveyed by the timing density.
-            RhythmToken("strum", 8, "d"),
-            RhythmToken("strum", 8, "u"),
-            RhythmToken("strum", 8, "d"),
-            RhythmToken("strum", 8, "u"),
-            RhythmToken("strum", 8, "d"),
-            RhythmToken("strum", 8, "u"),
-            RhythmToken("strum", 8, "d"),
-            RhythmToken("strum", 8, "u"),
+            RhythmToken("strum", 8, "d", note_override="0.4"), # Bass (D string)
+            RhythmToken("strum", 8, "u", note_override="0.3"), # G
+            RhythmToken("strum", 8, "d", note_override="0.2"), # B
+            RhythmToken("strum", 8, "u", note_override="0.1"), # e
+            RhythmToken("strum", 8, "d", note_override="0.3"), # G
+            RhythmToken("strum", 8, "u", note_override="0.2"), # B
+            RhythmToken("strum", 8, "d", note_override="0.3"), # G
+            RhythmToken("strum", 8, "u", note_override="0.2"), # B
         ],
         bpm_range=(50, 110),
-        description="低能量：用更平稳的 8 分分解/拨弦密度（MVP）",
+        description="低能量：用更平稳的 8 分分解拨弦",
+        is_arpeggio=True,
+    ),
+    "fingerpick_4th": RhythmPattern(
+        notation="P i m a (4th)",
+        tokens=[
+            RhythmToken("strum", 4, "d", note_override="0.4"), # Bass
+            RhythmToken("strum", 4, "u", note_override="0.3"), # G
+            RhythmToken("strum", 4, "d", note_override="0.2"), # B
+            RhythmToken("strum", 4, "u", note_override="0.1"), # e
+        ],
+        bpm_range=(100, 160),
+        description="极低能量：4分分解拨弦",
+        is_arpeggio=True,
     ),
     "ballad": RhythmPattern(
         notation="D - D - D - D -",
@@ -95,22 +108,32 @@ STRUMMING_PATTERNS: dict[str, RhythmPattern] = {
 }
 
 
-def select_pattern(bpm: int, energy: float | None = None) -> RhythmPattern:
+def select_pattern(bpm: int, energy: float | None = None, section_name: str = "") -> RhythmPattern:
     """
-    Step 8A: 根据 BPM + percussive 能量（0~1）选择节奏型。
-
+    Step 8A: 根据 BPM + percussive 能量（0~1）以及段落名称选择节奏型。
+    
     - energy 越低：更像分解/轻触（fingerpick_8th）
     - energy 中等：标准民谣扫弦（folk_basic / soul）
     - energy 高：更密集或更直接（pop_16th）
     """
+    name_lower = section_name.lower()
+    
     if energy is None:
-        for p in STRUMMING_PATTERNS.values():
-            lo, hi = p.bpm_range
-            if lo <= bpm <= hi:
-                return p
-        return STRUMMING_PATTERNS["folk_basic"]
-
+        energy = 0.4 # Default moderate energy
+        
     e = max(0.0, min(1.0, float(energy)))
+
+    # Bias energy based on section
+    if "chorus" in name_lower or "hook" in name_lower:
+        e = min(1.0, e + 0.3)
+    elif "verse" in name_lower:
+        e = max(0.0, e - 0.1)
+    elif "outro" in name_lower or "ending" in name_lower:
+        e = max(0.0, e - 0.3)
+    elif "bridge" in name_lower:
+        e = min(1.0, e + 0.15)
+    elif "intro" in name_lower:
+        e = max(0.0, e - 0.2)
 
     # Heuristics (tuned for MVP; can be refined later with more signals):
     low = float(os.environ.get("RHYTHM_ENERGY_LOW") or "0.25")
@@ -120,6 +143,8 @@ def select_pattern(bpm: int, energy: float | None = None) -> RhythmPattern:
     high = max(low, min(1.0, high))
 
     if e < low:
+        if bpm >= 110:
+            return STRUMMING_PATTERNS["fingerpick_4th"]
         return STRUMMING_PATTERNS["fingerpick_8th"]
     if e < high:
         # Moderate groove: prefer folk; if bpm mid-range, soul can feel better.
@@ -181,42 +206,27 @@ def pattern_to_alphatex(
         # We render to a tab staff (`\staff {tabs}`) but want "slash rhythm" style
         # strums. The `slashed` effect is required to make alphaTab render this as
         # rhythmic slashes rather than repeated open-string notes.
-        #
-        # If alphaTab crashes on some inputs (observed: bottomY undefined), the web
-        # frontend will automatically retry with a more conservative alphaTex (by
-        # stripping other text-related effects first).
-        effects: list[str] = ["slashed"]
+        effects: list[str] = []
+        if not getattr(pattern, "is_arpeggio", False):
+            effects.append("slashed")
+
         if label and first_strum:
             effects.append(f'txt "{_escape_str(label)}"')
             
-        esc_lyric = _escape_str(pending_lyric) if pending_lyric else ""
-        if esc_lyric:
-            effects.append(f'lyrics "{esc_lyric}"')
-        pending_lyric = None
-
-        has_lyrics_1 = False
-        # Put strumming direction below chord diagrams by rendering it as a lyrics line.
-        # We keep it ASCII to avoid font issues across platforms (Render/Linux).
-        # alphaTex supports `lyrics <line> "<text>"` per beat.
-        if t.direction == "d":
-            effects.append('lyrics 1 "v"')
-            has_lyrics_1 = True
-        else:
-            effects.append('lyrics 1 "^"')
-            has_lyrics_1 = True
-
+        # NOTE: Pick stroke hints and jianpu are removed per user request.
+        # We only output the actual lyrics if present.
         esc_text = _escape_str(pending_text) if pending_text else ""
         if esc_text:
-            if not esc_lyric:
-                effects.append('lyrics "\xa0"')
-            if not has_lyrics_1:
-                effects.append('lyrics 1 "\xa0"')
-            effects.append(f'lyrics 2 "{esc_text}"')
+            effects.append(f'lyrics "{esc_text}"')
+        
+        pending_lyric = None
         pending_text = None
 
         if show_chord_name and first_strum:
             effects.append(f'ch "{_escape_str(chord)}"')
-        parts.append(f'0.1 {{ {" ".join(effects)} }}' if effects else "0.1")
+            
+        note_str = t.note_override if getattr(pattern, "is_arpeggio", False) and t.note_override else "0.1"
+        parts.append(f'{note_str} {{ {" ".join(effects)} }}' if effects else note_str)
         first_strum = False
         pos16 += _duration_to_16th(t.duration)
 

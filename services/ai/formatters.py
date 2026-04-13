@@ -227,14 +227,15 @@ def sections_to_alphatex(
     if uniq:
         parts.append("")
 
-    pattern = select_pattern(tempo, rhythm_energy)
-
     is_first_section = True
     # If a bar is 'N', we interpret it as "hold previous chord" for display,
     # and as a last resort (at the beginning) use the tonic chord from key.
     last_display_chord = tonic_fallback
     showed_initial_fallback = False
     for s in sections:
+        # Generate the rhythm pattern for this specific section based on energy and name
+        pattern = select_pattern(tempo, rhythm_energy, section_name=s.name)
+        
         for idx, c in enumerate(s.chords):
             # Put section label onto the sheet as proper alphaTex section marker.
             # This shows above the staff at the start bar.
@@ -254,6 +255,7 @@ def sections_to_alphatex(
                 showed_initial_fallback = True
             else:
                 last_display_chord = chord
+                showed_initial_fallback = False
 
             override = (bar_overrides or {}).get(c.bar)
             if override:

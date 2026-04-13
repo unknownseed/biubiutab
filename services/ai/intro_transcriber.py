@@ -145,17 +145,11 @@ def _render_bar_tokens_8th(
             effects.append(f'ch "{_escape(pending_chord)}"')
             pending_chord = None
 
-        esc_lyric = _escape(pending_lyric) if pending_lyric else ""
-        if esc_lyric:
-            effects.append(f'lyrics "{esc_lyric}"')
-        pending_lyric = None
-
         esc_text = _escape(pending_text) if pending_text else ""
         if esc_text:
-            if not esc_lyric:
-                effects.append('lyrics "\xa0"')
-            effects.append('lyrics 1 "\xa0"')
-            effects.append(f'lyrics 2 "{esc_text}"')
+            effects.append(f'lyrics "{esc_text}"')
+        
+        pending_lyric = None
         pending_text = None
 
         if effects:
@@ -246,17 +240,11 @@ def _arpeggio_bar_from_chord(
             effects.append(f'ch "{_escape(pending_chord)}"')
             pending_chord = None
 
-        esc_lyric = _escape(pending_lyric) if pending_lyric else ""
-        if esc_lyric:
-            effects.append(f'lyrics "{esc_lyric}"')
-        pending_lyric = None
-
         esc_text = _escape(pending_text) if pending_text else ""
         if esc_text:
-            if not esc_lyric:
-                effects.append('lyrics "\xa0"')
-            effects.append('lyrics 1 "\xa0"')
-            effects.append(f'lyrics 2 "{esc_text}"')
+            effects.append(f'lyrics "{esc_text}"')
+        
+        pending_lyric = None
         pending_text = None
 
         if effects:
