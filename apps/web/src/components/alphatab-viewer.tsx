@@ -257,8 +257,12 @@ const AlphaTabViewer = forwardRef<
       });
 
       // We render title + key outside of alphaTab for better spacing control.
-      api.settings.notation.elements.set(mod.NotationElement.ScoreTitle, false);
-      api.settings.notation.elements.set(mod.NotationElement.ScoreSubTitle, false);
+      // But if we disable ScoreTitle, AlphaTab hides the entire header including Chord Diagrams!
+      // So we keep ScoreTitle enabled, but set the title font sizes to 0 to make them invisible.
+      api.settings.display.resources.titleFont.size = 0;
+      api.settings.display.resources.subTitleFont.size = 0;
+      api.settings.display.resources.wordsFont.size = 0;
+      
       // We also render tuning outside of alphaTab to control layout/spacing.
       api.settings.notation.elements.set(mod.NotationElement.GuitarTuning, false);
 
@@ -293,8 +297,9 @@ const AlphaTabViewer = forwardRef<
       es.chordDiagramStringSpacing = Math.round(es.chordDiagramStringSpacing * 0.85);
 
       // Hide the "chord diagram list" that alphaTab usually shows near the score title area.
-      // We want diagrams to be inline per bar instead.
-      api.settings.notation.elements.set(mod.NotationElement.ChordDiagrams, false);
+      // Wait, the user specifically requested "请将和弦图一次放在谱例的上方" (Please put the chord diagrams once at the top of the score)
+      // So we MUST enable ChordDiagrams! We also want to hide them inline in the score, which is already done via globalDisplayChordDiagramsInScore: false.
+      api.settings.notation.elements.set(mod.NotationElement.ChordDiagrams, true);
 
       api.error.on((e: Error) => {
         if (cancelled) return;

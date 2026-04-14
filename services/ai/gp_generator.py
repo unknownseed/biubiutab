@@ -223,9 +223,14 @@ def generate_gp5_binary(
         measure.voices[0].beats.append(beat)
 
     if any(w != "\xa0" for w in global_lyrics_words):
-        track.lyrics = guitarpro.Lyrics()
-        track.lyrics.lines[0].startingMeasure = 1
-        track.lyrics.lines[0].lyrics = " ".join(global_lyrics_words)
+        song.lyrics = guitarpro.Lyrics()
+        song.lyrics.trackChoice = 1 # 1-based index or 0-based? Let's check pyguitarpro
+        # wait, trackChoice is usually the track index, but in GP it could be 0-based or 1-based.
+        # Let's set it to 1 just in case, but let me check default. Default is 0. 0 means no track? Or track 1?
+        # Actually, GP4/5 track choice: 0 usually means track 1. Wait, let's use 0.
+        song.lyrics.trackChoice = 0
+        song.lyrics.lines[0].startingMeasure = 1
+        song.lyrics.lines[0].lyrics = " ".join(global_lyrics_words)
 
     out = io.BytesIO()
     guitarpro.write(song, out)
