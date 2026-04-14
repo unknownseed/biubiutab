@@ -47,19 +47,10 @@ async function getJson<T>(url: string): Promise<T> {
   return (await res.json()) as T;
 }
 
-function downloadText(filename: string, text: string) {
-  const blob = new Blob([text], { type: "text/plain;charset=utf-8" });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = filename;
-  a.click();
-  URL.revokeObjectURL(url);
-}
-
 export default function EditorClient({ jobId }: { jobId: string }) {
   const [job, setJob] = useState<JobResponse | null>(null);
   const [result, setResult] = useState<JobResult | null>(null);
+  const [gp5Data, setGp5Data] = useState<Uint8Array | null>(null);
   const [error, setError] = useState<string | null>(null);
   const viewerRef = useRef<AlphaTabViewerHandle | null>(null);
   const [downloadOpen, setDownloadOpen] = useState(false);
@@ -80,12 +71,19 @@ export default function EditorClient({ jobId }: { jobId: string }) {
         if (latest.status === "succeeded") {
           const res = await getJson<JobResult>(`/api/jobs/${jobId}/result`);
           if (cancelled) return;
-          if (typeof (res as unknown as { alphatex?: unknown }).alphatex !== "string" || !res.alphatex.trim()) {
-            setError("谱面数据为空（后端未返回 alphatex）。请重启 AI 服务与 Web 后重试。");
-            return;
-          }
           setResult(res);
-          toast.push({ title: "谱例已就绪", description: "你可以开始编辑或导出。", variant: "success" });
+          
+          try {
+            const gp5Res = await fetch(`/api/jobs/${jobId}/gp5`);
+            if (!gp5Res.ok) throw new Error("GP5 下载失败");
+            const buf = await gp5Res.arrayBuffer();
+            if (cancelled) return;
+            setGp5Data(new Uint8Array(buf));
+            toast.push({ title: "谱例已就绪", description: "你可以开始编辑或导出。", variant: "success" });
+          } catch (e) {
+            if (cancelled) return;
+            setError("无法加载吉他谱数据。");
+          }
           return;
         }
         window.setTimeout(() => void poll(), 800);
@@ -127,11 +125,19 @@ export default function EditorClient({ jobId }: { jobId: string }) {
                     className="block w-full px-3 py-2 text-left text-sm text-slate-800 hover:bg-slate-50"
                     onClick={() => {
                       const safe = (result.title || "tab").replaceAll(/[^a-zA-Z0-9._-]+/g, "_");
-                      downloadText(`${safe}.atex`, result.alphatex);
+                      if (gp5Data) {
+                        const blob = new Blob([gp5Data as unknown as BlobPart], { type: "application/octet-stream" });
+                        const url = URL.createObjectURL(blob);
+                        const a = document.createElement("a");
+                        a.href = url;
+                        a.download = `${safe}.gp5`;
+                        a.click();
+                        URL.revokeObjectURL(url);
+                      }
                       setDownloadOpen(false);
                     }}
                   >
-                    下载 .atex
+                    下载 GP5
                   </button>
                   <button
                     type="button"
@@ -153,7 +159,6 @@ export default function EditorClient({ jobId }: { jobId: string }) {
                   >
                     导出 PDF
                   </button>
-                  <div className="border-t border-slate-200 px-3 py-2 text-xs text-slate-500">GP4（即将支持）</div>
                 </div>
               ) : null}
             </div>
@@ -161,10 +166,10 @@ export default function EditorClient({ jobId }: { jobId: string }) {
           {error ? (
             <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>
           ) : null}
-          {result ? (
+          {result && gp5Data ? (
             <AlphaTabViewer
               ref={viewerRef}
-              tex={result.alphatex}
+              data={gp5Data}
               filename={result.title}
               titleText={result.title}
               keyText={result.key}

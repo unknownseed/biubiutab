@@ -1,0 +1,9 @@
+- [x] `pyguitarpro` library is installed and available in the backend Python environment.
+- [x] `services/ai/gp_generator.py` exists and implements `generate_gp5_binary()`.
+- [x] The `generate_gp5_binary` function correctly outputs a valid `.gp5` file in memory (via `io.BytesIO`).
+- [x] Rhythm patterns are accurately translated to `Beat` and `Note` objects in the `Guitar Pro` track.
+- [x] Chord shapes are accurately mapped to strings and frets based on the `chord_fingering` dictionary.
+- [x] Lyrics are successfully attached to corresponding `Beat.text` annotations.
+- [x] The backend processing pipeline returns binary GP5 data instead of AlphaTex strings.
+- [x] The frontend `AlphaTabViewer` component successfully fetches and loads the binary GP5 data using `api.load(uint8Array)`.
+- [x] The rendered score in the browser displays chords, rhythm patterns, and lyrics correctly aligned without layout errors.

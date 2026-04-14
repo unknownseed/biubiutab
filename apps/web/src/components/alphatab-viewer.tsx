@@ -30,68 +30,6 @@ function serializeSvg(svg: SVGSVGElement): string {
   return serializer.serializeToString(clone);
 }
 
-type SanitizeLevel = "normal" | "noInlineLyrics" | "noTextEffects" | "bareNotes";
-
-function sanitizeAlphaTex(tex: string, level: SanitizeLevel): string {
-  // Defensive alphaTex sanitization.
-  // We prefer to keep rich annotations (lyrics/txt) but alphaTab can crash on some
-  // edge cases (observed: bottomY undefined). In that case we retry with a more
-  // conservative tex.
-  let out = tex
-    // Remove global \lyrics lines (we already emit per-note lyrics effects).
-    .split(/\r?\n/)
-    // Also remove global tempo display from score (we show it in the header UI).
-    .filter((line) => !/^\s*\\lyrics\b/.test(line))
-    .filter((line) => !/^\s*\\tempo\b/.test(line))
-    .join("\n");
-
-  // GLOBAL FIX: Remove `slashed` entirely. In AlphaTab (1.8.2), the `slashed` effect
-  // has a layout bug that causes a fatal `bottomY` crash when `IntersectionObserver`
-  // triggers a re-render. Removing it allows the score to render smoothly without
-  // crashing or resorting to severe downgrades that hide chord diagrams.
-  out = out.replace(/\bslashed\b/g, "");
-
-  if (level === "normal") return out;
-
-  if (level === "noInlineLyrics" || level === "noTextEffects") {
-    // Remove ALL per-note lyrics effects inside `{ ... }`.
-    // This strips `lyrics "..."`, `lyrics 1 "..."`, and `lyrics 2 "..."`.
-    // We must strip all lines because AlphaTab crashes if line 1 exists but line 0 is stripped.
-    out = out.replace(/\blyrics(?:\s+\d+)?\s+"([^"\\]|\\.)*"/g, "").replace(/\s{2,}/g, " ");
-  }
-
-  if (level === "noTextEffects") {
-    // Remove text labels which might include non-ascii chars and trigger layout bugs.
-    out = out
-      .replace(/\btxt\s+"([^"\\]|\\.)*"/g, "")
-      .replace(/\s{2,}/g, " ")
-      .replace(/\{\s+/g, "{ ")
-      .replace(/\s+\}/g, " }");
-  }
-
-  if (level === "bareNotes") {
-    // As a last resort, keep only the minimal subset of per-note effects.
-    // We prioritize keeping `ch` (chord diagrams) over `slashed`, because the combination
-    // of `slashed` + `ch` is known to trigger AlphaTab layout crashes.
-    out = out
-      .replace(/\{\s*([^}]*)\}/g, (_m, inner: string) => {
-        const keep: string[] = [];
-        // Keep stroke direction if present
-        if (/\bsd\b/.test(inner)) keep.push("sd");
-        if (/\bsu\b/.test(inner)) keep.push("su");
-        // Keep chord name label if present
-        const chMatch = inner.match(/\bch\s+"([^"\\]|\\.)*"/);
-        if (chMatch) keep.push(chMatch[0]);
-        return keep.length ? `{ ${keep.join(" ")} }` : "";
-      })
-      .replace(/\s{2,}/g, " ")
-      .replace(/\s+\|/g, " |")
-      .replace(/\{\s*\}/g, "");
-  }
-
-  return out.trimEnd() + "\n";
-}
-
 async function svgToPngBlob(svgText: string, width: number, height: number, scale: number): Promise<Blob> {
   const svgBlob = new Blob([svgText], { type: "image/svg+xml;charset=utf-8" });
   const svgUrl = URL.createObjectURL(svgBlob);
@@ -167,7 +105,7 @@ function keyToDoText(key: string | undefined): string {
 const AlphaTabViewer = forwardRef<
   AlphaTabViewerHandle,
   {
-    tex: string;
+    data: Uint8Array;
     filename?: string;
     titleText?: string;
     keyText?: string;
@@ -175,21 +113,19 @@ const AlphaTabViewer = forwardRef<
     timeSignatureText?: string;
     arrangementText?: string;
   }
->(function AlphaTabViewer({ tex, filename, titleText, keyText, tempoBpm, timeSignatureText, arrangementText }, ref) {
+>(function AlphaTabViewer({ data, filename, titleText, keyText, tempoBpm, timeSignatureText, arrangementText }, ref) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const pageRef = useRef<HTMLDivElement | null>(null);
-  const apiRef = useRef<{ destroy: () => void; tex: (t: string) => void } | null>(null);
+  const apiRef = useRef<{ destroy: () => void; load: (d: Uint8Array) => void } | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const retryLevelRef = useRef<SanitizeLevel>("normal");
-  const lastTexRef = useRef<string>("");
   const modRef = useRef<typeof import("@coderline/alphatab") | null>(null);
-  const retryCountRef = useRef<number>(0);
-  const gaveUpRef = useRef<boolean>(false);
 
-  const totalBars = useMemo(() => (tex.match(/\|/g) ?? []).length, [tex]);
+  // Instead of counting bars from a tex string, we use 1 for now or ask alphatab after load
+  // We'll manage pagination differently or default to showing everything if we can't count bars easily
+  const [totalBars, setTotalBars] = useState<number>(1);
   const pageCount = useMemo(() => Math.max(1, Math.ceil(totalBars / BARS_PER_PAGE)), [totalBars]);
   const [page, setPage] = useState<number>(1);
-  useEffect(() => setPage(1), [tex]);
+  useEffect(() => setPage(1), [data]);
 
   const pageStartBar = useMemo(() => (page - 1) * BARS_PER_PAGE + 1, [page]);
   const pageEndBar = useMemo(() => Math.min(totalBars, page * BARS_PER_PAGE), [page, totalBars]);
@@ -275,10 +211,6 @@ const AlphaTabViewer = forwardRef<
 
   useEffect(() => {
     let cancelled = false;
-    lastTexRef.current = tex;
-    retryLevelRef.current = "normal";
-    retryCountRef.current = 0;
-    gaveUpRef.current = false;
 
     const destroyApi = () => {
       try {
@@ -290,10 +222,8 @@ const AlphaTabViewer = forwardRef<
       if (pageRef.current) pageRef.current.innerHTML = "";
     };
 
-    const tryRenderWithLevel = (level: SanitizeLevel) => {
+    const tryRenderWithData = () => {
       if (cancelled) return;
-      retryLevelRef.current = level;
-      const sanitized = sanitizeAlphaTex(lastTexRef.current, level);
       const mod = modRef.current;
       if (!mod) return;
       if (!pageRef.current) return;
@@ -309,16 +239,19 @@ const AlphaTabViewer = forwardRef<
         display: {
           scale: 1.0,
           layoutMode: mod.LayoutMode.Page,
-          // Show TAB only (no standard score), and render rhythm directly on TAB.
-          staveProfile: mod.StaveProfile.Tab,
+          // Show standard score and TAB
+          staveProfile: mod.StaveProfile.ScoreTab,
           barsPerRow: BARS_PER_ROW,
           startBar: pageStartBar,
           barCount: BARS_PER_PAGE,
           // Add top padding to prevent bottomY crashes when chord diagrams or sections are rendered above the stave.
           padding: [20, 0, 0, 0],
           stylesheet: {
-            globalDisplayChordDiagramsOnTop: false,
-            globalDisplayChordDiagramsInScore: true,
+            globalDisplayChordDiagramsOnTop: true,
+            globalDisplayChordDiagramsInScore: false,
+          },
+          notation: {
+            rhythmMode: mod.TabRhythmMode.ShowWithBeams,
           },
         } as any,
       });
@@ -329,19 +262,17 @@ const AlphaTabViewer = forwardRef<
       // We also render tuning outside of alphaTab to control layout/spacing.
       api.settings.notation.elements.set(mod.NotationElement.GuitarTuning, false);
 
-      api.settings.notation.elements.set(mod.NotationElement.EffectLyrics, level !== "bareNotes" && level !== "noInlineLyrics" && level !== "noTextEffects");
-      // Enable section markers added via alphaTex `\section`.
-      api.settings.notation.elements.set(mod.NotationElement.EffectMarker, level !== "bareNotes");
+      api.settings.notation.elements.set(mod.NotationElement.EffectLyrics, true);
+      api.settings.notation.elements.set(mod.NotationElement.EffectMarker, true);
       // We render strumming direction as lyrics line (below chord diagrams), not as pick-stroke glyphs.
       api.settings.notation.elements.set(mod.NotationElement.EffectPickStroke, false);
-      api.settings.notation.elements.set(mod.NotationElement.EffectChordNames, level !== "bareNotes");
+      api.settings.notation.elements.set(mod.NotationElement.EffectChordNames, true);
       // Hide tempo/time-signature rendering inside the score (we show them in the header).
       api.settings.notation.elements.set((mod.NotationElement as any).EffectTempo, false);
       api.settings.notation.elements.set((mod.NotationElement as any).StandardNotationTimeSignature, false);
       api.settings.notation.elements.set((mod.NotationElement as any).GuitarTabsTimeSignature, false);
       api.settings.notation.elements.set((mod.NotationElement as any).SlashTimeSignature, false);
       api.settings.notation.elements.set((mod.NotationElement as any).NumberedTimeSignature, false);
-      // Section markers are rendered via `\section` bar metadata, no need for beat text labels.
 
       // Spacing tweaks:
       // - Make section markers slightly smaller to reduce collision with chord names.
@@ -369,77 +300,33 @@ const AlphaTabViewer = forwardRef<
         if (cancelled) return;
         const msg = e?.message || String(e);
         console.error("AlphaTab Error:", msg);
-        maybeRetryOnBottomY(msg);
-        if (!msg.includes("bottomY")) setError(msg);
+        setError(msg);
       });
       api.renderFinished.on(() => {
         if (cancelled) return;
         setError(null);
       });
+      
+      api.scoreLoaded.on((score: any) => {
+        if (cancelled) return;
+        let maxBars = 0;
+        // Simple logic to count the total bars in the score
+        for (const track of score.tracks) {
+          if (track.staves && track.staves.length > 0 && track.staves[0].bars) {
+             maxBars = Math.max(maxBars, track.staves[0].bars.length);
+          }
+        }
+        if (maxBars > 0) setTotalBars(maxBars);
+      });
 
-      apiRef.current = api;
+      apiRef.current = api as any;
       try {
-        api.tex(sanitized);
+        api.load(data);
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
-        maybeRetryOnBottomY(msg);
-        if (!msg.includes("bottomY")) setError(msg);
+        setError(msg);
       }
     };
-
-    const maybeRetryOnBottomY = (msg: string) => {
-      if (cancelled) return;
-      if (!msg.includes("bottomY")) return;
-      if (gaveUpRef.current) return;
-      
-      // If a retry is already scheduled, ignore duplicate errors from the same render pass
-      if (retryTimerRef.current) return;
-
-      if (retryCountRef.current >= 4) {
-        setError(`${msg}\n\n（已多次重试仍失败。请尝试刷新页面，或把 .atex 文件发给我；也可以直接升级 @coderline/alphatab。）`);
-        gaveUpRef.current = true;
-        destroyApi();
-        return;
-      }
-      
-      retryCountRef.current += 1;
-
-      const delay = retryCountRef.current * 300;
-      console.error(`[AlphaTab] Caught bottomY error. Retrying in ${delay}ms (attempt ${retryCountRef.current}). Msg:`, msg);
-
-      retryTimerRef.current = setTimeout(() => {
-        retryTimerRef.current = null;
-        if (cancelled || gaveUpRef.current) return;
-        
-        if (retryLevelRef.current === "normal") {
-          tryRenderWithLevel("noInlineLyrics");
-          return;
-        }
-        if (retryLevelRef.current === "noInlineLyrics") {
-          tryRenderWithLevel("noTextEffects");
-          return;
-        }
-        if (retryLevelRef.current === "noTextEffects") {
-          tryRenderWithLevel("bareNotes");
-          return;
-        }
-      }, delay);
-    };
-
-    const onWindowError = (event: ErrorEvent) => {
-      if (cancelled) return;
-      const msg = event.error instanceof Error ? event.error.message : event.message;
-      if (!msg) return;
-      maybeRetryOnBottomY(msg);
-    };
-    const onUnhandledRejection = (event: PromiseRejectionEvent) => {
-      if (cancelled) return;
-      const reason = event.reason;
-      const msg = reason instanceof Error ? reason.message : String(reason ?? "");
-      maybeRetryOnBottomY(msg);
-    };
-    window.addEventListener("error", onWindowError);
-    window.addEventListener("unhandledrejection", onUnhandledRejection);
 
     const init = async () => {
       // Preload fonts in parallel with module import
@@ -465,7 +352,7 @@ const AlphaTabViewer = forwardRef<
           // Delay initialization slightly to let fonts settle in the browser
           setTimeout(() => {
             if (cancelled) return;
-            tryRenderWithLevel("normal");
+            tryRenderWithData();
           }, 200);
         }
       });
@@ -483,14 +370,12 @@ const AlphaTabViewer = forwardRef<
     return () => {
       cancelled = true;
       if (cleanupObserver) cleanupObserver();
-      window.removeEventListener("error", onWindowError);
-      window.removeEventListener("unhandledrejection", onUnhandledRejection);
       if (retryTimerRef.current) {
         clearTimeout(retryTimerRef.current);
       }
       destroyApi();
     };
-  }, [tex, page, pageStartBar]);
+  }, [data, page, pageStartBar]);
 
   return (
     <div className="flex w-full flex-col gap-2">
@@ -547,7 +432,7 @@ const AlphaTabViewer = forwardRef<
         </div>
       </div>
 
-      {error ? <pre className="overflow-auto rounded-lg bg-zinc-950 p-4 text-xs text-zinc-50">{tex}</pre> : null}
+      {error ? <div className="overflow-auto rounded-lg bg-zinc-950 p-4 text-xs text-zinc-50">加载吉他谱失败</div> : null}
     </div>
   );
 });

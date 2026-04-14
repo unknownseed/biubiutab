@@ -10,12 +10,14 @@ from typing import Literal, Optional
 import json
 
 from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
 from audio_preprocess import compute_percussive_energy, extract_harmonic_percussive
 from voice_leading import apply_voice_leading
 from chord_detector import analyze_audio_multi
-from formatters import ChordAt, SectionOut, build_display_sections_and_arrangement, sections_to_alphatex
+from formatters import ChordAt, SectionOut, build_display_sections_and_arrangement
+from gp_generator import generate_gp5_binary
 from intro_transcriber import build_intro_bar_overrides
 from melody_tab import (
     align_melody_to_lyrics,
@@ -67,7 +69,7 @@ class JobResult(BaseModel):
     time_signature: str
     sections: list[SectionModel]
     arrangement: str
-    alphatex: str
+    alphatex: Optional[str] = None
     stems: Optional[dict] = None
     vocal_melody: Optional[dict] = None
     lyrics: Optional[dict] = None
@@ -516,35 +518,21 @@ async def _run_job(job_id: str) -> None:
         except Exception:
             intro_bars = {}
 
-        alphatex = sections_to_alphatex(
+        gp5_bytes = generate_gp5_binary(
             title=_clean_title(analysis.title),
             tempo=analysis.tempo_bpm,
             time_signature=analysis.time_signature,
             key=analysis.key,
             sections=display_sections,
-            jianpu=jianpu,
             lyrics_beats=lyrics_beats,
-            bar_overrides=intro_bars,
-            extra_tracks=None,
             rhythm_energy=rhythm_energy,
         )
 
         # Write results artifacts under storage/results/{job_id}/
         try:
             results_dir.mkdir(parents=True, exist_ok=True)
-            chord_alphatex = sections_to_alphatex(
-                title=_clean_title(analysis.title),
-                tempo=analysis.tempo_bpm,
-                time_signature=analysis.time_signature,
-                key=analysis.key,
-                sections=display_sections,
-                jianpu=jianpu,
-                lyrics_beats=lyrics_beats,
-                bar_overrides=intro_bars,
-                extra_tracks=None,
-                rhythm_energy=rhythm_energy,
-            )
-            (results_dir / "chord_chart.alphatex").write_text(chord_alphatex, encoding="utf-8")
+            (results_dir / "result.gp5").write_bytes(gp5_bytes)
+            
             if isinstance(vocal_melody, dict) and isinstance(vocal_melody.get("alphatex"), str):
                 (results_dir / "melody.alphatex").write_text(vocal_melody["alphatex"], encoding="utf-8")
         except Exception:
@@ -566,7 +554,7 @@ async def _run_job(job_id: str) -> None:
                 for s in display_sections
             ],
             arrangement=arrangement,
-            alphatex=alphatex,
+            alphatex=None,
             stems=stems_out,
             vocal_melody=vocal_melody,
             lyrics=lyrics,
@@ -655,3 +643,22 @@ async def get_job_result(job_id: str) -> JobResult:
     if job.status != "succeeded" or not job.result:
         raise HTTPException(status_code=409, detail="job not ready")
     return job.result
+
+
+@app.get("/jobs/{job_id}/result.gp5")
+async def get_job_result_gp5(job_id: str):
+    job = _jobs.get(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="job not found")
+    if job.status != "succeeded":
+        raise HTTPException(status_code=409, detail="job not ready")
+        
+    gp5_path = _storage_root() / "results" / job_id / "result.gp5"
+    if not gp5_path.exists():
+        raise HTTPException(status_code=404, detail="gp5 file not found")
+        
+    return FileResponse(
+        path=gp5_path, 
+        media_type="application/octet-stream",
+        filename=f"{job_id}.gp5"
+    )

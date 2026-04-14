@@ -19,3 +19,4 @@ Cython>=0.29.36,<3
 # NOTE:
 # madmom requires native builds on macOS and has stricter build-time requirements.
 # To keep the default install reliable, madmom is moved to requirements-madmom.txt.
+pyguitarpro==0.10.1
