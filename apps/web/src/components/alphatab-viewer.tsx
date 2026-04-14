@@ -261,7 +261,7 @@ const AlphaTabViewer = forwardRef<
       // So we keep ScoreTitle enabled, but set the title font sizes to 0 to make them invisible.
       api.settings.display.resources.titleFont.size = 0;
       api.settings.display.resources.subTitleFont.size = 0;
-      api.settings.display.resources.wordsFont.size = 0;
+      // Do NOT set wordsFont.size to 0, because AlphaTab uses it for Lyrics!
       
       // We also render tuning outside of alphaTab to control layout/spacing.
       api.settings.notation.elements.set(mod.NotationElement.GuitarTuning, false);
