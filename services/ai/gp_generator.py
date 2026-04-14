@@ -62,8 +62,6 @@ def generate_gp5_binary(
     last_display_chord = tonic_fallback
     showed_initial_fallback = False
     
-    global_lyrics_words = []
-
     for s in sections:
         pattern = select_pattern(tempo, rhythm_energy, section_name=s.name)
         
@@ -190,10 +188,10 @@ def generate_gp5_binary(
                         
                     if txt:
                         clean_txt = str(txt).replace(" ", "_").replace("\xa0", "_").strip()
-                        global_lyrics_words.append(clean_txt if clean_txt else "+")
-                    else:
-                        global_lyrics_words.append("+")
-
+                        if clean_txt:
+                            beat.text = clean_txt
+                        # We don't need global_lyrics_words anymore since we attach to beat.text
+                    
                 voice.beats.append(beat)
                 first_beat = False
                 
@@ -222,10 +220,7 @@ def generate_gp5_binary(
         beat.status = guitarpro.BeatStatus.rest
         measure.voices[0].beats.append(beat)
 
-    if any(w != "+" for w in global_lyrics_words):
-        track.lyrics = guitarpro.Lyrics()
-        track.lyrics.lines[0].startingMeasure = 1
-        track.lyrics.lines[0].lyrics = " ".join(global_lyrics_words)
+    # Remove the global track lyrics since we now use beat.text and beatTextAsLyrics
 
     out = io.BytesIO()
     guitarpro.write(song, out)

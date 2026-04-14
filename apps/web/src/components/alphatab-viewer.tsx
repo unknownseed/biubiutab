@@ -246,15 +246,18 @@ const AlphaTabViewer = forwardRef<
           barCount: BARS_PER_PAGE,
           // Add top padding to prevent bottomY crashes when chord diagrams or sections are rendered above the stave.
           padding: [20, 0, 0, 0],
-          stylesheet: {
-            globalDisplayChordDiagramsOnTop: true,
-            globalDisplayChordDiagramsInScore: false,
-          },
-          notation: {
-            rhythmMode: mod.TabRhythmMode.ShowWithBeams,
-          },
-        } as any,
-      });
+        },
+        importer: {
+          beatTextAsLyrics: true,
+        },
+        stylesheet: {
+          globalDisplayChordDiagramsOnTop: true,
+          globalDisplayChordDiagramsInScore: false,
+        },
+        notation: {
+          rhythmMode: mod.TabRhythmMode.ShowWithBeams,
+        },
+      } as any);
 
       // We render title + key outside of alphaTab for better spacing control.
       // But if we disable ScoreTitle, AlphaTab hides the entire header including Chord Diagrams!
