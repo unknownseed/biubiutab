@@ -111,12 +111,12 @@ def generate_gp5_binary(
             for t in pattern.tokens:
                 beat = guitarpro.Beat(voice)
                 
-                if t.duration == 4: beat.duration.value = guitarpro.Duration.quarter
-                elif t.duration == 8: beat.duration.value = guitarpro.Duration.eighth
-                elif t.duration == 16: beat.duration.value = guitarpro.Duration.sixteenth
-                elif t.duration == 2: beat.duration.value = guitarpro.Duration.half
-                elif t.duration == 1: beat.duration.value = guitarpro.Duration.whole
-                else: beat.duration.value = guitarpro.Duration.quarter
+                if t.duration == 4: beat.duration.value = 4
+                elif t.duration == 8: beat.duration.value = 8
+                elif t.duration == 16: beat.duration.value = 16
+                elif t.duration == 2: beat.duration.value = 2
+                elif t.duration == 1: beat.duration.value = 1
+                else: beat.duration.value = 4
 
                 txt = None
                 if pos16 % 4 == 0:
