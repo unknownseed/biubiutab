@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <script src="https://cdn.jsdelivr.net/npm/@coderline/alphatab@latest/dist/alphaTab.js"></script>
+</head>
+<body>
+  <button id="play" disabled>Loading...</button>
+  <div id="alphaTab" style="position: absolute; left: -9999px; top: 0; width: 800px; height: 600px; opacity: 0; pointer-events: none; overflow: hidden;"></div>
+  <script>
+    const api = new alphaTab.AlphaTabApi(document.querySelector("#alphaTab"), {
+        core: { engine: "svg", useWorkers: false, logLevel: 0 },
+        player: {
+          enablePlayer: true,
+          soundFont: "https://cdn.jsdelivr.net/npm/@coderline/alphatab@latest/dist/soundfont/sonivox.sf2",
+        },
+        display: {
+            layoutMode: alphaTab.LayoutMode.Horizontal
+        }
+      });
+      
+    api.playerReady.on(() => {
+        console.log("PLAYER READY");
+        document.querySelector("#play").disabled = false;
+        document.querySelector("#play").innerText = "Play";
+    });
+    api.playerStateChanged.on((args) => {
+        console.log("PLAYER STATE:", args.state);
+    });
+    
+    document.querySelector("#play").onclick = () => {
+        console.log("PLAY CLICKED", api.isReadyForPlayback);
+        api.playPause();
+    };
+
+    fetch('test_chords_real.gp5').then(r => r.arrayBuffer()).then(ab => {
+        api.load(new Uint8Array(ab));
+    });
+  </script>
+</body>
+</html>

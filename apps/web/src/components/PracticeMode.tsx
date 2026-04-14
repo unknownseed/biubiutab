@@ -17,6 +17,7 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
   const alphaTabApiRef = useRef<any>(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlayerReady, setIsPlayerReady] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const duration = practiceData?.metadata?.durationSec || 0;
 
@@ -49,6 +50,11 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       api.playerStateChanged.on((args: any) => {
         if (cancelled) return;
         setIsPlaying(args.state === 1); // 1 = playing, 0 = paused, 2 = stopped
+      });
+
+      api.playerReady.on(() => {
+        if (cancelled) return;
+        setIsPlayerReady(true);
       });
 
       api.playerPositionChanged.on((args: any) => {
@@ -113,10 +119,10 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
 
   return (
     <div className="flex flex-col gap-6 rounded-2xl bg-zinc-950 p-6 text-zinc-50 shadow-xl">
-      {/* Off-screen AlphaTab container for audio engine only */}
+      {/* Off-screen AlphaTab container for audio engine only. Must have valid width/height so AlphaTab doesn't skip layout. */}
       <div
         ref={containerRef}
-        className="absolute -left-[9999px] top-0 h-[1px] w-[1px] opacity-0 pointer-events-none overflow-hidden"
+        className="absolute -left-[9999px] top-0 h-[600px] w-[800px] opacity-0 pointer-events-none overflow-hidden"
       />
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
@@ -132,6 +138,7 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
 
       <PlaybackControls
         isPlaying={isPlaying}
+        isPlayerReady={isPlayerReady}
         currentTime={currentTime}
         duration={duration}
         onPlayPause={handlePlayPause}

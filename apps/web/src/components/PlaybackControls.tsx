@@ -4,6 +4,7 @@ import React, { useRef, useState, useEffect } from "react";
 
 export type PlaybackControlsProps = {
   isPlaying: boolean;
+  isPlayerReady?: boolean;
   currentTime: number;
   duration: number;
   onPlayPause: () => void;
@@ -20,6 +21,7 @@ function formatTime(sec: number) {
 
 export default function PlaybackControls({
   isPlaying,
+  isPlayerReady = true,
   currentTime,
   duration,
   onPlayPause,
@@ -112,7 +114,12 @@ export default function PlaybackControls({
         <button
           type="button"
           onClick={onPlayPause}
-          className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-tr from-yellow-500 to-yellow-300 text-zinc-950 shadow-lg shadow-yellow-500/20 transition hover:scale-105 hover:shadow-yellow-500/40 active:scale-95"
+          disabled={!isPlayerReady}
+          className={`flex h-16 w-16 items-center justify-center rounded-full text-zinc-950 shadow-lg transition active:scale-95 ${
+            isPlayerReady
+              ? "bg-gradient-to-tr from-yellow-500 to-yellow-300 shadow-yellow-500/20 hover:scale-105 hover:shadow-yellow-500/40"
+              : "bg-zinc-700 opacity-50 cursor-not-allowed"
+          }`}
           aria-label={isPlaying ? "Pause" : "Play"}
         >
           {isPlaying ? (
