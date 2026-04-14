@@ -313,3 +313,55 @@ def _section_marker_letter(name: str) -> str:
     if n.startswith("outro"):
         return "O"
     return (name[:1] or "S").upper()
+
+
+def generate_practice_data(
+    beat_grid: list[float],
+    chords: list[str],
+    aligned_lyrics: list[dict] | None
+) -> dict:
+    """
+    Generate data for frontend practice mode:
+    - metadata: total beats and duration
+    - chordBlocks: list of chords mapped to start/end beats and times
+    - lyrics: list of lyric characters/words with exact start/end times
+    """
+    chord_blocks = []
+    beats_per_bar = 4
+    
+    for i, chord in enumerate(chords):
+        start_beat = i * beats_per_bar
+        end_beat = start_beat + beats_per_bar
+        
+        start_time = float(beat_grid[start_beat]) if start_beat < len(beat_grid) else 0.0
+        end_time = float(beat_grid[end_beat]) if end_beat < len(beat_grid) else (float(beat_grid[-1]) if beat_grid else 0.0)
+        
+        chord_blocks.append({
+            "chord": chord,
+            "startBeat": start_beat,
+            "endBeat": end_beat,
+            "startTime": start_time,
+            "endTime": end_time
+        })
+        
+    lyrics_data = []
+    if aligned_lyrics:
+        for n in aligned_lyrics:
+            text = n.get("lyric")
+            if text:
+                lyrics_data.append({
+                    "text": str(text),
+                    "startTime": float(n.get("start_sec", 0.0)),
+                    "endTime": float(n.get("end_sec", 0.0))
+                })
+                
+    duration_sec = float(beat_grid[-1]) if beat_grid else 0.0
+    
+    return {
+        "metadata": {
+            "totalBeats": max(0, len(beat_grid) - 1) if beat_grid else 0,
+            "durationSec": duration_sec
+        },
+        "chordBlocks": chord_blocks,
+        "lyrics": lyrics_data
+    }

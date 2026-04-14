@@ -16,7 +16,7 @@ from pydantic import BaseModel, Field
 from audio_preprocess import compute_percussive_energy, extract_harmonic_percussive
 from voice_leading import apply_voice_leading
 from chord_detector import analyze_audio_multi
-from formatters import ChordAt, SectionOut, build_display_sections_and_arrangement
+from formatters import ChordAt, SectionOut, build_display_sections_and_arrangement, generate_practice_data
 from gp_generator import generate_gp5_binary
 from intro_transcriber import build_intro_bar_overrides
 from melody_tab import (
@@ -74,6 +74,7 @@ class JobResult(BaseModel):
     vocal_melody: Optional[dict] = None
     lyrics: Optional[dict] = None
     metadata: Optional[dict] = None
+    practiceData: Optional[dict] = None
 
 
 @dataclass
@@ -564,6 +565,11 @@ async def _run_job(job_id: str) -> None:
                 "rhythm_energy_high": float(os.environ.get("RHYTHM_ENERGY_HIGH", "0.55")),
                 "visualization": visualization,
             },
+            practiceData=generate_practice_data(
+                beat_grid=beat_grid.tolist() if hasattr(beat_grid, "tolist") else beat_grid,
+                chords=analysis.bar_chords,
+                aligned_lyrics=vocal_melody.get("aligned_melody") if isinstance(vocal_melody, dict) else None,
+            ),
         )
 
         # Persist output.json + lyrics.lrc (best effort)

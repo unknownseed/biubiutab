@@ -1,0 +1,11 @@
+- [x] `generate_practice_data` correctly builds `practiceData` dict containing `metadata`, `chordBlocks`, and `lyrics`
+- [x] `/api/jobs/{jobId}/result` successfully returns `practiceData`
+- [x] Tab switcher between "Practice Mode" and "Full Score" renders correctly in `editor-client.tsx`
+- [x] `PracticeMode.tsx` successfully mounts `ChordTimeline`, `SyncedLyrics`, `LargeChordDiagram`, and `PlaybackControls`
+- [x] CSS animations for `.chord-glow-pulse` are present and working in `globals.css`
+- [x] AlphaTab time synchronization updates `currentTime` state accurately during playback
+- [x] Clicking on a chord block correctly updates `alphaTabApi.timePosition`
+- [x] Chord timeline automatically scrolls and highlights active chords
+- [x] Lyrics are displayed and highlighted in sync with audio
+- [x] Chord diagrams dynamically render the correct active chord
+- [x] Playback controls successfully manage play/pause, tempo, and loop features

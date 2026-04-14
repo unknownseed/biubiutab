@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 
 import AlphaTabViewer, { type AlphaTabViewerHandle } from "./alphatab-viewer";
+import PracticeMode from "./PracticeMode";
 import { useToast } from "./toast-provider";
 
 type JobResponse = {
@@ -36,6 +37,8 @@ type JobResult = {
   arrangement: string;
   alphatex: string;
   metadata?: Record<string, unknown> | null;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  practiceData?: any;
 };
 
 async function getJson<T>(url: string): Promise<T> {
@@ -54,6 +57,7 @@ export default function EditorClient({ jobId }: { jobId: string }) {
   const [error, setError] = useState<string | null>(null);
   const viewerRef = useRef<AlphaTabViewerHandle | null>(null);
   const [downloadOpen, setDownloadOpen] = useState(false);
+  const [viewMode, setViewMode] = useState<"full" | "practice">("full");
   const toast = useToast();
 
   useEffect(() => {
@@ -104,7 +108,31 @@ export default function EditorClient({ jobId }: { jobId: string }) {
       <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_12px_40px_rgba(2,6,23,0.08)]">
         <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between gap-3">
-            <div className="text-sm font-semibold text-slate-950">谱例</div>
+            <div className="flex items-center gap-2">
+              <div className="text-sm font-semibold text-slate-950">谱例</div>
+              {result?.practiceData && (
+                <div className="ml-4 flex items-center rounded-lg bg-slate-100 p-1">
+                  <button
+                    type="button"
+                    className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
+                      viewMode === "full" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                    }`}
+                    onClick={() => setViewMode("full")}
+                  >
+                    完整六线谱
+                  </button>
+                  <button
+                    type="button"
+                    className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
+                      viewMode === "practice" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
+                    }`}
+                    onClick={() => setViewMode("practice")}
+                  >
+                    极简跟弹
+                  </button>
+                </div>
+              )}
+            </div>
             <div className="relative flex items-center gap-2">
               <button
                 type="button"
@@ -167,16 +195,20 @@ export default function EditorClient({ jobId }: { jobId: string }) {
             <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>
           ) : null}
           {result && gp5Data ? (
-            <AlphaTabViewer
-              ref={viewerRef}
-              data={gp5Data}
-              filename={result.title}
-              titleText={result.title}
-              keyText={result.key}
-              tempoBpm={result.tempo}
-              timeSignatureText={result.time_signature}
-              arrangementText={result.arrangement}
-            />
+            viewMode === "practice" && result.practiceData ? (
+              <PracticeMode practiceData={result.practiceData} gp5Data={gp5Data} />
+            ) : (
+              <AlphaTabViewer
+                ref={viewerRef}
+                data={gp5Data}
+                filename={result.title}
+                titleText={result.title}
+                keyText={result.key}
+                tempoBpm={result.tempo}
+                timeSignatureText={result.time_signature}
+                arrangementText={result.arrangement}
+              />
+            )
           ) : (
             <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-6 text-sm text-slate-600">
               {job?.status === "processing" ? "生成中…请稍候" : "还没有谱例。返回上传页生成一个新的谱例。"}
