@@ -161,9 +161,62 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
         }
       });
 
+      // Optional: keep track of user manual scrolling to temporarily disable auto-scroll
+      let isUserScrolling = false;
+      let scrollTimeout: NodeJS.Timeout;
+      
+      const scrollContainer = containerRef.current.parentElement;
+      if (scrollContainer) {
+        scrollContainer.addEventListener('wheel', () => {
+          isUserScrolling = true;
+          clearTimeout(scrollTimeout);
+          scrollTimeout = setTimeout(() => { isUserScrolling = false; }, 2000);
+        }, { passive: true });
+        scrollContainer.addEventListener('touchstart', () => {
+          isUserScrolling = true;
+          clearTimeout(scrollTimeout);
+        }, { passive: true });
+        scrollContainer.addEventListener('touchend', () => {
+          scrollTimeout = setTimeout(() => { isUserScrolling = false; }, 2000);
+        }, { passive: true });
+      }
+
+      // Helper function to handle center scrolling logic
+      const syncScrollToCursor = () => {
+        if (isUserScrolling || !containerRef.current || !scrollContainer) return;
+        requestAnimationFrame(() => {
+          // If we can't find .at-cursor-beat, we fallback to .at-cursor-bar
+          const cursor = containerRef.current!.querySelector('.at-cursor-beat') || containerRef.current!.querySelector('.at-cursor-bar');
+          if (cursor) {
+            const cursorRect = cursor.getBoundingClientRect();
+            const containerRect = scrollContainer.getBoundingClientRect();
+            const scrollLeft = scrollContainer.scrollLeft;
+            const targetX = scrollLeft + (cursorRect.left - containerRect.left) - (containerRect.width / 2) + (cursorRect.width / 2);
+            if (Math.abs(scrollLeft - targetX) > 10) {
+              scrollContainer.scrollTo({ left: targetX, behavior: 'smooth' });
+            }
+          }
+        });
+      };
+
+      // Sync alphaTab engine position with our React state
       api.playerPositionChanged?.on?.((args: any) => {
         setCurrentTime(args.currentTime / 1000);
+        
+        // Also manually trigger scroll sync on seek/position jump,
+        // because playedBeatChanged doesn't fire if the music is paused.
+        syncScrollToCursor();
       });
+
+      // Add playedBeatChanged listener to force horizontal scroll centering during playback
+      api.playedBeatChanged?.on?.((beat: any) => {
+        if (!beat) return;
+        syncScrollToCursor();
+      });
+
+      // Provide a way to manually sync scroll externally
+      // We attach it to the ref so the component can call it on seek
+      (alphaTabApiRef.current as any)._syncScrollToCursor = syncScrollToCursor;
 
       api.error?.on?.((e: any) => {
         const msg = e instanceof Error ? e.message : String(e);
@@ -259,6 +312,13 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
     if (!alphaTabApiRef.current) return;
     alphaTabApiRef.current.timePosition = timeSeconds * 1000;
     setCurrentTime(timeSeconds);
+    // After seeking, we wait a tiny bit for AlphaTab to update its cursor elements,
+    // then force the scroll sync.
+    setTimeout(() => {
+      if (alphaTabApiRef.current && (alphaTabApiRef.current as any)._syncScrollToCursor) {
+        (alphaTabApiRef.current as any)._syncScrollToCursor();
+      }
+    }, 50);
   };
 
   const chordBlocks: ChordBlock[] = practiceData?.chordBlocks?.map((b: any, i: number) => ({
