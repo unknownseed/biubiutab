@@ -232,7 +232,10 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
     })();
   };
 
-  useEffect(() => destroyEngine, []);
+  useEffect(() => {
+    ensureEngine(false);
+    return destroyEngine;
+  }, []);
 
   const handlePlayPause = () => {
     if (!alphaTabApiRef.current) {
@@ -283,6 +286,7 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       <PlaybackControls
         isPlaying={isPlaying}
         isPlayerReady={isPlayerReady}
+        isLoading={isInitializing}
         currentTime={currentTime}
         duration={duration}
         onPlayPause={handlePlayPause}
