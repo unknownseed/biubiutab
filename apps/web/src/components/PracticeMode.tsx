@@ -73,6 +73,9 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
   const [loopA, setLoopA] = useState<number | null>(null);
   const [loopB, setLoopB] = useState<number | null>(null);
 
+  const [countdown, setCountdown] = useState<number | null>(null);
+  const countdownTimerRef = useRef<NodeJS.Timeout | null>(null);
+
   const loopARef = useRef<number | null>(null);
   const loopBRef = useRef<number | null>(null);
   
@@ -82,6 +85,10 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
   }, [loopA, loopB]);
 
   const destroyEngine = () => {
+    if (countdownTimerRef.current) {
+      clearInterval(countdownTimerRef.current);
+      countdownTimerRef.current = null;
+    }
     if (pollRef.current) {
       clearInterval(pollRef.current);
       pollRef.current = null;
@@ -359,7 +366,42 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       ensureEngine(true);
       return;
     }
-    alphaTabApiRef.current.playPause();
+
+    if (isPlaying) {
+      alphaTabApiRef.current.playPause();
+    } else if (countdown !== null) {
+      // Cancel countdown if they click pause while counting down
+      if (countdownTimerRef.current) {
+        clearInterval(countdownTimerRef.current);
+        countdownTimerRef.current = null;
+      }
+      setCountdown(null);
+    } else {
+      // Start countdown
+      const bpm = practiceData?.metadata?.tempo || 120;
+      const safeBpm = Math.max(60, Math.min(240, bpm));
+      // Give ~1 beat per count, adjusted by playbackRate so it matches the real feel
+      const intervalMs = (60000 / safeBpm) / playbackRate;
+
+      let count = 4;
+      setCountdown(count);
+
+      countdownTimerRef.current = setInterval(() => {
+        count -= 1;
+        if (count > 0) {
+          setCountdown(count);
+        } else {
+          if (countdownTimerRef.current) {
+            clearInterval(countdownTimerRef.current);
+            countdownTimerRef.current = null;
+          }
+          setCountdown(null);
+          if (alphaTabApiRef.current) {
+            alphaTabApiRef.current.playPause();
+          }
+        }
+      }, intervalMs);
+    }
   };
 
   const handlePlaybackRateChange = (rate: number) => {
@@ -374,6 +416,11 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
   };
 
   const handleSeek = (timeSeconds: number) => {
+    if (countdownTimerRef.current) {
+      clearInterval(countdownTimerRef.current);
+      countdownTimerRef.current = null;
+      setCountdown(null);
+    }
     if (!alphaTabApiRef.current) return;
     alphaTabApiRef.current.timePosition = timeSeconds * 1000;
     setCurrentTime(timeSeconds);
@@ -519,7 +566,7 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
             />
           </div>
         </div>
-        <SyncedLyrics lyrics={lyrics} currentTime={currentTime} />
+        <SyncedLyrics lyrics={lyrics} currentTime={currentTime} countdown={countdown} />
       </div>
 
       <ChordTimeline
@@ -531,7 +578,7 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       />
 
       <PlaybackControls
-        isPlaying={isPlaying}
+        isPlaying={isPlaying || countdown !== null}
         isPlayerReady={isPlayerReady}
         isLoading={isInitializing}
         currentTime={currentTime}

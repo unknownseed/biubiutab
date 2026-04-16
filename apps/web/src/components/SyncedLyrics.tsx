@@ -11,6 +11,7 @@ export type LyricLine = {
 export type SyncedLyricsProps = {
   lyrics: LyricLine[];
   currentTime: number;
+  countdown?: number | null;
 };
 
 function cn(...classes: Array<string | false | null | undefined>) {
@@ -41,7 +42,7 @@ function findActiveLyricIndex(lyrics: LyricLine[], t: number) {
   return idx;
 }
 
-export default function SyncedLyrics({ lyrics, currentTime }: SyncedLyricsProps) {
+export default function SyncedLyrics({ lyrics, currentTime, countdown = null }: SyncedLyricsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
 
@@ -67,6 +68,19 @@ export default function SyncedLyrics({ lyrics, currentTime }: SyncedLyricsProps)
       }
     }
   }, [activeIndex]);
+
+  if (countdown !== null) {
+    return (
+      <div className="flex h-full min-h-[140px] flex-col items-center justify-center rounded-2xl border border-white/10 bg-zinc-900/50 p-4">
+        <div
+          key={countdown}
+          className="animate-in zoom-in duration-300 text-6xl font-black text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.8)]"
+        >
+          {countdown}
+        </div>
+      </div>
+    );
+  }
 
   if (!lyrics || lyrics.length === 0) {
     return (
