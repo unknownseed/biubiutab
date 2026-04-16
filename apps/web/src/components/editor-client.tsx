@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 
 import AlphaTabViewer, { type AlphaTabViewerHandle } from "./alphatab-viewer";
 import PracticeMode from "./PracticeMode";
@@ -104,93 +105,104 @@ export default function EditorClient({ jobId }: { jobId: string }) {
   }, [jobId, toast]);
 
   return (
-    <section className="flex flex-col gap-4">
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_12px_40px_rgba(2,6,23,0.08)]">
-        <div className="flex flex-col gap-3">
-          <div className="flex items-center justify-between gap-3">
-            <div className="flex items-center gap-2">
-              <div className="text-sm font-semibold text-slate-950">谱例</div>
-              {result?.practiceData && (
-                <div className="ml-4 flex items-center rounded-lg bg-slate-100 p-1">
-                  <button
-                    type="button"
-                    className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
-                      viewMode === "full" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
-                    }`}
-                    onClick={() => setViewMode("full")}
-                  >
-                    完整六线谱
-                  </button>
-                  <button
-                    type="button"
-                    className={`rounded-md px-3 py-1 text-xs font-medium transition-colors ${
-                      viewMode === "practice" ? "bg-white text-slate-900 shadow-sm" : "text-slate-500 hover:text-slate-700"
-                    }`}
-                    onClick={() => setViewMode("practice")}
-                  >
-                    极简跟弹
-                  </button>
-                </div>
+    <section className="flex flex-col gap-6">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200">
+        <div className="flex items-center gap-8 overflow-x-auto scrollbar-hide">
+          <button
+            type="button"
+            className={`relative pb-3 text-base font-semibold transition-colors whitespace-nowrap ${
+              viewMode === "full" ? "text-[color:var(--primary)]" : "text-slate-500 hover:text-slate-800"
+            }`}
+            onClick={() => setViewMode("full")}
+          >
+            完整六线谱
+            {viewMode === "full" && (
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-[color:var(--primary)]" />
+            )}
+          </button>
+          {result?.practiceData && (
+            <button
+              type="button"
+              className={`relative pb-3 text-base font-semibold transition-colors whitespace-nowrap ${
+                viewMode === "practice" ? "text-[color:var(--primary)]" : "text-slate-500 hover:text-slate-800"
+              }`}
+              onClick={() => setViewMode("practice")}
+            >
+              极简跟弹
+              {viewMode === "practice" && (
+                <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-[color:var(--primary)]" />
               )}
-            </div>
-            <div className="relative flex items-center gap-2">
+            </button>
+          )}
+        </div>
+
+        <div className="relative flex items-center gap-3 pb-2">
+          <Link
+            href="/"
+            className="rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50"
+          >
+            返回
+          </Link>
+          <button
+            type="button"
+            className="rounded-lg bg-[color:var(--primary)] px-4 py-1.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-500 disabled:opacity-50"
+            disabled={!result}
+            onClick={() => {
+              if (!result) return;
+              setDownloadOpen((v) => !v);
+            }}
+          >
+            下载
+          </button>
+
+          {downloadOpen && result ? (
+            <div className="absolute right-0 top-full z-10 mt-2 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_12px_40px_rgba(2,6,23,0.12)]">
               <button
                 type="button"
-                className="rounded-lg bg-[color:var(--primary)] px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-500 disabled:opacity-50"
-                disabled={!result}
+                className="block w-full px-3 py-2 text-left text-sm text-slate-800 hover:bg-slate-50"
                 onClick={() => {
-                  if (!result) return;
-                  setDownloadOpen((v) => !v);
+                  const safe = (result.title || "tab").replaceAll(/[^a-zA-Z0-9._-]+/g, "_");
+                  if (gp5Data) {
+                    const blob = new Blob([gp5Data as unknown as BlobPart], { type: "application/octet-stream" });
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = `${safe}.gp5`;
+                    a.click();
+                    URL.revokeObjectURL(url);
+                  }
+                  setDownloadOpen(false);
                 }}
               >
-                下载
+                下载 GP5
               </button>
-
-              {downloadOpen && result ? (
-                <div className="absolute right-0 top-full z-10 mt-2 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_12px_40px_rgba(2,6,23,0.12)]">
-                  <button
-                    type="button"
-                    className="block w-full px-3 py-2 text-left text-sm text-slate-800 hover:bg-slate-50"
-                    onClick={() => {
-                      const safe = (result.title || "tab").replaceAll(/[^a-zA-Z0-9._-]+/g, "_");
-                      if (gp5Data) {
-                        const blob = new Blob([gp5Data as unknown as BlobPart], { type: "application/octet-stream" });
-                        const url = URL.createObjectURL(blob);
-                        const a = document.createElement("a");
-                        a.href = url;
-                        a.download = `${safe}.gp5`;
-                        a.click();
-                        URL.revokeObjectURL(url);
-                      }
-                      setDownloadOpen(false);
-                    }}
-                  >
-                    下载 GP5
-                  </button>
-                  <button
-                    type="button"
-                    className="block w-full px-3 py-2 text-left text-sm text-slate-800 hover:bg-slate-50"
-                    onClick={() => {
-                      void viewerRef.current?.exportPng();
-                      setDownloadOpen(false);
-                    }}
-                  >
-                    导出图片（PNG）
-                  </button>
-                  <button
-                    type="button"
-                    className="block w-full px-3 py-2 text-left text-sm text-slate-800 hover:bg-slate-50"
-                    onClick={() => {
-                      void viewerRef.current?.printPdf();
-                      setDownloadOpen(false);
-                    }}
-                  >
-                    导出 PDF
-                  </button>
-                </div>
-              ) : null}
+              <button
+                type="button"
+                className="block w-full px-3 py-2 text-left text-sm text-slate-800 hover:bg-slate-50"
+                onClick={() => {
+                  void viewerRef.current?.exportPng();
+                  setDownloadOpen(false);
+                }}
+              >
+                导出图片（PNG）
+              </button>
+              <button
+                type="button"
+                className="block w-full px-3 py-2 text-left text-sm text-slate-800 hover:bg-slate-50"
+                onClick={() => {
+                  void viewerRef.current?.printPdf();
+                  setDownloadOpen(false);
+                }}
+              >
+                导出 PDF
+              </button>
             </div>
-          </div>
+          ) : null}
+        </div>
+      </div>
+
+      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_12px_40px_rgba(2,6,23,0.08)]">
+        <div className="flex flex-col gap-3">
           {error ? (
             <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>
           ) : null}
