@@ -10,6 +10,16 @@ export type PlaybackControlsProps = {
   duration: number;
   onPlayPause: () => void;
   onSeek: (timeSeconds: number) => void;
+  
+  playbackRate?: number;
+  onPlaybackRateChange?: (rate: number) => void;
+  
+  transpose?: number;
+  onTransposeChange?: (semitones: number) => void;
+  
+  loopA?: number | null;
+  loopB?: number | null;
+  onLoopSet?: (type: "A" | "B" | "clear") => void;
 };
 
 function formatTime(sec: number) {
@@ -28,6 +38,13 @@ export default function PlaybackControls({
   duration,
   onPlayPause,
   onSeek,
+  playbackRate = 1.0,
+  onPlaybackRateChange,
+  transpose = 0,
+  onTransposeChange,
+  loopA = null,
+  loopB = null,
+  onLoopSet,
 }: PlaybackControlsProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragTime, setDragTime] = useState(0);
@@ -35,6 +52,8 @@ export default function PlaybackControls({
 
   const displayTime = isDragging ? dragTime : currentTime;
   const progressPercent = duration > 0 ? (displayTime / duration) * 100 : 0;
+  const loopAPercent = duration > 0 && loopA !== null ? (loopA / duration) * 100 : null;
+  const loopBPercent = duration > 0 && loopB !== null ? (loopB / duration) * 100 : null;
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     setIsDragging(true);
@@ -70,8 +89,62 @@ export default function PlaybackControls({
   };
 
   return (
-    <div className="flex items-center gap-4 rounded-2xl border border-white/10 bg-zinc-900/80 px-6 py-3 shadow-xl backdrop-blur-md">
-      <div className="flex items-center gap-3">
+    <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-zinc-900/80 px-6 py-4 shadow-xl backdrop-blur-md">
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1 rounded-lg bg-zinc-800/50 p-1">
+            {[0.5, 0.75, 1.0, 1.25, 1.5].map((rate) => (
+              <button
+                key={rate}
+                onClick={() => onPlaybackRateChange?.(rate)}
+                className={`px-2 py-1 text-[11px] font-semibold rounded-md transition ${
+                  playbackRate === rate
+                    ? "bg-yellow-500 text-zinc-950 shadow-sm"
+                    : "text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200"
+                }`}
+              >
+                {rate}x
+              </button>
+            ))}
+          </div>
+
+          <div className="flex items-center gap-2 rounded-lg bg-zinc-800/50 p-1">
+            <button
+              onClick={() => onTransposeChange?.(transpose - 1)}
+              className="flex h-6 w-6 items-center justify-center rounded text-zinc-400 hover:bg-zinc-700 hover:text-white"
+            >
+              -
+            </button>
+            <div className="text-xs font-semibold text-zinc-300 w-12 text-center">
+              {transpose > 0 ? `+${transpose}` : transpose}
+            </div>
+            <button
+              onClick={() => onTransposeChange?.(transpose + 1)}
+              className="flex h-6 w-6 items-center justify-center rounded text-zinc-400 hover:bg-zinc-700 hover:text-white"
+            >
+              +
+            </button>
+          </div>
+        </div>
+
+        <div className="flex items-center gap-2 rounded-lg bg-zinc-800/50 p-1">
+          <button
+            onClick={() => onLoopSet?.(loopA === null ? "A" : loopB === null ? "B" : "clear")}
+            className={`px-3 py-1 text-xs font-semibold rounded-md transition ${
+              loopA !== null && loopB !== null
+                ? "bg-emerald-500 text-zinc-950"
+                : loopA !== null
+                ? "bg-emerald-500/30 text-emerald-300"
+                : "text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200"
+            }`}
+          >
+            {loopA !== null && loopB !== null ? "Clear Loop" : loopA !== null ? "Set B" : "Set A"}
+          </button>
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4 w-full">
+        <div className="flex items-center gap-3">
         <button
           type="button"
           onClick={() => onSeek(Math.max(0, currentTime - 5))}
@@ -136,6 +209,21 @@ export default function PlaybackControls({
           onPointerCancel={handlePointerUp}
         >
           <div className="absolute top-1.5 h-1.5 w-full rounded-full bg-zinc-800" />
+          
+          {loopAPercent !== null && loopBPercent === null && (
+            <div 
+              className="absolute top-1.5 h-1.5 w-1 bg-emerald-500 rounded-full"
+              style={{ left: `${loopAPercent}%` }}
+            />
+          )}
+          
+          {loopAPercent !== null && loopBPercent !== null && (
+            <div 
+              className="absolute top-1.5 h-1.5 bg-emerald-500/30 rounded-full"
+              style={{ left: `${loopAPercent}%`, width: `${loopBPercent - loopAPercent}%` }}
+            />
+          )}
+          
           <div
             className="absolute top-1.5 h-1.5 rounded-full bg-gradient-to-r from-yellow-500 to-yellow-300 shadow-[0_0_10px_rgba(234,179,8,0.5)] transition-[width] duration-75 ease-linear"
             style={{ width: `${progressPercent}%` }}
@@ -147,6 +235,7 @@ export default function PlaybackControls({
         </div>
 
         <span className="text-xs font-medium text-zinc-400 tabular-nums tracking-wider w-10">{formatTime(duration)}</span>
+      </div>
       </div>
     </div>
   );

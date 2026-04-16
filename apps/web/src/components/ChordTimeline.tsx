@@ -8,6 +8,7 @@ export type ChordBlock = {
   startTime: number; // seconds
   endTime: number; // seconds
   section?: string; // e.g. "Intro" | "Verse" | "Chorus"
+  count?: number; // Used for grouped blocks
 };
 
 export type ChordTimelineProps = {
@@ -17,9 +18,7 @@ export type ChordTimelineProps = {
   onSeek?: (timeSeconds: number, block: ChordBlock, index: number) => void;
 
   /** UI tuning */
-  pxPerSecond?: number; // default 36
-  minBlockWidth?: number; // default 56
-  maxBlockWidth?: number; // default 240
+  baseBlockWidth?: number; // default 88
   centerActive?: boolean; // default true
   showSectionLabels?: boolean; // default true
 
@@ -85,9 +84,7 @@ export default function ChordTimeline(props: ChordTimelineProps) {
     blocks,
     currentTime,
     onSeek,
-    pxPerSecond = 36,
-    minBlockWidth = 56,
-    maxBlockWidth = 240,
+    baseBlockWidth = 88,
     centerActive = true,
     showSectionLabels = true,
     className,
@@ -154,11 +151,8 @@ export default function ChordTimeline(props: ChordTimelineProps) {
       >
         <div className="flex items-stretch gap-2">
           {blocks.map((b, i) => {
-            const dur = Math.max(0, (b.endTime ?? b.startTime) - (b.startTime ?? 0));
-            const width = Math.max(
-              minBlockWidth,
-              Math.min(maxBlockWidth, Math.round(dur * pxPerSecond))
-            );
+            const count = b.count || 1;
+            const width = baseBlockWidth * count;
             const active = i === activeIndex;
 
             const sectionLabel =
@@ -193,7 +187,9 @@ export default function ChordTimeline(props: ChordTimelineProps) {
                     "border border-white/10",
                     "transition-[transform,opacity,box-shadow,border-color] duration-150 ease-out",
                     !active && "opacity-75 hover:opacity-95",
-                    active && "scale-[1.10] opacity-100 border-yellow-300/50 chord-glow-pulse"
+                    active && "scale-[1.10] opacity-100 border-yellow-300/50 chord-glow-pulse",
+                    // When a block is very wide, center the text properly without weird stretching
+                    "overflow-hidden"
                   )}
                   style={{ width }}
                   aria-label={`Seek to chord ${b.chord}`}
@@ -206,28 +202,32 @@ export default function ChordTimeline(props: ChordTimelineProps) {
                     )}
                   />
 
-                  <div
-                    className={cn(
-                      "font-black leading-none drop-shadow",
-                      active ? "text-3xl text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500" : "text-2xl text-white"
+                  <div className="flex items-end justify-center gap-1 z-10">
+                    <div
+                      className={cn(
+                        "font-black leading-none drop-shadow",
+                        active ? "text-3xl text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500" : "text-2xl text-white"
+                      )}
+                    >
+                      {b.chord}
+                    </div>
+                    {count > 1 && (
+                      <div className="text-sm font-bold text-white/70 pb-[2px]">
+                        ×{count}
+                      </div>
                     )}
-                  >
-                    {b.chord}
                   </div>
 
-                  <div className="mt-1 text-[11px] font-medium text-white/80">
+                  <div className="mt-1 text-[11px] font-medium text-white/80 z-10">
                     {formatTime(b.startTime)}
-                    {"  "}
-                    <span className="text-white/50">→</span>
-                    {"  "}
-                    {formatTime(b.endTime)}
                   </div>
 
                   <div
                     className={cn(
-                      "mt-2 h-[4px] w-10 rounded-full transition-all duration-150",
+                      "mt-2 h-[4px] rounded-full transition-all duration-150 z-10",
                       active ? "bg-yellow-300" : "bg-white/20"
                     )}
+                    style={{ width: "40px" }}
                   />
                 </button>
               </div>

@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
+import { Chord, Interval } from "@tonaljs/tonal";
 import ChordTimeline, { type ChordBlock } from "./ChordTimeline";
 import SyncedLyrics from "./SyncedLyrics";
 import LargeChordDiagram from "./LargeChordDiagram";
@@ -66,6 +67,19 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
   const [playerError, setPlayerError] = useState<string | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
   const duration = practiceData?.metadata?.durationSec || 0;
+
+  const [playbackRate, setPlaybackRate] = useState(1.0);
+  const [transpose, setTranspose] = useState(0);
+  const [loopA, setLoopA] = useState<number | null>(null);
+  const [loopB, setLoopB] = useState<number | null>(null);
+
+  const loopARef = useRef<number | null>(null);
+  const loopBRef = useRef<number | null>(null);
+  
+  useEffect(() => {
+    loopARef.current = loopA;
+    loopBRef.current = loopB;
+  }, [loopA, loopB]);
 
   const destroyEngine = () => {
     if (pollRef.current) {
@@ -227,7 +241,16 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
 
       // Sync alphaTab engine position with our React state
       api.playerPositionChanged?.on?.((args: any) => {
-        setCurrentTime(args.currentTime / 1000);
+        const sec = args.currentTime / 1000;
+        setCurrentTime(sec);
+        
+        // Loop playback logic
+        const lB = loopBRef.current;
+        const lA = loopARef.current;
+        if (lB !== null && lA !== null && sec >= lB && api.playerState === 1) {
+          api.timePosition = lA * 1000;
+          return;
+        }
         
         // When seeking while paused, playedBeatChanged isn't fired reliably for scrolling.
         // We trigger it manually. But we debounce it slightly so rapid dragging doesn't jitter.
@@ -336,6 +359,36 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
     alphaTabApiRef.current.playPause();
   };
 
+  const handlePlaybackRateChange = (rate: number) => {
+    setPlaybackRate(rate);
+    if (alphaTabApiRef.current) {
+      alphaTabApiRef.current.playbackSpeed = rate;
+    }
+  };
+
+  const handleTransposeChange = (semitones: number) => {
+    setTranspose(semitones);
+  };
+
+  const handleLoopSet = (type: "A" | "B" | "clear") => {
+    if (type === "clear") {
+      setLoopA(null);
+      setLoopB(null);
+    } else if (type === "A") {
+      setLoopA(currentTime);
+      setLoopB(null); // reset B if we are re-setting A
+    } else if (type === "B") {
+      // ensure B is after A
+      if (loopA !== null && currentTime <= loopA) {
+        // If B is placed before A, swap them
+        setLoopB(loopA);
+        setLoopA(currentTime);
+      } else {
+        setLoopB(currentTime);
+      }
+    }
+  };
+
   const handleSeek = (timeSeconds: number) => {
     if (!alphaTabApiRef.current) return;
     alphaTabApiRef.current.timePosition = timeSeconds * 1000;
@@ -369,13 +422,51 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
     trySync();
   };
 
-  const chordBlocks: ChordBlock[] = practiceData?.chordBlocks?.map((b: any, i: number) => ({
-    id: `chord-${i}`,
-    chord: b.chord,
-    startTime: b.startTime,
-    endTime: b.endTime,
-    section: b.section,
-  })) || [];
+  // Group adjacent identical chords to simulate "measures" or longer blocks
+  // Also apply transposition
+  const chordBlocks = useMemo(() => {
+    const rawChordBlocks: ChordBlock[] = practiceData?.chordBlocks?.map((b: any, i: number) => ({
+      id: `chord-${i}`,
+      chord: b.chord,
+      startTime: b.startTime,
+      endTime: b.endTime,
+      section: b.section,
+    })) || [];
+
+    if (!rawChordBlocks.length) return [];
+    
+    // First, transpose if needed
+    const transposed = rawChordBlocks.map(b => {
+      if (transpose === 0 || b.chord === "N" || b.chord === "None") return b;
+      try {
+        const transposedName = Chord.transpose(b.chord, Interval.fromSemitones(transpose));
+        return { ...b, chord: transposedName || b.chord };
+      } catch {
+        return b;
+      }
+    });
+
+    // Then group consecutive identical chords
+    const merged: (ChordBlock & { count: number })[] = [];
+    let current = { ...transposed[0], count: 1 };
+    
+    for (let i = 1; i < transposed.length; i++) {
+      const b = transposed[i];
+      // Note: we can define identical as same chord + same section
+      // If we merge across sections, the section label logic in ChordTimeline might look weird,
+      // but typically we don't merge across sections.
+      if (b.chord === current.chord && b.section === current.section) {
+        current.endTime = b.endTime;
+        current.count += 1;
+      } else {
+        merged.push(current);
+        current = { ...b, count: 1 };
+      }
+    }
+    merged.push(current);
+    
+    return merged;
+  }, [practiceData?.chordBlocks, transpose]);
 
   const lyrics = practiceData?.lyrics || [];
 
@@ -398,6 +489,13 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
         duration={duration}
         onPlayPause={handlePlayPause}
         onSeek={handleSeek}
+        playbackRate={playbackRate}
+        onPlaybackRateChange={handlePlaybackRateChange}
+        transpose={transpose}
+        onTransposeChange={handleTransposeChange}
+        loopA={loopA}
+        loopB={loopB}
+        onLoopSet={handleLoopSet}
       />
 
       <ChordTimeline
