@@ -492,12 +492,38 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
   };
 
   return (
-    <div className="flex flex-col gap-6 rounded-2xl bg-zinc-950 p-6 text-zinc-50 shadow-xl">
+    <div className="flex flex-col gap-4 rounded-2xl bg-zinc-950 p-4 sm:p-6 text-zinc-50 shadow-xl">
       {playerError ? (
         <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-100">
           {playerError}
         </div>
       ) : null}
+
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+        <div className="flex flex-col gap-4">
+          <div className="flex gap-4">
+            <LargeChordDiagram chord={currentChordBlock?.chord || "N"} />
+          </div>
+          <div
+            className="w-full overflow-hidden rounded-2xl bg-zinc-50"
+            style={{ height: "130px" }}
+          >
+            <div
+              ref={containerRef}
+              className="h-full w-full overflow-x-auto overflow-y-hidden"
+            />
+          </div>
+        </div>
+        <SyncedLyrics lyrics={lyrics} currentTime={currentTime} />
+      </div>
+
+      <ChordTimeline
+        blocks={chordBlocks}
+        currentTime={currentTime}
+        onSeek={(time) => handleSeek(time)}
+        loopA={loopA}
+        loopB={loopB}
+      />
 
       <PlaybackControls
         isPlaying={isPlaying}
@@ -516,30 +542,6 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
         loopB={loopB}
         onLoopSet={handleLoopSet}
       />
-
-      <ChordTimeline
-        blocks={chordBlocks}
-        currentTime={currentTime}
-        onSeek={(time) => handleSeek(time)}
-        loopA={loopA}
-        loopB={loopB}
-      />
-
-      <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <div className="flex flex-col gap-4">
-          <LargeChordDiagram chord={currentChordBlock?.chord || "N"} />
-          <div
-            className="w-full overflow-hidden rounded-2xl bg-zinc-50"
-            style={{ height: "160px" }}
-          >
-            <div
-              ref={containerRef}
-              className="h-full w-full overflow-x-auto overflow-y-hidden"
-            />
-          </div>
-        </div>
-        <SyncedLyrics lyrics={lyrics} currentTime={currentTime} />
-      </div>
     </div>
   );
 }

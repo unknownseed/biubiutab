@@ -53,21 +53,18 @@ export default function LargeChordDiagram({ chord }: LargeChordDiagramProps) {
   }, [chord, isNoChord]);
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center rounded-2xl border border-white/10 bg-zinc-900/50 p-6 shadow-inner min-h-[200px]">
-      <div className="text-sm font-medium tracking-wider text-zinc-500 uppercase mb-4">
-        当前和弦
-      </div>
+    <div className="flex flex-1 flex-col items-center justify-center rounded-2xl border border-white/10 bg-zinc-900/50 p-3 shadow-inner min-h-[140px]">
       <div
-        className={`relative flex flex-col items-center justify-center rounded-2xl bg-zinc-950/80 p-4 shadow-2xl border border-zinc-800 transition-all duration-300 ${
+        className={`relative flex flex-col items-center justify-center rounded-xl bg-zinc-950/80 p-2 shadow-2xl border border-zinc-800 transition-all duration-300 ${
           !isNoChord ? "scale-105 border-yellow-500/30 shadow-[0_0_40px_rgba(234,179,8,0.15)]" : ""
         }`}
-        style={{ width: "160px", height: "180px" }}
+        style={{ width: "100px", height: "120px" }}
       >
-        <div className="mb-2 text-xl font-bold text-yellow-400">{isNoChord ? "-" : chord}</div>
+        <div className="mb-0.5 text-base font-bold text-yellow-400">{isNoChord ? "-" : chord}</div>
         {!isNoChord && position ? (
-          <ChordDiagram position={position} width={100} height={120} color="#fef08a" />
+          <ChordDiagram position={position} width={70} height={85} color="#fef08a" />
         ) : (
-          <div className="flex flex-1 items-center justify-center text-zinc-600">无</div>
+          <div className="flex flex-1 items-center justify-center text-sm text-zinc-600">无</div>
         )}
       </div>
     </div>

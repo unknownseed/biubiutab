@@ -148,14 +148,11 @@ export default function ChordTimeline(props: ChordTimelineProps) {
         ref={containerRef}
         className={cn(
           "w-full overflow-x-auto overflow-y-hidden",
-          "rounded-2xl border border-white/10 bg-zinc-950/60",
-          "px-3 py-4",
+          "rounded-xl border border-white/10 bg-zinc-950/60",
+          "px-3 py-3",
           "snap-x snap-mandatory",
           "scroll-smooth"
         )}
-        style={{
-          WebkitOverflowScrolling: "touch",
-        }}
       >
         <div className="flex items-stretch gap-2">
           {blocks.map((b, i) => {
@@ -164,10 +161,6 @@ export default function ChordTimeline(props: ChordTimelineProps) {
             const active = i === activeIndex;
 
             const isLoopActive = loopA !== null && loopB !== null;
-            // Check if this block falls within the loop region
-            // Since it's a loop [loopA, loopB), the block is inside if its [startTime, endTime) overlaps or is contained.
-            // But usually we mean: does this chord play during the loop?
-            // For simplicity: block is inside if it overlaps with [loopA, loopB)
             let isLooped = false;
             if (isLoopActive) {
               const bStart = b.startTime;
@@ -175,7 +168,6 @@ export default function ChordTimeline(props: ChordTimelineProps) {
               isLooped = (bEnd > loopA) && (bStart < loopB);
             }
 
-            // If A is set but B is not, maybe highlight the start block
             let isLoopStart = false;
             if (loopA !== null && loopB === null) {
               isLoopStart = loopA >= b.startTime && loopA < b.endTime;
@@ -187,11 +179,11 @@ export default function ChordTimeline(props: ChordTimelineProps) {
             return (
               <div key={b.id ?? `${b.chord}-${b.startTime}-${i}`} className="flex flex-col">
                 {sectionLabel ? (
-                  <div className="mb-1 px-2 text-[11px] font-semibold tracking-wide text-white/70">
+                  <div className="mb-1 px-2 text-[10px] font-semibold tracking-wide text-white/70">
                     {sectionLabel}
                   </div>
                 ) : (
-                  <div className="mb-1 h-[16px]" />
+                  <div className="mb-1 h-[14px]" />
                 )}
 
                 <button
@@ -203,9 +195,9 @@ export default function ChordTimeline(props: ChordTimelineProps) {
                   className={cn(
                     "snap-center",
                     "relative flex-shrink-0",
-                    "rounded-2xl",
-                    "px-3 py-2",
-                    "h-[84px]",
+                    "rounded-xl",
+                    "px-2 py-1.5",
+                    "h-[64px]",
                     "flex flex-col items-center justify-center",
                     "text-white",
                     "bg-gradient-to-b",
@@ -217,7 +209,6 @@ export default function ChordTimeline(props: ChordTimelineProps) {
                     active && "scale-[1.10] opacity-100 border-yellow-300/50 chord-glow-pulse",
                     isLooped && !active && "border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]",
                     isLoopStart && !active && "border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]",
-                    // When a block is very wide, center the text properly without weird stretching
                     "overflow-hidden"
                   )}
                   style={{ width }}
@@ -225,51 +216,42 @@ export default function ChordTimeline(props: ChordTimelineProps) {
                 >
                   <div
                     className={cn(
-                      "pointer-events-none absolute inset-0 rounded-2xl",
+                      "pointer-events-none absolute inset-0 rounded-xl",
                       "bg-[radial-gradient(120px_60px_at_50%_0%,rgba(255,255,255,0.22),transparent_70%)]",
                       active || isLooped || isLoopStart ? "opacity-100" : "opacity-40"
                     )}
                   />
 
-                  <div className="flex items-end justify-center gap-1 z-10">
+                  <div className="flex items-end justify-center gap-0.5 z-10">
                     <div
                       className={cn(
                         "font-black leading-none drop-shadow",
-                        active ? "text-3xl text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500" 
-                          : isLooped || isLoopStart ? "text-2xl text-emerald-300"
-                          : "text-2xl text-white"
+                        active ? "text-2xl text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500" 
+                          : isLooped || isLoopStart ? "text-xl text-emerald-300"
+                          : "text-xl text-white"
                       )}
                     >
                       {b.chord}
                     </div>
                     {count > 1 && (
-                      <div className="text-sm font-bold text-white/70 pb-[2px]">
+                      <div className="text-xs font-bold text-white/70 pb-[1px]">
                         ×{count}
                       </div>
                     )}
                   </div>
 
-                  <div className="mt-1 text-[11px] font-medium text-white/80 z-10">
-                    {formatTime(b.startTime)}
-                  </div>
-
                   <div
                     className={cn(
-                      "mt-2 h-[4px] rounded-full transition-all duration-150 z-10",
+                      "mt-1.5 h-[3px] rounded-full transition-all duration-150 z-10",
                       active ? "bg-yellow-300" : isLooped || isLoopStart ? "bg-emerald-400" : "bg-white/20"
                     )}
-                    style={{ width: "40px" }}
+                    style={{ width: "32px" }}
                   />
                 </button>
               </div>
             );
           })}
         </div>
-      </div>
-
-      <div className="mt-2 flex items-center justify-between text-xs text-white/50">
-        <div>Chords: {blocks.length}</div>
-        <div className="tabular-nums">t = {currentTime.toFixed(2)}s</div>
       </div>
     </div>
   );

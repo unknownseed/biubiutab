@@ -91,7 +91,7 @@ export default function PlaybackControls({
   };
 
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-zinc-900/80 px-6 py-4 shadow-xl backdrop-blur-md">
+    <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-zinc-900/80 px-4 py-3 shadow-xl backdrop-blur-md">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1 rounded-lg bg-zinc-800/50 p-1">
@@ -162,7 +162,7 @@ export default function PlaybackControls({
         <button
           type="button"
           onClick={onPlayPause}
-          className={`flex h-12 w-12 items-center justify-center rounded-full text-zinc-950 shadow-lg transition active:scale-95 flex-shrink-0 ${
+          className={`flex h-10 w-10 items-center justify-center rounded-full text-zinc-950 shadow-lg transition active:scale-95 flex-shrink-0 ${
             isPlayerReady && !isLoading
               ? "bg-gradient-to-tr from-yellow-500 to-yellow-300 shadow-yellow-500/20 hover:scale-105 hover:shadow-yellow-500/40 cursor-pointer"
               : "bg-zinc-800 text-zinc-500 shadow-none cursor-pointer"
