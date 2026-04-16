@@ -207,6 +207,21 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       // We attach it to the ref so the component can call it on seek
       (alphaTabApiRef.current as any)._syncScrollToCursor = syncScrollToCursor;
 
+      // Allow forcing the cursor to jump manually when paused
+      (alphaTabApiRef.current as any)._forceUpdateCursor = () => {
+        if (!alphaTabApiRef.current) return;
+        try {
+          // In alphaTab, timePosition changes don't automatically trigger the renderer cursor update when paused.
+          // tickPosition is automatically derived from timePosition by the api
+          const tick = alphaTabApiRef.current.tickPosition;
+          
+          if (alphaTabApiRef.current.renderer) {
+            // Internal method to force cursor to a tick
+            alphaTabApiRef.current.renderer.updateCursor(tick);
+          }
+        } catch(e) {}
+      };
+
       // Sync alphaTab engine position with our React state
       api.playerPositionChanged?.on?.((args: any) => {
         setCurrentTime(args.currentTime / 1000);
@@ -322,6 +337,14 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
     if (!alphaTabApiRef.current) return;
     alphaTabApiRef.current.timePosition = timeSeconds * 1000;
     setCurrentTime(timeSeconds);
+    
+    // When paused, AlphaTab does not always redraw the cursor for timePosition changes.
+    // We explicitly trigger a tick to force cursor recalculation.
+    if (alphaTabApiRef.current.playerState !== 1) {
+      if ((alphaTabApiRef.current as any)._forceUpdateCursor) {
+        (alphaTabApiRef.current as any)._forceUpdateCursor();
+      }
+    }
     
     // We try to sync scroll shortly after seeking to ensure alphaTab has updated the cursor
     let attempts = 5;
