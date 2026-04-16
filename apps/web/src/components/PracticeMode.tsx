@@ -118,25 +118,31 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
           enablePlayer: true,
           playerMode: mod.PlayerMode.EnabledSynthesizer,
           soundFont: null,
+          scrollElement: containerRef.current,
         },
         display: {
           scale: 1.0,
-          layoutMode: mod.LayoutMode.Page,
-          staveProfile: mod.StaveProfile.ScoreTab,
-          barsPerRow: 4,
-          padding: [20, 0, 0, 0],
+          layoutMode: mod.LayoutMode.Horizontal,
+          staveProfile: mod.StaveProfile.Tab,
         },
         importer: {
-          beatTextAsLyrics: true,
+          beatTextAsLyrics: false,
         },
         stylesheet: {
-          globalDisplayChordDiagramsOnTop: true,
+          globalDisplayChordDiagramsOnTop: false,
           globalDisplayChordDiagramsInScore: false,
         },
         notation: {
           rhythmMode: mod.TabRhythmMode.ShowWithBeams,
         },
       } as any);
+
+      api.settings.display.resources.titleFont.size = 0;
+      api.settings.display.resources.subTitleFont.size = 0;
+      api.settings.notation.elements.set(mod.NotationElement.GuitarTuning, false);
+      api.settings.notation.elements.set(mod.NotationElement.EffectChordNames, false);
+      api.settings.notation.elements.set(mod.NotationElement.ChordDiagrams, false);
+      api.settings.notation.elements.set((mod.NotationElement as any).EffectTempo, false);
 
       alphaTabApiRef.current = api;
 
@@ -270,13 +276,6 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
 
   return (
     <div className="flex flex-col gap-6 rounded-2xl bg-zinc-950 p-6 text-zinc-50 shadow-xl">
-      {/* Off-screen AlphaTab container for audio engine only. Must have valid width/height so AlphaTab doesn't skip layout. */}
-      <div
-        ref={containerRef}
-        className="absolute opacity-0 pointer-events-none overflow-hidden"
-        style={{ left: "-9999px", top: 0, width: "800px", height: "600px" }}
-      />
-
       {playerError ? (
         <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-100">
           {playerError}
@@ -300,7 +299,18 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       />
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-        <LargeChordDiagram chord={currentChordBlock?.chord || "N"} />
+        <div className="flex flex-col gap-4">
+          <LargeChordDiagram chord={currentChordBlock?.chord || "N"} />
+          <div
+            className="w-full overflow-hidden rounded-2xl bg-zinc-50"
+            style={{ height: "160px" }}
+          >
+            <div
+              ref={containerRef}
+              className="h-full w-full overflow-x-auto overflow-y-hidden"
+            />
+          </div>
+        </div>
         <SyncedLyrics lyrics={lyrics} currentTime={currentTime} />
       </div>
     </div>

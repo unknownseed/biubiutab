@@ -11,7 +11,7 @@ export default function LargeChordDiagram({ chord }: LargeChordDiagramProps) {
   const displayChord = isNoChord ? "-" : chord;
 
   return (
-    <div className="flex h-64 flex-col items-center justify-center rounded-2xl border border-white/10 bg-zinc-900/50 p-6 shadow-inner">
+    <div className="flex flex-1 flex-col items-center justify-center rounded-2xl border border-white/10 bg-zinc-900/50 p-6 shadow-inner min-h-[200px]">
       <div className="text-sm font-medium tracking-wider text-zinc-500 uppercase mb-4">
         当前和弦
       </div>

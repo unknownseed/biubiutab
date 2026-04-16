@@ -25,14 +25,15 @@ export default function SyncedLyrics({ lyrics, currentTime }: SyncedLyricsProps)
     if (activeLineRef.current && containerRef.current) {
       activeLineRef.current.scrollIntoView({
         behavior: "smooth",
-        block: "center",
+        inline: "center",
+        block: "nearest",
       });
     }
   }, [currentTime]);
 
   if (!lyrics || lyrics.length === 0) {
     return (
-      <div className="flex h-64 flex-col items-center justify-center rounded-2xl border border-white/10 bg-zinc-900/50 p-6 text-zinc-500">
+      <div className="flex h-full min-h-[200px] flex-col items-center justify-center rounded-2xl border border-white/10 bg-zinc-900/50 p-6 text-zinc-500">
         <p>暂无歌词数据</p>
       </div>
     );
@@ -41,13 +42,16 @@ export default function SyncedLyrics({ lyrics, currentTime }: SyncedLyricsProps)
   return (
     <div
       ref={containerRef}
-      className="relative flex h-64 flex-col overflow-y-auto overflow-x-hidden rounded-2xl border border-white/10 bg-zinc-900/50 p-6 scrollbar-hide"
+      className="relative flex h-full min-h-[200px] w-full flex-row items-center overflow-x-auto overflow-y-hidden rounded-2xl border border-white/10 bg-zinc-900/50 scrollbar-hide snap-x snap-mandatory"
       style={{
-        maskImage: "linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)",
-        WebkitMaskImage: "linear-gradient(to bottom, transparent, black 15%, black 85%, transparent)",
+        maskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
+        WebkitMaskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
       }}
     >
-      <div className="flex flex-col gap-4 py-20 text-center">
+      <div 
+        className="flex flex-row items-center gap-12 w-max whitespace-nowrap"
+        style={{ paddingLeft: "50%", paddingRight: "50%" }}
+      >
         {lyrics.map((lyric, idx) => {
           const isActive = currentTime >= lyric.startTime && currentTime <= lyric.endTime;
           const isPast = currentTime > lyric.endTime;
@@ -57,7 +61,7 @@ export default function SyncedLyrics({ lyrics, currentTime }: SyncedLyricsProps)
               key={idx}
               ref={isActive ? activeLineRef : null}
               className={cn(
-                "transition-all duration-300 ease-out",
+                "transition-all duration-300 ease-out snap-center",
                 isActive
                   ? "scale-110 font-bold text-white text-2xl drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]"
                   : isPast

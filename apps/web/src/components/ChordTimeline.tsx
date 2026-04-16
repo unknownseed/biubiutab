@@ -209,7 +209,7 @@ export default function ChordTimeline(props: ChordTimelineProps) {
                   <div
                     className={cn(
                       "font-black leading-none drop-shadow",
-                      active ? "text-3xl" : "text-2xl"
+                      active ? "text-3xl text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500" : "text-2xl text-white"
                     )}
                   >
                     {b.chord}
