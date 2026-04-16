@@ -165,7 +165,7 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       let isUserScrolling = false;
       let scrollTimeout: NodeJS.Timeout;
       
-      const scrollContainer = containerRef.current.parentElement;
+      const scrollContainer = containerRef.current; // The element with overflow-x-auto
       if (scrollContainer) {
         scrollContainer.addEventListener('wheel', () => {
           isUserScrolling = true;
@@ -185,18 +185,21 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       const syncScrollToCursor = () => {
         if (isUserScrolling || !containerRef.current || !scrollContainer) return;
         requestAnimationFrame(() => {
-          // Fallbacks for the cursor element: sometimes it's .at-cursor-beat, sometimes .at-cursor-bar
-          // Also try finding it globally within the wrapper if needed
           const cursor = containerRef.current!.querySelector('.at-cursor-beat') 
             || containerRef.current!.querySelector('.at-cursor-bar')
-            || containerRef.current!.querySelector('rect[fill="rgba(255, 255, 255, 0.2)"]'); // fallback logic
+            || containerRef.current!.querySelector('rect[fill="rgba(255, 255, 255, 0.2)"]'); 
             
           if (cursor) {
+            // Get the cursor position relative to the scroll container's internal content
             const cursorRect = cursor.getBoundingClientRect();
             const containerRect = scrollContainer.getBoundingClientRect();
-            const scrollLeft = scrollContainer.scrollLeft;
-            const targetX = scrollLeft + (cursorRect.left - containerRect.left) - (containerRect.width / 2) + (cursorRect.width / 2);
-            if (Math.abs(scrollLeft - targetX) > 10) {
+            
+            // We calculate how much we need to shift the current scrollLeft to put the cursor in the center
+            const offsetToCenter = (cursorRect.left - containerRect.left) - (containerRect.width / 2) + (cursorRect.width / 2);
+            
+            const targetX = scrollContainer.scrollLeft + offsetToCenter;
+            
+            if (Math.abs(offsetToCenter) > 10) {
               scrollContainer.scrollTo({ left: targetX, behavior: 'smooth' });
             }
           }
