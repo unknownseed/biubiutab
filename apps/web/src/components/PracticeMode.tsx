@@ -370,25 +370,6 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
     setTranspose(semitones);
   };
 
-  const handleLoopSet = (type: "A" | "B" | "clear") => {
-    if (type === "clear") {
-      setLoopA(null);
-      setLoopB(null);
-    } else if (type === "A") {
-      setLoopA(currentTime);
-      setLoopB(null); // reset B if we are re-setting A
-    } else if (type === "B") {
-      // ensure B is after A
-      if (loopA !== null && currentTime <= loopA) {
-        // If B is placed before A, swap them
-        setLoopB(loopA);
-        setLoopA(currentTime);
-      } else {
-        setLoopB(currentTime);
-      }
-    }
-  };
-
   const handleSeek = (timeSeconds: number) => {
     if (!alphaTabApiRef.current) return;
     alphaTabApiRef.current.timePosition = timeSeconds * 1000;
@@ -487,6 +468,28 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
 
   // Find current chord
   const currentChordBlock = chordBlocks.find((b) => currentTime >= b.startTime && currentTime < b.endTime) || chordBlocks[0];
+
+  const handleLoopSet = (type: "A" | "B" | "clear") => {
+    if (type === "clear") {
+      setLoopA(null);
+      setLoopB(null);
+    } else if (type === "A") {
+      // Snap A to the start of the current chord
+      setLoopA(currentChordBlock?.startTime ?? currentTime);
+      setLoopB(null); // reset B if we are re-setting A
+    } else if (type === "B") {
+      const targetB = currentChordBlock?.endTime ?? currentTime;
+      // ensure B is after A
+      if (loopA !== null && targetB <= loopA) {
+        // If B is placed before or at A, swap them logically
+        const oldAChord = chordBlocks.find(b => loopA >= b.startTime && loopA < b.endTime) || currentChordBlock;
+        setLoopA(currentChordBlock?.startTime ?? currentTime);
+        setLoopB(oldAChord?.endTime ?? loopA);
+      } else {
+        setLoopB(targetB);
+      }
+    }
+  };
 
   return (
     <div className="flex flex-col gap-6 rounded-2xl bg-zinc-950 p-6 text-zinc-50 shadow-xl">
