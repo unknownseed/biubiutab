@@ -16,6 +16,7 @@ export type PlaybackControlsProps = {
   
   transpose?: number;
   onTransposeChange?: (semitones: number) => void;
+  currentKeyDisplay?: string;
   
   loopA?: number | null;
   loopB?: number | null;
@@ -42,6 +43,7 @@ export default function PlaybackControls({
   onPlaybackRateChange,
   transpose = 0,
   onTransposeChange,
+  currentKeyDisplay = "C",
   loopA = null,
   loopB = null,
   onLoopSet,
@@ -116,7 +118,7 @@ export default function PlaybackControls({
               -
             </button>
             <div className="text-xs font-semibold text-zinc-300 w-12 text-center">
-              {transpose > 0 ? `+${transpose}` : transpose}
+              {currentKeyDisplay}
             </div>
             <button
               onClick={() => onTransposeChange?.(transpose + 1)}

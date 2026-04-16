@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import { Chord, Interval } from "@tonaljs/tonal";
+import { Chord, Interval, Note } from "@tonaljs/tonal";
 import ChordTimeline, { type ChordBlock } from "./ChordTimeline";
 import SyncedLyrics from "./SyncedLyrics";
 import LargeChordDiagram from "./LargeChordDiagram";
@@ -468,6 +468,21 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
     return merged;
   }, [practiceData?.chordBlocks, transpose]);
 
+  // Calculate current key display
+  const currentKeyDisplay = useMemo(() => {
+    let originalKey = practiceData?.metadata?.key;
+    if (!originalKey) {
+      const firstValidChord = practiceData?.chordBlocks?.find((b: any) => b.chord && b.chord !== "N" && b.chord !== "None");
+      originalKey = firstValidChord ? (Chord.get(firstValidChord.chord).tonic || "C") : "C";
+    }
+    try {
+      const transposed = Note.transpose(originalKey, Interval.fromSemitones(transpose));
+      return Note.simplify(transposed);
+    } catch {
+      return originalKey;
+    }
+  }, [practiceData, transpose]);
+
   const lyrics = practiceData?.lyrics || [];
 
   // Find current chord
@@ -493,6 +508,7 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
         onPlaybackRateChange={handlePlaybackRateChange}
         transpose={transpose}
         onTransposeChange={handleTransposeChange}
+        currentKeyDisplay={currentKeyDisplay}
         loopA={loopA}
         loopB={loopB}
         onLoopSet={handleLoopSet}
@@ -502,6 +518,8 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
         blocks={chordBlocks}
         currentTime={currentTime}
         onSeek={(time) => handleSeek(time)}
+        loopA={loopA}
+        loopB={loopB}
       />
 
       <div className="grid grid-cols-1 gap-6 md:grid-cols-2">

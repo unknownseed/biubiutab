@@ -9,6 +9,9 @@ export type ChordBlock = {
   endTime: number; // seconds
   section?: string; // e.g. "Intro" | "Verse" | "Chorus"
   count?: number; // Used for grouped blocks
+  /** Loop settings */
+  loopA?: number | null;
+  loopB?: number | null;
 };
 
 export type ChordTimelineProps = {
@@ -21,6 +24,9 @@ export type ChordTimelineProps = {
   baseBlockWidth?: number; // default 88
   centerActive?: boolean; // default true
   showSectionLabels?: boolean; // default true
+
+  loopA?: number | null;
+  loopB?: number | null;
 
   className?: string;
 };
@@ -87,6 +93,8 @@ export default function ChordTimeline(props: ChordTimelineProps) {
     baseBlockWidth = 88,
     centerActive = true,
     showSectionLabels = true,
+    loopA = null,
+    loopB = null,
     className,
   } = props;
 
@@ -155,6 +163,24 @@ export default function ChordTimeline(props: ChordTimelineProps) {
             const width = baseBlockWidth * count;
             const active = i === activeIndex;
 
+            const isLoopActive = loopA !== null && loopB !== null;
+            // Check if this block falls within the loop region
+            // Since it's a loop [loopA, loopB), the block is inside if its [startTime, endTime) overlaps or is contained.
+            // But usually we mean: does this chord play during the loop?
+            // For simplicity: block is inside if it overlaps with [loopA, loopB)
+            let isLooped = false;
+            if (isLoopActive) {
+              const bStart = b.startTime;
+              const bEnd = b.endTime;
+              isLooped = (bEnd > loopA) && (bStart < loopB);
+            }
+
+            // If A is set but B is not, maybe highlight the start block
+            let isLoopStart = false;
+            if (loopA !== null && loopB === null) {
+              isLoopStart = loopA >= b.startTime && loopA < b.endTime;
+            }
+
             const sectionLabel =
               showSectionLabels && isNewSection(blocks, i) ? b.section : undefined;
 
@@ -186,8 +212,11 @@ export default function ChordTimeline(props: ChordTimelineProps) {
                     sectionColor(b.section),
                     "border border-white/10",
                     "transition-[transform,opacity,box-shadow,border-color] duration-150 ease-out",
-                    !active && "opacity-75 hover:opacity-95",
+                    isLoopActive && !isLooped && !active && "opacity-30 grayscale",
+                    !active && !(isLoopActive && !isLooped) && "opacity-75 hover:opacity-95",
                     active && "scale-[1.10] opacity-100 border-yellow-300/50 chord-glow-pulse",
+                    isLooped && !active && "border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]",
+                    isLoopStart && !active && "border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]",
                     // When a block is very wide, center the text properly without weird stretching
                     "overflow-hidden"
                   )}
@@ -198,7 +227,7 @@ export default function ChordTimeline(props: ChordTimelineProps) {
                     className={cn(
                       "pointer-events-none absolute inset-0 rounded-2xl",
                       "bg-[radial-gradient(120px_60px_at_50%_0%,rgba(255,255,255,0.22),transparent_70%)]",
-                      active ? "opacity-100" : "opacity-40"
+                      active || isLooped || isLoopStart ? "opacity-100" : "opacity-40"
                     )}
                   />
 
@@ -206,7 +235,9 @@ export default function ChordTimeline(props: ChordTimelineProps) {
                     <div
                       className={cn(
                         "font-black leading-none drop-shadow",
-                        active ? "text-3xl text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500" : "text-2xl text-white"
+                        active ? "text-3xl text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500" 
+                          : isLooped || isLoopStart ? "text-2xl text-emerald-300"
+                          : "text-2xl text-white"
                       )}
                     >
                       {b.chord}
@@ -225,7 +256,7 @@ export default function ChordTimeline(props: ChordTimelineProps) {
                   <div
                     className={cn(
                       "mt-2 h-[4px] rounded-full transition-all duration-150 z-10",
-                      active ? "bg-yellow-300" : "bg-white/20"
+                      active ? "bg-yellow-300" : isLooped || isLoopStart ? "bg-emerald-400" : "bg-white/20"
                     )}
                     style={{ width: "40px" }}
                   />
