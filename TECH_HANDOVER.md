@@ -59,6 +59,18 @@ AI_BASE_URL=http://127.0.0.1:8001 npm run dev -- --port 3000
 
 - `http://localhost:3000`
 
+### 4.3 Web 资源准备（AlphaTab 字体/音源）
+
+Web 端的谱面播放（Practice Mode）依赖 AlphaTab 的 SoundFont 与 SMuFL 字体文件，来源为 NPM 依赖 `@coderline/alphatab`，构建时会自动复制到 `public/alphatab/`：
+
+- 脚本：`apps/web/scripts/prepare-alphatab-assets.mjs`
+- 触发：`apps/web/package.json` 的 `npm run dev/build/start`（以及 `postinstall`）
+- 运行时静态路径：
+  - `/alphatab/soundfont/sonivox.sf2`
+  - `/alphatab/font/Bravura.woff2`
+
+部署到 Render 如果使用了 `npm ci --ignore-scripts`，会跳过 `postinstall`；但只要构建命令为 `npm run build`，资源仍会在 build 阶段准备完成。
+
 ## 5. Web 端实现说明（Next.js）
 
 ### 5.1 页面
@@ -90,17 +102,20 @@ AI_BASE_URL=http://127.0.0.1:8001 npm run dev -- --port 3000
 - `GET /api/jobs/:id/result` → 转发到 AI `/jobs/{id}/result`  
   - 实现：[jobs/[jobId]/result/route.ts](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/api/jobs/%5BjobId%5D/result/route.ts)
 
-alphaTab 字体资源代理（解决 Font not available / NetworkError）：
+alphaTab 资源（字体/音源/脚本）：
 
-- `GET /api/alphatab/font/:filename`  
-  - 从 `node_modules/@coderline/alphatab/dist/font/` 读取并返回
-  - 实现：[alphatab/font route](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/api/alphatab/font/%5Bfilename%5D/route.ts)
+- `apps/web` 构建时会把 `@coderline/alphatab` 的资源复制到 `apps/web/public/alphatab/`
+- 运行时通过静态路径访问（部署更稳，避免生产环境读取 node_modules）：
+  - `/alphatab/alphaTab.js`
+  - `/alphatab/font/Bravura.woff2`
+  - `/alphatab/soundfont/sonivox.sf2`
 
 ### 5.3 alphaTab 渲染
 
 - 组件：[alphatab-viewer.tsx](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/components/alphatab-viewer.tsx)
 - 设置要点：
-  - `core.fontDirectory = "/api/alphatab/font/"`（否则字体 404）
+  - `core.fontDirectory = "/alphatab/font/"`（字体来自 public/alphatab/font）
+  - `core.scriptFile` 需要设置为带 origin 的绝对 URL（否则 Worker 内 `importScripts()` 会报 URL invalid）
   - `core.useWorkers = false`（避免某些环境下 worker 导致静默不渲染）
   - `player.enablePlayer = false`（当前不做 synth 播放）
   - `api.settings.notation.elements.set(NotationElement.EffectLyrics, true)`（强制显示 \lyrics，用于展示简谱）

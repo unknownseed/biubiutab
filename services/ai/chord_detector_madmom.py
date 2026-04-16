@@ -5,10 +5,13 @@
 
 from __future__ import annotations
 
+import logging
 from typing import Any, Dict, List
 
 from madmom.features.chords import CNNChordFeatureProcessor, CRFChordRecognitionProcessor
 from madmom.processors import SequentialProcessor
+
+logger = logging.getLogger(__name__)
 
 
 def detect_chords_madmom(audio_path: str) -> List[Dict[str, float | str]]:
@@ -28,21 +31,21 @@ def detect_chords_madmom(audio_path: str) -> List[Dict[str, float | str]]:
             ...
         ]
     """
-    print(f"[madmom] 开始处理音频: {audio_path}")
+    logger.info("[madmom] start audio=%s", audio_path)
 
     # 步骤 1: 提取 CNN 特征（madmom 内置模型，fps=10）
-    print("[madmom] 提取 CNNChord 特征...")
+    logger.info("[madmom] extract CNNChord features")
     feat = CNNChordFeatureProcessor()
 
     # 步骤 2: CRF 解码（输出 segments: (start, end, label)）
-    print("[madmom] 运行 CRFChordRecognition 解码...")
+    logger.info("[madmom] CRFChordRecognition decode")
     decode = CRFChordRecognitionProcessor()
 
     chordrec = SequentialProcessor([feat, decode])
     segments = chordrec(audio_path)
 
     # 步骤 3: 格式化输出
-    print(f"[madmom] 识别到 {len(segments)} 个和弦段落")
+    logger.info("[madmom] segments=%s", len(segments))
     result: List[Dict[str, float | str]] = []
 
     for seg in segments:
@@ -154,6 +157,14 @@ def align_chords_to_beats(
 
 if __name__ == "__main__":
     import sys
+
+    try:
+        if hasattr(sys.stdout, "reconfigure"):
+            sys.stdout.reconfigure(encoding="utf-8", errors="backslashreplace")
+        if hasattr(sys.stderr, "reconfigure"):
+            sys.stderr.reconfigure(encoding="utf-8", errors="backslashreplace")
+    except Exception:
+        pass
 
     if len(sys.argv) < 2:
         print("用法: python chord_detector_madmom.py <audio_file.mp3>")

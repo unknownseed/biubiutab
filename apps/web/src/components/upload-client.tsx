@@ -80,6 +80,17 @@ function formatSeconds(seconds: number): string {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
+function friendlyErrorMessage(msg: string): string {
+  if (/charmap/i.test(msg) && /codec can't encode/i.test(msg)) {
+    return [
+      "AI 服务输出中文时发生编码错误（常见于 Windows 控制台编码不是 UTF-8）。",
+      "建议：用 UTF-8 终端启动 AI 服务，或设置环境变量 PYTHONUTF8=1、PYTHONIOENCODING=utf-8。",
+      `原始错误：${msg}`,
+    ].join("\n");
+  }
+  return msg;
+}
+
 async function postJson<T>(url: string, body: unknown): Promise<T> {
   const res = await fetch(url, {
     method: "POST",
@@ -88,7 +99,7 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
   });
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    throw new Error(text || `Request failed: ${res.status}`);
+    throw new Error(friendlyErrorMessage(text || `Request failed: ${res.status}`));
   }
   return (await res.json()) as T;
 }
@@ -97,7 +108,7 @@ async function getJson<T>(url: string): Promise<T> {
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    throw new Error(text || `Request failed: ${res.status}`);
+    throw new Error(friendlyErrorMessage(text || `Request failed: ${res.status}`));
   }
   return (await res.json()) as T;
 }
@@ -237,8 +248,9 @@ export default function UploadClient() {
         }
         if (latest.status === "failed") {
           setStatus("failed");
-          setError(latest.error || "处理失败");
-          toast.push({ title: "生成失败", description: latest.error || "处理失败", variant: "error" });
+          const msg = friendlyErrorMessage(latest.error || "处理失败");
+          setError(msg);
+          toast.push({ title: "生成失败", description: msg, variant: "error" });
           return;
         }
         window.setTimeout(() => void poll(), 800);

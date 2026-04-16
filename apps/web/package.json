@@ -3,9 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "prepare:alphatab": "node scripts/prepare-alphatab-assets.mjs",
+    "postinstall": "npm run prepare:alphatab",
+    "dev": "npm run prepare:alphatab && next dev",
+    "build": "npm run prepare:alphatab && next build",
+    "start": "npm run prepare:alphatab && next start",
     "lint": "eslint"
   },
   "dependencies": {

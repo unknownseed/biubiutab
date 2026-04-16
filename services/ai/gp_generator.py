@@ -10,6 +10,20 @@ except ImportError:
     from chord_shapes import chord_shape_for_label
     from rhythm_patterns import select_pattern, _resolve_arpeggio_note, RhythmPattern, RhythmToken
 
+
+def _gp_safe_text(s: str) -> str:
+    t = (s or "").strip()
+    if not t:
+        return ""
+    for enc in ("cp1252", "latin-1"):
+        try:
+            t.encode(enc)
+            return t
+        except UnicodeEncodeError:
+            continue
+    out = t.encode("cp1252", "ignore").decode("cp1252").strip()
+    return out
+
 def generate_gp5_binary(
     title: str,
     tempo: int,
@@ -22,11 +36,11 @@ def generate_gp5_binary(
     song = guitarpro.Song()
     song.tracks.clear()
     song.measureHeaders.clear()
-    song.title = title
+    song.title = _gp_safe_text(title) or "score"
     song.tempo = tempo
 
     track = guitarpro.Track(song)
-    track.name = "Acoustic Guitar"
+    track.name = _gp_safe_text("Acoustic Guitar") or "Guitar"
     # standard tuning
     track.strings = [
         guitarpro.GuitarString(1, 64),
@@ -80,7 +94,7 @@ def generate_gp5_binary(
             # Section marker
             if idx == 0:
                 marker = guitarpro.Marker()
-                marker.title = s.name
+                marker.title = _gp_safe_text(s.name) or ""
                 marker.color = guitarpro.Color(255, 0, 0)
                 header.marker = marker
 
@@ -188,8 +202,9 @@ def generate_gp5_binary(
                         
                     if txt:
                         clean_txt = str(txt).replace(" ", "_").replace("\xa0", "_").strip()
-                        if clean_txt:
-                            beat.text = clean_txt
+                        safe_txt = _gp_safe_text(clean_txt)
+                        if safe_txt:
+                            beat.text = safe_txt
                         # We don't need global_lyrics_words anymore since we attach to beat.text
                     
                 voice.beats.append(beat)

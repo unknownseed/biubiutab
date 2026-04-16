@@ -17,6 +17,9 @@
 /.next/
 /out/
 
+# generated assets
+/public/alphatab/
+
 # production
 /build
 

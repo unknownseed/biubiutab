@@ -1,6 +1,8 @@
 import asyncio
 import os
 import shutil
+import sys
+import io
 import tempfile
 import time
 import uuid
@@ -29,6 +31,27 @@ from section_detector import detect_sections
 from source_separation import separate_stems
 from vocal_analysis import extract_vocal_melody, lyrics_to_beats, transcribe_lyrics
 from waveform import compute_waveform_peaks
+
+
+def _force_utf8_io() -> None:
+    try:
+        for name in ("stdout", "stderr"):
+            s = getattr(sys, name, None)
+            if s is None:
+                continue
+            if hasattr(s, "reconfigure"):
+                s.reconfigure(encoding="utf-8", errors="backslashreplace")
+                continue
+            buf = getattr(s, "buffer", None)
+            if buf is None:
+                continue
+            wrapped = io.TextIOWrapper(buf, encoding="utf-8", errors="backslashreplace", line_buffering=True)
+            setattr(sys, name, wrapped)
+    except Exception:
+        pass
+
+
+_force_utf8_io()
 
 
 class CreateJobRequest(BaseModel):

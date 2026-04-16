@@ -72,7 +72,7 @@ async function preloadFonts() {
     try {
       await Promise.all(
         PRELOAD_FONTS.map(async (f) => {
-          const url = `/api/alphatab/font/${f}`;
+          const url = `/alphatab/font/${f}`;
           const res = await fetch(url, { method: "HEAD" });
           if (!res.ok) {
             console.warn(`[AlphaTab] Failed to preload font ${f}: ${res.status}`);
@@ -234,7 +234,13 @@ const AlphaTabViewer = forwardRef<
       destroyApi();
 
       const api = new mod.AlphaTabApi(pageRef.current, {
-        core: { engine: "svg", fontDirectory: "/api/alphatab/font/", useWorkers: false, logLevel: mod.LogLevel.None },
+        core: {
+          engine: "svg",
+          fontDirectory: "/alphatab/font/",
+          scriptFile: new URL("/alphatab/alphaTab.js", window.location.href).toString(),
+          useWorkers: false,
+          logLevel: mod.LogLevel.None,
+        },
         player: { enablePlayer: false },
         display: {
           scale: 1.0,
