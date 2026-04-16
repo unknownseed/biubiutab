@@ -185,45 +185,40 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       const syncScrollToCursor = () => {
         if (isUserScrolling || !containerRef.current || !scrollContainer) return;
         requestAnimationFrame(() => {
-          // If we can't find .at-cursor-beat, we fallback to .at-cursor-bar
-          const cursor = containerRef.current!.querySelector('.at-cursor-beat') || containerRef.current!.querySelector('.at-cursor-bar');
+          // Fallbacks for the cursor element: sometimes it's .at-cursor-beat, sometimes .at-cursor-bar
+          // Also try finding it globally within the wrapper if needed
+          const cursor = containerRef.current!.querySelector('.at-cursor-beat') 
+            || containerRef.current!.querySelector('.at-cursor-bar')
+            || containerRef.current!.querySelector('rect[fill="rgba(255, 255, 255, 0.2)"]'); // fallback logic
+            
           if (cursor) {
-            // Because AlphaTab SVG container might have internal padding or transforms,
-            // calculating based on standard getBoundingClientRect is sometimes inaccurate 
-            // if the scroll container is just generic. 
-            // Let's use the explicit beat X position from the SVG if possible, or just the rects.
             const cursorRect = cursor.getBoundingClientRect();
             const containerRect = scrollContainer.getBoundingClientRect();
             const scrollLeft = scrollContainer.scrollLeft;
             const targetX = scrollLeft + (cursorRect.left - containerRect.left) - (containerRect.width / 2) + (cursorRect.width / 2);
-            
-            // Allow a small threshold (10px) to prevent micro-jitters
             if (Math.abs(scrollLeft - targetX) > 10) {
               scrollContainer.scrollTo({ left: targetX, behavior: 'smooth' });
             }
-          } else {
-            // Fallback: If cursor isn't rendered yet but we know the timePosition, 
-            // AlphaTab's tick position can sometimes be used if we calculate proportions, 
-            // but relying on the cursor element is standard. 
-            // We'll just wait for the next render.
           }
         });
       };
+
+      // Provide a way to manually sync scroll externally
+      // We attach it to the ref so the component can call it on seek
+      (alphaTabApiRef.current as any)._syncScrollToCursor = syncScrollToCursor;
 
       // Sync alphaTab engine position with our React state
       api.playerPositionChanged?.on?.((args: any) => {
         setCurrentTime(args.currentTime / 1000);
         
-        // During playback, we let `playedBeatChanged` handle the scroll to avoid duplicate calls.
-        // However, when the user is dragging the progress bar (seek), the engine is paused
-        // but `playerPositionChanged` fires rapidly. 
+        // When seeking while paused, playedBeatChanged isn't fired reliably for scrolling.
+        // We trigger it manually. But we debounce it slightly so rapid dragging doesn't jitter.
         if (!alphaTabApiRef.current?.isReadyForPlayback) return;
-        
-        // Since we can't reliably get `isPlaying` from useState here (stale closure),
-        // we rely on the api's playerState. 1 = playing.
         const isCurrentlyPlaying = alphaTabApiRef.current.playerState === 1;
         if (!isCurrentlyPlaying) {
-          syncScrollToCursor();
+          // Use requestAnimationFrame instead of setTimeout to allow AlphaTab to render the cursor first,
+          // then sync scroll
+          requestAnimationFrame(() => syncScrollToCursor());
         }
       });
 
@@ -232,10 +227,6 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
         if (!beat) return;
         syncScrollToCursor();
       });
-
-      // Provide a way to manually sync scroll externally
-      // We attach it to the ref so the component can call it on seek
-      (alphaTabApiRef.current as any)._syncScrollToCursor = syncScrollToCursor;
 
       api.error?.on?.((e: any) => {
         const msg = e instanceof Error ? e.message : String(e);
@@ -333,13 +324,15 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
     setCurrentTime(timeSeconds);
     
     // We try to sync scroll shortly after seeking to ensure alphaTab has updated the cursor
-    let attempts = 3;
+    let attempts = 5;
     const trySync = () => {
       setTimeout(() => {
         if (alphaTabApiRef.current && (alphaTabApiRef.current as any)._syncScrollToCursor) {
           (alphaTabApiRef.current as any)._syncScrollToCursor();
           
-          const cursor = containerRef.current?.querySelector('.at-cursor-beat') || containerRef.current?.querySelector('.at-cursor-bar');
+          const cursor = containerRef.current?.querySelector('.at-cursor-beat') 
+            || containerRef.current?.querySelector('.at-cursor-bar');
+          
           if (!cursor && attempts > 0) {
             attempts--;
             trySync();
