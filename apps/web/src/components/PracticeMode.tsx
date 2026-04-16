@@ -153,6 +153,9 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
 
       api.settings.display.resources.titleFont.size = 0;
       api.settings.display.resources.subTitleFont.size = 0;
+      api.settings.display.resources.wordsFont.size = 0;
+      // Force smaller top padding in layout if possible, though AlphaTab layout margins are mostly fixed.
+      // We will handle the remaining whitespace with negative margin in CSS.
       api.settings.notation.elements.set(mod.NotationElement.GuitarTuning, false);
       api.settings.notation.elements.set(mod.NotationElement.EffectChordNames, false);
       api.settings.notation.elements.set(mod.NotationElement.ChordDiagrams, false);
@@ -465,6 +468,7 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
   }, [practiceData, transpose]);
 
   const lyrics = practiceData?.lyrics || [];
+  const songTitle = practiceData?.metadata?.title || practiceData?.title || "未知曲目";
 
   // Find current chord
   const currentChordBlock = chordBlocks.find((b) => currentTime >= b.startTime && currentTime < b.endTime) || chordBlocks[0];
@@ -506,11 +510,12 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
           </div>
           <div
             className="w-full overflow-hidden rounded-2xl bg-zinc-50"
-            style={{ height: "130px" }}
+            style={{ height: "140px" }}
           >
             <div
               ref={containerRef}
               className="h-full w-full overflow-x-auto overflow-y-hidden"
+              style={{ marginTop: "-24px" }}
             />
           </div>
         </div>
@@ -538,6 +543,7 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
         transpose={transpose}
         onTransposeChange={handleTransposeChange}
         currentKeyDisplay={currentKeyDisplay}
+        songTitle={songTitle}
         loopA={loopA}
         loopB={loopB}
         onLoopSet={handleLoopSet}

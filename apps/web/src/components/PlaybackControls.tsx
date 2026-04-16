@@ -17,6 +17,7 @@ export type PlaybackControlsProps = {
   transpose?: number;
   onTransposeChange?: (semitones: number) => void;
   currentKeyDisplay?: string;
+  songTitle?: string;
   
   loopA?: number | null;
   loopB?: number | null;
@@ -44,6 +45,7 @@ export default function PlaybackControls({
   transpose = 0,
   onTransposeChange,
   currentKeyDisplay = "C",
+  songTitle = "未知曲目",
   loopA = null,
   loopB = null,
   onLoopSet,
@@ -91,10 +93,10 @@ export default function PlaybackControls({
   };
 
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-zinc-900/80 px-4 py-3 shadow-xl backdrop-blur-md">
+    <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-zinc-900/80 px-4 py-3 shadow-xl backdrop-blur-md relative">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1 rounded-lg bg-zinc-800/50 p-1">
+          <div className="flex items-center gap-1 rounded-lg bg-zinc-800/50 p-1 hidden sm:flex">
             {[0.5, 0.75, 1.0, 1.25, 1.5].map((rate) => (
               <button
                 key={rate}
@@ -126,6 +128,12 @@ export default function PlaybackControls({
             >
               +
             </button>
+          </div>
+        </div>
+
+        <div className="absolute left-1/2 top-5 -translate-x-1/2 px-4 pointer-events-none hidden md:block">
+          <div className="text-[13px] font-bold text-white/80 truncate max-w-[300px] text-center tracking-wide">
+            {songTitle}
           </div>
         </div>
 
