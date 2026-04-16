@@ -12,6 +12,8 @@
   },
   "dependencies": {
     "@coderline/alphatab": "^1.8.2",
+    "@tombatossals/chords-db": "^0.5.1",
+    "@tombatossals/react-chords": "^0.2.10",
     "jsdom": "^29.0.2",
     "next": "16.2.3",
     "react": "19.2.4",

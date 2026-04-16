@@ -17,19 +17,56 @@ function cn(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
+function findActiveLyricIndex(lyrics: LyricLine[], t: number) {
+  let lo = 0;
+  let hi = lyrics.length - 1;
+
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    const l = lyrics[mid];
+    if (t < l.startTime) {
+      hi = mid - 1;
+    } else if (t >= l.endTime) {
+      lo = mid + 1;
+    } else {
+      return mid;
+    }
+  }
+
+  let idx = -1;
+  for (let i = 0; i < lyrics.length; i++) {
+    if (lyrics[i].startTime <= t) idx = i;
+    else break;
+  }
+  return idx;
+}
+
 export default function SyncedLyrics({ lyrics, currentTime }: SyncedLyricsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
-  const activeLineRef = useRef<HTMLDivElement>(null);
+  const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
+
+  const activeIndex = React.useMemo(() => {
+    if (!lyrics || lyrics.length === 0) return -1;
+    return findActiveLyricIndex(lyrics, currentTime);
+  }, [lyrics, currentTime]);
 
   useEffect(() => {
-    if (activeLineRef.current && containerRef.current) {
-      activeLineRef.current.scrollIntoView({
-        behavior: "smooth",
-        inline: "center",
-        block: "nearest",
-      });
+    if (activeIndex >= 0 && itemRefs.current[activeIndex] && containerRef.current) {
+      const container = containerRef.current;
+      const el = itemRefs.current[activeIndex];
+      
+      const cRect = container.getBoundingClientRect();
+      const eRect = el.getBoundingClientRect();
+      
+      const containerCenter = cRect.left + cRect.width / 2;
+      const elementCenter = eRect.left + eRect.width / 2;
+      const delta = elementCenter - containerCenter;
+      
+      if (Math.abs(delta) > 12) {
+        container.scrollBy({ left: delta, behavior: "smooth" });
+      }
     }
-  }, [currentTime]);
+  }, [activeIndex]);
 
   if (!lyrics || lyrics.length === 0) {
     return (
@@ -53,13 +90,15 @@ export default function SyncedLyrics({ lyrics, currentTime }: SyncedLyricsProps)
         style={{ paddingLeft: "50%", paddingRight: "50%" }}
       >
         {lyrics.map((lyric, idx) => {
-          const isActive = currentTime >= lyric.startTime && currentTime <= lyric.endTime;
-          const isPast = currentTime > lyric.endTime;
+          const isActive = idx === activeIndex;
+          const isPast = idx < activeIndex;
 
           return (
             <div
               key={idx}
-              ref={isActive ? activeLineRef : null}
+              ref={(node) => {
+                itemRefs.current[idx] = node;
+              }}
               className={cn(
                 "transition-all duration-300 ease-out snap-center",
                 isActive
