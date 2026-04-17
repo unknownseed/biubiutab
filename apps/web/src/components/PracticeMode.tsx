@@ -2,8 +2,8 @@
 
 import React, { useEffect, useRef, useState, useMemo } from "react";
 import { Chord, Interval, Note } from "@tonaljs/tonal";
-import ChordTimeline, { type ChordBlock } from "./ChordTimeline";
-import SyncedLyrics from "./SyncedLyrics";
+import ChordTimeline, { type ChordBlock, findActiveIndex } from "./ChordTimeline";
+import SyncedLyrics, { findActiveLyricIndex } from "./SyncedLyrics";
 import LargeChordDiagram from "./LargeChordDiagram";
 import PlaybackControls from "./PlaybackControls";
 import { GuitarSampler } from "./GuitarSampler";
@@ -576,8 +576,18 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle }: Pract
   const lyrics = practiceData?.lyrics || [];
   const displayTitle = songTitle || practiceData?.metadata?.title || practiceData?.title || "未知曲目";
 
+  const activeChordIndex = useMemo(() => {
+    if (!chordBlocks?.length) return -1;
+    return findActiveIndex(chordBlocks, currentTime);
+  }, [chordBlocks, currentTime]);
+
+  const activeLyricIndex = useMemo(() => {
+    if (!lyrics || lyrics.length === 0) return -1;
+    return findActiveLyricIndex(lyrics, currentTime);
+  }, [lyrics, currentTime]);
+
   // Find current chord
-  const currentChordBlock = chordBlocks.find((b) => currentTime >= b.startTime && currentTime < b.endTime) || chordBlocks[0];
+  const currentChordBlock = chordBlocks[activeChordIndex] || chordBlocks[0];
 
   const handleLoopSet = (type: "A" | "B" | "clear") => {
     if (type === "clear") {
@@ -628,12 +638,12 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle }: Pract
             />
           </div>
         </div>
-        <SyncedLyrics lyrics={lyrics} currentTime={currentTime} countdown={countdown} />
+        <SyncedLyrics lyrics={lyrics} activeIndex={activeLyricIndex} countdown={countdown} />
       </div>
 
       <ChordTimeline
         blocks={chordBlocks}
-        currentTime={currentTime}
+        activeIndex={activeChordIndex}
         onSeek={(time, block) => handleSeek(time, block)}
         loopA={loopA}
         loopB={loopB}

@@ -33,7 +33,7 @@ function formatTime(sec: number) {
   return `${String(mm).padStart(2, "0")}:${String(ss).padStart(2, "0")}`;
 }
 
-export default function PlaybackControls({
+export const PlaybackControls = React.memo(function PlaybackControls({
   isPlaying,
   isPlayerReady = true,
   isLoading = false,
@@ -259,4 +259,6 @@ export default function PlaybackControls({
       </div>
     </div>
   );
-}
+});
+
+export default PlaybackControls;

@@ -20,7 +20,7 @@ export type ChordBlock = {
 
 export type ChordTimelineProps = {
   blocks: ChordBlock[];
-  currentTime: number; // seconds
+  activeIndex: number;
   duration?: number; // seconds (optional; only used for some UI decisions)
   onSeek?: (timeSeconds: number, block: ChordBlock, index: number) => void;
 
@@ -43,7 +43,7 @@ function cn(...classes: Array<string | false | null | undefined>) {
  * Assumes blocks are sorted by startTime ascending (recommended).
  * If not sorted, behavior still works but active index search may be off.
  */
-function findActiveIndex(blocks: ChordBlock[], t: number) {
+export function findActiveIndex(blocks: ChordBlock[], t: number) {
   // Binary search for speed (O(log n))
   let lo = 0;
   let hi = blocks.length - 1;
@@ -89,10 +89,10 @@ function isNewSection(blocks: ChordBlock[], i: number) {
   return prev !== curr;
 }
 
-export default function ChordTimeline(props: ChordTimelineProps) {
+export const ChordTimeline = React.memo(function ChordTimeline(props: ChordTimelineProps) {
   const {
     blocks,
-    currentTime,
+    activeIndex,
     onSeek,
     baseBlockWidth = 56, // Slightly narrower for 1-beat blocks
     centerActive = true,
@@ -104,11 +104,6 @@ export default function ChordTimeline(props: ChordTimelineProps) {
 
   const containerRef = useRef<HTMLDivElement | null>(null);
   const itemRefs = useRef<Array<HTMLButtonElement | null>>([]);
-
-  const activeIndex = useMemo(() => {
-    if (!blocks?.length) return -1;
-    return findActiveIndex(blocks, currentTime);
-  }, [blocks, currentTime]);
 
   // Auto-center active block
   useEffect(() => {
@@ -279,7 +274,14 @@ export default function ChordTimeline(props: ChordTimelineProps) {
       </div>
     </div>
   );
-}
+}, (prev, next) => {
+  return prev.blocks === next.blocks &&
+         prev.activeIndex === next.activeIndex &&
+         prev.loopA === next.loopA &&
+         prev.loopB === next.loopB;
+});
+
+export default ChordTimeline;
 
 function formatTime(sec: number) {
   if (!Number.isFinite(sec)) return "--:--";

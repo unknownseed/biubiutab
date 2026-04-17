@@ -44,7 +44,7 @@ function getChordPosition(name: string): ChordPosition | null {
   return chordDef.positions[0] as ChordPosition;
 }
 
-export default function LargeChordDiagram({ chord }: LargeChordDiagramProps) {
+export const LargeChordDiagram = React.memo(function LargeChordDiagram({ chord }: LargeChordDiagramProps) {
   const isNoChord = !chord || chord === "N" || chord === "None";
   
   const position = useMemo(() => {
@@ -69,4 +69,6 @@ export default function LargeChordDiagram({ chord }: LargeChordDiagramProps) {
       </div>
     </div>
   );
-}
+});
+
+export default LargeChordDiagram;

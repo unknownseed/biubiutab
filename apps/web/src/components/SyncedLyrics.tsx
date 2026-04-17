@@ -10,7 +10,7 @@ export type LyricLine = {
 
 export type SyncedLyricsProps = {
   lyrics: LyricLine[];
-  currentTime: number;
+  activeIndex: number;
   countdown?: number | null;
 };
 
@@ -18,7 +18,7 @@ function cn(...classes: Array<string | false | null | undefined>) {
   return classes.filter(Boolean).join(" ");
 }
 
-function findActiveLyricIndex(lyrics: LyricLine[], t: number) {
+export function findActiveLyricIndex(lyrics: LyricLine[], t: number) {
   let lo = 0;
   let hi = lyrics.length - 1;
 
@@ -42,14 +42,9 @@ function findActiveLyricIndex(lyrics: LyricLine[], t: number) {
   return idx;
 }
 
-export default function SyncedLyrics({ lyrics, currentTime, countdown = null }: SyncedLyricsProps) {
+export const SyncedLyrics = React.memo(function SyncedLyrics({ lyrics, activeIndex, countdown = null }: SyncedLyricsProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<Array<HTMLDivElement | null>>([]);
-
-  const activeIndex = React.useMemo(() => {
-    if (!lyrics || lyrics.length === 0) return -1;
-    return findActiveLyricIndex(lyrics, currentTime);
-  }, [lyrics, currentTime]);
 
   useEffect(() => {
     if (activeIndex >= 0 && itemRefs.current[activeIndex] && containerRef.current) {
@@ -129,4 +124,10 @@ export default function SyncedLyrics({ lyrics, currentTime, countdown = null }: 
       </div>
     </div>
   );
-}
+}, (prev, next) => {
+  return prev.lyrics === next.lyrics &&
+         prev.activeIndex === next.activeIndex &&
+         prev.countdown === next.countdown;
+});
+
+export default SyncedLyrics;
