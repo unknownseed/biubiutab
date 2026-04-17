@@ -76,6 +76,25 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
   const [countdown, setCountdown] = useState<number | null>(null);
   const countdownTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const playTick = () => {
+    try {
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (!AudioContextClass) return;
+      const ctx = new AudioContextClass();
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.frequency.value = 800;
+      osc.type = "sine";
+      gain.gain.setValueAtTime(0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(1, ctx.currentTime + 0.005);
+      gain.gain.linearRampToValueAtTime(0, ctx.currentTime + 0.1);
+      osc.start(ctx.currentTime);
+      osc.stop(ctx.currentTime + 0.1);
+    } catch (e) {}
+  };
+
   const loopARef = useRef<number | null>(null);
   const loopBRef = useRef<number | null>(null);
   
@@ -385,11 +404,13 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
 
       let count = 4;
       setCountdown(count);
+      playTick();
 
       countdownTimerRef.current = setInterval(() => {
         count -= 1;
         if (count > 0) {
           setCountdown(count);
+          playTick();
         } else {
           if (countdownTimerRef.current) {
             clearInterval(countdownTimerRef.current);
@@ -556,13 +577,16 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
             <LargeChordDiagram chord={currentChordBlock?.chord || "N"} />
           </div>
           <div
-            className="w-full overflow-hidden rounded-2xl bg-zinc-50"
-            style={{ height: "140px" }}
+            className="w-full rounded-2xl bg-zinc-50 overflow-hidden"
+            style={{ height: "160px" }}
           >
             <div
               ref={containerRef}
               className="h-full w-full overflow-x-auto overflow-y-hidden"
-              style={{ marginTop: "-24px" }}
+              style={{ 
+                transform: "translateY(-16px)",
+                height: "calc(100% + 16px)"
+              }}
             />
           </div>
         </div>
@@ -594,6 +618,7 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
         loopA={loopA}
         loopB={loopB}
         onLoopSet={handleLoopSet}
+        bpm={practiceData?.metadata?.tempo || 120}
       />
     </div>
   );

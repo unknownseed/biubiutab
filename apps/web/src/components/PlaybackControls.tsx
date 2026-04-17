@@ -22,6 +22,7 @@ export type PlaybackControlsProps = {
   loopA?: number | null;
   loopB?: number | null;
   onLoopSet?: (type: "A" | "B" | "clear") => void;
+  bpm?: number;
 };
 
 function formatTime(sec: number) {
@@ -49,6 +50,7 @@ export default function PlaybackControls({
   loopA = null,
   loopB = null,
   onLoopSet,
+  bpm,
 }: PlaybackControlsProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragTime, setDragTime] = useState(0);
@@ -97,6 +99,14 @@ export default function PlaybackControls({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1 rounded-lg bg-zinc-800/50 p-1 hidden sm:flex">
+            {bpm && (
+              <>
+                <div className="px-2 font-mono text-[11px] font-bold text-emerald-400 bg-zinc-950/50 rounded py-1 border border-white/5">
+                  {Math.round(bpm * playbackRate)} BPM
+                </div>
+                <div className="w-px h-3 bg-white/10 mx-1" />
+              </>
+            )}
             {[0.5, 0.75, 1.0, 1.25, 1.5].map((rate) => (
               <button
                 key={rate}
