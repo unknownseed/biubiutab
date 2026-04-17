@@ -1,40 +1,78 @@
 # Biubiutab — 技术交接文档（最新版）
 
-本文档面向接手开发的工程师，描述当前代码已实现能力、运行方式、数据流、关键模块、已知问题与下一步建议。
+本文档面向接手开发的工程师，描述当前代码已实现能力、运行方式、核心功能模块、技术架构、已知问题与下一步建议。特别包含了近期关于“极简跟弹”模式、音频合成引擎以及移动端 App 打包的详尽记录。
 
-## 1. 项目目标（当前阶段）
+## 1. 项目目标与已实现成果
 
-当前实现的是一个 MVP：用户上传音频 → 异步分析 → 自动生成“和弦谱 + 结构 + 简谱（旋律数字谱）”并渲染为吉他六线谱谱例（alphaTab），支持导出 atex / PNG / PDF。
+当前项目已经从初期的“文本六线谱生成器”进化为一个**功能完整的在线吉他谱浏览器与练习工具**。
 
-现阶段重点：
+### 核心业务链路：
+1. 用户上传音频（MP3/WAV）。
+2. 后端（FastAPI + AI 算法）异步分析音频，提取和弦、小节、BPM、调性、歌词，并生成标准的 **GP5（Guitar Pro 5）** 格式文件。
+3. 前端（Next.js）轮询获取结果，并使用 **AlphaTab** 渲染出专业级的六线谱。
+4. 提供两种核心视图：
+   - **完整六线谱**：标准的吉他谱阅读模式，支持导出 PNG、PDF 和 GP5 文件。
+   - **极简跟弹（Practice Mode）**：专为视奏和练习打造的动态交互模式。
 
-- 跑通端到端链路与基础交互
-- 输出“可渲染的专业谱面”（不再是纯文本 6 线字符画）
-- 为后续“质量提升 / 编辑 / 导出 GPX”打基础
+### “极简跟弹”模式核心特性：
+- **实时滚动歌词**：随音乐进度高亮并滚动。
+- **大字号和弦图**：当前小节和弦的指法图实时放大显示。
+- **和弦时间轴（Chord Timeline）**：直观展示全曲和弦走向，点击即可精准跳转（Seek）。
+- **A-B 智能循环**：用户可设定循环区间，系统会自动将 A、B 边界“吸附（Snap）”到最近的和弦块起止点，保证循环的音乐完整性。
+- **高级播放控制**：支持 0.5x - 1.5x 变速（自动计算并显示实时 BPM）、半音级移调（Transpose）。
+- **预拍倒数（Count-in）**：播放前提供符合当前 BPM 的 4 拍视觉倒数与节拍器滴答声（Metronome tick）。
+- **极简 UI 布局**：针对屏幕第一屏（First Fold）进行了高度压缩和优化，确保六根琴弦及所有操作按钮均可见，无需滚动。
+
+---
 
 ## 2. 代码结构
 
-- Web（Next.js + API 代理）：[apps/web](file:///Users/unknownseed/Developer/biubiutab/apps/web)
-- AI 服务（FastAPI）：[services/ai](file:///Users/unknownseed/Developer/biubiutab/services/ai)
-- 本地存储目录（运行时生成）：
-  - 上传文件：`storage/uploads`
+- Web（Next.js + React + TailwindCSS）：`apps/web`
+  - 核心播放器组件：`src/components/PracticeMode.tsx`, `PlaybackControls.tsx`, `ChordTimeline.tsx`, `SyncedLyrics.tsx`, `LargeChordDiagram.tsx`
+  - AlphaTab 渲染器封装：`src/components/alphatab-viewer.tsx`
+  - 高级音频引擎（Tone.js）：`src/components/GuitarSampler.ts`
+- AI 服务（FastAPI）：`services/ai`
+  - 核心生成逻辑：`gp_generator.py`（负责将 AI 分析结果打包为二进制的 GP5 文件）。
+- 静态资源：`apps/web/public/alphatab/`（包含字体与 SoundFont 音色库）。
 
-样本音频位于：`sample audio/`
+---
 
-## 3. 当前产品流程
+## 3. 音频发声引擎架构（重点交接）
 
-1) 首页上传音频（MP3/WAV，≤ 50MB）  
-2) Web 将文件落到本地 `storage/uploads`，并返回 `storedFilename`  
-3) Web 调用 AI 服务创建任务 `/jobs`，传入 `audio_path`（本地文件绝对路径）  
-4) 前端轮询 `/jobs/{id}` 直到 succeeded/failed  
-5) succeeded 后获取 `/jobs/{id}/result`，其中包含 `key/tempo/sections/alphatex`  
-6) Web 仅渲染 alphaTab 谱例（六线谱），并在谱例中展示：和弦、和弦按法图、段落、Key/拍号/速度、简谱（以歌词行形式显示在谱表下方）  
-7) 支持复制/下载 alphaTex（.atex），并支持导出图片（PNG）与 PDF（打印）
+为了解决网页端吉他播放“电子 MIDI 味”过重的问题，我们目前设计了两套音频引擎方案：
 
-## 4. 运行方式（本地开发）
+### 方案 A：AlphaTab 内置 TinySynth + 高品质 SF2（当前默认启用）
+- **实现方式**：我们使用了著名的开源轻量级 General MIDI 音色库 `TimGM6mb.sf2`（约 5.8MB）。
+- **优势**：完美兼容 AlphaTab 的极简合成器，加载快，木吉他（Program 25）的声音清脆自然，比原版强很多。无需额外写发声逻辑，AlphaTab 原生支持所有吉他技巧（推弦、滑音等）。
+- **注意**：为了确保发声，后端 `gp_generator.py` 中强制将吉他轨道的乐器（Program）设置为了 25。
 
-### 4.1 启动 AI 服务
+### 方案 B：Tone.js + 高清真实采样（终极音质方案，已写好代码预留）
+- **实现方式**：在 `PracticeMode.tsx` 顶部有一个 `USE_TONE_JS` 的常量开关。当设为 `true` 时，AlphaTab 会被静音（设为 `MidiEventsOnly`），由 `GuitarSampler.ts` 接管所有发声。
+- **优势**：突破浏览器 MIDI 合成器限制，可以加载几十 MB 的录音棚级别真实吉他单音切片（WAV/MP3），音质上限极高。支持自定义 Reverb（混响）和 Compressor（压缩）。
+- **下一步工作**：如果决定启用此方案，接手人需要准备 6~8 个干净的吉他单音录音文件（如 E2.mp3, A2.mp3 等），放入 `public/samples/guitar/` 目录中。同时需要针对滑音、击勾弦等特殊事件在 `playedBeatChanged` 监听器中编写单独的参数包络逻辑（详见交接讨论记录）。
 
+---
+
+## 4. 移动端 App（iOS/iPad）打包与上架指南
+
+当前的前端架构（Next.js + Web Audio）非常适合通过“套壳”方式打包为 iOS App。
+
+### 推荐技术栈
+- **Capacitor** 或 **Ionic**（将现有的 Web 产物装载到原生 WKWebView 中）。
+
+### App Store 审核合规要点（必读）
+苹果不允许“纯网页快捷方式”上架。为了顺利通过审核，壳 App 必须具备**最小原生体验（Minimum Native Functionality）**：
+1. **原生文件导入**：接入 iOS 的 `UIDocumentPicker`，允许用户从“文件”App 或微信分享导入音频。
+2. **本地离线缓存**：利用原生能力或 Service Worker，将 5MB 的音色库和已生成的谱例缓存到本地，实现“无网可练”。
+3. **原生分享导出**：使用原生 Share Sheet 导出生成的 GP5 或 PDF 谱子。
+4. **音频策略规避**：iOS 严格限制自动播放。当前的“点击播放按钮才开始预拍和发声”的逻辑已经符合规范，请务必保持，切勿尝试在页面加载时自动播放。
+5. **支付合规**：如需收费，必须接入 Apple IAP（内购），绝不能在 App 内放置跳转到网页的支付宝/微信支付链接。
+
+---
+
+## 5. 本地开发与运行方式
+
+### 5.1 启动 AI 服务 (后端)
 ```bash
 cd /Users/unknownseed/Developer/biubiutab/services/ai
 python3 -m venv .venv
@@ -42,224 +80,26 @@ source .venv/bin/activate
 pip install -r requirements.txt
 uvicorn main:app --host 127.0.0.1 --port 8001 --reload
 ```
+健康检查：`GET http://127.0.0.1:8001/health`
 
-健康检查：
-
-- `GET http://127.0.0.1:8001/health`
-
-### 4.2 启动 Web
-
+### 5.2 启动 Web 服务 (前端)
 ```bash
 cd /Users/unknownseed/Developer/biubiutab/apps/web
 npm install
-AI_BASE_URL=http://127.0.0.1:8001 npm run dev -- --port 3000
+npm run dev
 ```
 
-打开：
+---
 
-- `http://localhost:3000`
+## 6. 后续迭代建议与已知问题
 
-### 4.3 Web 资源准备（AlphaTab 字体/音源）
+### UI/UX 体验
+- AlphaTab 在某些极端宽度下，SVG 的换行计算可能会导致右侧少量留白。已通过 CSS 负边距做了尽可能的修复，如果更换容器宽度，需要重新微调 `transform: translateY`。
+- 极简跟弹模式在手机竖屏（Mobile Portrait）下的空间非常极限，目前已经做了大量的折叠优化（如隐藏 BPM 数字等），后续可以考虑在小屏幕强制要求用户横屏（Landscape）使用。
 
-Web 端的谱面播放（Practice Mode）依赖 AlphaTab 的 SoundFont 与 SMuFL 字体文件，来源为 NPM 依赖 `@coderline/alphatab`，构建时会自动复制到 `public/alphatab/`：
+### AI 算法与扒谱准确度
+- 当前的算法依然是 MVP 级别。对于重型混音、鼓点密集、或含有复杂键盘伴奏的歌曲，和弦和段落识别可能出现误判。
+- **建议**：后续可以引入源分离算法（Source Separation，如 Spleeter/Demucs），先将音频中的“吉他 / 人声”轨道抽离，再进行和弦分析，准确率会有质的飞跃。
 
-- 脚本：`apps/web/scripts/prepare-alphatab-assets.mjs`
-- 触发：`apps/web/package.json` 的 `npm run dev/build/start`（以及 `postinstall`）
-- 运行时静态路径：
-  - `/alphatab/soundfont/sonivox.sf2`
-  - `/alphatab/font/Bravura.woff2`
-
-部署到 Render 如果使用了 `npm ci --ignore-scripts`，会跳过 `postinstall`；但只要构建命令为 `npm run build`，资源仍会在 build 阶段准备完成。
-
-## 5. Web 端实现说明（Next.js）
-
-### 5.1 页面
-
-- 首页（上传 + 发起任务）：[page.tsx](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/page.tsx)、[upload-client.tsx](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/components/upload-client.tsx)
-- 编辑/导出页（渲染谱面）：[editor/[jobId]/page.tsx](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/editor/%5BjobId%5D/page.tsx)、[editor-client.tsx](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/components/editor-client.tsx)
-
-### 5.2 Web API（Next.js Route Handlers）
-
-上传：
-
-- `POST /api/uploads`（multipart/form-data: file）  
-  - 保存到：`storage/uploads/<uuid>.<ext>`
-  - 校验：扩展名 mp3/wav + size ≤ 50MB  
-  - 实现：[uploads/route.ts](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/api/uploads/route.ts)
-
-音频回放：
-
-- `GET /api/uploads/:filename`  
-  - 返回音频文件流（用于 `<audio controls>`）
-  - 实现：[uploads/[filename]/route.ts](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/api/uploads/%5Bfilename%5D/route.ts)
-
-任务代理：
-
-- `POST /api/jobs` → 转发到 AI `/jobs`（把 storedFilename 拼成绝对 audio_path）  
-  - 实现：[jobs/route.ts](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/api/jobs/route.ts)
-- `GET /api/jobs/:id` → 转发到 AI `/jobs/{id}`  
-  - 实现：[jobs/[jobId]/route.ts](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/api/jobs/%5BjobId%5D/route.ts)
-- `GET /api/jobs/:id/result` → 转发到 AI `/jobs/{id}/result`  
-  - 实现：[jobs/[jobId]/result/route.ts](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/api/jobs/%5BjobId%5D/result/route.ts)
-
-alphaTab 资源（字体/音源/脚本）：
-
-- `apps/web` 构建时会把 `@coderline/alphatab` 的资源复制到 `apps/web/public/alphatab/`
-- 运行时通过静态路径访问（部署更稳，避免生产环境读取 node_modules）：
-  - `/alphatab/alphaTab.js`
-  - `/alphatab/font/Bravura.woff2`
-  - `/alphatab/soundfont/sonivox.sf2`
-
-### 5.3 alphaTab 渲染
-
-- 组件：[alphatab-viewer.tsx](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/components/alphatab-viewer.tsx)
-- 设置要点：
-  - `core.fontDirectory = "/alphatab/font/"`（字体来自 public/alphatab/font）
-  - `core.scriptFile` 需要设置为带 origin 的绝对 URL（否则 Worker 内 `importScripts()` 会报 URL invalid）
-  - `core.useWorkers = false`（避免某些环境下 worker 导致静默不渲染）
-  - `player.enablePlayer = false`（当前不做 synth 播放）
-  - `api.settings.notation.elements.set(NotationElement.EffectLyrics, true)`（强制显示 \lyrics，用于展示简谱）
-  - 监听 `api.error` 显示错误并回退展示原始 alphatex
-
-### 5.4 导出（PNG / PDF / SVG）
-
-- 入口：编辑页按钮在 [editor-client.tsx](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/components/editor-client.tsx)
-- 实现：通过 alphaTab 渲染结果的 SVG 进行导出：
-  - PNG：将每页 SVG 光栅化为 PNG（2x scale），多页分别下载 `*_pN.png`
-  - PDF：打开浏览器打印窗口，将每页 SVG 注入新窗口并分页打印（用户选择“保存为 PDF”）
-  - SVG：内部工具方法支持逐页导出 svg（目前未在 UI 暴露按钮）
-
-## 6. AI 服务实现说明（FastAPI）
-
-### 6.1 API 合约（AI 服务）
-
-- `GET /health` → `{ status: "ok" }`
-- `POST /jobs`（body: `{ audio_path, title? }`）→ `{ id, status, progress, message?, error? }`
-- `GET /jobs/{id}` → `{ id, status, progress, message?, error? }`
-- `GET /jobs/{id}/result` → `{ title, artist?, key, tempo, time_signature, sections, alphatex }`
-
-实现文件：[main.py](file:///Users/unknownseed/Developer/biubiutab/services/ai/main.py)
-
-### 6.2 处理逻辑（当前：Audio → 和弦谱 + 结构 + 简谱 + 六线谱谱例）
-
-核心函数位于 `_run_job()`，流程：
-
-1) 读取音频：`librosa.load(audio_path, sr=None, mono=True)`
-2) 速度检测：`librosa.beat.beat_track`（并做倍速/半速修正）
-3) 调性估计：Krumhansl major/minor profile（更稳健）
-4) 和弦分类（升级版）：`chroma_cqt` + 多种 chord template（maj/m/7/maj7/m7/sus2/sus4/dim/aug/add9），输出每小节一个和弦
-5) 段落检测（MVP 规则）：Intro 前 4 小节；后续基于 4 小节 pattern 重复粗分 Verse/Chorus/Bridge
-6) 旋律抽取：Basic Pitch 提取音符事件，按拍选取旋律候选，并转为简谱数字（1-7/#/b/-）
-7) 生成 alphatex（六线谱 staff + 和弦按法图 + 段落文字 + 简谱 lyrics）
-
-对应模块：
-
-- 音频分析与和弦/调性：`services/ai/chord_detector.py`
-- 段落检测：`services/ai/section_detector.py`
-- 旋律抽取与简谱转换：`services/ai/melody_detector.py`
-- 和弦按法图（含高把位 firstFret/barre 处理）：`services/ai/chord_shapes.py`
-- 输出格式（alphaTex）：`services/ai/formatters.py`
-
-### 6.3 依赖
-
-AI 端 requirements：[requirements.txt](file:///Users/unknownseed/Developer/biubiutab/services/ai/requirements.txt)
-
-- fastapi / uvicorn / pydantic
-- basic-pitch（带 librosa/scipy/pretty-midi 等依赖）
-  - 额外：librosa 固定在 requirements 里（用于 tempo/key/chroma）
-
-## 7. 已知问题与现状解释
-
-### 7.1 和弦不准/段落不准
-
-这是当前阶段预期现象：和弦识别与段落识别为 MVP 简化算法，主要用于快速验证产品形态，尚未做到“商用级准确率”。常见影响因素：
-
-- 完整混音（鼓/贝斯/键盘/人声同时存在）会让 chroma 被“非吉他和弦信息”污染
-- 倍速/半速 BPM 误判会导致小节切分偏移，从而影响和弦
-- 和弦分类仍是模板法（非深度学习分类器），对密集混音/复杂和声仍可能误判
-
-### 7.2 简谱（旋律数字谱）显示注意
-
-- 简谱通过 alphaTex 的 `\\lyrics` 渲染在谱表下方，内容来源是“旋律音高”而非歌词文本。
-- 当前为按拍粒度的简谱（先保证出现与可读），后续可再做：按小节换行、八度点、时值/连线。
-
-因此会出现“谱面看起来专业，但内容不靠谱”的情况。
-
-### 7.3 alphaTab 字体加载失败
-
-已处理：通过 `core.fontDirectory` + `/api/alphatab/font/*` 路由代理解决。
-
-## 8. 后续迭代建议（按优先级）
-
-### P0（优先做，直接提升可用性）
-
-- 主旋律提取：从多音 note events 里抽取旋律线（或增加“只生成单音旋律”模式）
-- 更稳健的节奏对齐：根据 onset/beat 做量化，而不是固定 8 分音符网格
-- 指法约束：减少大跳把/不可能和弦；对同一时间点多音做可弹和弦筛选
-
-### P1（提升质量）
-
-- 源分离：把人声/鼓/伴奏分离，只对 guitar stem 进行转写（效果通常显著提升）
-- 多轨/多声部：支持“主旋律 + 和弦伴奏”两轨输出
-
-### P2（专业导出）
-
-- 导出 GPX/GP5（或 MusicXML）而不仅是 AlphaTex
-- 编辑器：基于 alphaTab 的 boundsLookup 做点击选中音符、改弦/品、增删、撤销重做
-
-## 9. 常见排障
-
-- 端口被占用：`EADDRINUSE`  
-  - 查占用并 kill，或换端口；Web 侧用 `AI_BASE_URL` 指向 AI 服务端口
-- AI 处理很慢/卡住  
-  - Basic Pitch 推理耗时与音频长度相关；建议先用短音频验证流程
-- 页面无谱但无明显报错  
-  - 先确认 `/api/jobs/:id/result` 是否包含非空 `alphatex`
-  - alphaTab viewer 会在渲染失败时显示错误与 alphatex 原文用于定位
-
-## 10. 给产品/运营的非技术说明
-
-### 10.1 这个版本“能做什么”
-
-- 用户上传一段音频后，系统会自动生成一份可视化的吉他六线谱谱例（包含和弦标记、按法图、段落提示、简谱行），可在网页中查看。
-- 支持导出：atex（可复现）、图片 PNG、PDF（打印）。
-
-### 10.2 这个版本“做不到什么”（当前限制）
-
-- 不能保证生成的每个音都正确：复杂编曲、混响大、鼓点强、多人声/多乐器混音会显著影响结果。
-- 当前更像“自动生成初稿”：适合作为扒谱辅助，让用户用耳朵和播放器对照做二次修正。
-- 复杂技巧（推弦、滑音、揉弦、泛音等）目前不稳定或不输出。
-- 和弦/伴奏的可弹性与指法合理性仍需优化，可能出现不自然的和弦堆叠或跳把。
-
-### 10.3 建议的使用场景（最容易成功）
-
-- 单把吉他清晰录音（无鼓/无密集伴奏），或 Solo/旋律线明显的片段。
-- 录音干净、混响少、背景噪音小的音频。
-- 时长短的片段（例如 10~30 秒）更容易快速验证效果并减少“乱谱”概率。
-
-### 10.4 不建议的使用场景（容易失败/乱谱）
-
-- 完整商用混音歌曲（鼓、贝斯、键盘、人声同时存在），尤其是鼓点很强、压缩很重的音源。
-- 现场录音、手机远场录音（环境噪音大、混响重）。
-- 低频占比很高或大量失真（会导致模型输出大量“非目标音符”）。
-
-### 10.5 上传格式建议
-
-- 优先 WAV，其次 MP3。WAV 通常更稳定、误差更小。
-- 采样率 44.1kHz/48kHz 均可；避免过低码率 MP3（更容易出现误检）。
-
-### 10.6 “准确度”该如何对外表述（建议话术）
-
-- 建议统一对外说法：  
-  - “系统会自动生成谱面初稿（可视化六线谱），适合快速入门/辅助扒谱；复杂段落需要人工校对。”
-- 避免在公开页面承诺“整首歌 80% 准确”，建议改成“片段级/主旋律更好”这类更符合现状的表述。
-
-### 10.7 用户反馈收集建议（帮助快速迭代）
-
-建议让用户在生成后提供三个维度反馈（尽量选择题）：
-
-- 这段音频属于：单吉他/吉他+人声/完整混音/现场录音
-- 你更关注：主旋律/和弦伴奏/两者都要
-- 结果更像：可用初稿/需要大量修改/几乎不可用
-
-这样能快速定位“模型转写问题”还是“指法映射与谱面表达问题”。
+### 谱面编辑能力
+- 目前生成的 GP5 是只读的。AlphaTab 提供了强大的 `boundsLookup` 功能，允许获取用户点击的音符/和弦位置。后续可以基于此开发“网页端谱面编辑器”，允许用户手动修正 AI 扒错的音符。
