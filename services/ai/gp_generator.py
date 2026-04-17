@@ -37,7 +37,7 @@ def generate_gp5_binary(
     song.tracks.clear()
     song.measureHeaders.clear()
     song.title = _gp_safe_text(title) or "score"
-    song.tempo = tempo
+    song.tempo = max(40, min(240, int(tempo)))
 
     track = guitarpro.Track(song)
     track.name = _gp_safe_text("Acoustic Guitar") or "Guitar"
