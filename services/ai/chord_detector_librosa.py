@@ -41,13 +41,12 @@ def _safe_int_bpm(x: float) -> int:
     if not isinstance(x, (float, int)) or x != x:
         return 120
     v = int(round(float(x)))
-    if v < 50:
-        return 50
-    if v > 220:
-        return 220
-    if v > 120 and 60 <= (v // 2) <= 120:
+    # For slow/fast songs, avoid folding if the original tempo seems reasonable.
+    # If the tempo is very high (e.g. > 160), it's likely a double-time error by librosa.
+    if v > 160:
         return v // 2
-    if v < 60 and 60 <= (v * 2) <= 160:
+    # If tempo is very low (e.g. < 50), it might be a half-time error.
+    if v < 50:
         return v * 2
     return v
 

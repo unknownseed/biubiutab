@@ -344,6 +344,28 @@ def generate_practice_data(
             "endTime": end_time
         })
         
+    # Second pass: sub-divide each bar into 4 individual beats (1 beat per block)
+    # This is to make the timeline look like Chordify (one block per beat).
+    # We will let the frontend handle deduplicating the chord text display if it wants to.
+    detailed_blocks = []
+    for i, chord in enumerate(chords):
+        for beat_in_bar in range(beats_per_bar):
+            global_beat = i * beats_per_bar + beat_in_bar
+            
+            # Start/end time for this exact beat
+            b_start = float(beat_grid[global_beat]) if global_beat < len(beat_grid) else 0.0
+            b_end = float(beat_grid[global_beat + 1]) if global_beat + 1 < len(beat_grid) else b_start + (60.0 / 120.0) # fallback
+            
+            detailed_blocks.append({
+                "chord": chord,
+                "startBeat": global_beat,
+                "endBeat": global_beat + 1,
+                "startTime": b_start,
+                "endTime": b_end,
+                "isBarStart": beat_in_bar == 0,
+                "isBarEnd": beat_in_bar == beats_per_bar - 1
+            })
+        
     lyrics_data = []
     if aligned_lyrics:
         for n in aligned_lyrics:
@@ -362,6 +384,6 @@ def generate_practice_data(
             "totalBeats": max(0, len(beat_grid) - 1) if beat_grid else 0,
             "durationSec": duration_sec
         },
-        "chordBlocks": chord_blocks,
+        "chordBlocks": detailed_blocks,
         "lyrics": lyrics_data
     }

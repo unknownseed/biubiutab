@@ -7,6 +7,10 @@ export type ChordBlock = {
   chord: string; // e.g. "C", "Am", "F#m7"
   startTime: number; // seconds
   endTime: number; // seconds
+  startBeat?: number;
+  endBeat?: number;
+  isBarStart?: boolean;
+  isBarEnd?: boolean;
   section?: string; // e.g. "Intro" | "Verse" | "Chorus"
   count?: number; // Used for grouped blocks
   /** Loop settings */
@@ -90,7 +94,7 @@ export default function ChordTimeline(props: ChordTimelineProps) {
     blocks,
     currentTime,
     onSeek,
-    baseBlockWidth = 88,
+    baseBlockWidth = 56, // Slightly narrower for 1-beat blocks
     centerActive = true,
     showSectionLabels = true,
     loopA = null,
@@ -154,7 +158,7 @@ export default function ChordTimeline(props: ChordTimelineProps) {
           "scroll-smooth"
         )}
       >
-        <div className="flex items-stretch gap-2">
+        <div className="flex items-stretch gap-1">
           {blocks.map((b, i) => {
             const count = b.count || 1;
             const width = baseBlockWidth * count;
@@ -175,79 +179,99 @@ export default function ChordTimeline(props: ChordTimelineProps) {
 
             const sectionLabel =
               showSectionLabels && isNewSection(blocks, i) ? b.section : undefined;
+              
+            // Check if this chord is a repeat of the previous one in the same section
+            const prevBlock = blocks[i - 1];
+            const isRepeat = prevBlock && prevBlock.chord === b.chord && prevBlock.section === b.section;
+
+            // Optional: Draw a thick line at the start of a bar
+            // If the backend doesn't provide isBarStart, we try to guess based on index
+            const isBarStart = b.isBarStart ?? (i % 4 === 0);
 
             return (
-              <div key={b.id ?? `${b.chord}-${b.startTime}-${i}`} className="flex flex-col">
-                {sectionLabel ? (
-                  <div className="mb-1 px-2 text-[10px] font-semibold tracking-wide text-white/70">
-                    {sectionLabel}
-                  </div>
-                ) : (
-                  <div className="mb-1 h-[14px]" />
+              <div key={b.id ?? `${b.chord}-${b.startTime}-${i}`} className="flex items-center">
+                {/* Bar line indicator */}
+                {isBarStart && i > 0 && (
+                  <div className="h-[48px] w-1 bg-white/20 rounded-full mx-1" />
                 )}
-
-                <button
-                  ref={(node) => {
-                    itemRefs.current[i] = node;
-                  }}
-                  type="button"
-                  onClick={() => onSeek?.(b.startTime, b, i)}
-                  className={cn(
-                    "snap-center",
-                    "relative flex-shrink-0",
-                    "rounded-xl",
-                    "px-2 py-1.5",
-                    "h-[64px]",
-                    "flex flex-col items-center justify-center",
-                    "text-white",
-                    "bg-gradient-to-b",
-                    sectionColor(b.section),
-                    "border border-white/10",
-                    "transition-[transform,opacity,box-shadow,border-color] duration-150 ease-out",
-                    isLoopActive && !isLooped && !active && "opacity-30 grayscale",
-                    !active && !(isLoopActive && !isLooped) && "opacity-75 hover:opacity-95",
-                    active && "scale-[1.10] opacity-100 border-yellow-300/50 chord-glow-pulse",
-                    isLooped && !active && "border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]",
-                    isLoopStart && !active && "border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]",
-                    "overflow-hidden"
+                
+                <div className="flex flex-col">
+                  {sectionLabel ? (
+                    <div className="mb-1 px-2 text-[10px] font-semibold tracking-wide text-white/70">
+                      {sectionLabel}
+                    </div>
+                  ) : (
+                    <div className="mb-1 h-[14px]" />
                   )}
-                  style={{ width }}
-                  aria-label={`Seek to chord ${b.chord}`}
-                >
-                  <div
-                    className={cn(
-                      "pointer-events-none absolute inset-0 rounded-xl",
-                      "bg-[radial-gradient(120px_60px_at_50%_0%,rgba(255,255,255,0.22),transparent_70%)]",
-                      active || isLooped || isLoopStart ? "opacity-100" : "opacity-40"
-                    )}
-                  />
 
-                  <div className="flex items-end justify-center gap-0.5 z-10">
+                  <button
+                    ref={(node) => {
+                      itemRefs.current[i] = node;
+                    }}
+                    type="button"
+                    onClick={() => onSeek?.(b.startTime, b, i)}
+                    className={cn(
+                      "snap-center",
+                      "relative flex-shrink-0",
+                      "rounded-lg",
+                      "px-1 py-1",
+                      "h-[60px]",
+                      "flex flex-col items-center justify-center",
+                      "text-white",
+                      "bg-gradient-to-b",
+                      sectionColor(b.section),
+                      "border border-white/10",
+                      "transition-[transform,opacity,box-shadow,border-color] duration-150 ease-out",
+                      isLoopActive && !isLooped && !active && "opacity-30 grayscale",
+                      !active && !(isLoopActive && !isLooped) && "opacity-75 hover:opacity-95",
+                      active && "scale-[1.10] opacity-100 border-yellow-300/50 chord-glow-pulse",
+                      isLooped && !active && "border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]",
+                      isLoopStart && !active && "border-emerald-500/50 shadow-[0_0_15px_rgba(16,185,129,0.3)]",
+                      "overflow-hidden"
+                    )}
+                    style={{ width }}
+                    aria-label={`Seek to chord ${b.chord}`}
+                  >
                     <div
                       className={cn(
-                        "font-black leading-none drop-shadow",
-                        active ? "text-2xl text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500" 
-                          : isLooped || isLoopStart ? "text-xl text-emerald-300"
-                          : "text-xl text-white"
+                        "pointer-events-none absolute inset-0 rounded-lg",
+                        "bg-[radial-gradient(120px_60px_at_50%_0%,rgba(255,255,255,0.22),transparent_70%)]",
+                        active || isLooped || isLoopStart ? "opacity-100" : "opacity-40"
                       )}
-                    >
-                      {b.chord}
-                    </div>
-                    {count > 1 && (
-                      <div className="text-xs font-bold text-white/70 pb-[1px]">
-                        ×{count}
-                      </div>
-                    )}
-                  </div>
+                    />
 
-                  <div
-                    className={cn(
-                      "mt-1.5 h-[3px] rounded-full transition-all duration-150 z-10",
-                      active ? "bg-yellow-300" : isLooped || isLoopStart ? "bg-emerald-400" : "bg-white/20"
-                    )}
-                    style={{ width: "32px" }}
-                  />
-                </button>
+                    <div className="flex items-center justify-center z-10 w-full h-full">
+                      {!isRepeat && b.chord !== "N" && (
+                        <div
+                          className={cn(
+                            "font-black leading-none drop-shadow text-center",
+                            active ? "text-xl text-transparent bg-clip-text bg-gradient-to-b from-yellow-200 to-yellow-500" 
+                              : isLooped || isLoopStart ? "text-lg text-emerald-300"
+                              : "text-lg text-white"
+                          )}
+                        >
+                          {b.chord}
+                        </div>
+                      )}
+                      
+                      {/* Show a small dot or dash if it's a repeat chord to indicate a beat */}
+                      {isRepeat && (
+                        <div className={cn(
+                          "w-1.5 h-1.5 rounded-full opacity-50",
+                          active ? "bg-yellow-300 opacity-100" : "bg-white"
+                        )} />
+                      )}
+                    </div>
+
+                    <div
+                      className={cn(
+                        "absolute bottom-1.5 h-[3px] rounded-full transition-all duration-150 z-10",
+                        active ? "bg-yellow-300" : isLooped || isLoopStart ? "bg-emerald-400" : "bg-white/20"
+                      )}
+                      style={{ width: "24px" }}
+                    />
+                  </button>
+                </div>
               </div>
             );
           })}

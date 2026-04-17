@@ -57,9 +57,10 @@ export type PracticeModeProps = {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   practiceData: any;
   gp5Data: Uint8Array;
+  songTitle?: string;
 };
 
-export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProps) {
+export default function PracticeMode({ practiceData, gp5Data, songTitle }: PracticeModeProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const alphaTabApiRef = useRef<any>(null);
   const guitarSamplerRef = useRef<GuitarSampler | null>(null);
@@ -480,7 +481,7 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
     setTranspose(semitones);
   };
 
-  const handleSeek = (timeSeconds: number) => {
+  const handleSeek = (timeSeconds: number, block?: any) => {
     if (USE_TONE_JS) guitarSamplerRef.current?.stopAll();
     if (countdownTimerRef.current) {
       clearInterval(countdownTimerRef.current);
@@ -488,8 +489,12 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       setCountdown(null);
     }
     if (!alphaTabApiRef.current) return;
-    alphaTabApiRef.current.timePosition = timeSeconds * 1000;
-    setCurrentTime(timeSeconds);
+    
+    // Always seek to the exact start time of the block if it's provided, otherwise fallback to the exact time
+    const targetTime = block?.startTime ?? timeSeconds;
+    
+    alphaTabApiRef.current.timePosition = targetTime * 1000;
+    setCurrentTime(targetTime);
     
     // When paused, AlphaTab does not always redraw the cursor for timePosition changes.
     // We explicitly trigger a tick to force cursor recalculation.
@@ -527,6 +532,10 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       chord: b.chord,
       startTime: b.startTime,
       endTime: b.endTime,
+      startBeat: b.startBeat,
+      endBeat: b.endBeat,
+      isBarStart: b.isBarStart,
+      isBarEnd: b.isBarEnd,
       section: b.section,
     })) || [];
 
@@ -543,26 +552,10 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       }
     });
 
-    // Then group consecutive identical chords
-    const merged: (ChordBlock & { count: number })[] = [];
-    let current = { ...transposed[0], count: 1 };
-    
-    for (let i = 1; i < transposed.length; i++) {
-      const b = transposed[i];
-      // Note: we can define identical as same chord + same section
-      // If we merge across sections, the section label logic in ChordTimeline might look weird,
-      // but typically we don't merge across sections.
-      if (b.chord === current.chord && b.section === current.section) {
-        current.endTime = b.endTime;
-        current.count += 1;
-      } else {
-        merged.push(current);
-        current = { ...b, count: 1 };
-      }
-    }
-    merged.push(current);
-    
-    return merged;
+    // IMPORTANT: We no longer group consecutive identical chords into a single wide block.
+    // Instead, we keep them as individual 1-beat blocks to make it look like Chordify.
+    // The ChordTimeline component will handle not rendering the chord name for repeated chords.
+    return transposed.map(b => ({ ...b, count: 1 }));
   }, [practiceData?.chordBlocks, transpose]);
 
   // Calculate current key display
@@ -581,7 +574,7 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
   }, [practiceData, transpose]);
 
   const lyrics = practiceData?.lyrics || [];
-  const songTitle = practiceData?.metadata?.title || practiceData?.title || "未知曲目";
+  const displayTitle = songTitle || practiceData?.metadata?.title || practiceData?.title || "未知曲目";
 
   // Find current chord
   const currentChordBlock = chordBlocks.find((b) => currentTime >= b.startTime && currentTime < b.endTime) || chordBlocks[0];
@@ -641,25 +634,25 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       <ChordTimeline
         blocks={chordBlocks}
         currentTime={currentTime}
-        onSeek={(time) => handleSeek(time)}
+        onSeek={(time, block) => handleSeek(time, block)}
         loopA={loopA}
         loopB={loopB}
       />
 
-      <PlaybackControls
+        <PlaybackControls
         isPlaying={isPlaying || countdown !== null}
         isPlayerReady={isPlayerReady}
         isLoading={isInitializing}
         currentTime={currentTime}
         duration={duration}
         onPlayPause={handlePlayPause}
-        onSeek={handleSeek}
+        onSeek={(t) => handleSeek(t)}
         playbackRate={playbackRate}
         onPlaybackRateChange={handlePlaybackRateChange}
         transpose={transpose}
         onTransposeChange={handleTransposeChange}
         currentKeyDisplay={currentKeyDisplay}
-        songTitle={songTitle}
+        songTitle={displayTitle}
         loopA={loopA}
         loopB={loopB}
         onLoopSet={handleLoopSet}
