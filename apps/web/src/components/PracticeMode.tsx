@@ -15,7 +15,7 @@ declare global {
 
 const ALPHATAB_SCRIPT_URL = "/alphatab/alphaTab.js";
 const ALPHATAB_FONT_DIR = "/alphatab/font/";
-const ALPHATAB_SOUNDFONT_URL = "/alphatab/soundfont/biubiutab-guitar.sf2";
+const ALPHATAB_SOUNDFONT_URL = "/alphatab/soundfont/sonivox.sf2";
 
 let alphaTabScriptPromise: Promise<void> | null = null;
 
@@ -190,8 +190,6 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       alphaTabApiRef.current = api;
 
       api.scoreLoaded?.on?.((score: any) => {
-        // Force all tracks to use Acoustic Guitar (steel) - Program 25
-        // We have patched the custom SF2 to map its instrument to Program 25
         score.tracks.forEach((t: any) => {
           if (t.playbackInfo) {
             t.playbackInfo.program = 25; // 25 = Steel string guitar in GM
@@ -341,7 +339,7 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       }, 30000);
 
       try {
-        setPlayerError("正在加载高质量吉他音源 (约5MB)，请稍候...");
+        setPlayerError("正在加载吉他音源，请稍候...");
         // Append cache-busting or rely on HTTP caching. For large files, relying on HTTP cache is good.
         const res = await fetch(ALPHATAB_SOUNDFONT_URL, { cache: "force-cache" });
         if (!res.ok) throw new Error(`soundfont http ${res.status}`);
