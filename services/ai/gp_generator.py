@@ -41,6 +41,7 @@ def generate_gp5_binary(
 
     track = guitarpro.Track(song)
     track.name = _gp_safe_text("Acoustic Guitar") or "Guitar"
+    track.channel.instrument = 25  # Standard Acoustic Guitar (steel)
     # standard tuning
     track.strings = [
         guitarpro.GuitarString(1, 64),

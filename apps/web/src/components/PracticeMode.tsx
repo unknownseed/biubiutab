@@ -190,19 +190,13 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       alphaTabApiRef.current = api;
 
       api.scoreLoaded?.on?.((score: any) => {
-        // The FlameStudios Seagull soundfont we downloaded only has its instrument mapped to Program 0 (Bank 0)
-        // We must force all tracks to use Program 0, otherwise AlphaTab will look for Program 24/25 and play silence.
+        // Force all tracks to use Acoustic Guitar (steel) - Program 25
+        // We have patched the custom SF2 to map its instrument to Program 25
         score.tracks.forEach((t: any) => {
           if (t.playbackInfo) {
-            t.playbackInfo.program = 0; // 0 = The single instrument in our custom sf2
+            t.playbackInfo.program = 25; // 25 = Steel string guitar in GM
           }
         });
-        
-        try {
-          if (score.tracks && score.tracks.length > 0) {
-            api.changeTrackProgram([score.tracks[0]], 0);
-          }
-        } catch (e) {}
       });
 
       api.playerStateChanged?.on?.((args: any) => {
