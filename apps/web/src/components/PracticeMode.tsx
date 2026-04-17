@@ -6,6 +6,12 @@ import ChordTimeline, { type ChordBlock } from "./ChordTimeline";
 import SyncedLyrics from "./SyncedLyrics";
 import LargeChordDiagram from "./LargeChordDiagram";
 import PlaybackControls from "./PlaybackControls";
+import { GuitarSampler } from "./GuitarSampler";
+
+// 【功能开关】
+// 设置为 true 即可开启 Tone.js 原声吉他采样器引擎（需要准备音频切片）
+// 设置为 false 则继续使用 AlphaTab 内置的 SF2 合成器
+const USE_TONE_JS = false;
 
 declare global {
   interface Window {
@@ -56,6 +62,7 @@ export type PracticeModeProps = {
 export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const alphaTabApiRef = useRef<any>(null);
+  const guitarSamplerRef = useRef<GuitarSampler | null>(null);
   const initPromiseRef = useRef<Promise<void> | null>(null);
   const pollRef = useRef<NodeJS.Timeout | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
@@ -104,6 +111,7 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
   }, [loopA, loopB]);
 
   const destroyEngine = () => {
+    if (USE_TONE_JS) guitarSamplerRef.current?.stopAll();
     if (countdownTimerRef.current) {
       clearInterval(countdownTimerRef.current);
       countdownTimerRef.current = null;
@@ -156,7 +164,8 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
         },
         player: {
           enablePlayer: true,
-          playerMode: mod.PlayerMode.EnabledSynthesizer,
+          // 如果启用 Tone.js，则关闭 AlphaTab 自身的发声器，仅派发 MIDI 事件
+          playerMode: USE_TONE_JS ? mod.PlayerMode.MidiEventsOnly : mod.PlayerMode.EnabledSynthesizer,
           soundFont: null,
           scrollElement: containerRef.current,
         },
@@ -188,6 +197,24 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       api.settings.notation.elements.set((mod.NotationElement as any).EffectTempo, false);
 
       alphaTabApiRef.current = api;
+
+      if (USE_TONE_JS && !guitarSamplerRef.current) {
+        guitarSamplerRef.current = new GuitarSampler();
+        
+        // 拦截 AlphaTab 抛出的真实按弦发声事件
+        api.playedBeatChanged?.on?.((beat: any) => {
+          if (!beat || !guitarSamplerRef.current?.isReady) return;
+          
+          // 遍历小节里的所有真实弹奏的音符
+          beat.notes.forEach((note: any) => {
+            // Note: 这里的力度 0-15，转换到 0-1，或者直接默认 0.8
+            const vel = note.dynamics ? note.dynamics / 15 : 0.8;
+            guitarSamplerRef.current?.playNote(note.realValue, vel);
+          });
+        });
+        
+        // （可选）如果需要精准的消音，也可以监听休止符事件等。
+      }
 
       api.scoreLoaded?.on?.((score: any) => {
         score.tracks.forEach((t: any) => {
@@ -339,13 +366,14 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       }, 30000);
 
       try {
-        setPlayerError("正在加载高质量 GM 吉他音源 (约5.8MB)...");
-        // Append cache-busting or rely on HTTP caching. For large files, relying on HTTP cache is good.
-        const res = await fetch(ALPHATAB_SOUNDFONT_URL, { cache: "force-cache" });
-        if (!res.ok) throw new Error(`soundfont http ${res.status}`);
-        const buf = await res.arrayBuffer();
-        api.loadSoundFont(buf, false);
-        setPlayerError(null); // Clear loading message
+        if (!USE_TONE_JS) {
+          setPlayerError("正在加载高质量 GM 吉他音源 (约5.8MB)...");
+          const res = await fetch(ALPHATAB_SOUNDFONT_URL, { cache: "force-cache" });
+          if (!res.ok) throw new Error(`soundfont http ${res.status}`);
+          const buf = await res.arrayBuffer();
+          api.loadSoundFont(buf, false);
+          setPlayerError(null);
+        }
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
         setPlayerError("音源加载失败，将使用无声模式：" + msg);
@@ -388,6 +416,10 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
   }, []);
 
   const handlePlayPause = () => {
+    if (USE_TONE_JS) {
+      guitarSamplerRef.current?.startAudioContext();
+    }
+
     if (!alphaTabApiRef.current) {
       ensureEngine(true);
       return;
@@ -398,6 +430,7 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
     }
 
     if (isPlaying) {
+      if (USE_TONE_JS) guitarSamplerRef.current?.stopAll();
       alphaTabApiRef.current.playPause();
     } else if (countdown !== null) {
       // Cancel countdown if they click pause while counting down
@@ -448,6 +481,7 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
   };
 
   const handleSeek = (timeSeconds: number) => {
+    if (USE_TONE_JS) guitarSamplerRef.current?.stopAll();
     if (countdownTimerRef.current) {
       clearInterval(countdownTimerRef.current);
       countdownTimerRef.current = null;
