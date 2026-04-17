@@ -58,7 +58,7 @@ export default function EditorClient({ jobId }: { jobId: string }) {
   const [error, setError] = useState<string | null>(null);
   const viewerRef = useRef<AlphaTabViewerHandle | null>(null);
   const [downloadOpen, setDownloadOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<"full" | "practice">("full");
+  const [viewMode, setViewMode] = useState<"full" | "practice">("practice");
   const toast = useToast();
 
   useEffect(() => {
@@ -108,18 +108,6 @@ export default function EditorClient({ jobId }: { jobId: string }) {
     <section className="flex flex-col gap-6">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200">
         <div className="flex items-center gap-8 overflow-x-auto scrollbar-hide">
-          <button
-            type="button"
-            className={`relative pb-3 text-base font-semibold transition-colors whitespace-nowrap ${
-              viewMode === "full" ? "text-[color:var(--primary)]" : "text-slate-500 hover:text-slate-800"
-            }`}
-            onClick={() => setViewMode("full")}
-          >
-            完整六线谱
-            {viewMode === "full" && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-[color:var(--primary)]" />
-            )}
-          </button>
           {result?.practiceData && (
             <button
               type="button"
@@ -128,12 +116,24 @@ export default function EditorClient({ jobId }: { jobId: string }) {
               }`}
               onClick={() => setViewMode("practice")}
             >
-              极简跟弹
+              跟弹模式
               {viewMode === "practice" && (
                 <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-[color:var(--primary)]" />
               )}
             </button>
           )}
+          <button
+            type="button"
+            className={`relative pb-3 text-base font-semibold transition-colors whitespace-nowrap ${
+              viewMode === "full" ? "text-[color:var(--primary)]" : "text-slate-500 hover:text-slate-800"
+            }`}
+            onClick={() => setViewMode("full")}
+          >
+            专业谱面
+            {viewMode === "full" && (
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-[color:var(--primary)]" />
+            )}
+          </button>
         </div>
 
         <div className="relative flex items-center gap-3 pb-2">
@@ -208,7 +208,7 @@ export default function EditorClient({ jobId }: { jobId: string }) {
           ) : null}
           {result && gp5Data ? (
             viewMode === "practice" && result.practiceData ? (
-              <PracticeMode practiceData={result.practiceData} gp5Data={gp5Data} />
+              <PracticeMode practiceData={result.practiceData} gp5Data={gp5Data} songTitle={result.title} />
             ) : (
               <AlphaTabViewer
                 ref={viewerRef}
