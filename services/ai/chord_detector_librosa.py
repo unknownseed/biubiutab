@@ -54,7 +54,35 @@ def _safe_int_bpm(x: float) -> int:
 def detect_tempo(y: np.ndarray, sr: int) -> tuple[int, np.ndarray]:
     tempo, beats = librosa.beat.beat_track(y=y, sr=sr)
     beat_times = librosa.frames_to_time(beats, sr=sr)
-    return _safe_int_bpm(float(tempo)), beat_times
+    
+    v = int(round(float(tempo)))
+    if len(beat_times) < 2:
+        return v, beat_times
+    
+    # Force tempo into a normal guitar playing range (e.g., 70 - 150 BPM)
+    # If librosa detects 60 BPM for a 120 BPM song, we double the tempo 
+    # AND we must interpolate the beat_times to double the beat density!
+    if v < 70:
+        v = v * 2
+        new_beats = []
+        for i in range(len(beat_times) - 1):
+            new_beats.append(beat_times[i])
+            new_beats.append((beat_times[i] + beat_times[i+1]) / 2.0)
+        
+        new_beats.append(beat_times[-1])
+        avg_interval = (beat_times[-1] - beat_times[0]) / (len(beat_times) - 1)
+        new_beats.append(beat_times[-1] + avg_interval / 2.0)
+        
+        beat_times = np.array(new_beats, dtype=np.float32)
+        
+    elif v > 150:
+        # If it detects 160+ for an 80 BPM song, halve it and subsample beats
+        v = v // 2
+        subsampled = beat_times[::2]
+        if len(subsampled) >= 2:
+            beat_times = subsampled
+        
+    return v, beat_times
 
 
 def _major_template() -> np.ndarray:
