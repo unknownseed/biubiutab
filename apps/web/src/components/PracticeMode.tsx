@@ -15,7 +15,7 @@ declare global {
 
 const ALPHATAB_SCRIPT_URL = "/alphatab/alphaTab.js";
 const ALPHATAB_FONT_DIR = "/alphatab/font/";
-const ALPHATAB_SOUNDFONT_URL = "/alphatab/soundfont/sonivox.sf2";
+const ALPHATAB_SOUNDFONT_URL = "/alphatab/soundfont/biubiutab-guitar.sf2";
 
 let alphaTabScriptPromise: Promise<void> | null = null;
 
@@ -189,6 +189,22 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
 
       alphaTabApiRef.current = api;
 
+      api.scoreLoaded?.on?.((score: any) => {
+        // The FlameStudios Seagull soundfont we downloaded only has its instrument mapped to Program 0 (Bank 0)
+        // We must force all tracks to use Program 0, otherwise AlphaTab will look for Program 24/25 and play silence.
+        score.tracks.forEach((t: any) => {
+          if (t.playbackInfo) {
+            t.playbackInfo.program = 0; // 0 = The single instrument in our custom sf2
+          }
+        });
+        
+        try {
+          if (score.tracks && score.tracks.length > 0) {
+            api.changeTrackProgram([score.tracks[0]], 0);
+          }
+        } catch (e) {}
+      });
+
       api.playerStateChanged?.on?.((args: any) => {
         setIsPlaying(args.state === 1);
       });
@@ -331,13 +347,16 @@ export default function PracticeMode({ practiceData, gp5Data }: PracticeModeProp
       }, 30000);
 
       try {
-        const res = await fetch(ALPHATAB_SOUNDFONT_URL);
+        setPlayerError("正在加载高质量吉他音源 (约5MB)，请稍候...");
+        // Append cache-busting or rely on HTTP caching. For large files, relying on HTTP cache is good.
+        const res = await fetch(ALPHATAB_SOUNDFONT_URL, { cache: "force-cache" });
         if (!res.ok) throw new Error(`soundfont http ${res.status}`);
         const buf = await res.arrayBuffer();
         api.loadSoundFont(buf, false);
+        setPlayerError(null); // Clear loading message
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
-        setPlayerError(msg || "音源加载失败");
+        setPlayerError("音源加载失败，将使用无声模式：" + msg);
         setIsInitializing(false);
       }
 
