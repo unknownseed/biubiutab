@@ -7,9 +7,20 @@ export default function MarketingPage() {
       <main className="mx-auto flex w-full max-w-5xl flex-col px-[2rem] pb-[8rem]">
         
         {/* Hero Section */}
-        <section className="flex flex-col items-center justify-center text-center gap-[4rem] min-h-screen relative">
+        <section className="flex flex-col items-center justify-center text-center gap-[4rem] min-h-screen relative overflow-hidden w-[100vw] ml-[50%] -translate-x-1/2">
+          {/* Background WebP Image */}
+          <div className="absolute inset-0 -z-20">
+            <Image 
+              src="/images/background.webp" 
+              alt="Hero background" 
+              fill 
+              priority
+              className="object-cover opacity-50"
+              sizes="100vw"
+            />
+          </div>
           
-          <div className="z-10 flex flex-col gap-8 max-w-5xl w-full px-4">
+          <div className="z-10 flex flex-col gap-8 max-w-5xl w-full px-4 mt-16">
             <h1 className="text-base sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-serif italic tracking-widest leading-relaxed text-ink-800 animate-fade-in-up whitespace-nowrap text-center">
               “万物皆有裂痕，那是光照进来的地方。”
             </h1>
