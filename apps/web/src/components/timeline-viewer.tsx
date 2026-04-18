@@ -67,7 +67,7 @@ export default function TimelineViewer({
 
       // bg
       ctx.clearRect(0, 0, w, h);
-      ctx.fillStyle = "#ffffff";
+      ctx.fillStyle = "#F9F7F2";
       ctx.fillRect(0, 0, w, h);
 
       const topPad = 10;
@@ -79,7 +79,7 @@ export default function TimelineViewer({
 
       // waveform
       const peaks = viz.waveform?.peaks || [];
-      ctx.strokeStyle = "rgba(37, 99, 235, 0.80)";
+      ctx.strokeStyle = "rgba(47, 79, 79, 0.4)"; // #2F4F4F
       ctx.lineWidth = 1;
       if (peaks.length > 0) {
         const step = w / peaks.length;
@@ -94,14 +94,14 @@ export default function TimelineViewer({
         }
         ctx.stroke();
       } else {
-        ctx.fillStyle = "#e2e8f0";
+        ctx.fillStyle = "rgba(166, 124, 82, 0.05)";
         ctx.fillRect(0, waveTop, w, waveH);
       }
 
       // beats (thin)
       const beats = viz.beats || [];
       if (duration > 0 && beats.length > 0) {
-        ctx.strokeStyle = "rgba(15, 23, 42, 0.10)";
+        ctx.strokeStyle = "rgba(166, 124, 82, 0.15)";
         ctx.lineWidth = 1;
         ctx.beginPath();
         for (const bt of beats) {
@@ -116,16 +116,16 @@ export default function TimelineViewer({
       const bars = viz.bars || [];
       const chordTop = waveTop + waveH + 8;
       if (duration > 0 && bars.length > 0) {
-        ctx.font = "12px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial";
+        ctx.font = "12px ui-serif, Georgia, Cambria, Times New Roman, Times, serif";
         for (const b of bars) {
           const x0 = (b.start / duration) * w;
           const x1 = (b.end / duration) * w;
           const ww = Math.max(1, x1 - x0);
-          ctx.fillStyle = "rgba(37, 99, 235, 0.08)";
+          ctx.fillStyle = "rgba(166, 124, 82, 0.1)"; // #A67C52
           ctx.fillRect(x0, chordTop, ww, chordH);
-          ctx.strokeStyle = "rgba(37, 99, 235, 0.18)";
+          ctx.strokeStyle = "rgba(166, 124, 82, 0.3)";
           ctx.strokeRect(x0, chordTop, ww, chordH);
-          ctx.fillStyle = "#0f172a";
+          ctx.fillStyle = "#2F4F4F";
           ctx.fillText(b.chord || "N", x0 + 6, chordTop + 15);
         }
       }
@@ -134,8 +134,8 @@ export default function TimelineViewer({
       const lyricTop = chordTop + chordH + 6;
       const segs = viz.lyrics_segments || [];
       if (duration > 0 && segs.length > 0) {
-        ctx.fillStyle = "rgba(249, 115, 22, 0.10)";
-        ctx.strokeStyle = "rgba(249, 115, 22, 0.25)";
+        ctx.fillStyle = "rgba(47, 79, 79, 0.05)";
+        ctx.strokeStyle = "rgba(47, 79, 79, 0.2)";
         ctx.font = "11px ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial";
         for (const s of segs) {
           const t0 = Number(s.start ?? 0);
@@ -153,8 +153,8 @@ export default function TimelineViewer({
       const t = currentTime ?? 0;
       if (duration > 0) {
         const x = (t / duration) * w;
-        ctx.strokeStyle = "rgba(15, 23, 42, 0.65)";
-        ctx.lineWidth = 2;
+        ctx.strokeStyle = "#A67C52";
+        ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(x, 0);
         ctx.lineTo(x, h);
@@ -178,15 +178,15 @@ export default function TimelineViewer({
   }, [viz, duration, currentTime]);
 
   return (
-    <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_12px_40px_rgba(2,6,23,0.08)]">
+    <div className="border border-[rgba(166,124,82,0.1)] bg-[#F9F7F2] p-4 mt-6">
       <div className="flex items-center justify-between">
-        <div className="text-sm font-semibold text-slate-950">分析时间轴</div>
-        <div className="text-xs text-slate-500">波形：other/no_vocals</div>
+        <div className="text-sm font-serif tracking-widest text-[#2F4F4F]">分析时间轴</div>
+        <div className="text-xs text-[#2F4F4F]/50 font-light tracking-widest">波形：伴奏 / 伴唱</div>
       </div>
-      <div className="mt-3">
+      <div className="mt-4">
         <canvas
           ref={canvasRef}
-          className="h-[120px] w-full cursor-pointer rounded-xl border border-slate-200 bg-white"
+          className="h-[120px] w-full cursor-pointer border border-[rgba(166,124,82,0.1)] bg-[#F9F7F2]"
           onClick={(e) => {
             if (!duration) return;
             const rect = (e.target as HTMLCanvasElement).getBoundingClientRect();
@@ -195,8 +195,8 @@ export default function TimelineViewer({
             onSeek(t);
           }}
         />
-        <div className="mt-2 text-xs text-slate-500">
-          点击任意位置跳转播放；蓝色块=和弦小节；橙色条=歌词时间段；细线=beats。
+        <div className="mt-3 text-xs text-[#2F4F4F]/50 font-light tracking-wider">
+          点击任意位置跳转播放；棕色块=和弦小节；细条=歌词时间段；细线=节拍。
         </div>
       </div>
     </div>

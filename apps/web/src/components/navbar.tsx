@@ -24,6 +24,7 @@ export default function Navbar() {
             <Link href="#" className="transition-transform duration-300 hover:-translate-y-0.5 text-[#F9F7F2]/70 hover:text-white">BiuBiu 教学</Link>
             <Link href="#" className="transition-transform duration-300 hover:-translate-y-0.5 text-[#F9F7F2]/70 hover:text-white">BiuBiu助教</Link>
             <Link href="#" className="transition-transform duration-300 hover:-translate-y-0.5 text-[#F9F7F2]/70 hover:text-white">BiuBiu客服</Link>
+            <Link href="#" className="transition-transform duration-300 hover:-translate-y-0.5 text-[#F9F7F2]/70 hover:text-white">费用</Link>
           </nav>
         </div>
 

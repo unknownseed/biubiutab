@@ -264,23 +264,16 @@ export default function UploadClient() {
   }
 
   return (
-    <section className="rounded-2xl border border-slate-200 bg-white p-6 shadow-[0_12px_40px_rgba(2,6,23,0.08)]">
-      <div className="flex flex-col gap-3">
+    <section className="rounded-none border border-[rgba(166,124,82,0.1)] bg-[#F9F7F2] p-[3rem]">
+      <div className="flex flex-col gap-8">
         {status !== "uploading" && status !== "processing" && (
           <>
             <div className="flex items-center justify-between gap-4">
-              <div className="text-sm font-semibold text-slate-950">上传音频</div>
-              <button
-                type="button"
-                className="rounded-lg bg-[color:var(--primary)] px-3 py-1.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-500"
-                onClick={() => fileInputRef.current?.click()}
-              >
-                选择文件
-              </button>
+              <div className="text-lg font-serif tracking-widest text-[#2F4F4F]">音频上传</div>
             </div>
 
             <div
-              className="flex min-h-32 cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-slate-300 bg-slate-50 px-4 py-6 text-center transition-colors hover:bg-slate-100"
+              className="flex min-h-[200px] cursor-pointer flex-col items-center justify-center gap-4 rounded-none border border-dashed border-[#A67C52]/30 bg-[#F9F7F2] px-4 py-6 text-center transition-colors duration-500 hover:border-[#A67C52] hover:bg-[#F0F0F0]/50"
               onClick={() => fileInputRef.current?.click()}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
@@ -294,8 +287,15 @@ export default function UploadClient() {
                 if (e.key === "Enter" || e.key === " ") fileInputRef.current?.click();
               }}
             >
-              <div className="text-sm text-slate-700">拖拽文件到这里或点击上传</div>
-              <div className="text-xs text-slate-500">支持 MP3/WAV，最大 50MB</div>
+              <div className="text-[#A67C52]/50 mb-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="17 8 12 3 7 8"/>
+                  <line x1="12" y1="3" x2="12" y2="15"/>
+                </svg>
+              </div>
+              <div className="text-base font-serif tracking-widest text-[#2F4F4F]">拖拽音频到这里，或点击选择</div>
+              <div className="text-xs text-[#2F4F4F]/50 font-light tracking-wider">支持 MP3/WAV，最大 50MB</div>
             </div>
 
             <input
@@ -308,53 +308,53 @@ export default function UploadClient() {
           </>
         )}
 
-        <div className="flex flex-col gap-2 text-sm">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <div className="text-slate-700">
+        <div className="flex flex-col gap-6 text-sm">
+          <div className="flex flex-wrap items-center justify-between gap-2 border-t border-[rgba(166,124,82,0.1)] pt-6">
+            <div className="text-[#2F4F4F]">
               {file ? (
-                <span className="font-medium">{file.name}</span>
+                <span className="font-serif tracking-widest">{file.name}</span>
               ) : (
-                <span className="text-slate-500">未选择文件</span>
+                <span className="text-[#2F4F4F]/50 font-light tracking-widest">未选择文件</span>
               )}
             </div>
-            <div className="text-slate-500">
+            <div className="text-[#2F4F4F]/50 font-light tracking-widest">
               {file ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : ""}
               {durationSec != null ? ` · ${formatSeconds(durationSec)}` : ""}
             </div>
           </div>
 
           {status === "uploading" ? (
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center justify-between text-xs text-slate-600">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between text-xs text-[#2F4F4F]/70 font-light tracking-widest">
                 <span>上传中</span>
                 <span>{uploadProgress}%</span>
               </div>
-              <div className="h-2 overflow-hidden rounded bg-slate-200">
-                <div className="h-2 bg-[color:var(--primary)]" style={{ width: `${uploadProgress}%` }} />
+              <div className="h-1 overflow-hidden bg-[#F0F0F0]">
+                <div className="h-1 bg-[#2F4F4F] transition-all duration-300" style={{ width: `${uploadProgress}%` }} />
               </div>
             </div>
           ) : null}
 
           {status === "processing" && job ? (
-            <div className="flex flex-col gap-1">
-              <div className="flex items-center justify-between text-xs text-slate-600">
+            <div className="flex flex-col gap-2">
+              <div className="flex items-center justify-between text-xs text-[#2F4F4F]/70 font-light tracking-widest">
                 <span>{job.message || "处理中"}</span>
                 <span>{job.progress}%</span>
               </div>
-              <div className="h-2 overflow-hidden rounded bg-slate-200">
-                <div className="h-2 bg-[color:var(--accent)]" style={{ width: `${job.progress}%` }} />
+              <div className="h-1 overflow-hidden bg-[#F0F0F0]">
+                <div className="h-1 bg-[#A67C52] transition-all duration-300" style={{ width: `${job.progress}%` }} />
               </div>
             </div>
           ) : null}
 
           {status === "processing" ? (
-            <div className="mt-2 space-y-3">
-              <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+            <div className="mt-4 space-y-6">
+              <div className="border border-[rgba(166,124,82,0.1)] bg-[#F9F7F2] p-4">
                 <div className="flex items-center justify-between gap-3">
-                  <div className="text-sm font-semibold text-slate-800">实时分析</div>
-                  <div className="text-xs text-slate-500">
+                  <div className="text-sm font-serif tracking-widest text-[#2F4F4F]">实时分析</div>
+                  <div className="text-xs text-[#2F4F4F]/60 font-light tracking-widest">
                     当前步骤：
-                    <span className="ml-1 font-medium text-slate-700">
+                    <span className="ml-2 text-[#A67C52]">
                       {stepLabel(previewStep)}
                     </span>
                   </div>
@@ -362,37 +362,41 @@ export default function UploadClient() {
                 {audioSrc ? (
                   <audio
                     ref={audioRef}
-                    className="mt-2 w-full"
+                    className="mt-4 w-full"
                     controls
                     src={audioSrc}
                     onLoadedMetadata={(e) => setAudioDuration((e.currentTarget as HTMLAudioElement).duration || 0)}
                     onTimeUpdate={(e) => setAudioTime((e.currentTarget as HTMLAudioElement).currentTime || 0)}
                   />
                 ) : (
-                  <div className="mt-2 text-xs text-slate-500">音频预览加载中…</div>
+                  <div className="mt-4 text-xs text-[#2F4F4F]/50 font-light tracking-widest">音频预览加载中…</div>
                 )}
               </div>
 
               {viz ? (
                 <TimelineViewer viz={viz} currentTime={audioTime} durationSec={audioDuration} onSeek={onSeek} />
               ) : (
-                <div className="rounded-xl border border-slate-200 bg-white p-4 text-sm text-slate-600">正在准备波形/和弦/歌词预览…</div>
+                <div className="border border-[rgba(166,124,82,0.1)] bg-[#F9F7F2] p-6 text-center text-sm text-[#2F4F4F]/60 font-light tracking-widest">正在准备波形与和弦预览…</div>
               )}
             </div>
           ) : null}
 
           {error ? (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>
+            <div className="border border-red-900/20 bg-red-50/50 px-4 py-3 text-sm text-red-900 font-light tracking-wide">{error}</div>
           ) : null}
 
-          <button
-            type="button"
-            className="mt-1 inline-flex items-center justify-center rounded-lg bg-[color:var(--primary)] px-4 py-2 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-500 disabled:opacity-50"
-            onClick={() => void start()}
-            disabled={!file || status === "uploading" || status === "processing"}
-          >
-            开始生成谱例
-          </button>
+          <div className="mt-6 flex justify-center">
+            <button
+              type="button"
+              className="inline-flex items-center justify-center bg-[#2F4F4F] px-12 py-4 text-sm font-light tracking-[0.2em] text-[#F9F7F2] border border-[#2F4F4F] transition-all duration-500 hover:bg-[#F9F7F2] hover:text-[#2F4F4F] hover:border-[#A67C52] disabled:opacity-30 disabled:hover:bg-[#2F4F4F] disabled:hover:text-[#F9F7F2] disabled:hover:border-[#2F4F4F] disabled:cursor-not-allowed group"
+              onClick={() => void start()}
+              disabled={!file || status === "uploading" || status === "processing"}
+            >
+              <span className="transition-transform duration-500 group-hover:translate-x-1">
+                [ 开始生成谱例 ]
+              </span>
+            </button>
+          </div>
         </div>
       </div>
     </section>
