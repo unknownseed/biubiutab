@@ -15,7 +15,7 @@ export default function MarketingPage() {
               alt="Hero background" 
               fill 
               priority
-              className="object-cover opacity-25"
+              className="object-cover opacity-15 grayscale-[50%]"
               sizes="100vw"
             />
           </div>
