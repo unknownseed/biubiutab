@@ -9,15 +9,17 @@ export default function MarketingPage() {
         {/* Hero Section */}
         <section className="flex flex-col items-center justify-center text-center gap-[4rem] min-h-screen relative overflow-hidden w-[100vw] ml-[50%] -translate-x-1/2">
           {/* Background WebP Image */}
-          <div className="absolute inset-0 -z-20">
-            <Image 
-              src="/images/background.webp" 
-              alt="Hero background" 
-              fill 
-              priority
-              className="object-cover opacity-[0.08] grayscale-[50%]"
-              sizes="100vw"
-            />
+          <div className="absolute inset-0 -z-20 flex items-center justify-center">
+            <div className="relative w-[70%] h-[70%]">
+              <Image 
+                src="/images/background.webp" 
+                alt="Hero background" 
+                fill 
+                priority
+                className="object-contain opacity-[0.08] grayscale-[50%]"
+                sizes="70vw"
+              />
+            </div>
           </div>
           
           <div className="z-10 flex flex-col gap-8 max-w-5xl w-full px-4 mt-16">
