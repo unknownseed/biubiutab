@@ -34,7 +34,7 @@ export default function MarketingPage() {
               className="inline-flex items-center justify-center px-12 py-5 text-lg tracking-[0.3em] text-paper-50 font-serif bg-retro-green border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-retro-green rounded-none animate-breathe group"
             >
               <span className="transition-transform duration-500 group-hover:translate-x-2">
-                [ 拾起旋律 ]
+                [ BiuBiu 弹唱 ]
               </span>
             </Link>
           </div>
@@ -146,13 +146,11 @@ export default function MarketingPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full">
+          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-4xl mx-auto">
             {[
               { title: "右手的律动", subtitle: "节奏与扫弦", img: "/images/study-1.jpg" },
               { title: "指尖的记忆", subtitle: "音阶与指法", img: "/images/study-2.jpg" },
-              { title: "听觉的觉醒", subtitle: "乐理与听力", img: "/images/study-3.jpg" },
               { title: "和声的色彩", subtitle: "常用进行", img: "/images/study-4.jpg" },
-              { title: "经典的传承", subtitle: "弹唱金曲", img: "/images/study-5.jpg" },
             ].map((item, i) => (
               <div key={i} className="flex flex-col gap-4 group cursor-pointer">
                 <div className="relative aspect-[4/3] overflow-hidden bg-paper-200">
@@ -171,10 +169,15 @@ export default function MarketingPage() {
             ))}
           </div>
 
-          <div className="mt-8">
-            <button className="text-wood-400 text-sm tracking-widest border-b border-transparent hover:border-wood-300 transition-all duration-500 pb-1">
-              [ 开始你的旅程 → ]
-            </button>
+          <div className="mt-12">
+            <Link 
+              href="#" 
+              className="inline-flex items-center justify-center px-10 py-4 text-sm tracking-[0.2em] text-paper-50 font-serif bg-retro-green border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-retro-green rounded-none group"
+            >
+              <span className="transition-transform duration-500 group-hover:translate-x-1">
+                [ 开始你的旅程 ]
+              </span>
+            </Link>
           </div>
         </section>
 
@@ -202,10 +205,15 @@ export default function MarketingPage() {
               </div>
             </div>
             
-            <div className="mt-4 pt-6 border-t border-paper-300 text-center">
-              <button className="text-wood-400 text-sm tracking-widest hover:text-wood-500 transition-colors duration-300">
-                [ 问一个问题 ]
-              </button>
+            <div className="mt-8 pt-8 border-t border-paper-300 text-center">
+              <Link 
+                href="#" 
+                className="inline-flex items-center justify-center px-10 py-4 text-sm tracking-[0.2em] text-paper-50 font-serif bg-retro-green border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-retro-green rounded-none group"
+              >
+                <span className="transition-transform duration-500 group-hover:translate-x-1">
+                  [ 问一个问题 ]
+                </span>
+              </Link>
             </div>
           </div>
         </section>
