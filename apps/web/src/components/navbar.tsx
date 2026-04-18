@@ -46,7 +46,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-4">
-          <button className="text-wood-400 text-sm font-sans tracking-widest border border-wood-400/50 px-6 py-2 transition-all duration-500 hover:bg-wood-400 hover:text-paper-50">
+          <button className="bg-retro-green text-paper-50 text-sm font-sans tracking-widest border border-paper-100/30 px-6 py-2 transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-paper-100">
             登录
           </button>
         </div>
