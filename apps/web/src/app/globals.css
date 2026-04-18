@@ -1,14 +1,63 @@
+/* 标题字体：衬线体，诗意与刻痕感 */
+@import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap');
+/* 英文标题：经典衬线 */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+/* 正文字体：无衬线，清晰克制 */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600&display=swap');
+
 @import "tailwindcss";
+
+@theme {
+  --color-paper-50: #FDFCFA;
+  --color-paper-100: #F9F7F2;
+  --color-paper-200: #F0EDE5;
+  --color-paper-300: #E5E0D5;
+
+  --color-ink-700: #3D3D3D;
+  --color-ink-800: #2A2A2A;
+  --color-ink-900: #1A1A1A;
+  --color-ink-950: #111111;
+
+  --color-wood-300: #C4A882;
+  --color-wood-400: #A67C52;
+  --color-wood-500: #8B6340;
+  --color-wood-600: #6B4C30;
+
+  --color-amber-400: #FFBF00;
+  --color-amber-500: #F0A500;
+
+  --color-section-intro: #6B8E9B;
+  --color-section-verse: #7B9B7B;
+  --color-section-chorus: #C4956A;
+  --color-section-bridge: #8B7BA6;
+  --color-section-outro: #8B8B8B;
+
+  --font-serif: "Noto Serif SC", "Playfair Display", Georgia, serif;
+  --font-sans: "Inter", "Noto Sans SC", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+
+  --spacing-18: 4.5rem;
+  --spacing-22: 5.5rem;
+  --spacing-28: 7rem;
+  --spacing-36: 9rem;
+  --spacing-44: 11rem;
+}
 
 :root {
   /* SaaS palette: Blue primary + Orange accent (light-first, high contrast) */
-  --background: #f7f9ff;
-  --foreground: #0f172a;
+  --background: var(--color-paper-100);
+  --foreground: var(--color-ink-700);
   --muted: #475569;
   --card: #ffffff;
   --card-border: rgba(15, 23, 42, 0.12);
-  --primary: #2563eb;
-  --accent: #f97316;
+  --primary: var(--color-wood-400);
+  --accent: var(--color-amber-500);
+
+  /* 全局缓动函数：缓慢、有重量感 */
+  --ease-poetic: cubic-bezier(0.25, 0.1, 0.25, 1.0);
+  --duration-slow: 800ms;
+  --duration-normal: 500ms;
 }
 
 @theme inline {
@@ -20,14 +69,51 @@
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: var(--font-sans), ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial,
-    "Apple Color Emoji", "Segoe UI Emoji";
+  font-family: var(--font-sans);
+}
+
+/* 淡入上浮 - 用于滚动触发 */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp var(--duration-slow) var(--ease-poetic) both;
+}
+
+/* 呼吸脉冲 - 用于 CTA 按钮 */
+@keyframes breathe {
+  0%, 100% { opacity: 0.7; }
+  50% { opacity: 1; }
+}
+
+.animate-breathe {
+  animation: breathe 3s ease-in-out infinite;
+}
+
+/* 琴弦震动 - 用于加载状态 */
+@keyframes stringVibrate {
+  0%, 100% { transform: scaleY(1); }
+  25% { transform: scaleY(1.15); }
+  50% { transform: scaleY(0.9); }
+  75% { transform: scaleY(1.05); }
+}
+
+.animate-string {
+  animation: stringVibrate 0.6s ease-in-out infinite;
 }
 
 @keyframes chordGlowPulse {
-  0% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0.4); }
-  70% { box-shadow: 0 0 0 10px rgba(37, 99, 235, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(37, 99, 235, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(166, 124, 82, 0.4); } /* wood-400 */
+  70% { box-shadow: 0 0 0 10px rgba(166, 124, 82, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(166, 124, 82, 0); }
 }
 
 .chord-glow-pulse {
