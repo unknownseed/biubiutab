@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function MarketingPage() {
   return (
-    <div className="flex-1 bg-paper-100 text-ink-700 font-sans selection:bg-amber-400/30 overflow-hidden">
+    <div className="flex-1 bg-white text-ink-700 font-sans selection:bg-amber-400/30 overflow-hidden">
       <main className="mx-auto flex w-full max-w-5xl flex-col px-[2rem] pb-[8rem]">
         
         {/* Hero Section */}
@@ -15,9 +15,9 @@ export default function MarketingPage() {
             <div className="w-[800px] h-[800px] bg-[radial-gradient(circle_at_center,#A67C52_0%,transparent_70%)] blur-3xl"></div>
           </div>
 
-          <div className="z-10 flex flex-col gap-8 max-w-3xl">
+          <div className="z-10 flex flex-col gap-8 max-w-5xl">
             <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif italic tracking-widest leading-relaxed text-ink-800 animate-fade-in-up">
-              万物皆有裂痕，<br className="hidden md:block"/>那是光照进来的地方。
+              万物皆有裂痕，那是光照进来的地方。
             </h1>
             <p className="mt-2 text-sm text-wood-400 font-serif tracking-widest animate-fade-in-up" style={{ animationDelay: "200ms" }}>
               —— Leonard Cohen

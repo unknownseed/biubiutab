@@ -23,7 +23,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col bg-paper-100">
+      <body className="min-h-full flex flex-col bg-white">
         <Providers>
           <Navbar />
           <AiOfflineBanner />
