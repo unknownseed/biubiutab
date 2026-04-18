@@ -8,16 +8,10 @@ export default function MarketingPage() {
         
         {/* Hero Section */}
         <section className="flex flex-col items-center justify-center text-center gap-[4rem] min-h-screen relative">
-          <div className="absolute inset-0 pointer-events-none -z-10 bg-[url('/images/hero-bg.jpg')] bg-cover bg-center grayscale opacity-30 mix-blend-multiply"></div>
-        
-        {/* Subtle background element */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center opacity-30 mix-blend-multiply">
-            <div className="w-[800px] h-[800px] bg-[radial-gradient(circle_at_center,#A67C52_0%,transparent_70%)] blur-3xl"></div>
-          </div>
-
-          <div className="z-10 flex flex-col gap-8 max-w-5xl">
-            <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif italic tracking-widest leading-relaxed text-ink-800 animate-fade-in-up">
-              万物皆有裂痕，那是光照进来的地方。
+          
+          <div className="z-10 flex flex-col gap-8 max-w-5xl w-full px-4">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-serif italic tracking-widest leading-relaxed text-ink-800 animate-fade-in-up whitespace-nowrap overflow-hidden text-ellipsis w-full text-center">
+              “万物皆有裂痕，那是光照进来的地方。”
             </h1>
             <p className="mt-2 text-sm text-wood-400 font-serif tracking-widest animate-fade-in-up" style={{ animationDelay: "200ms" }}>
               —— Leonard Cohen
