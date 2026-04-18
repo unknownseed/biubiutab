@@ -29,7 +29,7 @@ export default function MarketingPage() {
             <p className="mt-2 text-sm text-wood-400 font-serif tracking-widest animate-fade-in-up" style={{ animationDelay: "200ms" }}>
               —— Leonard Cohen
             </p>
-            <div className="mt-12 text-lg text-ink-700 font-sans font-light flex flex-col gap-2 tracking-[0.15em] animate-fade-in-up" style={{ animationDelay: "400ms" }}>
+            <div className="mt-12 text-lg text-retro-green font-serif font-bold flex flex-col gap-2 tracking-[0.15em] animate-fade-in-up" style={{ animationDelay: "400ms" }}>
               <p>听见那些藏在风里的旋律。</p>
               <p>将流动的音频，<br/>凝固成指尖的刻痕。</p>
             </div>
