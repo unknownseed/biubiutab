@@ -50,81 +50,115 @@ export default function MarketingPage() {
         </section>
 
         {/* Features Section - AI Transcription */}
-        <section className="flex flex-col md:flex-row items-center gap-[4rem] py-[4rem]">
-          <div className="flex-1 flex flex-col justify-center gap-8">
-            <h2 className="text-2xl font-serif text-ink-900 tracking-widest border-b border-wood-300/30 pb-4 inline-block w-max">一首歌的旅程</h2>
-            <div className="text-base text-ink-700 leading-loose font-light flex flex-col gap-6 tracking-wide">
-              <p>上传一段旋律，<br/>AI 会听见你听见的，<br/>甚至听见你没留意的。</p>
+        <section className="relative w-[100vw] ml-[50%] -translate-x-1/2 bg-[#FAFAFA] py-32 border-y border-paper-300/50">
+          <div className="mx-auto flex w-full max-w-7xl flex-col md:flex-row items-stretch gap-16 px-6 lg:px-12">
+            
+            {/* Content Left */}
+            <div className="flex-1 flex flex-col justify-center gap-12 lg:pr-12">
+              <div className="flex flex-col gap-6">
+                <span className="text-xs font-mono tracking-[0.2em] text-wood-400 uppercase">AI TRANSCRIPTION</span>
+                <h2 className="text-4xl lg:text-5xl font-serif text-ink-900 tracking-wide leading-tight">
+                  一首歌的旅程
+                </h2>
+                <div className="h-px w-24 bg-wood-400/30"></div>
+              </div>
               
-              <ul className="flex flex-col gap-4 mt-4">
-                <li className="flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-wood-400"></span>
-                  <span>剥离人声的呼吸</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-wood-400"></span>
-                  <span>对齐时光的节拍</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-wood-400"></span>
-                  <span>为副歌编配扫弦</span>
-                </li>
-                <li className="flex items-center gap-3">
-                  <span className="w-1.5 h-1.5 rounded-full bg-wood-400"></span>
-                  <span>凝固成一首完整的谱</span>
-                </li>
-              </ul>
+              <div className="text-lg text-ink-700 leading-relaxed font-light flex flex-col gap-8 tracking-wide">
+                <p className="text-xl text-ink-800">
+                  上传一段旋律，<br/>
+                  AI 会听见你听见的，<br/>
+                  甚至听见你没留意的。
+                </p>
+                
+                <ul className="flex flex-col gap-6 mt-4">
+                  {[
+                    { id: "01", text: "剥离人声的呼吸" },
+                    { id: "02", text: "对齐时光的节拍" },
+                    { id: "03", text: "为副歌编配扫弦" },
+                    { id: "04", text: "凝固成完整的谱" }
+                  ].map((item) => (
+                    <li key={item.id} className="flex items-start gap-6 group cursor-default">
+                      <span className="font-mono text-sm text-wood-400/50 transition-colors duration-300 group-hover:text-wood-400 pt-1">
+                        {item.id}
+                      </span>
+                      <span className="text-lg text-ink-700 transition-colors duration-300 group-hover:text-ink-900">
+                        {item.text}
+                      </span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
-          <div className="flex-1 w-full relative min-h-[400px] border border-paper-300 bg-paper-200 p-4 group overflow-hidden">
-            <div className="w-full h-full min-h-[400px] relative grayscale-[40%] contrast-75 opacity-90 transition-all duration-[3s] group-hover:grayscale-0 group-hover:scale-105 rounded-sm overflow-hidden">
-              <Image 
-                src="/images/feature-ai.jpg" 
-                alt="Audio waveform" 
-                fill 
-                className="object-cover"
-              />
+
+            {/* Image Right */}
+            <div className="flex-[1.2] w-full relative min-h-[500px] lg:min-h-[600px] bg-paper-200 group overflow-hidden">
+              <div className="absolute inset-0 grayscale-[20%] contrast-[0.9] opacity-90 transition-all duration-[2s] group-hover:grayscale-0 group-hover:scale-105">
+                <Image 
+                  src="/images/feature-ai.jpg" 
+                  alt="Audio waveform transcription" 
+                  fill 
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 60vw"
+                />
+              </div>
+              {/* Decorative overlay frame */}
+              <div className="absolute inset-4 border border-white/20 pointer-events-none mix-blend-overlay"></div>
             </div>
           </div>
         </section>
 
-        <div className="w-16 h-px bg-wood-300/50 mx-auto my-28" />
-
         {/* Features Section - Practice Mode */}
-        <section className="flex flex-col md:flex-row-reverse items-center gap-[4rem] py-[4rem]">
-          <div className="flex-1 flex flex-col justify-center gap-8">
-            <h2 className="text-2xl font-serif text-ink-900 tracking-widest border-b border-wood-300/30 pb-4 inline-block w-max">像呼吸一样自然</h2>
-            <div className="text-base text-ink-700 leading-loose font-light flex flex-col gap-6 tracking-wide">
-              <p>当音乐流淌，<br/>和弦在指尖自然切换。<br/>不必低头翻谱，<br/>抬头，跟着光走。</p>
+        <section className="relative w-[100vw] ml-[50%] -translate-x-1/2 py-32">
+          <div className="mx-auto flex w-full max-w-7xl flex-col md:flex-row-reverse items-stretch gap-16 px-6 lg:px-12">
+            
+            {/* Content Right */}
+            <div className="flex-1 flex flex-col justify-center gap-12 lg:pl-12">
+              <div className="flex flex-col gap-6">
+                <span className="text-xs font-mono tracking-[0.2em] text-wood-400 uppercase">PRACTICE MODE</span>
+                <h2 className="text-4xl lg:text-5xl font-serif text-ink-900 tracking-wide leading-tight">
+                  像呼吸一样自然
+                </h2>
+                <div className="h-px w-24 bg-wood-400/30"></div>
+              </div>
               
-              <ul className="flex flex-col gap-4 mt-4">
-                <li className="flex items-center gap-3 text-ink-700">
-                  <span className="text-wood-400">·</span>
-                  <span>一拍一格，呼吸可见</span>
-                </li>
-                <li className="flex items-center gap-3 text-ink-700">
-                  <span className="text-wood-400">·</span>
-                  <span>歌词随风，逐字点亮</span>
-                </li>
-                <li className="flex items-center gap-3 text-ink-700">
-                  <span className="text-wood-400">·</span>
-                  <span>指法放大，一目了然</span>
-                </li>
-                <li className="flex items-center gap-3 text-ink-700">
-                  <span className="text-wood-400">·</span>
-                  <span>变速不变调，慢慢来</span>
-                </li>
-              </ul>
+              <div className="text-lg text-ink-700 leading-relaxed font-light flex flex-col gap-8 tracking-wide">
+                <p className="text-xl text-ink-800">
+                  当音乐流淌，和弦在指尖自然切换。<br/>
+                  不必低头翻谱，抬头，跟着光走。
+                </p>
+                
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-x-8 gap-y-10 mt-4">
+                  {[
+                    { title: "一拍一格", desc: "呼吸可见的节奏律动" },
+                    { title: "歌词随风", desc: "逐字点亮的演唱指引" },
+                    { title: "指法放大", desc: "一目了然的按弦提示" },
+                    { title: "降速练习", desc: "变速不变调，慢慢来" }
+                  ].map((feature, idx) => (
+                    <div key={idx} className="flex flex-col gap-2">
+                      <div className="flex items-center gap-3">
+                        <div className="w-1 h-1 bg-wood-400 rounded-full"></div>
+                        <h4 className="text-base font-serif text-ink-900 tracking-wider">{feature.title}</h4>
+                      </div>
+                      <p className="text-sm text-ink-700/70 font-sans pl-4">{feature.desc}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
             </div>
-          </div>
-          <div className="flex-1 w-full relative min-h-[400px] border border-paper-300 bg-ink-950 p-4 shadow-2xl rounded-sm group overflow-hidden">
-            <div className="w-full h-full min-h-[400px] relative opacity-90 transition-all duration-[3s] group-hover:opacity-100 group-hover:scale-105 rounded-sm overflow-hidden">
-              <Image 
-                src="/images/feature-practice.jpg" 
-                alt="Guitar strings and dust" 
-                fill 
-                className="object-cover"
-              />
+
+            {/* Image Left */}
+            <div className="flex-[1.2] w-full relative min-h-[500px] lg:min-h-[600px] bg-ink-950 group overflow-hidden shadow-2xl">
+              <div className="absolute inset-0 opacity-80 transition-all duration-[2s] group-hover:opacity-100 group-hover:scale-105">
+                <Image 
+                  src="/images/feature-practice.jpg" 
+                  alt="Guitar practice mode interface" 
+                  fill 
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, 60vw"
+                />
+              </div>
+              {/* Decorative overlay frame */}
+              <div className="absolute inset-4 border border-white/10 pointer-events-none"></div>
             </div>
           </div>
         </section>
