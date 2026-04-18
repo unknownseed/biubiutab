@@ -31,15 +31,15 @@ export default function Navbar() {
               <span className="absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 bg-transparent group-hover:bg-wood-400" />
             </Link>
             <Link href="#" className="relative group transition-colors duration-300 hover:text-paper-50">
-              BiuBiu助教
+              BiuBiu AI
               <span className="absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 bg-transparent group-hover:bg-wood-400" />
             </Link>
             <Link href="#" className="relative group transition-colors duration-300 hover:text-paper-50">
-              BiuBiu客服
+              价格
               <span className="absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 bg-transparent group-hover:bg-wood-400" />
             </Link>
             <Link href="#" className="relative group transition-colors duration-300 hover:text-paper-50">
-              费用
+              支持
               <span className="absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 bg-transparent group-hover:bg-wood-400" />
             </Link>
           </nav>
