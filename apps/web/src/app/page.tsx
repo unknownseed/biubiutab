@@ -3,7 +3,7 @@ import Image from "next/image";
 
 export default function MarketingPage() {
   return (
-    <div className="min-h-dvh bg-[#F9F7F2] text-[#2F4F4F] font-sans selection:bg-[#FFBF00]/30 overflow-hidden">
+    <div className="flex-1 bg-[#F9F7F2] text-[#2F4F4F] font-sans selection:bg-[#FFBF00]/30 overflow-hidden">
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-[4rem] px-[2rem] pb-[8rem] pt-[8rem]">
         
         {/* Hero Section */}
@@ -98,15 +98,6 @@ export default function MarketingPage() {
         </section>
 
       </main>
-
-      <footer className="w-full border-t border-[rgba(166,124,82,0.1)] py-[4rem] flex flex-col items-center justify-center gap-6 bg-[#F9F7F2]">
-        <p className="text-sm text-[#A67C52] font-serif tracking-widest">
-          愿琴声熄灭时，故事还在。
-        </p>
-        <p className="text-xs text-[#2F4F4F]/40 font-light tracking-wider">
-          2026 © Biubiutab · 拨动心弦
-        </p>
-      </footer>
     </div>
   );
 }
