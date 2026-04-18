@@ -10,7 +10,7 @@ export default function MarketingPage() {
         <section className="flex flex-col items-center justify-center text-center gap-[4rem] min-h-screen relative">
           
           <div className="z-10 flex flex-col gap-8 max-w-5xl w-full px-4">
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-serif italic tracking-widest leading-relaxed text-ink-800 animate-fade-in-up whitespace-nowrap overflow-hidden text-ellipsis w-full text-center">
+            <h1 className="text-base sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-serif italic tracking-widest leading-relaxed text-ink-800 animate-fade-in-up whitespace-nowrap text-center">
               “万物皆有裂痕，那是光照进来的地方。”
             </h1>
             <p className="mt-2 text-sm text-wood-400 font-serif tracking-widest animate-fade-in-up" style={{ animationDelay: "200ms" }}>

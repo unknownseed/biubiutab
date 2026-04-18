@@ -6,7 +6,7 @@ export default function PlayPage() {
       <main className="mx-auto flex w-full max-w-4xl flex-col gap-12 px-4 py-16">
         <header className="flex flex-col items-center gap-6 animate-fade-in-up">
           <div className="flex flex-col gap-4 max-w-5xl mx-auto w-full px-4 text-center">
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-serif italic tracking-widest text-ink-800 leading-relaxed whitespace-nowrap overflow-hidden text-ellipsis w-full text-center">
+            <h1 className="text-base sm:text-xl md:text-2xl lg:text-3xl xl:text-4xl font-serif italic tracking-widest text-ink-800 leading-relaxed whitespace-nowrap text-center">
               “万物皆有裂痕，那是光照进来的地方。”
             </h1>
             <p className="text-base md:text-lg italic text-ink-700/60 font-light tracking-wide">
