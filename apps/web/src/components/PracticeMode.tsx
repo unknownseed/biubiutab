@@ -80,6 +80,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle }: Pract
   const [transpose, setTranspose] = useState(0);
   const [loopA, setLoopA] = useState<number | null>(null);
   const [loopB, setLoopB] = useState<number | null>(null);
+  const [bpm, setBpm] = useState<number | undefined>(practiceData?.metadata?.tempo);
 
   const [countdown, setCountdown] = useState<number | null>(null);
   const countdownTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -666,7 +667,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle }: Pract
         loopA={loopA}
         loopB={loopB}
         onLoopSet={handleLoopSet}
-        bpm={practiceData?.metadata?.tempo || 120}
+        bpm={bpm}
       />
     </div>
   );

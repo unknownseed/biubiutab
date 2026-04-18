@@ -318,7 +318,8 @@ def _section_marker_letter(name: str) -> str:
 def generate_practice_data(
     beat_grid: list[float],
     chords: list[str],
-    aligned_lyrics: list[dict] | None
+    aligned_lyrics: list[dict] | None,
+    tempo_bpm: int = 120
 ) -> dict:
     """
     Generate data for frontend practice mode:
@@ -382,7 +383,8 @@ def generate_practice_data(
     return {
         "metadata": {
             "totalBeats": max(0, len(beat_grid) - 1) if beat_grid else 0,
-            "durationSec": duration_sec
+            "durationSec": duration_sec,
+            "tempo": tempo_bpm
         },
         "chordBlocks": detailed_blocks,
         "lyrics": lyrics_data
