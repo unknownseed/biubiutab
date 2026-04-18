@@ -47,6 +47,16 @@ export default function MarketingPage() {
             <p>为每一位吉他拾荒者，</p>
             <p>找回那些想弹却抓不住的瞬间。</p>
           </div>
+          <div className="mt-8">
+            <Link 
+              href="#" 
+              className="inline-flex items-center justify-center px-12 py-5 text-sm tracking-[0.2em] text-paper-50 font-serif bg-wood-500 border border-wood-500 transition-colors duration-500 hover:bg-paper-100 hover:text-wood-500 hover:border-wood-500 rounded-none group"
+            >
+              <span className="transition-transform duration-500 group-hover:translate-x-1">
+                [ 注册会员 ]
+              </span>
+            </Link>
+          </div>
         </section>
 
         {/* Features Section - AI Transcription */}
@@ -58,7 +68,7 @@ export default function MarketingPage() {
               <div className="flex flex-col gap-6">
                 <span className="text-xs font-mono tracking-[0.2em] text-wood-400 uppercase">AI TRANSCRIPTION</span>
                 <h2 className="text-4xl lg:text-5xl font-serif text-ink-900 tracking-wide leading-tight">
-                  一首歌的旅程
+                  AI 编配
                 </h2>
                 <div className="h-px w-24 bg-wood-400/30"></div>
               </div>
@@ -87,6 +97,17 @@ export default function MarketingPage() {
                     </li>
                   ))}
                 </ul>
+                
+                <div className="mt-4">
+                  <Link 
+                    href="/play" 
+                    className="inline-flex items-center justify-center px-10 py-4 text-sm tracking-[0.2em] text-paper-50 font-serif bg-retro-green border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-retro-green rounded-none group"
+                  >
+                    <span className="transition-transform duration-500 group-hover:translate-x-1">
+                      [ BiuBiu编配 ]
+                    </span>
+                  </Link>
+                </div>
               </div>
             </div>
 
@@ -116,7 +137,7 @@ export default function MarketingPage() {
               <div className="flex flex-col gap-6">
                 <span className="text-xs font-mono tracking-[0.2em] text-wood-400 uppercase">PRACTICE MODE</span>
                 <h2 className="text-4xl lg:text-5xl font-serif text-ink-900 tracking-wide leading-tight">
-                  像呼吸一样自然
+                  BiuBiu跟练
                 </h2>
                 <div className="h-px w-24 bg-wood-400/30"></div>
               </div>
@@ -142,6 +163,17 @@ export default function MarketingPage() {
                       <p className="text-sm text-ink-700/70 font-sans pl-4">{feature.desc}</p>
                     </div>
                   ))}
+                </div>
+
+                <div className="mt-4">
+                  <Link 
+                    href="/play" 
+                    className="inline-flex items-center justify-center px-10 py-4 text-sm tracking-[0.2em] text-paper-50 font-serif bg-retro-green border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-retro-green rounded-none group"
+                  >
+                    <span className="transition-transform duration-500 group-hover:translate-x-1">
+                      [ BiuBiu跟练 ]
+                    </span>
+                  </Link>
                 </div>
               </div>
             </div>
