@@ -4,6 +4,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { useHealth } from "./health-provider";
+import { usePathname } from "next/navigation";
 
 function dotClass(s: "checking" | "online" | "offline" | "degraded") {
   if (s === "online") return "bg-emerald-500";
@@ -15,6 +16,8 @@ export default function Navbar() {
   const [pinnedOpen, setPinnedOpen] = useState(false);
   const [hoverOpen, setHoverOpen] = useState(false);
   const { health, refresh } = useHealth();
+  const pathname = usePathname();
+  const isMarketing = pathname === "/";
 
   useEffect(() => {
     const onKeyDown = (e: KeyboardEvent) => {
@@ -34,13 +37,26 @@ export default function Navbar() {
       : "-";
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-40 border-b border-white/10 bg-[#000F27]">
+    <header className={`fixed left-0 right-0 top-0 z-40 border-b transition-colors duration-300 ${
+      isMarketing ? "border-[rgba(166,124,82,0.1)] bg-[#F9F7F2]" : "border-white/10 bg-[#000F27]"
+    }`}>
       <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-4">
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-6">
           <Link href="/" className="flex items-center">
             {/* Place your logo at: apps/web/public/logo.png */}
-            <Image src="/logo.png" alt="Biubiu Tab" width={160} height={28} className="h-7 w-auto" priority />
+            <Image src="/logo.png" alt="Biubiu Tab" width={160} height={28} className={`h-7 w-auto ${isMarketing ? "brightness-0 opacity-80" : ""}`} priority />
           </Link>
+
+          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
+            <Link href="/" className={`transition-transform duration-300 hover:-translate-y-0.5 ${pathname === "/" ? (isMarketing ? "text-[#2F4F4F]" : "text-white") : (isMarketing ? "text-[#A67C52]/80 hover:text-[#2F4F4F]" : "text-slate-400 hover:text-white")}`}>首页</Link>
+            <Link href="/play" className={`transition-transform duration-300 hover:-translate-y-0.5 ${pathname.startsWith("/play") || pathname.startsWith("/editor") ? (isMarketing ? "text-[#2F4F4F]" : "text-white") : (isMarketing ? "text-[#A67C52]/80 hover:text-[#2F4F4F]" : "text-slate-400 hover:text-white")}`}>BiuBIU弹唱</Link>
+            <Link href="#" className={`transition-transform duration-300 hover:-translate-y-0.5 ${isMarketing ? "text-[#A67C52]/80 hover:text-[#2F4F4F]" : "text-slate-400 hover:text-white"}`}>BiuBiu 教学</Link>
+            <Link href="#" className={`transition-transform duration-300 hover:-translate-y-0.5 ${isMarketing ? "text-[#A67C52]/80 hover:text-[#2F4F4F]" : "text-slate-400 hover:text-white"}`}>BiuBiu助教</Link>
+            <Link href="#" className={`transition-transform duration-300 hover:-translate-y-0.5 ${isMarketing ? "text-[#A67C52]/80 hover:text-[#2F4F4F]" : "text-slate-400 hover:text-white"}`}>BiuBiu客服</Link>
+          </nav>
+        </div>
+
+        <div className="flex items-center gap-2">
           <div className="hidden items-center gap-2 text-xs text-slate-600 md:flex">
             <div
               className="relative"

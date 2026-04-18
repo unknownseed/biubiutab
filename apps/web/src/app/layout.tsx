@@ -22,11 +22,11 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="zh-CN" className={`${inter.variable} h-full antialiased`}>
-      <body className="min-h-full bg-[radial-gradient(900px_circle_at_10%_0%,rgba(37,99,235,0.18),transparent_55%),radial-gradient(900px_circle_at_100%_20%,rgba(249,115,22,0.14),transparent_55%)]">
+      <body className="min-h-full bg-[radial-gradient(900px_circle_at_10%_0%,rgba(37,99,235,0.18),transparent_55%),radial-gradient(900px_circle_at_100%_20%,rgba(249,115,22,0.14),transparent_55%)] bg-[#000F27]">
         <Providers>
           <Navbar />
           <AiOfflineBanner />
-          <div className="pt-4">{children}</div>
+          <div className="pt-0">{children}</div>
         </Providers>
       </body>
     </html>
