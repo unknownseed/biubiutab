@@ -2,6 +2,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap');
 /* 英文标题：经典衬线 */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap');
+/* Logo字体：复古手写风格 */
+@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Pacifico&display=swap');
 /* 正文字体：无衬线，清晰克制 */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600&display=swap');
@@ -37,6 +39,7 @@
   --font-serif: "Noto Serif SC", "Playfair Display", Georgia, serif;
   --font-sans: "Inter", "Noto Sans SC", system-ui, sans-serif;
   --font-mono: "JetBrains Mono", monospace;
+  --font-logo: "Caveat", "Pacifico", cursive;
 
   --spacing-18: 4.5rem;
   --spacing-22: 5.5rem;

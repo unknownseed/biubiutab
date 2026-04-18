@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 
 export default function Navbar() {
@@ -13,8 +12,13 @@ export default function Navbar() {
     <header className="fixed left-0 right-0 top-0 z-40 border-b transition-colors duration-500 border-wood-400/20 bg-retro-green/95 backdrop-blur-md">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6">
         <div className="flex items-center gap-10">
-          <Link href="/" className="flex items-center">
-            <Image src="/logo.png" alt="Biubiu Tab" width={160} height={28} className="h-7 w-auto brightness-0 invert opacity-90" priority />
+          <Link href="/" className="flex items-center gap-2 group">
+            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-paper-50 text-retro-green font-serif font-bold text-lg group-hover:bg-wood-400 group-hover:text-paper-50 transition-colors duration-500">
+              B
+            </div>
+            <span className="font-logo text-3xl text-paper-50 tracking-wide opacity-90 group-hover:opacity-100 transition-opacity">
+              BiuBiu Tab
+            </span>
           </Link>
 
           <nav className="hidden md:flex items-center gap-8 text-sm font-sans tracking-widest text-paper-100/70">
