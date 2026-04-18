@@ -9,10 +9,10 @@
 @import "tailwindcss";
 
 @theme {
-  --color-paper-50: #FDFCFA;
-  --color-paper-100: #F9F7F2;
-  --color-paper-200: #F0EDE5;
-  --color-paper-300: #E5E0D5;
+  --color-paper-50: #FFFFFF;
+  --color-paper-100: #FFFFFF;
+  --color-paper-200: #F9F9F9;
+  --color-paper-300: #EAEAEA;
 
   --color-ink-700: #3D3D3D;
   --color-ink-800: #2A2A2A;
