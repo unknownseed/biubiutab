@@ -8,7 +8,7 @@ export default function MarketingPage() {
         
         {/* Hero Section */}
         <section className="flex flex-col items-center justify-center text-center gap-[4rem] min-h-screen relative">
-          <div className="absolute inset-0 pointer-events-none -z-10 bg-[url('/images/hero-bg.jpg')] bg-cover bg-center grayscale opacity-[0.15] mix-blend-multiply"></div>
+          <div className="absolute inset-0 pointer-events-none -z-10 bg-[url('/images/hero-bg.jpg')] bg-cover bg-center grayscale opacity-30 mix-blend-multiply"></div>
         
         {/* Subtle background element */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center opacity-30 mix-blend-multiply">
@@ -83,7 +83,7 @@ export default function MarketingPage() {
             </div>
           </div>
           <div className="flex-1 w-full relative min-h-[400px] border border-paper-300 bg-paper-200 p-4 group overflow-hidden">
-            <div className="w-full h-full relative grayscale-[40%] contrast-75 opacity-90 transition-all duration-[3s] group-hover:grayscale-0 group-hover:scale-105 rounded-sm overflow-hidden">
+            <div className="w-full h-full min-h-[400px] relative grayscale-[40%] contrast-75 opacity-90 transition-all duration-[3s] group-hover:grayscale-0 group-hover:scale-105 rounded-sm overflow-hidden">
               <Image 
                 src="/images/feature-ai.jpg" 
                 alt="Audio waveform" 
@@ -124,7 +124,7 @@ export default function MarketingPage() {
             </div>
           </div>
           <div className="flex-1 w-full relative min-h-[400px] border border-paper-300 bg-ink-950 p-4 shadow-2xl rounded-sm group overflow-hidden">
-            <div className="w-full h-full relative opacity-90 transition-all duration-[3s] group-hover:opacity-100 group-hover:scale-105 rounded-sm overflow-hidden">
+            <div className="w-full h-full min-h-[400px] relative opacity-90 transition-all duration-[3s] group-hover:opacity-100 group-hover:scale-105 rounded-sm overflow-hidden">
               <Image 
                 src="/images/feature-practice.jpg" 
                 alt="Guitar strings and dust" 
