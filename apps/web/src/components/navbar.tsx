@@ -10,28 +10,45 @@ export default function Navbar() {
   const isMarketing = true;
 
   return (
-    <header className="fixed left-0 right-0 top-0 z-40 border-b transition-colors duration-300 border-[rgba(166,124,82,0.1)] bg-[#2F4F4F]">
-      <div className="mx-auto flex h-14 w-full max-w-6xl items-center justify-between px-4">
-        <div className="flex items-center gap-6">
+    <header className="fixed left-0 right-0 top-0 z-40 border-b transition-colors duration-500 border-wood-400/20 bg-retro-green/95 backdrop-blur-md">
+      <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6">
+        <div className="flex items-center gap-10">
           <Link href="/" className="flex items-center">
-            {/* Place your logo at: apps/web/public/logo.png */}
             <Image src="/logo.png" alt="Biubiu Tab" width={160} height={28} className="h-7 w-auto brightness-0 invert opacity-90" priority />
           </Link>
 
-          <nav className="hidden md:flex items-center gap-6 text-sm font-medium">
-            <Link href="/" className={`transition-transform duration-300 hover:-translate-y-0.5 ${pathname === "/" ? "text-white" : "text-[#F9F7F2]/70 hover:text-white"}`}>首页</Link>
-            <Link href="/play" className={`transition-transform duration-300 hover:-translate-y-0.5 ${pathname.startsWith("/play") || pathname.startsWith("/editor") ? "text-white" : "text-[#F9F7F2]/70 hover:text-white"}`}>BiuBIU弹唱</Link>
-            <Link href="#" className="transition-transform duration-300 hover:-translate-y-0.5 text-[#F9F7F2]/70 hover:text-white">BiuBiu 教学</Link>
-            <Link href="#" className="transition-transform duration-300 hover:-translate-y-0.5 text-[#F9F7F2]/70 hover:text-white">BiuBiu助教</Link>
-            <Link href="#" className="transition-transform duration-300 hover:-translate-y-0.5 text-[#F9F7F2]/70 hover:text-white">BiuBiu客服</Link>
-            <Link href="#" className="transition-transform duration-300 hover:-translate-y-0.5 text-[#F9F7F2]/70 hover:text-white">费用</Link>
+          <nav className="hidden md:flex items-center gap-8 text-sm font-sans tracking-widest text-paper-100/70">
+            <Link href="/" className={`relative group transition-colors duration-300 ${pathname === "/" ? "text-paper-50" : "hover:text-paper-50"}`}>
+              首页
+              <span className={`absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 ${pathname === "/" ? "bg-wood-400" : "bg-transparent group-hover:bg-wood-400"}`} />
+            </Link>
+            <Link href="/play" className={`relative group transition-colors duration-300 ${pathname.startsWith("/play") || pathname.startsWith("/editor") ? "text-paper-50" : "hover:text-paper-50"}`}>
+              BiuBIU弹唱
+              <span className={`absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 ${pathname.startsWith("/play") || pathname.startsWith("/editor") ? "bg-wood-400" : "bg-transparent group-hover:bg-wood-400"}`} />
+            </Link>
+            <Link href="#" className="relative group transition-colors duration-300 hover:text-paper-50">
+              BiuBiu 教学
+              <span className="absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 bg-transparent group-hover:bg-wood-400" />
+            </Link>
+            <Link href="#" className="relative group transition-colors duration-300 hover:text-paper-50">
+              BiuBiu助教
+              <span className="absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 bg-transparent group-hover:bg-wood-400" />
+            </Link>
+            <Link href="#" className="relative group transition-colors duration-300 hover:text-paper-50">
+              BiuBiu客服
+              <span className="absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 bg-transparent group-hover:bg-wood-400" />
+            </Link>
+            <Link href="#" className="relative group transition-colors duration-300 hover:text-paper-50">
+              费用
+              <span className="absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 bg-transparent group-hover:bg-wood-400" />
+            </Link>
           </nav>
         </div>
 
-        <div className="flex items-center gap-2">
-          <div className="rounded-lg border px-3 py-1.5 text-sm font-medium transition-colors cursor-pointer border-[#F9F7F2]/20 bg-[#F9F7F2]/10 text-[#F9F7F2] hover:bg-[#F9F7F2]/20">
-            账号（占位）
-          </div>
+        <div className="flex items-center gap-4">
+          <button className="text-wood-400 text-sm font-sans tracking-widest border border-wood-400/50 px-6 py-2 transition-all duration-500 hover:bg-wood-400 hover:text-paper-50">
+            登录
+          </button>
         </div>
       </div>
     </header>
