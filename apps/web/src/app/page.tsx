@@ -8,7 +8,7 @@ export default function MarketingPage() {
         
         {/* Hero Section */}
         <section className="flex flex-col items-center justify-center text-center gap-[4rem] min-h-screen relative">
-          <div className="absolute inset-0 pointer-events-none -z-10 bg-[url('https://images.unsplash.com/photo-1525201548942-d8732f6617a0?auto=format&fit=crop&w=2000&q=80')] bg-cover bg-center grayscale opacity-10 mix-blend-multiply"></div>
+          <div className="absolute inset-0 pointer-events-none -z-10 bg-[url('/images/hero-bg.jpg')] bg-cover bg-center grayscale opacity-10 mix-blend-multiply"></div>
         
         {/* Subtle background element */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden flex items-center justify-center opacity-30 mix-blend-multiply">
@@ -85,7 +85,7 @@ export default function MarketingPage() {
           <div className="flex-1 w-full relative min-h-[400px] border border-paper-300 bg-paper-200 p-4 group overflow-hidden">
             <div className="w-full h-full relative grayscale-[40%] contrast-75 opacity-90 transition-all duration-[3s] group-hover:grayscale-0 group-hover:scale-105">
               <Image 
-                src="https://images.unsplash.com/photo-1511671782779-c97d3d27a1d4?auto=format&fit=crop&w=1000&q=80" 
+                src="/images/feature-ai.jpg" 
                 alt="Audio waveform" 
                 fill 
                 className="object-cover"
@@ -126,7 +126,7 @@ export default function MarketingPage() {
           <div className="flex-1 w-full relative min-h-[400px] border border-paper-300 bg-ink-950 p-4 shadow-2xl rounded-sm group overflow-hidden">
             <div className="w-full h-full relative opacity-90 transition-all duration-[3s] group-hover:opacity-100 group-hover:scale-105">
               <Image 
-                src="https://images.unsplash.com/photo-1510915361894-db8b60106cb1?auto=format&fit=crop&w=1000&q=80" 
+                src="/images/feature-practice.jpg" 
                 alt="Guitar strings and dust" 
                 fill 
                 className="object-cover"
@@ -148,11 +148,11 @@ export default function MarketingPage() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full">
             {[
-              { title: "右手的律动", subtitle: "节奏与扫弦", img: "https://images.unsplash.com/photo-1460723237483-7a6dc9d0b212?auto=format&fit=crop&w=800&q=80" },
-              { title: "指尖的记忆", subtitle: "音阶与指法", img: "https://images.unsplash.com/photo-1550291652-6cb90046de1b?auto=format&fit=crop&w=800&q=80" },
-              { title: "听觉的觉醒", subtitle: "乐理与听力", img: "https://images.unsplash.com/photo-1511379938547-c1f69419868d?auto=format&fit=crop&w=800&q=80" },
-              { title: "和声的色彩", subtitle: "常用进行", img: "https://images.unsplash.com/photo-1516280440502-62f3f1e1cb02?auto=format&fit=crop&w=800&q=80" },
-              { title: "经典的传承", subtitle: "弹唱金曲", img: "https://images.unsplash.com/photo-1485686531765-ba63b07845a7?auto=format&fit=crop&w=800&q=80" },
+              { title: "右手的律动", subtitle: "节奏与扫弦", img: "/images/study-1.jpg" },
+              { title: "指尖的记忆", subtitle: "音阶与指法", img: "/images/study-2.jpg" },
+              { title: "听觉的觉醒", subtitle: "乐理与听力", img: "/images/study-3.jpg" },
+              { title: "和声的色彩", subtitle: "常用进行", img: "/images/study-4.jpg" },
+              { title: "经典的传承", subtitle: "弹唱金曲", img: "/images/study-5.jpg" },
             ].map((item, i) => (
               <div key={i} className="flex flex-col gap-4 group cursor-pointer">
                 <div className="relative aspect-[4/3] overflow-hidden bg-paper-200">
