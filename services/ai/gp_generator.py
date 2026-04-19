@@ -123,15 +123,42 @@ def generate_gp5_binary(
             first_beat = True
             pos16 = 0
             
+            beat_start_tick = current_start
+            
             for t in pattern.tokens:
                 beat = guitarpro.Beat(voice)
+                beat.start = beat_start_tick
                 
-                if t.duration == 4: beat.duration.value = 4
-                elif t.duration == 8: beat.duration.value = 8
-                elif t.duration == 16: beat.duration.value = 16
-                elif t.duration == 2: beat.duration.value = 2
-                elif t.duration == 1: beat.duration.value = 1
-                else: beat.duration.value = 4
+                beat_ticks = 960
+                if t.duration == 4: 
+                    beat.duration.value = 4
+                    beat_ticks = 960
+                elif t.duration == 8: 
+                    beat.duration.value = 8
+                    beat_ticks = 480
+                elif t.duration == 16: 
+                    beat.duration.value = 16
+                    beat_ticks = 240
+                elif t.duration == 2: 
+                    beat.duration.value = 2
+                    beat_ticks = 1920
+                elif t.duration == 1: 
+                    beat.duration.value = 1
+                    beat_ticks = 3840
+                else: 
+                    beat.duration.value = 4
+                    beat_ticks = 960
+                
+                # Force beaming by quarter-note groups (960 ticks)
+                if t.duration in (8, 16, 32):
+                    tick_in_measure = beat_start_tick - current_start
+                    next_tick = tick_in_measure + beat_ticks
+                    if next_tick % 960 == 0:
+                        beat.display.breakBeam = True
+                    else:
+                        beat.display.forceBeam = True
+
+                beat_start_tick += beat_ticks
 
                 txt = None
                 if pos16 % 4 == 0:
