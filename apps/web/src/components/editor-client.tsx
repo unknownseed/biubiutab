@@ -106,60 +106,62 @@ export default function EditorClient({ jobId }: { jobId: string }) {
 
   return (
     <section className="flex flex-col gap-6">
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-slate-200">
-        <div className="flex items-center gap-8 overflow-x-auto scrollbar-hide">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-6 pb-4 border-b border-paper-300">
+        <div className="flex items-center p-1 bg-paper-200 border border-paper-300/50 rounded-none">
           {result?.practiceData && (
             <button
               type="button"
-              className={`relative pb-3 text-base font-semibold transition-colors whitespace-nowrap ${
-                viewMode === "practice" ? "text-[color:var(--primary)]" : "text-slate-500 hover:text-slate-800"
+              className={`px-8 py-2.5 text-sm font-serif tracking-[0.15em] transition-all duration-500 ${
+                viewMode === "practice" 
+                  ? "bg-white text-ink-900 shadow-sm border border-paper-300/50" 
+                  : "text-ink-500 hover:text-ink-900 border border-transparent"
               }`}
               onClick={() => setViewMode("practice")}
             >
               跟弹模式
-              {viewMode === "practice" && (
-                <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-[color:var(--primary)]" />
-              )}
             </button>
           )}
           <button
             type="button"
-            className={`relative pb-3 text-base font-semibold transition-colors whitespace-nowrap ${
-              viewMode === "full" ? "text-[color:var(--primary)]" : "text-slate-500 hover:text-slate-800"
+            className={`px-8 py-2.5 text-sm font-serif tracking-[0.15em] transition-all duration-500 ${
+              viewMode === "full" 
+                ? "bg-white text-ink-900 shadow-sm border border-paper-300/50" 
+                : "text-ink-500 hover:text-ink-900 border border-transparent"
             }`}
             onClick={() => setViewMode("full")}
           >
             专业谱面
-            {viewMode === "full" && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 rounded-t-full bg-[color:var(--primary)]" />
-            )}
           </button>
         </div>
 
-        <div className="relative flex items-center gap-3 pb-2">
+        <div className="relative flex items-center gap-4">
           <Link
-            href="/"
-            className="rounded-lg border border-slate-200 bg-white px-4 py-1.5 text-sm font-semibold text-slate-700 shadow-sm transition-colors hover:bg-slate-50"
+            href="/play"
+            className="inline-flex items-center justify-center px-6 py-2.5 text-xs tracking-[0.1em] text-ink-900 font-serif bg-transparent border border-ink-900 transition-colors duration-500 hover:bg-ink-900 hover:text-paper-50 rounded-none group"
           >
-            返回
+            <span className="transition-transform duration-500 group-hover:-translate-x-1">
+              [ 返回 ]
+            </span>
           </Link>
           <button
             type="button"
-            className="rounded-lg bg-[color:var(--primary)] px-4 py-1.5 text-sm font-semibold text-white shadow-sm transition-colors hover:bg-blue-500 disabled:opacity-50"
+            className="inline-flex items-center justify-center px-6 py-2.5 text-xs tracking-[0.1em] text-ink-900 font-serif bg-[color:var(--primary)] border border-[color:var(--primary)] transition-colors duration-500 hover:bg-transparent hover:text-[color:var(--primary)] disabled:opacity-50 rounded-none group"
             disabled={!result}
             onClick={() => {
               if (!result) return;
               setDownloadOpen((v) => !v);
             }}
           >
-            下载
+            <span className="transition-transform duration-500 group-hover:translate-x-1">
+              [ 下载 ]
+            </span>
           </button>
 
           {downloadOpen && result ? (
-            <div className="absolute right-0 top-full z-10 mt-2 w-52 overflow-hidden rounded-xl border border-slate-200 bg-white shadow-[0_12px_40px_rgba(2,6,23,0.12)]">
+            <div className="absolute right-0 top-full z-10 mt-2 w-52 overflow-hidden rounded-none border border-paper-300 bg-white shadow-xl">
               <button
                 type="button"
-                className="block w-full px-3 py-2 text-left text-sm text-slate-800 hover:bg-slate-50"
+                className="block w-full px-4 py-3 text-left text-sm font-serif tracking-widest text-ink-800 hover:bg-paper-100 transition-colors"
                 onClick={() => {
                   const safe = (result.title || "tab").replaceAll(/[^a-zA-Z0-9._-]+/g, "_");
                   if (gp5Data) {
@@ -178,7 +180,7 @@ export default function EditorClient({ jobId }: { jobId: string }) {
               </button>
               <button
                 type="button"
-                className="block w-full px-3 py-2 text-left text-sm text-slate-800 hover:bg-slate-50"
+                className="block w-full px-4 py-3 text-left text-sm font-serif tracking-widest text-ink-800 hover:bg-paper-100 transition-colors border-t border-paper-200"
                 onClick={() => {
                   void viewerRef.current?.exportPng();
                   setDownloadOpen(false);
@@ -188,7 +190,7 @@ export default function EditorClient({ jobId }: { jobId: string }) {
               </button>
               <button
                 type="button"
-                className="block w-full px-3 py-2 text-left text-sm text-slate-800 hover:bg-slate-50"
+                className="block w-full px-4 py-3 text-left text-sm font-serif tracking-widest text-ink-800 hover:bg-paper-100 transition-colors border-t border-paper-200"
                 onClick={() => {
                   void viewerRef.current?.printPdf();
                   setDownloadOpen(false);
@@ -201,10 +203,10 @@ export default function EditorClient({ jobId }: { jobId: string }) {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-slate-200 bg-white p-4 shadow-[0_12px_40px_rgba(2,6,23,0.08)]">
+      <div className="border border-paper-300 bg-white p-6 shadow-sm">
         <div className="flex flex-col gap-3">
           {error ? (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div>
+            <div className="rounded-none border border-red-200 bg-red-50 px-4 py-3 text-sm font-sans tracking-wide text-red-700">{error}</div>
           ) : null}
           {result && gp5Data ? (
             viewMode === "practice" && result.practiceData ? (
@@ -222,8 +224,8 @@ export default function EditorClient({ jobId }: { jobId: string }) {
               />
             )
           ) : (
-            <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-6 text-sm text-slate-600">
-              {job?.status === "processing" ? "生成中…请稍候" : "还没有谱例。返回上传页生成一个新的谱例。"}
+            <div className="rounded-none border border-paper-300 bg-paper-50 px-6 py-10 text-center text-sm font-serif tracking-widest text-ink-600">
+              {job?.status === "processing" ? "正在为您凝固这首谱例，请稍候..." : "这首谱子还未被唤醒。请返回上传页生成新的谱例。"}
             </div>
           )}
         </div>

@@ -55,7 +55,8 @@
   --muted: #475569;
   --card: #ffffff;
   --card-border: rgba(15, 23, 42, 0.12);
-  --primary: var(--color-wood-400);
+  /* Use Tailwind's yellow-500 (#EAB308) as the primary action color */
+  --primary: #EAB308;
   --accent: var(--color-amber-500);
 
   /* 全局缓动函数：缓慢、有重量感 */

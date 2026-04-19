@@ -613,9 +613,9 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle }: Pract
   };
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl bg-zinc-950 p-4 sm:p-6 text-zinc-50 shadow-xl">
+    <div className="flex flex-col gap-4 rounded-none bg-zinc-950 p-4 sm:p-6 text-zinc-50 shadow-xl">
       {playerError ? (
-        <div className="rounded-xl border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm text-red-100">
+        <div className="rounded-none border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm font-sans tracking-wide text-red-100">
           {playerError}
         </div>
       ) : null}
@@ -626,7 +626,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle }: Pract
             <LargeChordDiagram chord={currentChordBlock?.chord || "N"} />
           </div>
           <div
-            className="w-full rounded-2xl bg-zinc-50 overflow-hidden"
+            className="w-full rounded-none bg-zinc-50 overflow-hidden border border-zinc-800"
             style={{ height: "160px" }}
           >
             <div

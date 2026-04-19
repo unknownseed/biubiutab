@@ -95,13 +95,13 @@ export const PlaybackControls = React.memo(function PlaybackControls({
   };
 
   return (
-    <div className="flex flex-col gap-3 rounded-2xl border border-white/10 bg-zinc-900/80 px-4 py-3 shadow-xl backdrop-blur-md relative">
+    <div className="flex flex-col gap-3 rounded-none border border-white/10 bg-zinc-900/80 px-4 py-3 shadow-xl backdrop-blur-md relative">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="flex items-center gap-1 rounded-lg bg-zinc-800/50 p-1 hidden sm:flex">
+          <div className="flex items-center gap-1 rounded-none bg-zinc-800/50 p-1 hidden sm:flex">
             {bpm && (
               <>
-                <div className="px-2 font-mono text-[11px] font-bold text-emerald-400 bg-zinc-950/50 rounded py-1 border border-white/5">
+                <div className="px-2 font-mono text-[11px] font-bold text-white bg-zinc-950/50 rounded-none py-1 border border-white/5">
                   {Math.round(bpm * playbackRate)} BPM
                 </div>
                 <div className="w-px h-3 bg-white/10 mx-1" />
@@ -111,7 +111,7 @@ export const PlaybackControls = React.memo(function PlaybackControls({
               <button
                 key={rate}
                 onClick={() => onPlaybackRateChange?.(rate)}
-                className={`px-2 py-1 text-[11px] font-semibold rounded-md transition ${
+                className={`px-2 py-1 text-[11px] font-semibold rounded-none transition ${
                   playbackRate === rate
                     ? "bg-yellow-500 text-zinc-950 shadow-sm"
                     : "text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200"
@@ -122,19 +122,19 @@ export const PlaybackControls = React.memo(function PlaybackControls({
             ))}
           </div>
 
-          <div className="flex items-center gap-2 rounded-lg bg-zinc-800/50 p-1">
+          <div className="flex items-center gap-2 rounded-none bg-zinc-800/50 p-1">
             <button
               onClick={() => onTransposeChange?.(transpose - 1)}
-              className="flex h-6 w-6 items-center justify-center rounded text-zinc-400 hover:bg-zinc-700 hover:text-white"
+              className="flex h-6 w-6 items-center justify-center rounded-none text-zinc-400 hover:bg-zinc-700 hover:text-white"
             >
               -
             </button>
-            <div className="text-xs font-semibold text-zinc-300 w-12 text-center">
+            <div className="text-xs font-semibold text-zinc-300 w-12 text-center font-serif tracking-wider">
               {currentKeyDisplay}
             </div>
             <button
               onClick={() => onTransposeChange?.(transpose + 1)}
-              className="flex h-6 w-6 items-center justify-center rounded text-zinc-400 hover:bg-zinc-700 hover:text-white"
+              className="flex h-6 w-6 items-center justify-center rounded-none text-zinc-400 hover:bg-zinc-700 hover:text-white"
             >
               +
             </button>
@@ -142,23 +142,23 @@ export const PlaybackControls = React.memo(function PlaybackControls({
         </div>
 
         <div className="absolute left-1/2 top-5 -translate-x-1/2 px-4 pointer-events-none hidden md:block">
-          <div className="text-[13px] font-bold text-white/80 truncate max-w-[300px] text-center tracking-wide">
+          <div className="text-[13px] font-bold font-serif text-white/80 truncate max-w-[300px] text-center tracking-widest">
             {songTitle}
           </div>
         </div>
 
-        <div className="flex items-center gap-2 rounded-lg bg-zinc-800/50 p-1">
+        <div className="flex items-center gap-2 rounded-none bg-zinc-800/50 p-1">
           <button
             onClick={() => onLoopSet?.(loopA === null ? "A" : loopB === null ? "B" : "clear")}
-            className={`px-3 py-1 text-xs font-semibold rounded-md transition ${
+            className={`px-3 py-1 text-xs font-semibold rounded-none transition ${
               loopA !== null && loopB !== null
-                ? "bg-emerald-500 text-zinc-950"
+                ? "bg-yellow-500 text-zinc-950"
                 : loopA !== null
-                ? "bg-emerald-500/30 text-emerald-300"
+                ? "bg-yellow-500/30 text-yellow-300"
                 : "text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200"
             }`}
           >
-            {loopA !== null && loopB !== null ? "Clear Loop" : loopA !== null ? "Set B" : "Set A"}
+            {loopA !== null && loopB !== null ? "清除循环" : loopA !== null ? "设置循环 B" : "设置循环 A"}
           </button>
         </div>
       </div>
@@ -232,14 +232,14 @@ export const PlaybackControls = React.memo(function PlaybackControls({
           
           {loopAPercent !== null && loopBPercent === null && (
             <div 
-              className="absolute top-1.5 h-1.5 w-1 bg-emerald-500 rounded-full"
+              className="absolute top-1.5 h-1.5 w-1 bg-yellow-500 rounded-full"
               style={{ left: `${loopAPercent}%` }}
             />
           )}
           
           {loopAPercent !== null && loopBPercent !== null && (
             <div 
-              className="absolute top-1.5 h-1.5 bg-emerald-500/30 rounded-full"
+              className="absolute top-1.5 h-1.5 bg-yellow-500/30 rounded-full"
               style={{ left: `${loopAPercent}%`, width: `${loopBPercent - loopAPercent}%` }}
             />
           )}
