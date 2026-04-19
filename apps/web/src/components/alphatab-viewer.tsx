@@ -22,10 +22,52 @@ function downloadBlob(filename: string, blob: Blob) {
   URL.revokeObjectURL(url);
 }
 
-function serializeSvg(svg: SVGSVGElement): string {
+let bravuraFontDataUrlCache: string | null = null;
+
+async function getBravuraFontDataUrl(): Promise<string> {
+  if (bravuraFontDataUrlCache) return bravuraFontDataUrlCache;
+  try {
+    const res = await fetch("/alphatab/font/Bravura.woff2");
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const blob = await res.blob();
+    
+    // 转换为 Base64
+    const dataUrl = await new Promise<string>((resolve, reject) => {
+      const reader = new FileReader();
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = reject;
+      reader.readAsDataURL(blob);
+    });
+    
+    bravuraFontDataUrlCache = dataUrl;
+    return dataUrl;
+  } catch (err) {
+    console.error("[AlphaTab] Failed to load Bravura font for embedding:", err);
+    return "";
+  }
+}
+
+async function serializeSvgAsync(svg: SVGSVGElement): Promise<string> {
   const clone = svg.cloneNode(true) as SVGSVGElement;
   if (!clone.getAttribute("xmlns")) clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
   if (!clone.getAttribute("xmlns:xlink")) clone.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
+
+  // 将字体以 Base64 内联注入到 SVG 的顶部
+  const fontDataUrl = await getBravuraFontDataUrl();
+  if (fontDataUrl) {
+    const style = document.createElement("style");
+    // AlphaTab dynamically registers the font family as 'alphaTab'
+    style.textContent = `
+      @font-face {
+        font-family: 'alphaTab';
+        src: url('${fontDataUrl}') format('woff2');
+        font-weight: normal;
+        font-style: normal;
+      }
+    `;
+    clone.prepend(style);
+  }
+
   const serializer = new XMLSerializer();
   return serializer.serializeToString(clone);
 }
@@ -116,7 +158,7 @@ const AlphaTabViewer = forwardRef<
 >(function AlphaTabViewer({ data, filename, titleText, keyText, tempoBpm, timeSignatureText, arrangementText }, ref) {
   const wrapperRef = useRef<HTMLDivElement | null>(null);
   const pageRef = useRef<HTMLDivElement | null>(null);
-  const apiRef = useRef<{ destroy: () => void; load: (d: Uint8Array) => void } | null>(null);
+  const apiRef = useRef<any>(null);
   const [error, setError] = useState<string | null>(null);
   const modRef = useRef<typeof import("@coderline/alphatab") | null>(null);
 
@@ -156,7 +198,8 @@ const AlphaTabViewer = forwardRef<
         const svg = el.querySelector("svg");
         if (!svg) throw new Error("未找到可导出的谱面");
         const base = safeFilename(filename || "score");
-        const out = new Blob([serializeSvg(svg)], { type: "image/svg+xml;charset=utf-8" });
+        const svgStr = await serializeSvgAsync(svg);
+        const out = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
         downloadBlob(`${base}_p${page}.svg`, out);
       },
       exportPng: async () => {
@@ -168,7 +211,8 @@ const AlphaTabViewer = forwardRef<
         const rect = svg.getBoundingClientRect();
         const width = rect.width || 1200;
         const height = rect.height || 800;
-        const blob = await svgToPngBlob(serializeSvg(svg), width, height, 2);
+        const svgStr = await serializeSvgAsync(svg);
+        const blob = await svgToPngBlob(svgStr, width, height, 2);
         downloadBlob(`${base}_p${page}.png`, blob);
       },
       printPdf: async () => {
@@ -176,6 +220,7 @@ const AlphaTabViewer = forwardRef<
         if (!el) return;
         const svg = el.querySelector("svg");
         if (!svg) throw new Error("未找到可导出的谱面");
+        const svgStr = await serializeSvgAsync(svg);
         const html = `
 <!doctype html>
 <html>
@@ -191,7 +236,7 @@ const AlphaTabViewer = forwardRef<
 </head>
 <body>
   <div class="pageHeader"><div>第 ${page} / ${pageCount} 页</div><div>${pageBarRange}</div></div>
-  ${serializeSvg(svg)}
+  ${svgStr}
   <script>
     window.onload = () => { window.focus(); window.print(); };
   </script>
@@ -245,8 +290,8 @@ const AlphaTabViewer = forwardRef<
         display: {
           scale: 1.0,
           layoutMode: mod.LayoutMode.Page,
-          // Show standard score and TAB
-          staveProfile: mod.StaveProfile.ScoreTab,
+          // Show only TAB (to match Practice Mode and keep it clean/beginner-friendly)
+          staveProfile: mod.StaveProfile.Tab,
           barsPerRow: BARS_PER_ROW,
           startBar: pageStartBar,
           barCount: BARS_PER_PAGE,
