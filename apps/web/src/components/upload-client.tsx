@@ -264,7 +264,7 @@ export default function UploadClient() {
   }
 
   return (
-    <section className="rounded-none border border-paper-300 bg-white/50 backdrop-blur-sm p-[3rem]">
+    <section className="rounded-none border border-paper-300 bg-white/35 backdrop-blur-sm p-[3rem]">
       <div className="flex flex-col gap-8">
         {status !== "uploading" && status !== "processing" && (
           <>
