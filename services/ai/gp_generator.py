@@ -152,8 +152,7 @@ def generate_gp5_binary(
                 # Force beaming by quarter-note groups (960 ticks)
                 if t.duration in (8, 16, 32):
                     tick_in_measure = beat_start_tick - current_start
-                    next_tick = tick_in_measure + beat_ticks
-                    if next_tick % 960 == 0:
+                    if tick_in_measure % 960 == 0:
                         beat.display.breakBeam = True
                     else:
                         beat.display.forceBeam = True
