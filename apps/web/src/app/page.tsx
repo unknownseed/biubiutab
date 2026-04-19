@@ -52,23 +52,38 @@ export default function MarketingPage() {
         </section>
 
         {/* Concept Section */}
-        <section className="flex flex-col items-center text-center gap-[4rem] py-36">
-          <h2 className="text-3xl font-serif text-ink-900 tracking-widest">不必完美，但要真诚。</h2>
-          <div className="text-lg text-ink-700 leading-[2] font-sans font-light flex flex-col gap-8 tracking-wide max-w-lg mx-auto">
-            <p>我们理解每一首民谣背后的呼吸。</p>
-            <p>不仅是和弦的准确，更是节奏的起伏。</p>
-            <p>为每一位吉他拾荒者，</p>
-            <p>找回那些想弹却抓不住的瞬间。</p>
+        <section className="flex flex-col items-center justify-center text-center gap-[4rem] py-36 min-h-[60vh] relative overflow-hidden w-[100vw] ml-[50%] -translate-x-1/2">
+          {/* Background WebP Image */}
+          <div className="absolute inset-0 -z-20 flex items-center justify-center">
+            <div className="relative w-[60%] h-[60%]">
+              <Image 
+                src="/images/background2.webp" 
+                alt="Concept background" 
+                fill 
+                className="object-contain opacity-[0.06] grayscale-[50%]"
+                sizes="60vw"
+              />
+            </div>
           </div>
-          <div className="mt-8">
-            <Link 
-              href="#" 
-              className="inline-flex items-center justify-center px-12 py-5 text-sm tracking-[0.2em] text-paper-50 font-serif bg-wood-500 border border-wood-500 transition-colors duration-500 hover:bg-paper-100 hover:text-wood-500 hover:border-wood-500 rounded-none group"
-            >
-              <span className="transition-transform duration-500 group-hover:translate-x-1">
-                [ 注册会员 ]
-              </span>
-            </Link>
+          
+          <div className="z-10 flex flex-col items-center gap-[4rem]">
+            <h2 className="text-3xl font-serif text-ink-900 tracking-widest">不必完美，但要真诚。</h2>
+            <div className="text-lg text-ink-700 leading-[2] font-sans font-light flex flex-col gap-8 tracking-wide max-w-lg mx-auto">
+              <p>我们理解每一首民谣背后的呼吸。</p>
+              <p>不仅是和弦的准确，更是节奏的起伏。</p>
+              <p>为每一位吉他拾荒者，</p>
+              <p>找回那些想弹却抓不住的瞬间。</p>
+            </div>
+            <div className="mt-8">
+              <Link 
+                href="#" 
+                className="inline-flex items-center justify-center px-12 py-5 text-sm tracking-[0.2em] text-paper-50 font-serif bg-wood-500 border border-wood-500 transition-colors duration-500 hover:bg-paper-100 hover:text-wood-500 hover:border-wood-500 rounded-none group"
+              >
+                <span className="transition-transform duration-500 group-hover:translate-x-1">
+                  [ 注册会员 ]
+                </span>
+              </Link>
+            </div>
           </div>
         </section>
 
