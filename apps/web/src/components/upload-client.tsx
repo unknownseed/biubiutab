@@ -349,12 +349,12 @@ export default function UploadClient() {
 
           {status === "processing" ? (
             <div className="mt-4 space-y-6">
-              <div className="border border-paper-300 bg-white/40 p-4">
+              <div className="border border-retro-green bg-retro-green p-4">
                 <div className="flex items-center justify-between gap-3">
-                  <div className="text-sm font-serif tracking-widest text-ink-800">实时分析</div>
-                  <div className="text-xs text-ink-700/60 font-light tracking-widest">
+                  <div className="text-sm font-serif tracking-widest text-paper-50">实时分析</div>
+                  <div className="text-xs text-paper-100/70 font-light tracking-widest">
                     当前步骤：
-                    <span className="ml-2 text-wood-500">
+                    <span className="ml-2 text-wood-300 font-medium">
                       {stepLabel(previewStep)}
                     </span>
                   </div>
@@ -362,21 +362,21 @@ export default function UploadClient() {
                 {audioSrc ? (
                   <audio
                     ref={audioRef}
-                    className="mt-4 w-full"
+                    className="mt-4 w-full opacity-90 grayscale-[50%] invert-[0.8] contrast-[1.2]"
                     controls
                     src={audioSrc}
                     onLoadedMetadata={(e) => setAudioDuration((e.currentTarget as HTMLAudioElement).duration || 0)}
                     onTimeUpdate={(e) => setAudioTime((e.currentTarget as HTMLAudioElement).currentTime || 0)}
                   />
                 ) : (
-                  <div className="mt-4 text-xs text-ink-700/50 font-light tracking-widest animate-pulse">音频预览加载中…</div>
+                  <div className="mt-4 text-xs text-paper-100/50 font-light tracking-widest animate-pulse">音频预览加载中…</div>
                 )}
               </div>
 
               {viz ? (
                 <TimelineViewer viz={viz} currentTime={audioTime} durationSec={audioDuration} onSeek={onSeek} />
               ) : (
-                <div className="border border-paper-300 bg-white/40 p-6 text-center text-sm text-ink-700/60 font-light tracking-widest animate-pulse">正在准备波形与和弦预览…</div>
+                <div className="border border-retro-green bg-retro-green p-6 text-center text-sm text-paper-100/60 font-light tracking-widest animate-pulse">正在准备波形与和弦预览…</div>
               )}
             </div>
           ) : null}
