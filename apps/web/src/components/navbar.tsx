@@ -38,7 +38,7 @@ export default function Navbar() {
               <span className={`absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 ${mounted && (pathname.startsWith("/play") || pathname.startsWith("/editor")) ? "bg-wood-400" : "bg-transparent group-hover:bg-wood-400"}`} />
             </Link>
             <Link href="#" className="relative group transition-colors duration-300 hover:text-paper-50">
-              BiuBiu 教学
+              BiuBiu教学
               <span className="absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 bg-transparent group-hover:bg-wood-400" />
             </Link>
             <Link href="#" className="relative group transition-colors duration-300 hover:text-paper-50">

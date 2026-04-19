@@ -3,17 +3,18 @@ import Image from "next/image";
 
 export default function PlayPage() {
   return (
-    <div className="flex-1 pt-14 bg-white text-ink-700 font-sans selection:bg-amber-400/30 relative overflow-hidden">
+    <div className="flex-1 pt-14 text-ink-700 font-sans selection:bg-amber-400/30 relative overflow-hidden min-h-screen">
       {/* Background WebP Image */}
-      <div className="absolute inset-0 -z-20 flex items-center justify-center pointer-events-none">
+      <div className="absolute inset-0 -z-10 flex items-center justify-center pointer-events-none">
         <div className="relative w-[85%] h-[85%]">
           <Image 
-            src="/images/Sing_background.webp" 
+            src="/images/Sing_background.webp?v=2" 
             alt="Sing background" 
             fill 
             priority
             className="object-contain opacity-[0.06] grayscale-[50%]"
             sizes="85vw"
+            unoptimized
           />
         </div>
       </div>

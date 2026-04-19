@@ -41,7 +41,7 @@ export default function MarketingPage() {
               className="inline-flex items-center justify-center px-12 py-5 text-lg tracking-[0.3em] text-paper-50 font-serif bg-retro-green border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-retro-green rounded-none animate-breathe group"
             >
               <span className="transition-transform duration-500 group-hover:translate-x-2">
-                [ BiuBiu 弹唱 ]
+                [ BiuBiu弹唱 ]
               </span>
             </Link>
           </div>
