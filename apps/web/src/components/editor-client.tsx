@@ -145,7 +145,7 @@ export default function EditorClient({ jobId }: { jobId: string }) {
           </Link>
           <button
             type="button"
-            className="inline-flex items-center justify-center px-6 py-2.5 text-xs tracking-[0.1em] text-ink-900 font-serif bg-[color:var(--primary)] border border-[color:var(--primary)] transition-colors duration-500 hover:bg-transparent hover:text-[color:var(--primary)] disabled:opacity-50 rounded-none group"
+            className="inline-flex items-center justify-center px-6 py-2.5 text-xs tracking-[0.1em] text-paper-50 font-serif bg-retro-green border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green disabled:opacity-50 rounded-none group"
             disabled={!result}
             onClick={() => {
               if (!result) return;

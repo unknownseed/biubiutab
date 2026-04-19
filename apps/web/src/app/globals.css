@@ -22,10 +22,10 @@
   --color-ink-950: #111111;
   --color-retro-green: #2F4F4F;
 
-  --color-wood-300: #C4A882;
-  --color-wood-400: #A67C52;
-  --color-wood-500: #8B6340;
-  --color-wood-600: #6B4C30;
+  --color-wood-300: #FDE047;
+  --color-wood-400: #EAB308;
+  --color-wood-500: #CA8A04;
+  --color-wood-600: #A16207;
 
   --color-amber-400: #FFBF00;
   --color-amber-500: #F0A500;
@@ -116,9 +116,9 @@ body {
 }
 
 @keyframes chordGlowPulse {
-  0% { box-shadow: 0 0 0 0 rgba(166, 124, 82, 0.4); } /* wood-400 */
-  70% { box-shadow: 0 0 0 10px rgba(166, 124, 82, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(166, 124, 82, 0); }
+  0% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0.4); } /* yellow-500 */
+  70% { box-shadow: 0 0 0 10px rgba(234, 179, 8, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(234, 179, 8, 0); }
 }
 
 .chord-glow-pulse {
