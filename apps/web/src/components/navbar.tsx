@@ -2,11 +2,18 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useState, useEffect } from "react";
 
 export default function Navbar() {
   const pathname = usePathname();
   // We apply the marketing theme globally now, regardless of the page.
   const isMarketing = true;
+
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   return (
     <header className="fixed left-0 right-0 top-0 z-40 border-b transition-colors duration-500 border-wood-400/20 bg-retro-green/95 backdrop-blur-md">
@@ -22,13 +29,13 @@ export default function Navbar() {
           </Link>
 
           <nav className="hidden md:flex items-center gap-8 text-sm font-sans tracking-widest text-paper-100/70">
-            <Link href="/" className={`relative group transition-colors duration-300 ${pathname === "/" ? "text-paper-50" : "hover:text-paper-50"}`}>
+            <Link href="/" className={`relative group transition-colors duration-300 ${mounted && pathname === "/" ? "text-paper-50" : "hover:text-paper-50"}`}>
               首页
-              <span className={`absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 ${pathname === "/" ? "bg-wood-400" : "bg-transparent group-hover:bg-wood-400"}`} />
+              <span className={`absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 ${mounted && pathname === "/" ? "bg-wood-400" : "bg-transparent group-hover:bg-wood-400"}`} />
             </Link>
-            <Link href="/play" className={`relative group transition-colors duration-300 ${pathname.startsWith("/play") || pathname.startsWith("/editor") ? "text-paper-50" : "hover:text-paper-50"}`}>
+            <Link href="/play" className={`relative group transition-colors duration-300 ${mounted && (pathname.startsWith("/play") || pathname.startsWith("/editor")) ? "text-paper-50" : "hover:text-paper-50"}`}>
               BiuBIU弹唱
-              <span className={`absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 ${pathname.startsWith("/play") || pathname.startsWith("/editor") ? "bg-wood-400" : "bg-transparent group-hover:bg-wood-400"}`} />
+              <span className={`absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 ${mounted && (pathname.startsWith("/play") || pathname.startsWith("/editor")) ? "bg-wood-400" : "bg-transparent group-hover:bg-wood-400"}`} />
             </Link>
             <Link href="#" className="relative group transition-colors duration-300 hover:text-paper-50">
               BiuBiu 教学
