@@ -224,53 +224,67 @@ export default function MarketingPage() {
           </div>
         </section>
 
-        <div className="text-center my-28 text-wood-300/40 text-lg">◇</div>
+        <div className="w-full max-w-5xl h-px bg-wood-300/30 mx-auto my-12" />
 
         {/* Study Module */}
-        <section className="flex flex-col items-center justify-center py-[4rem] gap-16">
-          <div className="text-center flex flex-col gap-6">
-            <h2 className="text-3xl font-serif tracking-widest text-ink-900">手指与灵魂的磨合</h2>
-            <p className="text-ink-700 font-light tracking-widest leading-loose">
-              从第一个和弦到完整的弹唱，<br/>每一步，都有人陪你。
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-4xl mx-auto">
-            {[
-              { title: "右手的律动", subtitle: "节奏与扫弦", img: "/images/study-1.webp" },
-              { title: "指尖的记忆", subtitle: "音阶与指法", img: "/images/study-2.webp" },
-              { title: "和声的色彩", subtitle: "常用进行", img: "/images/study-4.webp" },
-            ].map((item, i) => (
-              <div key={i} className="flex flex-col gap-4 group cursor-pointer">
-                <div className="relative aspect-[4/3] overflow-hidden bg-paper-200">
-                  <Image 
-                    src={item.img} 
-                    alt={item.title} 
-                    fill 
-                    className="object-cover grayscale-[20%] transition-transform duration-700 group-hover:scale-105"
-                  />
-                </div>
-                <div>
-                  <h3 className="font-serif text-lg text-ink-800 tracking-wider">{item.title}</h3>
-                  <p className="font-sans text-sm text-ink-700 mt-1">{item.subtitle}</p>
-                </div>
+        <section className="relative w-[100vw] ml-[50%] -translate-x-1/2 py-32 bg-white">
+          <div className="mx-auto flex w-full max-w-7xl flex-col gap-24 px-6 lg:px-12">
+            
+            <div className="flex flex-col md:flex-row justify-between items-end gap-8">
+              <div className="flex flex-col gap-6">
+                <span className="text-xs font-mono tracking-[0.2em] text-wood-400 uppercase">LEARNING PATH</span>
+                <h2 className="text-4xl lg:text-5xl font-serif text-ink-900 tracking-wide leading-tight">
+                  手指与灵魂的磨合
+                </h2>
+                <div className="h-px w-24 bg-wood-400/30"></div>
               </div>
-            ))}
-          </div>
+              <p className="text-lg text-ink-700 font-light tracking-wide leading-relaxed max-w-md">
+                从第一个和弦到完整的弹唱，<br className="hidden md:block"/>每一步，都有人陪你。
+              </p>
+            </div>
 
-          <div className="mt-12">
-            <Link 
-              href="#" 
-              className="inline-flex items-center justify-center px-10 py-4 text-sm tracking-[0.2em] text-paper-50 font-serif bg-retro-green border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-retro-green rounded-none group"
-            >
-              <span className="transition-transform duration-500 group-hover:translate-x-1">
-                [ 开始你的旅程 ]
-              </span>
-            </Link>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
+              {[
+                { title: "右手的律动", subtitle: "节奏与扫弦", img: "/images/study-1.webp", num: "01" },
+                { title: "指尖的记忆", subtitle: "音阶与指法", img: "/images/study-2.webp", num: "02" },
+                { title: "和声的色彩", subtitle: "常用进行", img: "/images/study-4.webp", num: "03" },
+              ].map((item, i) => (
+                <div key={i} className="flex flex-col gap-6 group cursor-pointer">
+                  <div className="relative aspect-[4/5] overflow-hidden bg-paper-200">
+                    <Image 
+                      src={item.img} 
+                      alt={item.title} 
+                      fill 
+                      className="object-cover grayscale-[30%] contrast-[0.9] opacity-90 transition-all duration-1000 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-[1.03]"
+                      sizes="(max-width: 768px) 100vw, 33vw"
+                    />
+                    <div className="absolute inset-0 border border-white/10 pointer-events-none z-10 transition-colors duration-500 group-hover:border-wood-400/30"></div>
+                    <div className="absolute top-6 left-6 font-mono text-sm text-white/70 tracking-widest z-20 mix-blend-overlay">
+                      {item.num}
+                    </div>
+                  </div>
+                  <div className="flex flex-col gap-2">
+                    <h3 className="font-serif text-xl lg:text-2xl text-ink-900 tracking-wide group-hover:text-wood-500 transition-colors duration-500">{item.title}</h3>
+                    <p className="font-sans text-sm text-ink-700/60 uppercase tracking-widest">{item.subtitle}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            <div className="mt-8 flex justify-center">
+              <Link 
+                href="#" 
+                className="inline-flex items-center justify-center px-12 py-5 text-sm tracking-[0.2em] text-paper-50 font-serif bg-retro-green border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-retro-green rounded-none group"
+              >
+                <span className="transition-transform duration-500 group-hover:translate-x-1">
+                  [ 开始你的旅程 ]
+                </span>
+              </Link>
+            </div>
           </div>
         </section>
 
-        <div className="w-16 h-px bg-wood-300/50 mx-auto my-28" />
+        <div className="w-full max-w-5xl h-px bg-wood-300/30 mx-auto my-12" />
 
         {/* AI Assistant Section */}
         <section className="flex flex-col items-center justify-center text-center py-[4rem] gap-12">
