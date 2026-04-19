@@ -264,7 +264,7 @@ export default function UploadClient() {
   }
 
   return (
-    <section className="rounded-none border border-paper-300 bg-paper-100 p-[3rem]">
+    <section className="rounded-none border border-paper-300 bg-white/50 backdrop-blur-sm p-[3rem]">
       <div className="flex flex-col gap-8">
         {status !== "uploading" && status !== "processing" && (
           <>
@@ -273,7 +273,7 @@ export default function UploadClient() {
             </div>
 
             <div
-              className="flex min-h-[200px] cursor-pointer flex-col items-center justify-center gap-4 rounded-none border border-dashed border-wood-400/30 bg-paper-100 px-4 py-6 text-center transition-colors duration-500 hover:border-wood-400 hover:bg-paper-200/50"
+              className="flex min-h-[200px] cursor-pointer flex-col items-center justify-center gap-4 rounded-none border border-dashed border-wood-400/30 bg-white/40 px-4 py-6 text-center transition-colors duration-500 hover:border-wood-400 hover:bg-white/60"
               onClick={() => fileInputRef.current?.click()}
               onDragOver={(e) => e.preventDefault()}
               onDrop={(e) => {
@@ -349,7 +349,7 @@ export default function UploadClient() {
 
           {status === "processing" ? (
             <div className="mt-4 space-y-6">
-              <div className="border border-paper-300 bg-paper-100 p-4">
+              <div className="border border-paper-300 bg-white/40 p-4">
                 <div className="flex items-center justify-between gap-3">
                   <div className="text-sm font-serif tracking-widest text-ink-800">实时分析</div>
                   <div className="text-xs text-ink-700/60 font-light tracking-widest">
@@ -376,7 +376,7 @@ export default function UploadClient() {
               {viz ? (
                 <TimelineViewer viz={viz} currentTime={audioTime} durationSec={audioDuration} onSeek={onSeek} />
               ) : (
-                <div className="border border-paper-300 bg-paper-100 p-6 text-center text-sm text-ink-700/60 font-light tracking-widest animate-pulse">正在准备波形与和弦预览…</div>
+                <div className="border border-paper-300 bg-white/40 p-6 text-center text-sm text-ink-700/60 font-light tracking-widest animate-pulse">正在准备波形与和弦预览…</div>
               )}
             </div>
           ) : null}
