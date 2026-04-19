@@ -69,7 +69,7 @@ export default function MarketingPage() {
           
           <div className="z-10 flex flex-col items-center gap-[4rem]">
             <h2 className="text-3xl font-serif text-ink-900 tracking-widest">不必完美，但要真诚。</h2>
-            <div className="text-lg text-ink-700 leading-[2] font-sans font-light flex flex-col gap-8 tracking-wide max-w-lg mx-auto">
+            <div className="text-lg text-retro-green leading-[2] font-serif font-bold flex flex-col gap-8 tracking-wide max-w-lg mx-auto">
               <p>我们理解每一首歌曲背后的呼吸。</p>
               <p>不仅是和弦的准确，更是节奏的起伏。</p>
               <p>为每一位吉他拾荒者，</p>
