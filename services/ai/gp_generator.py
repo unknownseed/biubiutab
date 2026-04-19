@@ -10,6 +10,14 @@ except ImportError:
     from chord_shapes import chord_shape_for_label
     from rhythm_patterns import select_pattern, _resolve_arpeggio_note, RhythmPattern, RhythmToken
 
+try:
+    from .pattern_engine import load_library, find_best_pattern, transplant_pattern
+except ImportError:
+    from pattern_engine import load_library, find_best_pattern, transplant_pattern
+
+# Initialize pattern library
+load_library()
+
 
 def _gp_safe_text(s: str) -> str:
     t = (s or "").strip()
@@ -61,10 +69,131 @@ def generate_gp5_binary(
         except ValueError:
             pass
 
-    # We need to build measures. Each chord in s.chords corresponds to one measure
-    # Wait, is that true? Let's check sections_to_alphatex.
-    # It loops over `s.chords` and calls `pattern_to_alphatex`. 
-    # One pattern = 1 bar.
+    # ── Step 1: Prepare chord sequence and find best pattern ────────────────
+    chords_seq = []
+    for s in sections:
+        for c in s.chords:
+            chords_seq.append({
+                "chord": c.chord,
+                "duration_beats": ts_num  # assume each chord spans ts_num beats (1 bar)
+            })
+
+    energy = rhythm_energy if rhythm_energy is not None else 0.5
+    template_id = find_best_pattern(bpm=tempo, section_energy=energy)
+
+    if template_id and chords_seq:
+        # ── Step 2: Transplant pattern ──────────────────────────────────────
+        result = transplant_pattern(template_id, chords_seq)
+
+        # ── Step 3: Build GP5 from beats ────────────────────────────────────
+        song = _build_gp5_from_beats(
+            rhythm_beats=result["rhythm_beats"],
+            lead_beats=result["lead_beats"],
+            is_dual=result["is_dual"],
+            bpm=tempo,
+            title=title,
+            ts_num=ts_num,
+            ts_den=ts_den
+        )
+        out = io.BytesIO()
+        guitarpro.write(song, out)
+        return out.getvalue()
+
+    # ── Step 4: Fallback to simple generator ────────────────────────────────
+    return _build_gp5_simple_binary(
+        title=title, tempo=tempo, ts_num=ts_num, ts_den=ts_den, key=key, 
+        sections=sections, lyrics_beats=lyrics_beats, rhythm_energy=rhythm_energy, song=song, track=track
+    )
+
+def _build_gp5_from_beats(rhythm_beats, lead_beats, is_dual, bpm, title, ts_num, ts_den):
+    song = guitarpro.Song()
+    song.title = _gp_safe_text(title) or "score"
+    song.tempo = max(40, min(240, int(bpm)))
+
+    rhythm_track = guitarpro.Track(song)
+    rhythm_track.name = "Rhythm Guitar"
+    rhythm_track.channel.instrument = 25
+    rhythm_track.strings = [
+        guitarpro.GuitarString(1, 64), guitarpro.GuitarString(2, 59),
+        guitarpro.GuitarString(3, 55), guitarpro.GuitarString(4, 50),
+        guitarpro.GuitarString(5, 45), guitarpro.GuitarString(6, 40)
+    ]
+    _fill_track_measures(song, rhythm_track, rhythm_beats, ts_num, ts_den)
+    song.tracks.append(rhythm_track)
+
+    if is_dual and lead_beats:
+        lead_track = guitarpro.Track(song)
+        lead_track.name = "Lead Guitar"
+        lead_track.channel.instrument = 27
+        lead_track.strings = [
+            guitarpro.GuitarString(1, 64), guitarpro.GuitarString(2, 59),
+            guitarpro.GuitarString(3, 55), guitarpro.GuitarString(4, 50),
+            guitarpro.GuitarString(5, 45), guitarpro.GuitarString(6, 40)
+        ]
+        _fill_track_measures(song, lead_track, lead_beats, ts_num, ts_den)
+        song.tracks.append(lead_track)
+
+    return song
+
+def _fill_track_measures(song, track, beats, ts_num, ts_den):
+    beats_per_measure = ts_num * 2  # Assuming 4/4 => 8 eighth notes
+
+    measure_idx = 0
+    beat_counter = 0
+
+    current_measure = _get_or_create_measure(song, track, measure_idx, ts_num, ts_den)
+    current_voice = current_measure.voices[0]
+    
+    current_start = current_measure.header.start
+
+    for beat_data in beats:
+        gp_beat = guitarpro.Beat(current_voice)
+        gp_beat.start = current_start
+
+        duration_value = beat_data.get("duration", 8)
+        gp_beat.duration.value = duration_value
+
+        # Calculate ticks (quarter note = 960)
+        beat_ticks = 960 * 4 // duration_value
+        current_start += beat_ticks
+
+        for note_data in beat_data.get("notes", []):
+            note = guitarpro.Note(gp_beat)
+            note.string = note_data["string"]
+            note.value = note_data["fret"]
+            note.velocity = beat_data.get("velocity", 85)
+            gp_beat.notes.append(note)
+
+        current_voice.beats.append(gp_beat)
+
+        units = 8 // duration_value
+        beat_counter += units
+        
+        if beat_counter >= beats_per_measure:
+            beat_counter = 0
+            measure_idx += 1
+            current_measure = _get_or_create_measure(song, track, measure_idx, ts_num, ts_den)
+            current_measure.header.start = current_start
+            current_voice = current_measure.voices[0]
+
+def _get_or_create_measure(song, track, idx, ts_num, ts_den):
+    while len(track.measures) <= idx:
+        header = guitarpro.MeasureHeader()
+        header.number = len(track.measures) + 1
+        header.start = 0 if len(track.measures) == 0 else track.measures[-1].header.start + (960 * 4 * ts_num // ts_den)
+        header.timeSignature.numerator = ts_num
+        header.timeSignature.denominator.value = ts_den
+        
+        if len(song.measureHeaders) <= idx:
+            song.measureHeaders.append(header)
+        else:
+            header = song.measureHeaders[idx]
+            
+        measure = guitarpro.Measure(track, header)
+        track.measures.append(measure)
+    return track.measures[idx]
+
+def _build_gp5_simple_binary(title, tempo, ts_num, ts_den, key, sections, lyrics_beats, rhythm_energy, song, track):
     
     # Calculate ticks per measure based on time signature
     # In Guitar Pro, a quarter note is 960 ticks.

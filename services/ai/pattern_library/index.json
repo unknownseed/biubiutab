@@ -1,0 +1,14 @@
+[
+  {
+    "id": "a1b2c3d4",
+    "bpm": 80,
+    "is_dual": false,
+    "source": "成都.gp5"
+  },
+  {
+    "id": "e5f6g7h8",
+    "bpm": 120,
+    "is_dual": true,
+    "source": "Hotel_California.gp5"
+  }
+]

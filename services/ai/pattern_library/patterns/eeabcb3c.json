@@ -1,0 +1,32 @@
+{
+  "id": "eeabcb3c",
+  "is_dual": false,
+  "meta": {
+    "title": "Unknown",
+    "bpm": 120,
+    "source_file": ""
+  },
+  "layers": {
+    "rhythm": [
+      {
+        "duration": 4,
+        "notes": [],
+        "effects": {
+          "slide": [],
+          "bend": false,
+          "hammer": false
+        }
+      },
+      {
+        "duration": 4,
+        "notes": [],
+        "effects": {
+          "slide": [],
+          "bend": false,
+          "hammer": false
+        }
+      }
+    ],
+    "lead": []
+  }
+}

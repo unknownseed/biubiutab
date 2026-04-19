@@ -1,0 +1,18 @@
+{
+  "id": "a1b2c3d4",
+  "is_dual": false,
+  "meta": {
+    "title": "成都",
+    "bpm": 80,
+    "source_file": "成都.gp5"
+  },
+  "layers": {
+    "rhythm": [
+      {"duration": 8, "notes": [{"string": 5, "fret": 3}], "velocity": 95},
+      {"duration": 8, "notes": [{"string": 3, "fret": 0}], "velocity": 80},
+      {"duration": 8, "notes": [{"string": 2, "fret": 1}], "velocity": 75},
+      {"duration": 8, "notes": [{"string": 3, "fret": 0}], "velocity": 80}
+    ],
+    "lead": []
+  }
+}

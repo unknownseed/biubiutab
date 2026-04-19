@@ -1,0 +1,29 @@
+{
+  "id": "619faee0",
+  "is_dual": false,
+  "meta": {
+    "title": "Unknown",
+    "bpm": 120,
+    "source_file": ""
+  },
+  "layers": {
+    "rhythm": [
+      {
+        "duration": 4,
+        "notes": [
+          {
+            "string": 1,
+            "fret": 23,
+            "velocity": 95
+          }
+        ],
+        "effects": {
+          "slide": [],
+          "bend": false,
+          "hammer": false
+        }
+      }
+    ],
+    "lead": []
+  }
+}
