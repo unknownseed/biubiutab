@@ -52,7 +52,7 @@
 ### UI Elements & Interactions
 
 #### Buttons (CTA)
-- **Shape:** Strict sharp corners (`rounded-none`). **NEVER** use rounded buttons.
+- **Shape:** Strict sharp corners (`rounded-none`). Do not use rounded corners on buttons or first-level outer container shapes.
 - **Typography:** Small serif text (`text-sm font-serif`), extremely wide tracking (`tracking-[0.2em]`), enclosed in brackets `[ 文字 ]`.
 - **Interaction:** 
   - Solid background with matching border.
@@ -102,7 +102,7 @@
 
 ## Anti-Patterns (Do NOT Use)
 
-- ❌ **Rounded Corners:** Do not use `rounded-md`, `rounded-lg`, etc., on buttons, cards, or major containers. Stick to `rounded-none`.
+- ❌ **Inappropriate Rounded Corners:** Do not use `rounded-md`, `rounded-lg`, etc., on buttons, cards, or primary outer container shapes. Sharp corners (`rounded-none`) define the macro structure, though subtle rounding is permitted on inner, secondary UI elements (like progress indicators or inner tags).
 - ❌ **Bright/Neon Primary Colors:** Except for the specific `#EAB308` yellow accent, avoid default Tailwind blue, purple, red, etc. Stick to the earthy/retro palette.
 - ❌ **Cluttered Layouts:** Do not cram information. If it feels empty, it's probably right. Let it breathe.
 - ❌ **System Fonts for Headings:** Always use the defined Serif fonts for headings to maintain the poetic vibe.
