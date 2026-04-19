@@ -233,7 +233,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
           globalDisplayChordDiagramsInScore: false,
         },
         notation: {
-          rhythmMode: mod.TabRhythmMode.ShowWithBeams,
+          rhythmMode: mod.TabRhythmMode.ShowWithBars,
         },
       } as any);
 

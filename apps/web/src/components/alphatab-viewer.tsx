@@ -261,7 +261,7 @@ const AlphaTabViewer = forwardRef<
           globalDisplayChordDiagramsInScore: false,
         },
         notation: {
-          rhythmMode: mod.TabRhythmMode.ShowWithBeams,
+          rhythmMode: mod.TabRhythmMode.ShowWithBars,
         },
       } as any);
 
