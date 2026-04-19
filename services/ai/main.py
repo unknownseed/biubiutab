@@ -233,7 +233,7 @@ async def _run_job(job_id: str) -> None:
 
     job.status = "processing"
     job.progress = 1
-    job.message = "Loading audio"
+    job.message = "正在感受这首歌曲的呼吸..."
     job.preview = {"step": "loading"}
 
     try:
@@ -259,7 +259,7 @@ async def _run_job(job_id: str) -> None:
             upload_copy = job.audio_path
 
         job.progress = 10
-        job.message = "Separating stems (Demucs)"
+        job.message = "正在小心翼翼地剥离人声的轨迹..."
         job.preview = {"step": "demucs"}
 
         t0 = time.time()
@@ -277,10 +277,10 @@ async def _run_job(job_id: str) -> None:
             except Exception as e:
                 # Soft fallback: proceed with mix audio.
                 stems_tmp = {}
-                job.message = f"Demucs failed (fallback to mix): {e}"
+                job.message = f"人声剥离失败（退回混合原声）：{e}"
 
             job.progress = 25
-            job.message = "Extracting harmonic/percussive (HPSS)"
+            job.message = "正在寻找和弦的色彩与心跳的节拍..."
             job.preview = {"step": "hpss"}
 
             # Choose accompaniment stem for HPSS
@@ -289,7 +289,7 @@ async def _run_job(job_id: str) -> None:
                 hpss_tmp = await asyncio.to_thread(extract_harmonic_percussive, acc_path)
             except Exception as e:
                 hpss_tmp = {}
-                job.message = f"HPSS failed (fallback to accompaniment): {e}"
+                job.message = f"节奏与和弦分离失败（退回原伴奏）：{e}"
 
             harmonic_path = hpss_tmp.get("harmonic_path") or acc_path
             percussive_path = hpss_tmp.get("percussive_path") or str(upload_copy)
@@ -310,7 +310,7 @@ async def _run_job(job_id: str) -> None:
                 pass
 
             job.progress = 35
-            job.message = "Analyzing tempo/key/chords"
+            job.message = "正在丈量音符的间距与调性..."
             job.preview = {**(job.preview or {}), "step": "analysis"}
 
             try:
@@ -324,7 +324,7 @@ async def _run_job(job_id: str) -> None:
                 )
             except Exception as e:
                 # Soft fallback to mix for everything.
-                job.message = f"Analysis failed (fallback to mix): {e}"
+                job.message = f"音乐分析受阻（退回混合原声）：{e}"
                 analysis = await asyncio.to_thread(analyze_audio_multi, str(upload_copy), title)
 
             if analysis:
@@ -350,7 +350,7 @@ async def _run_job(job_id: str) -> None:
                 pass
 
             job.progress = 60
-            job.message = "Transcribing lyrics (vocals)"
+            job.message = "正在倾听歌词中藏着的故事..."
             job.preview = {**(job.preview or {}), "step": "lyrics"}
 
             vocals_path = stems_tmp.get("vocals")
@@ -370,7 +370,7 @@ async def _run_job(job_id: str) -> None:
                 pass
 
             job.progress = 70
-            job.message = "Extracting vocal melody"
+            job.message = "正在捕捉风里的主旋律..."
             job.preview = {**(job.preview or {}), "step": "melody"}
 
             if vocals_path:
@@ -469,11 +469,11 @@ async def _run_job(job_id: str) -> None:
                 visualization = None
 
             job.progress = 65
-            job.message = "Detecting sections"
+            job.message = "正在梳理歌曲的起承转合..."
             job.preview = {**(job.preview or {}), "step": "sections"}
 
         job.progress = 65
-        job.message = "Detecting sections"
+        job.message = "正在梳理歌曲的起承转合..."
 
         sections = detect_sections(analysis.bar_chords)
 
@@ -489,7 +489,7 @@ async def _run_job(job_id: str) -> None:
             section_out.append(SectionOut(name=s.name, start_bar=s.start_bar, end_bar=s.end_bar, chords=chords))
 
         job.progress = 78
-        job.message = "Extracting melody (fallback)"
+        job.message = "正在为前奏编写指尖的刻痕..."
 
         # Keep existing melody extraction for intro/tab heuristics & as fallback.
         melody_mix = await asyncio.to_thread(detect_melody, str(upload_copy))
@@ -621,12 +621,12 @@ async def _run_job(job_id: str) -> None:
             pass
         job.status = "succeeded"
         job.progress = 100
-        job.message = "Done"
+        job.message = "一首完整的吉他谱已经凝固。"
         job.preview = {**(job.preview or {}), "step": "done"}
     except Exception as e:
         job.status = "failed"
         job.error = str(e)
-        job.message = "Failed"
+        job.message = "抱歉，琴弦在这里断了。"
         job.preview = {**(job.preview or {}), "step": "failed"}
 
 
@@ -645,7 +645,7 @@ async def create_job(req: CreateJobRequest) -> JobResponse:
         id=job_id,
         status="queued",
         progress=0,
-        message="Queued",
+        message="正在排队等待时光的眷顾...",
         error=None,
         audio_path=audio_path,
         title=title,
