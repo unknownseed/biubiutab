@@ -230,7 +230,7 @@ export default function MarketingPage() {
         <section className="relative w-[100vw] ml-[50%] -translate-x-1/2 py-32 bg-white">
           <div className="mx-auto flex w-full max-w-7xl flex-col gap-24 px-6 lg:px-12">
             
-            <div className="flex flex-col md:flex-row justify-between items-end gap-8">
+            <div className="flex flex-col gap-8">
               <div className="flex flex-col gap-6">
                 <span className="text-xs font-mono tracking-[0.2em] text-wood-400 uppercase">LEARNING PATH</span>
                 <h2 className="text-4xl lg:text-5xl font-serif text-ink-900 tracking-wide leading-tight">
@@ -238,8 +238,8 @@ export default function MarketingPage() {
                 </h2>
                 <div className="h-px w-24 bg-wood-400/30"></div>
               </div>
-              <p className="text-lg text-ink-700 font-light tracking-wide leading-relaxed max-w-md">
-                从第一个和弦到完整的弹唱，<br className="hidden md:block"/>每一步，都有人陪你。
+              <p className="text-xl text-ink-800 leading-relaxed font-light tracking-wide max-w-md">
+                从第一个和弦到完整的弹唱，<br/>每一步，都有人陪你。
               </p>
             </div>
 
@@ -258,7 +258,8 @@ export default function MarketingPage() {
                       className="object-cover grayscale-[30%] contrast-[0.9] opacity-90 transition-all duration-1000 group-hover:grayscale-0 group-hover:opacity-100 group-hover:scale-[1.03]"
                       sizes="(max-width: 768px) 100vw, 33vw"
                     />
-                    <div className="absolute inset-0 border border-white/10 pointer-events-none z-10 transition-colors duration-500 group-hover:border-wood-400/30"></div>
+                    {/* Decorative overlay frame matching AI & Practice sections */}
+                    <div className="absolute inset-4 border border-white/20 pointer-events-none mix-blend-overlay transition-colors duration-500 group-hover:border-white/40"></div>
                     <div className="absolute top-6 left-6 font-mono text-sm text-white/70 tracking-widest z-20 mix-blend-overlay">
                       {item.num}
                     </div>
