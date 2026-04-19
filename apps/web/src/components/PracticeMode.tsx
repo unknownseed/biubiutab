@@ -83,6 +83,19 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
   const [loopB, setLoopB] = useState<number | null>(null);
   const [bpm, setBpm] = useState<number | undefined>(practiceData?.metadata?.tempo);
 
+  const lastChordEndTime = useMemo(() => {
+    const rawBlocks = practiceData?.chordBlocks;
+    if (!rawBlocks || rawBlocks.length === 0) return duration;
+    const lastBlock = rawBlocks[rawBlocks.length - 1];
+    const safeBpm = bpm || 120;
+    return (lastBlock.endBeat * 60) / safeBpm;
+  }, [practiceData?.chordBlocks, duration, bpm]);
+
+  const lastChordEndTimeRef = useRef(lastChordEndTime);
+  useEffect(() => {
+    lastChordEndTimeRef.current = lastChordEndTime;
+  }, [lastChordEndTime]);
+
   const [countdown, setCountdown] = useState<number | null>(null);
   const countdownTimerRef = useRef<NodeJS.Timeout | null>(null);
 
@@ -359,6 +372,17 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
         const lA = loopARef.current;
         if (lB !== null && lA !== null && sec >= lB && api.playerState === 1) {
           api.timePosition = lA * 1000;
+          return;
+        }
+
+        // Auto-stop at the end of the last chord block
+        // because the GP5 score might have extra empty measures to round up
+        const dur = lastChordEndTimeRef.current;
+        if (dur > 0 && sec >= dur && api.playerState === 1) {
+          try {
+            api.playPause(); // Pause the playback
+            api.timePosition = 0; // Reset to start
+          } catch {}
           return;
         }
         
