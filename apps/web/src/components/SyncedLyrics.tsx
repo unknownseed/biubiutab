@@ -109,7 +109,7 @@ export const SyncedLyrics = React.memo(function SyncedLyrics({ lyrics, activeInd
                 itemRefs.current[idx] = node;
               }}
               className={cn(
-                "transition-all duration-300 ease-out snap-center",
+                "transition-all duration-300 ease-out snap-center min-w-[20px] text-center",
                 isActive
                   ? "scale-110 font-bold text-white text-2xl drop-shadow-[0_0_8px_rgba(255,255,255,0.8)]"
                   : isPast
@@ -117,7 +117,7 @@ export const SyncedLyrics = React.memo(function SyncedLyrics({ lyrics, activeInd
                   : "text-zinc-600 text-xl"
               )}
             >
-              {lyric.text}
+              {lyric.text || "·"}
             </div>
           );
         })}

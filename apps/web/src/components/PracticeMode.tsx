@@ -622,18 +622,33 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
     }
   }, [practiceData, transpose]);
 
-  const lyrics = practiceData?.lyrics || [];
-  const displayTitle = songTitle || practiceData?.metadata?.title || practiceData?.title || "未知曲目";
-
   const activeChordIndex = useMemo(() => {
     if (!chordBlocks?.length) return -1;
     return findActiveIndex(chordBlocks, currentTime);
   }, [chordBlocks, currentTime]);
 
-  const activeLyricIndex = useMemo(() => {
-    if (!lyrics || lyrics.length === 0) return -1;
-    return findActiveLyricIndex(lyrics, currentTime);
-  }, [lyrics, currentTime]);
+  const chordLyrics = useMemo(() => {
+    const rawLyrics = practiceData?.lyrics || [];
+    if (!chordBlocks?.length) return [];
+    
+    return chordBlocks.map(block => {
+      if (!rawLyrics.length) {
+        return { text: "", startTime: block.startTime, endTime: block.endTime };
+      }
+      const blockLyrics = rawLyrics.filter((l: any) => {
+        const mid = (l.startTime + l.endTime) / 2;
+        return mid >= block.startTime && mid < block.endTime;
+      });
+      const text = blockLyrics.map((l: any) => l.text).join("").trim();
+      return {
+        text,
+        startTime: block.startTime,
+        endTime: block.endTime,
+      };
+    });
+  }, [chordBlocks, practiceData?.lyrics]);
+
+  const displayTitle = songTitle || practiceData?.metadata?.title || practiceData?.title || "未知曲目";
 
   // Find current chord
   const currentChordBlock = chordBlocks[activeChordIndex] || chordBlocks[0];
@@ -687,7 +702,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
           </div>
         </div>
         <div className="h-[100px] w-full">
-          <SyncedLyrics lyrics={lyrics} activeIndex={activeLyricIndex} countdown={countdown} />
+          <SyncedLyrics lyrics={chordLyrics} activeIndex={activeChordIndex} countdown={countdown} />
         </div>
       </div>
 

@@ -172,27 +172,27 @@ export const PlaybackControls = React.memo(function PlaybackControls({
               </button>
             </div>
           )}
-        </div>
 
-        <div className="absolute left-1/2 top-5 -translate-x-1/2 px-4 pointer-events-none hidden md:block">
-          <div className="text-[13px] font-bold font-serif text-white/80 truncate max-w-[300px] text-center tracking-widest">
-            {songTitle}
+          <div className="flex items-center gap-2 rounded-none bg-zinc-800/50 p-1">
+            <button
+              onClick={() => onLoopSet?.(loopA === null ? "A" : loopB === null ? "B" : "clear")}
+              className={`px-3 py-1 text-xs font-semibold rounded-none transition ${
+                loopA !== null && loopB !== null
+                  ? "bg-yellow-500 text-zinc-950"
+                  : loopA !== null
+                  ? "bg-yellow-500/30 text-yellow-300"
+                  : "text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200"
+              }`}
+            >
+              {loopA !== null && loopB !== null ? "清除循环" : loopA !== null ? "设置循环 B" : "设置循环 A"}
+            </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 rounded-none bg-zinc-800/50 p-1">
-          <button
-            onClick={() => onLoopSet?.(loopA === null ? "A" : loopB === null ? "B" : "clear")}
-            className={`px-3 py-1 text-xs font-semibold rounded-none transition ${
-              loopA !== null && loopB !== null
-                ? "bg-yellow-500 text-zinc-950"
-                : loopA !== null
-                ? "bg-yellow-500/30 text-yellow-300"
-                : "text-zinc-400 hover:bg-zinc-700 hover:text-zinc-200"
-            }`}
-          >
-            {loopA !== null && loopB !== null ? "清除循环" : loopA !== null ? "设置循环 B" : "设置循环 A"}
-          </button>
+        <div className="flex items-center gap-2 px-4 hidden md:flex">
+          <div className="text-[13px] font-bold font-serif text-white/80 truncate max-w-[200px] text-right tracking-widest">
+            {songTitle}
+          </div>
         </div>
       </div>
 
