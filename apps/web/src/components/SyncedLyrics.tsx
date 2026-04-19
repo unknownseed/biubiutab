@@ -66,7 +66,7 @@ export const SyncedLyrics = React.memo(function SyncedLyrics({ lyrics, activeInd
 
   if (countdown !== null) {
     return (
-      <div className="flex h-full min-h-[140px] flex-col items-center justify-center rounded-2xl border border-white/10 bg-zinc-900/50 p-4">
+      <div className="flex h-full w-full flex-col items-center justify-center rounded-none border border-zinc-800 bg-zinc-900 p-4">
         <div
           key={countdown}
           className="animate-in zoom-in duration-300 text-6xl font-black text-yellow-400 drop-shadow-[0_0_15px_rgba(250,204,21,0.8)]"
@@ -79,8 +79,8 @@ export const SyncedLyrics = React.memo(function SyncedLyrics({ lyrics, activeInd
 
   if (!lyrics || lyrics.length === 0) {
     return (
-      <div className="flex h-full min-h-[140px] flex-col items-center justify-center rounded-2xl border border-white/10 bg-zinc-900/50 p-4 text-zinc-500">
-        <p className="text-sm">暂无歌词数据</p>
+      <div className="flex h-full w-full flex-col items-center justify-center rounded-none border border-zinc-800 bg-zinc-900 p-4 text-zinc-500">
+        <p className="text-sm font-sans tracking-widest">暂无歌词数据</p>
       </div>
     );
   }
@@ -88,7 +88,7 @@ export const SyncedLyrics = React.memo(function SyncedLyrics({ lyrics, activeInd
   return (
     <div
       ref={containerRef}
-      className="relative flex h-full min-h-[140px] w-full flex-row items-center overflow-x-auto overflow-y-hidden rounded-2xl border border-white/10 bg-zinc-900/50 scrollbar-hide snap-x snap-mandatory"
+      className="relative flex h-full w-full flex-row items-center overflow-x-auto overflow-y-hidden rounded-none border border-zinc-800 bg-zinc-900 scrollbar-hide snap-x snap-mandatory"
       style={{
         maskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",
         WebkitMaskImage: "linear-gradient(to right, transparent, black 15%, black 85%, transparent)",

@@ -23,6 +23,8 @@ export type PlaybackControlsProps = {
   loopB?: number | null;
   onLoopSet?: (type: "A" | "B" | "clear") => void;
   bpm?: number;
+  audioSource?: "midi" | "original" | "no_vocals";
+  onAudioSourceChange?: (source: "midi" | "original" | "no_vocals") => void;
 };
 
 function formatTime(sec: number) {
@@ -51,6 +53,8 @@ export const PlaybackControls = React.memo(function PlaybackControls({
   loopB = null,
   onLoopSet,
   bpm,
+  audioSource = "midi",
+  onAudioSourceChange,
 }: PlaybackControlsProps) {
   const [isDragging, setIsDragging] = useState(false);
   const [dragTime, setDragTime] = useState(0);
@@ -99,6 +103,33 @@ export const PlaybackControls = React.memo(function PlaybackControls({
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1 rounded-none bg-zinc-800/50 p-1 hidden sm:flex">
+            <button
+              onClick={() => onAudioSourceChange?.("midi")}
+              className={`px-3 py-1 text-xs font-serif tracking-widest rounded-none transition ${
+                audioSource === "midi" ? "bg-yellow-500 text-zinc-950 shadow-sm" : "text-zinc-400 hover:bg-zinc-700 hover:text-white"
+              }`}
+            >
+              MIDI伴奏
+            </button>
+            <button
+              onClick={() => onAudioSourceChange?.("original")}
+              className={`px-3 py-1 text-xs font-serif tracking-widest rounded-none transition ${
+                audioSource === "original" ? "bg-yellow-500 text-zinc-950 shadow-sm" : "text-zinc-400 hover:bg-zinc-700 hover:text-white"
+              }`}
+            >
+              源音频
+            </button>
+            <button
+              onClick={() => onAudioSourceChange?.("no_vocals")}
+              className={`px-3 py-1 text-xs font-serif tracking-widest rounded-none transition ${
+                audioSource === "no_vocals" ? "bg-yellow-500 text-zinc-950 shadow-sm" : "text-zinc-400 hover:bg-zinc-700 hover:text-white"
+              }`}
+            >
+              无声伴奏
+            </button>
+          </div>
+
+          <div className="flex items-center gap-1 rounded-none bg-zinc-800/50 p-1 hidden lg:flex">
             {bpm && (
               <>
                 <div className="px-2 font-mono text-[11px] font-bold text-white bg-zinc-950/50 rounded-none py-1 border border-white/5">
@@ -107,7 +138,7 @@ export const PlaybackControls = React.memo(function PlaybackControls({
                 <div className="w-px h-3 bg-white/10 mx-1" />
               </>
             )}
-            {[0.5, 0.75, 1.0, 1.25, 1.5].map((rate) => (
+            {[0.5, 0.75, 1.0, 1.25].map((rate) => (
               <button
                 key={rate}
                 onClick={() => onPlaybackRateChange?.(rate)}
@@ -122,23 +153,25 @@ export const PlaybackControls = React.memo(function PlaybackControls({
             ))}
           </div>
 
-          <div className="flex items-center gap-2 rounded-none bg-zinc-800/50 p-1">
-            <button
-              onClick={() => onTransposeChange?.(transpose - 1)}
-              className="flex h-6 w-6 items-center justify-center rounded-none text-zinc-400 hover:bg-zinc-700 hover:text-white"
-            >
-              -
-            </button>
-            <div className="text-xs font-semibold text-zinc-300 w-12 text-center font-serif tracking-wider">
-              {currentKeyDisplay}
+          {audioSource === "midi" && (
+            <div className="flex items-center gap-2 rounded-none bg-zinc-800/50 p-1">
+              <button
+                onClick={() => onTransposeChange?.(transpose - 1)}
+                className="flex h-6 w-6 items-center justify-center rounded-none text-zinc-400 hover:bg-zinc-700 hover:text-white"
+              >
+                -
+              </button>
+              <div className="text-xs font-semibold text-zinc-300 w-12 text-center font-serif tracking-wider">
+                {currentKeyDisplay}
+              </div>
+              <button
+                onClick={() => onTransposeChange?.(transpose + 1)}
+                className="flex h-6 w-6 items-center justify-center rounded-none text-zinc-400 hover:bg-zinc-700 hover:text-white"
+              >
+                +
+              </button>
             </div>
-            <button
-              onClick={() => onTransposeChange?.(transpose + 1)}
-              className="flex h-6 w-6 items-center justify-center rounded-none text-zinc-400 hover:bg-zinc-700 hover:text-white"
-            >
-              +
-            </button>
-          </div>
+          )}
         </div>
 
         <div className="absolute left-1/2 top-5 -translate-x-1/2 px-4 pointer-events-none hidden md:block">

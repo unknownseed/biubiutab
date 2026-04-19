@@ -58,9 +58,10 @@ export type PracticeModeProps = {
   practiceData: any;
   gp5Data: Uint8Array;
   songTitle?: string;
+  jobId?: string;
 };
 
-export default function PracticeMode({ practiceData, gp5Data, songTitle }: PracticeModeProps) {
+export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }: PracticeModeProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const alphaTabApiRef = useRef<any>(null);
   const guitarSamplerRef = useRef<GuitarSampler | null>(null);
@@ -84,6 +85,41 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle }: Pract
 
   const [countdown, setCountdown] = useState<number | null>(null);
   const countdownTimerRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Audio source selection: 'midi', 'original', 'no_vocals'
+  const [audioSource, setAudioSource] = useState<"midi" | "original" | "no_vocals">("midi");
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioSourceRef = useRef<"midi" | "original" | "no_vocals">("midi");
+  
+  useEffect(() => {
+    audioSourceRef.current = audioSource;
+    if (alphaTabApiRef.current) {
+      alphaTabApiRef.current.masterVolume = audioSource === "midi" ? 1 : 0;
+    }
+    if (audioRef.current) {
+      if (audioSource === "midi") {
+        audioRef.current.pause();
+      } else {
+        const url = `/api/jobs/${jobId}/audio?type=${audioSource}`;
+        if (!audioRef.current.src.includes(url)) {
+          audioRef.current.src = url;
+          audioRef.current.load();
+          if (alphaTabApiRef.current) {
+            audioRef.current.currentTime = alphaTabApiRef.current.timePosition / 1000;
+          }
+          if (isPlaying) {
+            audioRef.current.play().catch(() => {});
+          }
+        }
+      }
+    }
+  }, [audioSource, jobId, isPlaying]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = playbackRate;
+    }
+  }, [playbackRate]);
 
   const playTick = () => {
     try {
@@ -228,6 +264,14 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle }: Pract
 
       api.playerStateChanged?.on?.((args: any) => {
         setIsPlaying(args.state === 1);
+        if (audioRef.current && audioSourceRef.current !== "midi") {
+          if (args.state === 1) {
+            audioRef.current.currentTime = api.timePosition / 1000;
+            audioRef.current.play().catch(() => {});
+          } else {
+            audioRef.current.pause();
+          }
+        }
       });
 
       api.playerReady?.on?.(() => {
@@ -497,6 +541,10 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle }: Pract
     alphaTabApiRef.current.timePosition = targetTime * 1000;
     setCurrentTime(targetTime);
     
+    if (audioRef.current && audioSource !== "midi") {
+      audioRef.current.currentTime = targetTime;
+    }
+    
     // When paused, AlphaTab does not always redraw the cursor for timePosition changes.
     // We explicitly trigger a tick to force cursor recalculation.
     if (alphaTabApiRef.current.playerState !== 1) {
@@ -620,18 +668,17 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle }: Pract
         </div>
       ) : null}
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
-        <div className="flex flex-col gap-4">
-          <div className="flex gap-4">
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col md:flex-row gap-4 items-stretch h-auto md:h-[160px]">
+          <div className="flex-shrink-0 flex items-center justify-center bg-zinc-900 border border-zinc-800 p-4 md:w-[160px] rounded-none">
             <LargeChordDiagram chord={currentChordBlock?.chord || "N"} />
           </div>
           <div
-            className="w-full rounded-none bg-zinc-50 overflow-hidden border border-zinc-800"
-            style={{ height: "160px" }}
+            className="flex-1 w-full rounded-none bg-zinc-50 overflow-hidden border border-zinc-800 relative"
           >
             <div
               ref={containerRef}
-              className="h-full w-full overflow-x-auto overflow-y-hidden"
+              className="absolute inset-0 overflow-x-auto overflow-y-hidden"
               style={{ 
                 transform: "translateY(-16px)",
                 height: "calc(100% + 16px)"
@@ -639,9 +686,12 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle }: Pract
             />
           </div>
         </div>
-        <SyncedLyrics lyrics={lyrics} activeIndex={activeLyricIndex} countdown={countdown} />
+        <div className="h-[100px] w-full">
+          <SyncedLyrics lyrics={lyrics} activeIndex={activeLyricIndex} countdown={countdown} />
+        </div>
       </div>
 
+      <audio ref={audioRef} className="hidden" crossOrigin="anonymous" />
       <ChordTimeline
         blocks={chordBlocks}
         activeIndex={activeChordIndex}
@@ -668,6 +718,8 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle }: Pract
         loopB={loopB}
         onLoopSet={handleLoopSet}
         bpm={bpm}
+        audioSource={audioSource}
+        onAudioSourceChange={setAudioSource}
       />
     </div>
   );

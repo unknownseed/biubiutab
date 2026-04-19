@@ -210,7 +210,7 @@ export default function EditorClient({ jobId }: { jobId: string }) {
           ) : null}
           {result && gp5Data ? (
             viewMode === "practice" && result.practiceData ? (
-              <PracticeMode practiceData={result.practiceData} gp5Data={gp5Data} songTitle={result.title} />
+              <PracticeMode practiceData={result.practiceData} gp5Data={gp5Data} songTitle={result.title} jobId={jobId} />
             ) : (
               <AlphaTabViewer
                 ref={viewerRef}
