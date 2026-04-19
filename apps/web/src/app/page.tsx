@@ -57,11 +57,12 @@ export default function MarketingPage() {
           <div className="absolute inset-0 -z-20 flex items-center justify-center">
             <div className="relative w-[60%] h-[60%]">
               <Image 
-                src="/images/background2.webp" 
+                src="/images/background2.webp?v=2" 
                 alt="Concept background" 
                 fill 
                 className="object-contain opacity-[0.06] grayscale-[50%]"
                 sizes="60vw"
+                unoptimized
               />
             </div>
           </div>
@@ -69,7 +70,7 @@ export default function MarketingPage() {
           <div className="z-10 flex flex-col items-center gap-[4rem]">
             <h2 className="text-3xl font-serif text-ink-900 tracking-widest">不必完美，但要真诚。</h2>
             <div className="text-lg text-ink-700 leading-[2] font-sans font-light flex flex-col gap-8 tracking-wide max-w-lg mx-auto">
-              <p>我们理解每一首民谣背后的呼吸。</p>
+              <p>我们理解每一首歌曲背后的呼吸。</p>
               <p>不仅是和弦的准确，更是节奏的起伏。</p>
               <p>为每一位吉他拾荒者，</p>
               <p>找回那些想弹却抓不住的瞬间。</p>
