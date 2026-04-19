@@ -388,12 +388,12 @@ export default function UploadClient() {
           <div className="mt-6 flex justify-center">
             <button
               type="button"
-              className="inline-flex items-center justify-center bg-retro-green px-12 py-4 text-sm font-serif tracking-[0.2em] text-paper-50 border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-retro-green disabled:opacity-30 disabled:hover:bg-retro-green disabled:hover:text-paper-50 disabled:hover:border-retro-green disabled:cursor-not-allowed group rounded-none animate-breathe"
+              className={`inline-flex items-center justify-center bg-retro-green px-12 py-4 text-sm font-serif tracking-[0.2em] text-paper-50 border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-retro-green disabled:opacity-30 disabled:hover:bg-retro-green disabled:hover:text-paper-50 disabled:hover:border-retro-green disabled:cursor-not-allowed group rounded-none ${(status === "uploading" || status === "processing") ? "" : "animate-breathe"}`}
               onClick={() => void start()}
               disabled={!file || status === "uploading" || status === "processing"}
             >
               <span className="transition-transform duration-500 group-hover:translate-x-2">
-                [ 开始生成谱例 ]
+                [ {(status === "uploading" || status === "processing") ? "正在分析音乐..." : "开始生成谱例"} ]
               </span>
             </button>
           </div>
