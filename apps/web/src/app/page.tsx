@@ -237,9 +237,9 @@ export default function MarketingPage() {
 
           <div className="grid grid-cols-2 md:grid-cols-3 gap-6 w-full max-w-4xl mx-auto">
             {[
-              { title: "右手的律动", subtitle: "节奏与扫弦", img: "/images/study-1.jpg" },
-              { title: "指尖的记忆", subtitle: "音阶与指法", img: "/images/study-2.jpg" },
-              { title: "和声的色彩", subtitle: "常用进行", img: "/images/study-4.jpg" },
+              { title: "右手的律动", subtitle: "节奏与扫弦", img: "/images/study-1.webp" },
+              { title: "指尖的记忆", subtitle: "音阶与指法", img: "/images/study-2.webp" },
+              { title: "和声的色彩", subtitle: "常用进行", img: "/images/study-4.webp" },
             ].map((item, i) => (
               <div key={i} className="flex flex-col gap-4 group cursor-pointer">
                 <div className="relative aspect-[4/3] overflow-hidden bg-paper-200">
