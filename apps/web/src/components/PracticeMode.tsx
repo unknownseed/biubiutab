@@ -535,14 +535,16 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
     }
     if (!alphaTabApiRef.current) return;
     
-    // Always seek to the exact start time of the block if it's provided, otherwise fallback to the exact time
-    const targetTime = block?.startTime ?? timeSeconds;
+    // For AlphaTab (GP5), we use the ideal time
+    const targetIdealTime = block?.startTime ?? timeSeconds;
+    // For original audio, we need the real time
+    const targetRealTime = block?.realStartTime ?? timeSeconds;
     
-    alphaTabApiRef.current.timePosition = targetTime * 1000;
-    setCurrentTime(targetTime);
+    alphaTabApiRef.current.timePosition = targetIdealTime * 1000;
+    setCurrentTime(targetIdealTime);
     
     if (audioRef.current && audioSource !== "midi") {
-      audioRef.current.currentTime = targetTime;
+      audioRef.current.currentTime = targetRealTime;
     }
     
     // When paused, AlphaTab does not always redraw the cursor for timePosition changes.
@@ -576,11 +578,14 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
   // Group adjacent identical chords to simulate "measures" or longer blocks
   // Also apply transposition
   const chordBlocks = useMemo(() => {
-    const rawChordBlocks: ChordBlock[] = practiceData?.chordBlocks?.map((b: any, i: number) => ({
+    const safeBpm = bpm || 120;
+    const rawChordBlocks: (ChordBlock & { realStartTime: number, realEndTime: number })[] = practiceData?.chordBlocks?.map((b: any, i: number) => ({
       id: `chord-${i}`,
       chord: b.chord,
-      startTime: b.startTime,
-      endTime: b.endTime,
+      realStartTime: b.startTime,
+      realEndTime: b.endTime,
+      startTime: (b.startBeat * 60) / safeBpm, // ideal time for AlphaTab sync
+      endTime: (b.endBeat * 60) / safeBpm,
       startBeat: b.startBeat,
       endBeat: b.endBeat,
       isBarStart: b.isBarStart,
@@ -631,13 +636,13 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
     const rawLyrics = practiceData?.lyrics || [];
     if (!chordBlocks?.length) return [];
     
-    return chordBlocks.map(block => {
+    return chordBlocks.map((block: any) => {
       if (!rawLyrics.length) {
         return { text: "", startTime: block.startTime, endTime: block.endTime };
       }
       const blockLyrics = rawLyrics.filter((l: any) => {
         const mid = (l.startTime + l.endTime) / 2;
-        return mid >= block.startTime && mid < block.endTime;
+        return mid >= block.realStartTime && mid < block.realEndTime;
       });
       const text = blockLyrics.map((l: any) => l.text).join("").trim();
       return {
