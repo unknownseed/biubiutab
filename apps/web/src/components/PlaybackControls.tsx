@@ -102,6 +102,12 @@ export const PlaybackControls = React.memo(function PlaybackControls({
     <div className="flex flex-col gap-3 rounded-none border border-white/10 bg-zinc-900/80 px-4 py-3 shadow-xl backdrop-blur-md relative">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 px-4 hidden md:flex border-r border-white/10">
+            <div className="text-[13px] font-bold font-serif text-yellow-500 truncate max-w-[150px] tracking-widest">
+              {songTitle}
+            </div>
+          </div>
+          
           <div className="flex items-center gap-1 rounded-none bg-zinc-800/50 p-1 hidden sm:flex">
             <button
               onClick={() => onAudioSourceChange?.("midi")}
@@ -109,7 +115,7 @@ export const PlaybackControls = React.memo(function PlaybackControls({
                 audioSource === "midi" ? "bg-yellow-500 text-zinc-950 shadow-sm" : "text-zinc-400 hover:bg-zinc-700 hover:text-white"
               }`}
             >
-              MIDI伴奏
+              BiuBiu伴奏
             </button>
             <button
               onClick={() => onAudioSourceChange?.("original")}
@@ -117,7 +123,7 @@ export const PlaybackControls = React.memo(function PlaybackControls({
                 audioSource === "original" ? "bg-yellow-500 text-zinc-950 shadow-sm" : "text-zinc-400 hover:bg-zinc-700 hover:text-white"
               }`}
             >
-              源音频
+              原歌曲
             </button>
             <button
               onClick={() => onAudioSourceChange?.("no_vocals")}
@@ -125,7 +131,7 @@ export const PlaybackControls = React.memo(function PlaybackControls({
                 audioSource === "no_vocals" ? "bg-yellow-500 text-zinc-950 shadow-sm" : "text-zinc-400 hover:bg-zinc-700 hover:text-white"
               }`}
             >
-              无声伴奏
+              卡拉OK
             </button>
           </div>
 
@@ -186,12 +192,6 @@ export const PlaybackControls = React.memo(function PlaybackControls({
             >
               {loopA !== null && loopB !== null ? "清除循环" : loopA !== null ? "设置循环 B" : "设置循环 A"}
             </button>
-          </div>
-        </div>
-
-        <div className="flex items-center gap-2 px-4 hidden md:flex">
-          <div className="text-[13px] font-bold font-serif text-white/80 truncate max-w-[200px] text-right tracking-widest">
-            {songTitle}
           </div>
         </div>
       </div>

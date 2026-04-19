@@ -124,3 +124,17 @@ body {
 .chord-glow-pulse {
   animation: chordGlowPulse 1.5s infinite;
 }
+
+/* 
+  AlphaTab Cursor overrides for Practice Mode 
+  (Makes the playhead dynamic and highly visible using Yellow-500)
+*/
+.at-cursor-bar {
+  fill: rgba(234, 179, 8, 0.15) !important;
+  background: rgba(234, 179, 8, 0.15) !important;
+}
+
+.at-cursor-beat {
+  fill: rgba(234, 179, 8, 0.4) !important;
+  background: rgba(234, 179, 8, 0.4) !important;
+}

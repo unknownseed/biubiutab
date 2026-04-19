@@ -318,8 +318,8 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
             const cursorRect = cursor.getBoundingClientRect();
             const containerRect = scrollContainer.getBoundingClientRect();
             
-            // We calculate how much we need to shift the current scrollLeft to put the cursor in the center
-            const offsetToCenter = (cursorRect.left - containerRect.left) - (containerRect.width / 2) + (cursorRect.width / 2);
+            // We calculate how much we need to shift the current scrollLeft to put the cursor in the left 25%
+            const offsetToCenter = (cursorRect.left - containerRect.left) - (containerRect.width * 0.25) + (cursorRect.width / 2);
             
             const targetX = scrollContainer.scrollLeft + offsetToCenter;
             
