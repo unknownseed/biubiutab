@@ -165,9 +165,14 @@ def _a_shape(root_pc: int, quality: str) -> Optional[list[str]]:
 
 
 def chord_shape_for_label(label: str) -> Optional[ChordShape]:
+    all_shapes = chord_shapes_for_label(label, limit=1)
+    return all_shapes[0] if all_shapes else None
+
+def chord_shapes_for_label(label: str, limit: int = 5) -> list[ChordShape]:
     key = label.strip()
     if not key or key == "N":
-        return None
+        return []
+    
     # Hard constraint: keep fingerings within a 4-fret "box" (inclusive),
     # i.e. max_fret - min_fret <= 3.
     def _within_four_frets(frets_high_to_low: list[str]) -> bool:
@@ -176,33 +181,35 @@ def chord_shape_for_label(label: str) -> Optional[ChordShape]:
             return True
         return max(numeric) - min(numeric) <= 3
 
+    results = []
+    
+    # Add manual shape if it exists
     direct = _SHAPES.get(key)
     if direct and _within_four_frets(direct.frets_high_to_low):
-        return direct
+        results.append(direct)
 
     parsed = _parse_chord_label(key)
     if not parsed:
-        return None
+        return results
     root_pc, suffix, pcs, bass_pc = parsed
 
-    # Prefer low-position shapes (<= 4th fret) when possible.
-    compact = _generate_compact_shape(root_pc, pcs, span_max=3, max_fret=4, min_strings=3, bass_pc=bass_pc)
-    if compact:
-        return ChordShape(name=key, frets_high_to_low=compact)
-
-    # Fallback: allow higher positions but still keep within a 4-fret box.
-    compact = _generate_compact_shape(root_pc, pcs, span_max=3, max_fret=12, min_strings=3, bass_pc=bass_pc)
-    if compact:
-        return ChordShape(name=key, frets_high_to_low=compact)
-
+    # Add E/A shapes
     if suffix in {"", "m", "7", "maj7", "m7"}:
         e = _e_shape(root_pc, suffix)
         a = _a_shape(root_pc, suffix)
         candidates = [c for c in [e, a] if c and _within_four_frets(c)]
-        if candidates:
-            best = min(candidates, key=_score_shape)
-            return ChordShape(name=key, frets_high_to_low=best)
-    return None
+        for c in candidates:
+            # only add if not already in results
+            if not any(r.frets_high_to_low == c for r in results):
+                results.append(ChordShape(name=key, frets_high_to_low=c))
+
+    # Generate generated shapes
+    all_generated = _generate_compact_shapes_all(root_pc, pcs, span_max=3, max_fret=12, min_strings=3, bass_pc=bass_pc)
+    for score, frets in all_generated:
+        if not any(r.frets_high_to_low == frets for r in results):
+            results.append(ChordShape(name=key, frets_high_to_low=frets))
+            
+    return results[:limit]
 
 
 def _parse_chord_label(label: str) -> Optional[tuple[int, str, set[int], Optional[int]]]:
@@ -298,13 +305,13 @@ def _generate_shape_for_pitch_classes(root_pc: int, target_pcs: set[int], max_fr
     return None
 
 
-def _generate_compact_shape(root_pc: int, target_pcs: set[int], span_max: int, max_fret: int, min_strings: int, bass_pc: Optional[int] = None) -> Optional[list[str]]:
+def _generate_compact_shapes_all(root_pc: int, target_pcs: set[int], span_max: int, max_fret: int, min_strings: int, bass_pc: Optional[int] = None) -> list[tuple[tuple, list[str]]]:
     open_midis = _STANDARD_TUNING_OPEN_MIDI_HIGH_TO_LOW
 
     def pc_for(string_idx: int, fret: int) -> int:
         return (open_midis[string_idx] + fret) % 12
 
-    best: Optional[tuple[tuple[int, int, int, int], list[str]]] = None
+    results = []
 
     for start in range(0, max_fret + 1):
         per_string: list[list[Optional[int]]] = []
@@ -372,7 +379,20 @@ def _generate_compact_shape(root_pc: int, target_pcs: set[int], span_max: int, m
                                     score = (score[0] + 100, score[1], score[2], score[3], score[4])
                                 score = (score[0], score[1], score[2], score[3] + start, score[4])
 
-                                if best is None or score < best[0]:
-                                    best = (score, out)
+                                results.append((score, out))
 
-    return best[1] if best else None
+    # Remove duplicates
+    unique_results = []
+    seen = set()
+    for s, out in results:
+        key = tuple(out)
+        if key not in seen:
+            seen.add(key)
+            unique_results.append((s, out))
+            
+    unique_results.sort(key=lambda x: x[0])
+    return unique_results
+
+def _generate_compact_shape(root_pc: int, target_pcs: set[int], span_max: int, max_fret: int, min_strings: int, bass_pc: Optional[int] = None) -> Optional[list[str]]:
+    all_shapes = _generate_compact_shapes_all(root_pc, target_pcs, span_max, max_fret, min_strings, bass_pc)
+    return all_shapes[0][1] if all_shapes else None

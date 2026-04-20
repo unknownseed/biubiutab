@@ -5,10 +5,12 @@ try:
     from .formatters import SectionOut, _fallback_chord_from_key, _slice_lyrics_beats
     from .chord_shapes import chord_shape_for_label
     from .rhythm_patterns import select_pattern, _resolve_arpeggio_note, RhythmPattern, RhythmToken
+    from .voice_leading import optimize_voicings
 except ImportError:
     from formatters import SectionOut, _fallback_chord_from_key, _slice_lyrics_beats
     from chord_shapes import chord_shape_for_label
     from rhythm_patterns import select_pattern, _resolve_arpeggio_note, RhythmPattern, RhythmToken
+    from voice_leading import optimize_voicings
 
 try:
     from .pattern_engine import load_library, find_best_pattern, transplant_pattern
@@ -82,6 +84,9 @@ def generate_gp5_binary(
                 "chord": c.chord,
                 "duration_beats": ts_num  # assume each chord spans ts_num beats (1 bar)
             })
+
+    # Optimize voicings using Voice Leading / Minimum Movement
+    chords_seq = optimize_voicings(chords_seq)
 
     energy = rhythm_energy if rhythm_energy is not None else 0.5
     template_id = find_best_pattern(bpm=tempo, section_energy=energy)
@@ -209,8 +214,9 @@ def _fill_track_measures(song, track, beats, ts_num, ts_den, show_chords):
 
         if show_chords:
             chord_name = beat_data.get("chord_name")
+            voicing = beat_data.get("voicing")
             if chord_name:
-                _add_chord_to_beat(gp_beat, chord_name)
+                _add_chord_to_beat(gp_beat, chord_name, voicing)
 
         notes_added = 0
         for note_data in beat_data.get("notes", []):
@@ -257,13 +263,24 @@ def _fill_track_measures(song, track, beats, ts_num, ts_den, show_chords):
                     current_start += allowed_ticks
                     break
 
-def _add_chord_to_beat(beat, chord_name):
+def _add_chord_to_beat(beat, chord_name, voicing=None):
     from chord_shapes import chord_shape_for_label
-    shape = chord_shape_for_label(chord_name)
-    if shape:
+    
+    frets = None
+    if voicing:
+        # voicing is a dict like {1: 0, 2: 1, 3: 0, 4: 2, 5: 3, 6: -1}
+        frets = []
+        for string_idx in range(1, 7):
+            f = voicing.get(string_idx, -1)
+            frets.append("x" if f == -1 else str(f))
+    else:
+        shape = chord_shape_for_label(chord_name)
+        if shape:
+            frets = shape.frets_high_to_low
+
+    if frets:
         gp_chord = guitarpro.Chord(length=6)
         gp_chord.name = chord_name
-        frets = shape.frets_high_to_low
         
         min_fret = 99
         for f in frets:
@@ -281,6 +298,7 @@ def _add_chord_to_beat(beat, chord_name):
                     gp_chord_strings[string_idx] = int(fret_str)
                 else:
                     gp_chord_strings[string_idx] = -1
+        
         gp_chord.strings = gp_chord_strings
         beat.effect.chord = gp_chord
 
@@ -303,6 +321,15 @@ def _get_or_create_measure(song, track, idx, ts_num, ts_den):
 
 def _build_gp5_simple_binary(title, tempo, ts_num, ts_den, key, sections, lyrics_beats, rhythm_energy, song, track, intro_bars=None):
     
+    # optimize voicings for the simple fallback mode too
+    all_chords = []
+    for s in sections:
+        for c in s.chords:
+            all_chords.append({"chord": c.chord})
+    all_chords = optimize_voicings(all_chords)
+    
+    chord_idx = 0
+
     # Calculate ticks per measure based on time signature
     # In Guitar Pro, a quarter note is 960 ticks.
     measure_length_ticks = int(960 * 4 * ts_num / ts_den)
@@ -403,38 +430,8 @@ def _build_gp5_simple_binary(title, tempo, ts_num, ts_den, key, sections, lyrics
                         txt = actual_lyrics_beats[beat_idx]
                 
                 if first_beat and show_chord_name:
-                    shape = chord_shape_for_label(chord)
-                    if shape:
-                        # Add chord diagram
-                        gp_chord = guitarpro.Chord(length=6)
-                        gp_chord.name = chord
-                        
-                        frets = shape.frets_high_to_low
-                        
-                        # Calculate firstFret
-                        min_fret = 99
-                        for f in frets:
-                            if f is not None and str(f).lower() != "x" and int(f) > 0:
-                                min_fret = min(min_fret, int(f))
-                        if min_fret == 99:
-                            min_fret = 1 # all open strings or muted
-                        
-                        # Set firstFret, usually 1 for open chords, or actual fret for barres
-                        # Let's keep it simple: if the chord spans past fret 4, we might need to set firstFret
-                        # But setting firstFret = 1 and using actual absolute frets is generally safe in GP if it fits in 4 frets.
-                        # Wait, pyguitarpro expects firstFret to be a number. Default is None.
-                        gp_chord.firstFret = min_fret if min_fret > 4 else 1
-
-                        # In pyguitarpro, chord strings array usually maps index 0 -> string 1 (high E), up to length 6
-                        gp_chord_strings = [-1] * 6
-                        for string_idx, fret_str in enumerate(frets):
-                            if string_idx < 6:
-                                if fret_str is not None and str(fret_str).lower() != "x":
-                                    gp_chord_strings[string_idx] = int(fret_str)
-                                else:
-                                    gp_chord_strings[string_idx] = -1
-                        gp_chord.strings = gp_chord_strings
-                        beat.effect.chord = gp_chord
+                    voicing = all_chords[chord_idx].get("voicing")
+                    _add_chord_to_beat(beat, chord, voicing)
                 
                 if t.kind == "rest":
                     beat.status = guitarpro.BeatStatus.rest
@@ -442,7 +439,8 @@ def _build_gp5_simple_binary(title, tempo, ts_num, ts_den, key, sections, lyrics
                     beat.status = guitarpro.BeatStatus.normal
                     
                     if getattr(pattern, "is_arpeggio", False) and t.note_override:
-                        note_str = _resolve_arpeggio_note(chord, t.note_override)
+                        voicing = all_chords[chord_idx].get("voicing")
+                        note_str = _resolve_arpeggio_note(chord, t.note_override, voicing)
                         fret_str, string_str = note_str.split(".")
                         if fret_str is not None and str(fret_str).lower() != "x":
                             note = guitarpro.Note(beat)
@@ -451,14 +449,14 @@ def _build_gp5_simple_binary(title, tempo, ts_num, ts_den, key, sections, lyrics
                             beat.notes.append(note)
                     else:
                         # Strum!
-                        shape = chord_shape_for_label(chord)
-                        if shape:
-                            frets = shape.frets_high_to_low
-                            for string_idx, fret_str in enumerate(frets):
-                                if fret_str is not None and str(fret_str).lower() != "x":
+                        voicing = all_chords[chord_idx].get("voicing")
+                        if voicing:
+                            for string_idx in range(1, 7):
+                                f = voicing.get(string_idx, -1)
+                                if f >= 0:
                                     note = guitarpro.Note(beat)
-                                    note.value = int(fret_str)
-                                    note.string = string_idx + 1 # 1 to 6
+                                    note.value = f
+                                    note.string = string_idx
                                     beat.notes.append(note)
                                     
                         # add stroke effect if it's a strum pattern?
@@ -483,6 +481,7 @@ def _build_gp5_simple_binary(title, tempo, ts_num, ts_den, key, sections, lyrics
             # Update counters
             measure_number += 1
             current_start += measure_length_ticks
+            chord_idx += 1
 
     # Fallback if no sections/measures
     if not track.measures:

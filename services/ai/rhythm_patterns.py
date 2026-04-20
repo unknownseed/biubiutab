@@ -213,12 +213,21 @@ def select_pattern(bpm: int, energy: float | None = None, section_name: str = ""
     return STRUMMING_PATTERNS["folk_basic"]
 
 
-def _resolve_arpeggio_note(chord_label: str, pattern_str: str) -> str:
-    shape = chord_shape_for_label(chord_label)
-    if not shape:
+def _resolve_arpeggio_note(chord_label: str, pattern_str: str, voicing: dict = None) -> str:
+    frets = None
+    if voicing:
+        frets = []
+        for string_idx in range(1, 7):
+            f = voicing.get(string_idx, -1)
+            frets.append("x" if f == -1 else str(f))
+    else:
+        shape = chord_shape_for_label(chord_label)
+        if shape:
+            frets = shape.frets_high_to_low
+            
+    if not frets:
         return "0.1" # fallback if chord unknown
         
-    frets = shape.frets_high_to_low
     # strings: 1=e, 2=B, 3=G, 4=D, 5=A, 6=E
     # frets indices: 0=e, 1=B, 2=G, 3=D, 4=A, 5=E
     
@@ -235,11 +244,12 @@ def _resolve_arpeggio_note(chord_label: str, pattern_str: str) -> str:
     
     # other strings: "str_3" -> string 3 -> index 2
     if pattern_str.startswith("str_"):
-        s = int(pattern_str.split("_")[1])
-        f = frets[s - 1]
-        if f == "x":
-            return f"0.{s}" # fallback to open if muted
-        return f"{f}.{s}"
+        target_str = int(pattern_str.split("_")[1])
+        target_idx = target_str - 1
+        target_fret = frets[target_idx]
+        if target_fret == "x":
+            return f"0.{target_str}" # fallback to open if muted
+        return f"{target_fret}.{target_str}"
         
     return "0.1"
 

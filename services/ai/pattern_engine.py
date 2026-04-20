@@ -103,7 +103,10 @@ def _do_transplant(template_beats, chord_sequence, is_lead=False):
         chord_name = chord_info.get("chord", "C")
         duration = chord_info.get("duration_beats", 4)
         
-        target_shape = CHORD_SHAPES.get(chord_name) if not is_lead else None
+        # 优先使用经过优化（voice leading）计算出来的具体把位，如果没有则兜底拿全局 CHORD_SHAPES
+        target_shape = None
+        if not is_lead:
+            target_shape = chord_info.get("voicing") or CHORD_SHAPES.get(chord_name)
         
         if (not target_shape) and (not is_lead):
             # 未知和弦：生成简单的根音
@@ -115,6 +118,7 @@ def _do_transplant(template_beats, chord_sequence, is_lead=False):
                 }
                 if i == 0:
                     beat_dict["chord_name"] = chord_name
+                    beat_dict["voicing"] = target_shape
                 result.append(beat_dict)
             continue
             
@@ -189,6 +193,7 @@ def _do_transplant(template_beats, chord_sequence, is_lead=False):
                             }
                             if is_first_beat_of_chord:
                                 beat_dict["chord_name"] = chord_name
+                                beat_dict["voicing"] = target_shape
                                 is_first_beat_of_chord = False
                             result.append(beat_dict)
                             remaining_ticks -= allowed_ticks
@@ -229,6 +234,7 @@ def _do_transplant(template_beats, chord_sequence, is_lead=False):
             }
             if is_first_beat_of_chord:
                 beat_dict["chord_name"] = chord_name
+                beat_dict["voicing"] = target_shape
                 is_first_beat_of_chord = False
             result.append(beat_dict)
             
