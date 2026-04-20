@@ -249,6 +249,8 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
       api.settings.notation.elements.set(mod.NotationElement.EffectChordNames, false);
       api.settings.notation.elements.set(mod.NotationElement.ChordDiagrams, false);
       api.settings.notation.elements.set((mod.NotationElement as any).EffectTempo, false);
+      // Hide dynamics in practice mode
+      api.settings.notation.elements.set((mod.NotationElement as any).EffectDynamics, false);
 
       alphaTabApiRef.current = api;
 

@@ -215,6 +215,14 @@ const AlphaTabViewer = forwardRef<
             .at-surface .at, .at-surface text {
               font-family: '${fontFamily}', 'alphaTab', sans-serif !important;
             }
+            /* 微调小节数字(通常为红色)和和弦名，使其不要贴得太紧 */
+            .at-surface text {
+              transform-origin: center;
+            }
+            /* 针对红色小节数字往上微调 */
+            .at-surface text[fill="#ff0000"], .at-surface text[fill="#cc0000"] {
+              transform: translateY(-2px);
+            }
             </style>
           </head>
           <body></body>
@@ -276,14 +284,23 @@ const AlphaTabViewer = forwardRef<
         es.chordDiagramFretHeight = Math.round(es.chordDiagramFretHeight * 1.0);
         es.chordDiagramFretSpacing = Math.round(es.chordDiagramFretSpacing * 1.0);
         es.chordDiagramNutHeight = Math.round(es.chordDiagramNutHeight * 1.0);
-        es.chordDiagramPaddingY = Math.round(es.chordDiagramPaddingY * 1.0);
+        // 增加和弦图上方的垂直间距，避免和弦名字和空弦 x/o 标记重叠
+        es.chordDiagramPaddingY = Math.round(es.chordDiagramPaddingY * 1.5);
         es.chordDiagramStringSpacing = Math.round(es.chordDiagramStringSpacing * 1.0);
+
+        // 稍微调小和弦名和小节数字的字体，避免它们在 0.8 缩放的 PDF 里和弦线重叠
+        const fonts = printApi.settings.display.resources.elementFonts;
+        const chordFont = fonts.get(mod.NotationElement.EffectChordNames);
+        if (chordFont) fonts.set(mod.NotationElement.EffectChordNames, chordFont.withSize(10));
+        const barNumberFont = fonts.get(mod.NotationElement.BarNumber);
+        if (barNumberFont) fonts.set(mod.NotationElement.BarNumber, barNumberFont.withSize(9));
 
         // 隐藏不需要的元素
         printApi.settings.notation.elements.set(mod.NotationElement.GuitarTuning, false);
         // 确保不显示吉他谱中间的和弦名字（因为已经在顶部图表中显示了）
         printApi.settings.notation.elements.set(mod.NotationElement.EffectChordNames, false);
         printApi.settings.notation.elements.set((mod.NotationElement as any).EffectTempo, false);
+        printApi.settings.notation.elements.set((mod.NotationElement as any).EffectDynamics, false);
         // 强制显示顶部和弦图
         printApi.settings.notation.elements.set(mod.NotationElement.ChordDiagrams, true);
 
@@ -396,6 +413,9 @@ const AlphaTabViewer = forwardRef<
       api.settings.notation.elements.set((mod.NotationElement as any).GuitarTabsTimeSignature, false);
       api.settings.notation.elements.set((mod.NotationElement as any).SlashTimeSignature, false);
       api.settings.notation.elements.set((mod.NotationElement as any).NumberedTimeSignature, false);
+
+      // Hide dynamic marks (f, mf, p, etc) as we are injecting a lot of humanization velocity changes
+      api.settings.notation.elements.set((mod.NotationElement as any).EffectDynamics, false);
 
       // Spacing tweaks:
       // - Make section markers slightly smaller to reduce collision with chord names.

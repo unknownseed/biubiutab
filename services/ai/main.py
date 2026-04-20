@@ -551,6 +551,8 @@ async def _run_job(job_id: str) -> None:
             intro_bars=intro_bars,
             lyrics_beats=lyrics_beats,
             rhythm_energy=rhythm_energy,
+            accompaniment_path=str(upload_copy),
+            beat_times=[float(x) for x in getattr(analysis, "beat_times", [])] if analysis else []
         )
 
         # Write results artifacts under storage/results/{job_id}/

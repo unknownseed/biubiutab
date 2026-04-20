@@ -12,8 +12,10 @@ except ImportError:
 
 try:
     from .pattern_engine import load_library, find_best_pattern, transplant_pattern
+    from .style_fuser import StyleFuser
 except ImportError:
     from pattern_engine import load_library, find_best_pattern, transplant_pattern
+    from style_fuser import StyleFuser
 
 # Initialize pattern library
 load_library()
@@ -41,6 +43,8 @@ def generate_gp5_binary(
     lyrics_beats: list[str | None] | None = None,
     rhythm_energy: float | None = None,
     intro_bars: dict = None,
+    accompaniment_path: str | None = None,
+    beat_times: list[float] | None = None,
 ) -> bytes:
     song = guitarpro.Song()
     song.tracks.clear()
@@ -85,6 +89,13 @@ def generate_gp5_binary(
     if template_id and chords_seq:
         # ── Step 2: Transplant pattern ──────────────────────────────────────
         result = transplant_pattern(template_id, chords_seq)
+        
+        # ── Step 2.5: Apply Style Fuser (Humanization & Dynamics) ───────────
+        if accompaniment_path and beat_times:
+            fuser = StyleFuser(accompaniment_path, beat_times)
+            result["rhythm_beats"] = fuser.fuse(result["rhythm_beats"], 0)
+            if result.get("lead_beats"):
+                result["lead_beats"] = fuser.fuse(result["lead_beats"], 0)
 
         # ── Step 3: Build GP5 from beats ────────────────────────────────────
         song_obj = _build_gp5_from_beats(
@@ -209,9 +220,14 @@ def _fill_track_measures(song, track, beats, ts_num, ts_den, show_chords):
                 note = guitarpro.Note(gp_beat)
                 note.string = string_val
                 note.value = fret_val
-                # 统一 velocity，防止 AlphaTab 渲染大量 f, mf 动态符号
-                note.velocity = 95
+                # Use velocity from beat data (allows StyleFuser to humanize and add dynamics)
+                note.velocity = beat_data.get("velocity", 95)
                 note.type = guitarpro.NoteType.normal
+                
+                # Check for accent
+                if beat_data.get("effects", {}).get("accent"):
+                    note.effect.accentuatedNote = True
+
                 gp_beat.notes.append(note)
                 notes_added += 1
 
