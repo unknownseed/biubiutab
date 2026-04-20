@@ -6,11 +6,13 @@ try:
     from .chord_shapes import chord_shape_for_label
     from .rhythm_patterns import select_pattern, _resolve_arpeggio_note, RhythmPattern, RhythmToken
     from .voice_leading import optimize_voicings
+    from .motif_detector import extract_rhythm_motif
 except ImportError:
     from formatters import SectionOut, _fallback_chord_from_key, _slice_lyrics_beats
     from chord_shapes import chord_shape_for_label
     from rhythm_patterns import select_pattern, _resolve_arpeggio_note, RhythmPattern, RhythmToken
     from voice_leading import optimize_voicings
+    from motif_detector import extract_rhythm_motif
 
 try:
     from .pattern_engine import load_library, find_best_pattern, transplant_pattern
@@ -89,7 +91,22 @@ def generate_gp5_binary(
     chords_seq = optimize_voicings(chords_seq)
 
     energy = rhythm_energy if rhythm_energy is not None else 0.5
-    template_id = find_best_pattern(bpm=tempo, section_energy=energy)
+    
+    # ── Try to extract Motif from audio (Soul Riff preservation) ──────────
+    motif_template_beats = None
+    if accompaniment_path and beat_times:
+        motif_template_beats = extract_rhythm_motif(accompaniment_path, beat_times, ts_num)
+        
+    if motif_template_beats:
+        template_id = {
+            "is_dual": False,
+            "layers": {
+                "rhythm": motif_template_beats
+            }
+        }
+        print("[AI] Extracted and applied motif rhythm skeleton from original audio.")
+    else:
+        template_id = find_best_pattern(bpm=tempo, section_energy=energy)
 
     if template_id and chords_seq:
         # ── Step 2: Transplant pattern ──────────────────────────────────────

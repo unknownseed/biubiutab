@@ -67,13 +67,18 @@ def find_best_pattern(bpm, section_energy=0.5):
         
     return best_id
 
-def transplant_pattern(template_id, chord_sequence):
+def transplant_pattern(template_id_or_dict, chord_sequence):
     """
     将模板的节奏骨架移植到用户的和弦序列上。
+    template_id_or_dict 可以是模板的文件名（如 "pop_01"），
+    也可以是直接提取出的 Motif 模板字典。
     """
-    pattern_path = os.path.join(LIBRARY_DIR, "patterns", f"{template_id}.json")
-    with open(pattern_path, 'r', encoding='utf-8') as f:
-        template = json.load(f)
+    if isinstance(template_id_or_dict, str):
+        pattern_path = os.path.join(LIBRARY_DIR, "patterns", f"{template_id_or_dict}.json")
+        with open(pattern_path, 'r', encoding='utf-8') as f:
+            template = json.load(f)
+    else:
+        template = template_id_or_dict
         
     # 移植 Rhythm 层（永远执行）
     rhythm_template = template.get("layers", {}).get("rhythm", [])
