@@ -99,6 +99,9 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
   const [countdown, setCountdown] = useState<number | null>(null);
   const countdownTimerRef = useRef<NodeJS.Timeout | null>(null);
 
+  const [tracks, setTracks] = useState<{name: string, index: number}[]>([]);
+  const [activeTrackIndex, setActiveTrackIndex] = useState(0);
+
   // Audio source selection: 'midi', 'original', 'no_vocals'
   const [audioSource, setAudioSource] = useState<"midi" | "original" | "no_vocals">("midi");
   const audioRef = useRef<HTMLAudioElement | null>(null);
@@ -268,6 +271,13 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
       }
 
       api.scoreLoaded?.on?.((score: any) => {
+        const scoreTracks = score.tracks.map((t: any, i: number) => ({ name: t.name || `Track ${i + 1}`, index: i }));
+        setTracks(scoreTracks);
+        setActiveTrackIndex(0);
+        if (score.tracks?.[0]) {
+          api.renderTracks([score.tracks[0]]);
+        }
+        
         score.tracks.forEach((t: any) => {
           if (t.playbackInfo) {
             t.playbackInfo.program = 25; // 25 = Steel string guitar in GM
@@ -485,6 +495,42 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
     return destroyEngine;
   }, []);
 
+  useEffect(() => {
+    const api = alphaTabApiRef.current;
+    if (!api) return;
+    try {
+      setTracks([]);
+      setActiveTrackIndex(0);
+      if (api.playerState === 1) {
+        api.playPause();
+      }
+      api.timePosition = 0;
+      let ok = false;
+      try {
+        ok = api.load(gp5Data);
+      } catch {
+        ok = false;
+      }
+      if (!ok) {
+        for (let i = 1; i <= 4; i++) {
+          try {
+            if (api.load(gp5Data, [i])) {
+              ok = true;
+              break;
+            }
+          } catch {
+            continue;
+          }
+        }
+      }
+      if (!ok) {
+        setPlayerError("谱例加载失败");
+      } else {
+        setPlayerError(null);
+      }
+    } catch {}
+  }, [gp5Data]);
+
   const handlePlayPause = () => {
     if (USE_TONE_JS) {
       guitarSamplerRef.current?.startAudioContext();
@@ -677,6 +723,37 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
     });
   }, [chordBlocks, practiceData?.lyrics]);
 
+  const activeTrackIndexRef = useRef(activeTrackIndex);
+  useEffect(() => {
+    activeTrackIndexRef.current = activeTrackIndex;
+  }, [activeTrackIndex]);
+
+  useEffect(() => {
+    if (alphaTabApiRef.current && alphaTabApiRef.current.score) {
+      const track = alphaTabApiRef.current.score.tracks[activeTrackIndex];
+      if (track) {
+        // Correct API for AlphaTab to change visible tracks
+        alphaTabApiRef.current.renderTracks([track]);
+        
+        // After changing track, AlphaTab might recalculate layout or cursor position.
+        // We should preserve the current time position.
+        const currentMs = currentTime * 1000;
+        // Small delay to allow render to complete before forcing position update
+        setTimeout(() => {
+          if (alphaTabApiRef.current) {
+            alphaTabApiRef.current.timePosition = currentMs;
+            if (alphaTabApiRef.current.playerState !== 1 && (alphaTabApiRef.current as any)._forceUpdateCursor) {
+              (alphaTabApiRef.current as any)._forceUpdateCursor();
+            }
+            if ((alphaTabApiRef.current as any)._syncScrollToCursor) {
+              (alphaTabApiRef.current as any)._syncScrollToCursor();
+            }
+          }
+        }, 50);
+      }
+    }
+  }, [activeTrackIndex]);
+
   const displayTitle = songTitle || practiceData?.metadata?.title || practiceData?.title || "未知曲目";
 
   // Find current chord
@@ -713,6 +790,23 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
       ) : null}
 
       <div className="flex flex-col gap-6">
+        {tracks.length > 1 && (
+          <div className="flex gap-2 mb-[-8px]">
+            {tracks.map(t => (
+              <button
+                key={t.index}
+                onClick={() => setActiveTrackIndex(t.index)}
+                className={`px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
+                  activeTrackIndex === t.index 
+                    ? 'bg-zinc-100 text-zinc-900 shadow-sm' 
+                    : 'bg-zinc-800/50 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 border border-zinc-800/50'
+                }`}
+              >
+                {t.name}
+              </button>
+            ))}
+          </div>
+        )}
         <div className="flex flex-col md:flex-row gap-4 items-stretch h-auto md:h-[160px]">
           <div className="flex-shrink-0 flex items-center justify-center bg-zinc-900 border border-zinc-800 p-4 md:w-[160px] rounded-none">
             <LargeChordDiagram chord={currentChordBlock?.chord || "N"} />

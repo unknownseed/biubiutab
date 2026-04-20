@@ -1,6 +1,9 @@
 import os
 import json
-from .chord_shapes import _SHAPES
+try:
+    from .chord_shapes import _SHAPES
+except ImportError:
+    from chord_shapes import _SHAPES
 
 LIBRARY_DIR = os.path.join(os.path.dirname(__file__), "pattern_library")
 _INDEX_CACHE = None
@@ -74,13 +77,13 @@ def transplant_pattern(template_id, chord_sequence):
         
     # 移植 Rhythm 层（永远执行）
     rhythm_template = template.get("layers", {}).get("rhythm", [])
-    rhythm_beats = _do_transplant(rhythm_template, chord_sequence)
+    rhythm_beats = _do_transplant(rhythm_template, chord_sequence, is_lead=False)
     
     # 移植 Lead 层（如果有）
     lead_beats = []
     if template.get("layers", {}).get("lead"):
         lead_template = template["layers"]["lead"]
-        lead_beats = _do_transplant(lead_template, chord_sequence)
+        lead_beats = _do_transplant(lead_template, chord_sequence, is_lead=True)
         
     return {
         "rhythm_beats": rhythm_beats,
@@ -88,7 +91,7 @@ def transplant_pattern(template_id, chord_sequence):
         "is_dual": template.get("is_dual", False)
     }
 
-def _do_transplant(template_beats, chord_sequence):
+def _do_transplant(template_beats, chord_sequence, is_lead=False):
     if not template_beats:
         return []
         
@@ -100,47 +103,135 @@ def _do_transplant(template_beats, chord_sequence):
         chord_name = chord_info.get("chord", "C")
         duration = chord_info.get("duration_beats", 4)
         
-        target_shape = CHORD_SHAPES.get(chord_name)
+        target_shape = CHORD_SHAPES.get(chord_name) if not is_lead else None
         
-        if not target_shape:
+        if (not target_shape) and (not is_lead):
             # 未知和弦：生成简单的根音
-            for _ in range(duration * 2):
-                result.append({
+            for i in range(duration * 2):
+                beat_dict = {
                     "duration": 8,
                     "notes": [{"string": 5, "fret": 0}],
                     "velocity": 80
-                })
+                }
+                if i == 0:
+                    beat_dict["chord_name"] = chord_name
+                result.append(beat_dict)
             continue
             
-        beats_needed = duration * 2
+        target_ticks = duration * 960
+        current_ticks = 0
+        is_first_beat_of_chord = True
         
-        for i in range(beats_needed):
-            t_beat = template_beats[beat_index % template_length]
+        # 兼容字典格式的模板（有些旧模板可能是一个字典而不是数组）
+        if isinstance(template_beats, dict):
+            # 定义音乐段落的合理先后顺序
+            order_map = {
+                "intro": 0,
+                "verse": 1,
+                "pre_chorus": 2,
+                "pre-chorus": 2,
+                "chorus": 3,
+                "bridge": 4,
+                "outro": 5
+            }
+            
+            def get_order(k):
+                k_lower = k.lower()
+                for key_name, score in order_map.items():
+                    if key_name in k_lower:
+                        return score
+                return 99 # 未知段落放在最后
+
+            t_keys = sorted(list(template_beats.keys()), key=get_order)
+            if not t_keys:
+                continue
+            
+            # 为了最简单的兼容，我们直接把所有段落的 beats 拍平合并成一个长数组
+            flat_beats = []
+            for k in t_keys:
+                flat_beats.extend(template_beats[k])
+                
+            if not flat_beats:
+                continue
+                
+            template_length = len(flat_beats)
+            def get_t_beat(idx):
+                return flat_beats[idx % template_length]
+        else:
+            template_length = len(template_beats)
+            def get_t_beat(idx):
+                return template_beats[idx % template_length]
+        
+        while current_ticks < target_ticks:
+            t_beat = get_t_beat(beat_index)
             beat_index += 1
+            
+            beat_duration = t_beat.get("duration", 8)
+            beat_ticks = int(960 * 4 / beat_duration)
+            
+            # 如果加上这个音符超过了目标长度，我们就只取能放得下的部分
+            if current_ticks + beat_ticks > target_ticks:
+                remaining_ticks = target_ticks - current_ticks
+                if remaining_ticks <= 0:
+                    break
+                
+                # 把剩下的 ticks 拆分成合法的 duration 填进去
+                # 贪心算法：每次填入最大的合法 duration
+                while remaining_ticks > 0:
+                    # 允许的 ticks (960*4/d): 3840(1), 1920(2), 960(4), 480(8), 240(16), 120(32), 60(64)
+                    for allowed_duration in [1, 2, 4, 8, 16, 32, 64]:
+                        allowed_ticks = int(960 * 4 / allowed_duration)
+                        if allowed_ticks <= remaining_ticks:
+                            beat_dict = {
+                                "duration": allowed_duration,
+                                "notes": [], # 超过部分的截断直接用休止符填补，最安全
+                                "velocity": 80
+                            }
+                            if is_first_beat_of_chord:
+                                beat_dict["chord_name"] = chord_name
+                                is_first_beat_of_chord = False
+                            result.append(beat_dict)
+                            remaining_ticks -= allowed_ticks
+                            current_ticks += allowed_ticks
+                            break
+                break
             
             new_notes = []
             for t_note in t_beat.get("notes", []):
                 string_num = t_note["string"]
-                target_fret = target_shape.get(string_num, -1)
                 
-                if target_fret < 0:
-                    continue
-                    
-                new_notes.append({
-                    "string": string_num,
-                    "fret": target_fret
-                })
+                if is_lead:
+                    # 主音轨道：直接保留原有的品位，不套用和弦指法
+                    new_notes.append({
+                        "string": string_num,
+                        "fret": t_note["fret"]
+                    })
+                else:
+                    target_fret = target_shape.get(string_num, -1)
+                    if target_fret < 0:
+                        continue
+                        
+                    new_notes.append({
+                        "string": string_num,
+                        "fret": target_fret
+                    })
                 
-            if not new_notes:
+            if not new_notes and not is_lead:
                 for s in [5, 6, 4]:
                     if target_shape.get(s, -1) >= 0:
                         new_notes.append({"string": s, "fret": target_shape[s]})
                         break
                         
-            result.append({
-                "duration": t_beat.get("duration", 8),
+            beat_dict = {
+                "duration": beat_duration,
                 "notes": new_notes,
                 "velocity": t_beat.get("velocity", 85)
-            })
+            }
+            if is_first_beat_of_chord:
+                beat_dict["chord_name"] = chord_name
+                is_first_beat_of_chord = False
+            result.append(beat_dict)
+            
+            current_ticks += beat_ticks
             
     return result

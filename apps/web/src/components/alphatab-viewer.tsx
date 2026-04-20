@@ -4,8 +4,7 @@ import { forwardRef, useEffect, useImperativeHandle, useMemo, useRef, useState }
 
 export type AlphaTabViewerHandle = {
   exportSvg: () => Promise<void>;
-  exportPng: () => Promise<void>;
-  printPdf: () => Promise<void>;
+  printPdf: (w: Window | null) => Promise<void>;
 };
 
 function safeFilename(name: string): string {
@@ -18,8 +17,10 @@ function downloadBlob(filename: string, blob: Blob) {
   const a = document.createElement("a");
   a.href = url;
   a.download = filename;
+  document.body.appendChild(a);
   a.click();
-  URL.revokeObjectURL(url);
+  a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 5000);
 }
 
 let bravuraFontDataUrlCache: string | null = null;
@@ -27,9 +28,12 @@ let bravuraFontDataUrlCache: string | null = null;
 async function getBravuraFontDataUrl(): Promise<string> {
   if (bravuraFontDataUrlCache) return bravuraFontDataUrlCache;
   try {
-    const res = await fetch("/alphatab/font/Bravura.woff2");
+    // We use woff instead of woff2 because some browsers (Safari) block woff2 (Brotli) in Canvas SVG context
+    const res = await fetch("/alphatab/font/Bravura.woff");
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
-    const blob = await res.blob();
+    
+    const buffer = await res.arrayBuffer();
+    const blob = new Blob([buffer], { type: "font/woff" });
     
     // 转换为 Base64
     const dataUrl = await new Promise<string>((resolve, reject) => {
@@ -47,62 +51,12 @@ async function getBravuraFontDataUrl(): Promise<string> {
   }
 }
 
-async function serializeSvgAsync(svg: SVGSVGElement): Promise<string> {
-  const clone = svg.cloneNode(true) as SVGSVGElement;
-  if (!clone.getAttribute("xmlns")) clone.setAttribute("xmlns", "http://www.w3.org/2000/svg");
-  if (!clone.getAttribute("xmlns:xlink")) clone.setAttribute("xmlns:xlink", "http://www.w3.org/1999/xlink");
-
-  // 将字体以 Base64 内联注入到 SVG 的顶部
-  const fontDataUrl = await getBravuraFontDataUrl();
-  if (fontDataUrl) {
-    const style = document.createElement("style");
-    // AlphaTab dynamically registers the font family as 'alphaTab'
-    style.textContent = `
-      @font-face {
-        font-family: 'alphaTab';
-        src: url('${fontDataUrl}') format('woff2');
-        font-weight: normal;
-        font-style: normal;
-      }
-    `;
-    clone.prepend(style);
-  }
-
-  const serializer = new XMLSerializer();
-  return serializer.serializeToString(clone);
-}
-
-async function svgToPngBlob(svgText: string, width: number, height: number, scale: number): Promise<Blob> {
-  const svgBlob = new Blob([svgText], { type: "image/svg+xml;charset=utf-8" });
-  const svgUrl = URL.createObjectURL(svgBlob);
-  try {
-    const img = new Image();
-    img.decoding = "async";
-    await new Promise<void>((resolve, reject) => {
-      img.onload = () => resolve();
-      img.onerror = () => reject(new Error("SVG rasterize failed"));
-      img.src = svgUrl;
-    });
-    const canvas = document.createElement("canvas");
-    canvas.width = Math.max(1, Math.round(width * scale));
-    canvas.height = Math.max(1, Math.round(height * scale));
-    const ctx = canvas.getContext("2d");
-    if (!ctx) throw new Error("Canvas not supported");
-    ctx.setTransform(scale, 0, 0, scale, 0, 0);
-    ctx.drawImage(img, 0, 0);
-    const blob = await new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("PNG export failed"))), "image/png");
-    });
-    return blob;
-  } finally {
-    URL.revokeObjectURL(svgUrl);
-  }
-}
+      // No need to inject fonts, removing the unused function
 
 const BARS_PER_PAGE = 20;
 const BARS_PER_ROW = 4;
 
-const PRELOAD_FONTS = ["Bravura.woff2"];
+const PRELOAD_FONTS = ["Bravura.woff", "Bravura.woff2"];
 let fontsPreloaded = false;
 let preloadPromise: Promise<void> | null = null;
 
@@ -162,17 +116,6 @@ const AlphaTabViewer = forwardRef<
   const [error, setError] = useState<string | null>(null);
   const modRef = useRef<typeof import("@coderline/alphatab") | null>(null);
 
-  // Instead of counting bars from a tex string, we use 1 for now or ask alphatab after load
-  // We'll manage pagination differently or default to showing everything if we can't count bars easily
-  const [totalBars, setTotalBars] = useState<number>(1);
-  const pageCount = useMemo(() => Math.max(1, Math.ceil(totalBars / BARS_PER_PAGE)), [totalBars]);
-  const [page, setPage] = useState<number>(1);
-  useEffect(() => setPage(1), [data]);
-
-  const pageStartBar = useMemo(() => (page - 1) * BARS_PER_PAGE + 1, [page]);
-  const pageEndBar = useMemo(() => Math.min(totalBars, page * BARS_PER_PAGE), [page, totalBars]);
-  const pageBarRange = useMemo(() => `小节 ${pageStartBar}–${pageEndBar}`, [pageStartBar, pageEndBar]);
-
   const displayTitle = useMemo(() => {
     const base = stripAudioExt(titleText || filename || "score");
     return base || "score";
@@ -193,63 +136,187 @@ const AlphaTabViewer = forwardRef<
     ref,
     () => ({
       exportSvg: async () => {
-        const el = wrapperRef.current;
-        if (!el) return;
-        const svg = el.querySelector("svg");
+        const svg = wrapperRef.current?.querySelector("svg");
         if (!svg) throw new Error("未找到可导出的谱面");
         const base = safeFilename(filename || "score");
-        const svgStr = await serializeSvgAsync(svg);
+        const serializer = new XMLSerializer();
+        const svgStr = serializer.serializeToString(svg);
         const out = new Blob([svgStr], { type: "image/svg+xml;charset=utf-8" });
-        downloadBlob(`${base}_p${page}.svg`, out);
+        downloadBlob(`${base}.svg`, out);
       },
-      exportPng: async () => {
-        const el = wrapperRef.current;
-        if (!el) return;
-        const svg = el.querySelector("svg");
-        if (!svg) throw new Error("未找到可导出的谱面");
-        const base = safeFilename(filename || "score");
-        const rect = svg.getBoundingClientRect();
-        const width = rect.width || 1200;
-        const height = rect.height || 800;
-        const svgStr = await serializeSvgAsync(svg);
-        const blob = await svgToPngBlob(svgStr, width, height, 2);
-        downloadBlob(`${base}_p${page}.png`, blob);
-      },
-      printPdf: async () => {
-        const el = wrapperRef.current;
-        if (!el) return;
-        const svg = el.querySelector("svg");
-        if (!svg) throw new Error("未找到可导出的谱面");
-        const svgStr = await serializeSvgAsync(svg);
-        const html = `
-<!doctype html>
-<html>
-<head>
-  <meta charset="utf-8" />
-  <title>${safeFilename(filename || "score")}</title>
-  <style>
-    @page { margin: 12mm; }
-    body { margin: 0; padding: 0; }
-    .pageHeader { font: 12px/1.4 system-ui, -apple-system, Segoe UI, Roboto, sans-serif; color: #111; margin: 0 0 6mm; display: flex; justify-content: space-between; }
-    svg { width: 100%; height: auto; }
-  </style>
-</head>
-<body>
-  <div class="pageHeader"><div>第 ${page} / ${pageCount} 页</div><div>${pageBarRange}</div></div>
-  ${svgStr}
-  <script>
-    window.onload = () => { window.focus(); window.print(); };
-  </script>
-</body>
-</html>`;
-        const w = window.open("", "_blank");
+      printPdf: async (w: Window | null) => {
         if (!w) throw new Error("无法打开打印窗口");
-        w.document.open();
-        w.document.write(html);
+
+        const mod = await import("@coderline/alphatab");
+        const currentApi = apiRef.current;
+        if (!currentApi || !currentApi.score) {
+          w.close();
+          throw new Error("谱面尚未加载");
+        }
+
+        const fontFamily = currentApi.settings?.display?.resources?.smuflFontFamilyName || "alphaTab";
+        const fontDataUrl = await getBravuraFontDataUrl();
+
+        // 提取当前页面的所有 AlphaTab 样式
+        let globalStyles = "";
+        document.querySelectorAll("style").forEach((s) => {
+          if (s.textContent?.includes(".at-surface") || s.id.startsWith("alphaTab")) {
+            let cleanCss = s.textContent || "";
+            cleanCss = cleanCss.replace(/@font-face\s*{[^}]*}/g, "");
+            globalStyles += cleanCss + "\n";
+          }
+        });
+
+        const fontStyle = fontDataUrl
+          ? `
+@font-face {
+  font-family: '${fontFamily}';
+  src: url('${fontDataUrl}') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'alphaTab';
+  src: url('${fontDataUrl}') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+`
+          : "";
+
+        // 写入与 AlphaTab 原生 print() 完全一致的 HTML 结构，并加入我们的字体和样式修复
+        w.document.write(`
+        <!DOCTYPE html>
+        <html>
+          <head>
+            <title>${safeFilename(filename || "score")}</title>
+            <style>
+            ${fontStyle}
+            ${globalStyles}
+            /* AlphaTab 原生打印防重叠/分页修复 */
+            .at-surface {
+                width: auto !important;
+                height: auto !important;
+            }
+            .at-surface > div {
+                position: relative !important;
+                left: auto !important;
+                top: auto !important;
+                break-inside: avoid;
+                page-break-inside: avoid;
+            }
+            /* 保证打印机线条清晰 */
+            @media print {
+              svg path, svg line {
+                vector-effect: non-scaling-stroke;
+              }
+            }
+            /* 强制应用字体 */
+            .at-surface .at, .at-surface text {
+              font-family: '${fontFamily}', 'alphaTab', sans-serif !important;
+            }
+            </style>
+          </head>
+          <body></body>
+        </html>
+        `);
         w.document.close();
+
+        // 在打印窗口中创建一个 A4 宽度的容器
+        const a4 = w.document.createElement('div');
+        a4.style.width = '210mm';
+        w.document.body.appendChild(a4);
+
+        // 创建全新干净的 AlphaTab 配置，避免深拷贝导致的 Map 对象丢失 (m.get is not a function 错误)
+        const printSettings = {
+          core: {
+            engine: "svg",
+            fontDirectory: "/alphatab/font/",
+            useWorkers: false, // 避免打印窗口产生跨域 Worker 问题
+            enableLazyLoading: false, // 强制渲染所有页
+            logLevel: mod.LogLevel.None,
+            file: null,
+            tracks: null,
+          },
+          player: {
+            enablePlayer: false,
+            enableCursor: false,
+            playerMode: mod.PlayerMode.Disabled,
+            enableElementHighlighting: false,
+            enableUserInteraction: false,
+            soundFont: null,
+          },
+          display: {
+            scale: 0.8, // 缩小一点以适应 A4 纸
+            stretchForce: 0.8,
+            layoutMode: mod.LayoutMode.Page,
+            staveProfile: mod.StaveProfile.Tab,
+            barsPerRow: BARS_PER_ROW,
+            padding: [20, 0, 0, 0],
+          },
+          importer: {
+            beatTextAsLyrics: true,
+          },
+          stylesheet: {
+            // 将和弦图统一放置在谱子最上方
+            globalDisplayChordDiagramsOnTop: true,
+            globalDisplayChordDiagramsInScore: false,
+          },
+          notation: {
+            rhythmMode: mod.TabRhythmMode.ShowWithBars,
+          },
+        };
+
+        // 初始化打印专用的 AlphaTab 实例
+        const printApi = new mod.AlphaTabApi(a4, printSettings as any);
+
+        // 覆盖特定间距微调（修复 PDF 中的拥挤问题，去掉原本为了省空间加的缩放参数）
+        const es = printApi.settings.display.resources.engravingSettings;
+        // 恢复默认，或稍微放大以保证清晰
+        es.chordDiagramFretHeight = Math.round(es.chordDiagramFretHeight * 1.0);
+        es.chordDiagramFretSpacing = Math.round(es.chordDiagramFretSpacing * 1.0);
+        es.chordDiagramNutHeight = Math.round(es.chordDiagramNutHeight * 1.0);
+        es.chordDiagramPaddingY = Math.round(es.chordDiagramPaddingY * 1.0);
+        es.chordDiagramStringSpacing = Math.round(es.chordDiagramStringSpacing * 1.0);
+
+        // 隐藏不需要的元素
+        printApi.settings.notation.elements.set(mod.NotationElement.GuitarTuning, false);
+        // 确保不显示吉他谱中间的和弦名字（因为已经在顶部图表中显示了）
+        printApi.settings.notation.elements.set(mod.NotationElement.EffectChordNames, false);
+        printApi.settings.notation.elements.set((mod.NotationElement as any).EffectTempo, false);
+        // 强制显示顶部和弦图
+        printApi.settings.notation.elements.set(mod.NotationElement.ChordDiagrams, true);
+
+        // 监听渲染完成事件
+        let isPrinted = false;
+        printApi.postRenderFinished.on(() => {
+          if (isPrinted) return;
+          isPrinted = true;
+          // 给字体加载和浏览器排版留一点时间
+          setTimeout(() => {
+            w.focus();
+            w.print();
+          }, 500);
+        });
+
+        printApi.error.on((e: any) => {
+          console.error("Print rendering failed:", e);
+          if (!isPrinted) {
+            isPrinted = true;
+            w.close();
+          }
+        });
+
+        w.onunload = () => {
+          printApi.destroy();
+        };
+
+        // 仅渲染用户当前正在查看的轨道（避免同时渲染两轨导致极其拥挤）
+        const trackIndices = currentApi.tracks.map((t: any) => t.index);
+        printApi.renderScore(currentApi.score, trackIndices);
       },
     }),
-    [filename, page, pageBarRange, pageCount]
+    [filename]
   );
 
   const retryTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -282,26 +349,24 @@ const AlphaTabViewer = forwardRef<
         core: {
           engine: "svg",
           fontDirectory: "/alphatab/font/",
-          scriptFile: new URL("/alphatab/alphaTab.js", window.location.href).toString(),
           useWorkers: false,
           logLevel: mod.LogLevel.None,
+          enableLazyLoading: false,
         },
         player: { enablePlayer: false },
         display: {
           scale: 1.0,
           layoutMode: mod.LayoutMode.Page,
-          // Show only TAB (to match Practice Mode and keep it clean/beginner-friendly)
           staveProfile: mod.StaveProfile.Tab,
           barsPerRow: BARS_PER_ROW,
-          startBar: pageStartBar,
-          barCount: BARS_PER_PAGE,
-          // Add top padding to prevent bottomY crashes when chord diagrams or sections are rendered above the stave.
+          // Add padding to avoid cut off
           padding: [20, 0, 0, 0],
         },
         importer: {
           beatTextAsLyrics: true,
         },
         stylesheet: {
+          // 将和弦图(网格)统一放置在谱子最上方，而不在谱表中间显示，避免拥挤
           globalDisplayChordDiagramsOnTop: true,
           globalDisplayChordDiagramsInScore: false,
         },
@@ -340,15 +405,8 @@ const AlphaTabViewer = forwardRef<
       }
       const chordNameFont = api.settings.display.resources.elementFonts.get(mod.NotationElement.EffectChordNames);
       if (chordNameFont) {
-        api.settings.display.resources.elementFonts.set(mod.NotationElement.EffectChordNames, chordNameFont.withSize(11));
+        api.settings.display.resources.elementFonts.set(mod.NotationElement.EffectChordNames, chordNameFont.withSize(12));
       }
-      // Make chord diagrams a bit more compact (visually closer to a 4-fret box).
-      const es = api.settings.display.resources.engravingSettings;
-      es.chordDiagramFretHeight = Math.round(es.chordDiagramFretHeight * 0.7);
-      es.chordDiagramFretSpacing = Math.round(es.chordDiagramFretSpacing * 0.7);
-      es.chordDiagramNutHeight = Math.round(es.chordDiagramNutHeight * 0.7);
-      es.chordDiagramPaddingY = Math.round(es.chordDiagramPaddingY * 0.8);
-      es.chordDiagramStringSpacing = Math.round(es.chordDiagramStringSpacing * 0.85);
 
       // Hide the "chord diagram list" that alphaTab usually shows near the score title area.
       // Wait, the user specifically requested "请将和弦图一次放在谱例的上方" (Please put the chord diagrams once at the top of the score)
@@ -368,14 +426,10 @@ const AlphaTabViewer = forwardRef<
       
       api.scoreLoaded.on((score: any) => {
         if (cancelled) return;
-        let maxBars = 0;
-        // Simple logic to count the total bars in the score
-        for (const track of score.tracks) {
-          if (track.staves && track.staves.length > 0 && track.staves[0].bars) {
-             maxBars = Math.max(maxBars, track.staves[0].bars.length);
-          }
+        // Render all tracks in the professional score view
+        if (score.tracks && score.tracks.length > 1) {
+          api.renderTracks(score.tracks);
         }
-        if (maxBars > 0) setTotalBars(maxBars);
       });
 
       apiRef.current = api as any;
@@ -434,7 +488,7 @@ const AlphaTabViewer = forwardRef<
       }
       destroyApi();
     };
-  }, [data, page, pageStartBar]);
+  }, [data]);
 
   return (
     <div className="flex w-full flex-col gap-2">
@@ -462,31 +516,10 @@ const AlphaTabViewer = forwardRef<
             <div className="text-xs leading-relaxed text-zinc-600">{arrangementText}</div>
           ) : null}
 
-          <div className="mt-2 overflow-auto rounded-md border border-zinc-100 bg-white">
+          {/* The main score container. overflow-visible and h-auto to ensure all pages render without lazy loading cutoff */}
+          {/* We set minHeight to ensure it can expand when we force render */}
+          <div className="mt-2 overflow-visible min-h-screen h-auto rounded-md border border-zinc-100 bg-white">
             <div ref={pageRef} />
-          </div>
-
-          {/* Pagination moved to bottom for better UX */}
-          <div className="flex items-center justify-between gap-2 pt-3">
-            <div className="text-xs text-zinc-600">{`第 ${page} / ${pageCount} 页 · ${pageBarRange}`}</div>
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 disabled:opacity-50"
-                onClick={() => setPage((p) => Math.max(1, p - 1))}
-                disabled={page <= 1}
-              >
-                上一页
-              </button>
-              <button
-                type="button"
-                className="rounded-md border border-zinc-300 bg-white px-3 py-1.5 text-sm font-medium text-zinc-900 disabled:opacity-50"
-                onClick={() => setPage((p) => Math.min(pageCount, p + 1))}
-                disabled={page >= pageCount}
-              >
-                下一页
-              </button>
-            </div>
           </div>
         </div>
       </div>

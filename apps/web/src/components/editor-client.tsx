@@ -178,26 +178,32 @@ export default function EditorClient({ jobId }: { jobId: string }) {
               >
                 下载 GP5
               </button>
-              <button
-                type="button"
-                className="block w-full px-4 py-3 text-left text-sm font-serif tracking-widest text-ink-800 hover:bg-paper-100 transition-colors border-t border-paper-200"
-                onClick={() => {
-                  void viewerRef.current?.exportPng();
-                  setDownloadOpen(false);
-                }}
-              >
-                导出图片（PNG）
-              </button>
-              <button
-                type="button"
-                className="block w-full px-4 py-3 text-left text-sm font-serif tracking-widest text-ink-800 hover:bg-paper-100 transition-colors border-t border-paper-200"
-                onClick={() => {
-                  void viewerRef.current?.printPdf();
-                  setDownloadOpen(false);
-                }}
-              >
-                导出 PDF
-              </button>
+              
+              {/* Only allow PDF export when in professional score view */}
+              {viewMode === "full" ? (
+                <button
+                  type="button"
+                  className="block w-full px-4 py-3 text-left text-sm font-serif tracking-widest text-ink-800 hover:bg-paper-100 transition-colors border-t border-paper-200"
+                  onClick={() => {
+                    const w = window.open("", "_blank");
+                    void (async () => {
+                      try {
+                        await viewerRef.current?.printPdf(w);
+                      } catch (e) {
+                        if (w) w.close();
+                        toast.push({ title: "打印失败", description: e instanceof Error ? e.message : "无法打开打印窗口", variant: "error" });
+                      }
+                    })();
+                    setDownloadOpen(false);
+                  }}
+                >
+                  导出 PDF
+                </button>
+              ) : (
+                <div className="block w-full px-4 py-3 text-left text-xs font-sans tracking-wide text-ink-400 border-t border-paper-200 bg-paper-50 cursor-not-allowed">
+                  请切换到专业谱面以导出 PDF
+                </div>
+              )}
             </div>
           ) : null}
         </div>

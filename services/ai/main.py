@@ -548,6 +548,7 @@ async def _run_job(job_id: str) -> None:
             time_signature=analysis.time_signature,
             key=analysis.key,
             sections=display_sections,
+            intro_bars=intro_bars,
             lyrics_beats=lyrics_beats,
             rhythm_energy=rhythm_energy,
         )

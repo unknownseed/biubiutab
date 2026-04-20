@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <div id="alphaTab" data-file="/alphatab/examples/canon.gp"></div>
+  <script src="/Users/unknownseed/Developer/biubiutab/apps/web/node_modules/@coderline/alphatab/dist/alphaTab.js"></script>
+  <script>
+    const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'), { core: { engine: 'svg' } });
+    api.scoreLoaded.on(() => {
+      setTimeout(() => {
+        const svg = document.querySelector('svg');
+        const paths = svg.querySelectorAll('path');
+        let staffLines = [];
+        paths.forEach(p => {
+          if (p.className.baseVal.includes('StaffLine') || p.getAttribute('d').includes('L')) {
+            staffLines.push(p.outerHTML);
+          }
+        });
+        console.log('StaffLines:', staffLines.slice(0, 5).join('\n'));
+      }, 2000);
+    });
+  </script>
+</body>
+</html>

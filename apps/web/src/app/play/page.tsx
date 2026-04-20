@@ -11,7 +11,6 @@ export default function PlayPage() {
             src="/images/Sing_background.webp?v=2" 
             alt="Sing background" 
             fill 
-            priority
             className="object-contain opacity-[0.06] grayscale-[50%]"
             sizes="85vw"
             unoptimized

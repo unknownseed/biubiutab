@@ -1,0 +1,49 @@
+{
+  "id": "6d2c3d05",
+  "is_dual": false,
+  "meta": {
+    "title": "Unknown",
+    "bpm": 120,
+    "time_signature": "4/4",
+    "source_file": ""
+  },
+  "layers": {
+    "rhythm": {
+      "verse": [
+        {
+          "duration": 4,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 23,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        }
+      ],
+      "chorus": [
+        {
+          "duration": 4,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 23,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        }
+      ]
+    },
+    "lead": null
+  }
+}

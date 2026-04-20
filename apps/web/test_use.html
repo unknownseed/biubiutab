@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <div id="alphaTab" data-file="/alphatab/examples/canon.gp"></div>
+  <script src="/Users/unknownseed/Developer/biubiutab/apps/web/node_modules/@coderline/alphatab/dist/alphaTab.js"></script>
+  <script>
+    const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'), { core: { engine: 'svg' } });
+    api.scoreLoaded.on(() => {
+      setTimeout(() => {
+        const uses = document.querySelectorAll('use');
+        console.log('uses count:', uses.length);
+        if (uses.length > 0) {
+          console.log('hrefs:', Array.from(uses).map(u => u.getAttribute('href') || u.getAttribute('xlink:href')).slice(0, 5));
+        }
+      }, 2000);
+    });
+  </script>
+</body>
+</html>

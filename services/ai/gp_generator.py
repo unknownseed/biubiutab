@@ -40,6 +40,7 @@ def generate_gp5_binary(
     sections: list[SectionOut],
     lyrics_beats: list[str | None] | None = None,
     rhythm_energy: float | None = None,
+    intro_bars: dict = None,
 ) -> bytes:
     song = guitarpro.Song()
     song.tracks.clear()
@@ -86,7 +87,7 @@ def generate_gp5_binary(
         result = transplant_pattern(template_id, chords_seq)
 
         # ── Step 3: Build GP5 from beats ────────────────────────────────────
-        song = _build_gp5_from_beats(
+        song_obj = _build_gp5_from_beats(
             rhythm_beats=result["rhythm_beats"],
             lead_beats=result["lead_beats"],
             is_dual=result["is_dual"],
@@ -96,13 +97,13 @@ def generate_gp5_binary(
             ts_den=ts_den
         )
         out = io.BytesIO()
-        guitarpro.write(song, out)
+        guitarpro.write(song_obj, out)
         return out.getvalue()
 
     # ── Step 4: Fallback to simple generator ────────────────────────────────
     return _build_gp5_simple_binary(
         title=title, tempo=tempo, ts_num=ts_num, ts_den=ts_den, key=key, 
-        sections=sections, lyrics_beats=lyrics_beats, rhythm_energy=rhythm_energy, song=song, track=track
+        sections=sections, lyrics_beats=lyrics_beats, rhythm_energy=rhythm_energy, song=song, track=track, intro_bars=intro_bars
     )
 
 def _build_gp5_from_beats(rhythm_beats, lead_beats, is_dual, bpm, title, ts_num, ts_den):
@@ -110,7 +111,8 @@ def _build_gp5_from_beats(rhythm_beats, lead_beats, is_dual, bpm, title, ts_num,
     song.title = _gp_safe_text(title) or "score"
     song.tempo = max(40, min(240, int(bpm)))
 
-    rhythm_track = guitarpro.Track(song)
+    # 复用 guitarpro.Song() 默认创建的第一个轨道
+    rhythm_track = song.tracks[0]
     rhythm_track.name = "Rhythm Guitar"
     rhythm_track.channel.instrument = 25
     rhythm_track.strings = [
@@ -118,8 +120,8 @@ def _build_gp5_from_beats(rhythm_beats, lead_beats, is_dual, bpm, title, ts_num,
         guitarpro.GuitarString(3, 55), guitarpro.GuitarString(4, 50),
         guitarpro.GuitarString(5, 45), guitarpro.GuitarString(6, 40)
     ]
-    _fill_track_measures(song, rhythm_track, rhythm_beats, ts_num, ts_den)
-    song.tracks.append(rhythm_track)
+    
+    tracks_to_fill = [(rhythm_track, rhythm_beats, True)]
 
     if is_dual and lead_beats:
         lead_track = guitarpro.Track(song)
@@ -130,61 +132,151 @@ def _build_gp5_from_beats(rhythm_beats, lead_beats, is_dual, bpm, title, ts_num,
             guitarpro.GuitarString(3, 55), guitarpro.GuitarString(4, 50),
             guitarpro.GuitarString(5, 45), guitarpro.GuitarString(6, 40)
         ]
-        _fill_track_measures(song, lead_track, lead_beats, ts_num, ts_den)
         song.tracks.append(lead_track)
+        tracks_to_fill.append((lead_track, lead_beats, False))
+
+    for track, beats, show_chords in tracks_to_fill:
+        _fill_track_measures(song, track, beats, ts_num, ts_den, show_chords)
+
+    # 确保所有轨道的小节数对齐，并且每个小节至少有一个休止符（防止 AlphaTab 崩溃）
+    for track in song.tracks:
+        while len(track.measures) < len(song.measureHeaders):
+            idx = len(track.measures)
+            header = song.measureHeaders[idx]
+            measure = guitarpro.Measure(track, header)
+            track.measures.append(measure)
+
+        for m in track.measures:
+            v = m.voices[0]
+            if len(v.beats) == 0:
+                # 使用贪心算法填补休止符，直到补齐 ticks_per_measure
+                ticks_per_measure = int(960 * 4 * ts_num / ts_den)
+                remaining_ticks = ticks_per_measure
+                current_start = m.header.start
+                
+                while remaining_ticks > 0:
+                    for allowed_duration in [1, 2, 4, 8, 16, 32, 64]:
+                        allowed_ticks = int(960 * 4 / allowed_duration)
+                        if allowed_ticks <= remaining_ticks:
+                            gp_beat = guitarpro.Beat(v)
+                            gp_beat.start = current_start
+                            gp_beat.duration.value = allowed_duration
+                            gp_beat.status = guitarpro.BeatStatus.rest
+                            v.beats.append(gp_beat)
+                            
+                            remaining_ticks -= allowed_ticks
+                            current_start += allowed_ticks
+                            break
 
     return song
 
-def _fill_track_measures(song, track, beats, ts_num, ts_den):
-    beats_per_measure = ts_num * 2  # Assuming 4/4 => 8 eighth notes
-
+def _fill_track_measures(song, track, beats, ts_num, ts_den, show_chords):
+    ticks_per_measure = int(960 * 4 * ts_num / ts_den)
+    
     measure_idx = 0
-    beat_counter = 0
-
     current_measure = _get_or_create_measure(song, track, measure_idx, ts_num, ts_den)
     current_voice = current_measure.voices[0]
     
     current_start = current_measure.header.start
+    measure_start_tick = current_start
 
     for beat_data in beats:
-        gp_beat = guitarpro.Beat(current_voice)
-        gp_beat.start = current_start
-
         duration_value = beat_data.get("duration", 8)
-        gp_beat.duration.value = duration_value
+        beat_ticks = int(960 * 4 / duration_value)
 
-        # Calculate ticks (quarter note = 960)
-        beat_ticks = 960 * 4 // duration_value
-        current_start += beat_ticks
-
-        for note_data in beat_data.get("notes", []):
-            note = guitarpro.Note(gp_beat)
-            note.string = note_data["string"]
-            note.value = note_data["fret"]
-            note.velocity = beat_data.get("velocity", 85)
-            gp_beat.notes.append(note)
-
-        current_voice.beats.append(gp_beat)
-
-        units = 8 // duration_value
-        beat_counter += units
-        
-        if beat_counter >= beats_per_measure:
-            beat_counter = 0
+        # 检查是否跨小节
+        if (current_start - measure_start_tick) >= ticks_per_measure:
             measure_idx += 1
             current_measure = _get_or_create_measure(song, track, measure_idx, ts_num, ts_den)
-            current_measure.header.start = current_start
             current_voice = current_measure.voices[0]
+            measure_start_tick = current_measure.header.start
+            current_start = measure_start_tick
+
+        gp_beat = guitarpro.Beat(current_voice)
+        gp_beat.start = current_start
+        gp_beat.duration.value = duration_value
+
+        if show_chords:
+            chord_name = beat_data.get("chord_name")
+            if chord_name:
+                _add_chord_to_beat(gp_beat, chord_name)
+
+        notes_added = 0
+        for note_data in beat_data.get("notes", []):
+            string_val = note_data.get("string", 0)
+            fret_val = note_data.get("fret", -1)
+            if 1 <= string_val <= 6 and fret_val >= 0:
+                note = guitarpro.Note(gp_beat)
+                note.string = string_val
+                note.value = fret_val
+                # 统一 velocity，防止 AlphaTab 渲染大量 f, mf 动态符号
+                note.velocity = 95
+                note.type = guitarpro.NoteType.normal
+                gp_beat.notes.append(note)
+                notes_added += 1
+
+        if notes_added == 0:
+            gp_beat.status = guitarpro.BeatStatus.rest
+        else:
+            gp_beat.status = guitarpro.BeatStatus.normal
+
+        current_voice.beats.append(gp_beat)
+        current_start += beat_ticks
+
+    # 检查最后一小节是否未填满
+    remaining_ticks_in_last_measure = ticks_per_measure - (current_start - measure_start_tick)
+    if remaining_ticks_in_last_measure > 0 and remaining_ticks_in_last_measure < ticks_per_measure:
+        # 使用贪心算法填补休止符，直到补齐 ticks_per_measure
+        while remaining_ticks_in_last_measure > 0:
+            for allowed_duration in [1, 2, 4, 8, 16, 32, 64]:
+                allowed_ticks = int(960 * 4 / allowed_duration)
+                if allowed_ticks <= remaining_ticks_in_last_measure:
+                    gp_beat = guitarpro.Beat(current_voice)
+                    gp_beat.start = current_start
+                    gp_beat.duration.value = allowed_duration
+                    gp_beat.status = guitarpro.BeatStatus.rest
+                    current_voice.beats.append(gp_beat)
+                    
+                    remaining_ticks_in_last_measure -= allowed_ticks
+                    current_start += allowed_ticks
+                    break
+
+def _add_chord_to_beat(beat, chord_name):
+    from chord_shapes import chord_shape_for_label
+    shape = chord_shape_for_label(chord_name)
+    if shape:
+        gp_chord = guitarpro.Chord(length=6)
+        gp_chord.name = chord_name
+        frets = shape.frets_high_to_low
+        
+        min_fret = 99
+        for f in frets:
+            if f is not None and str(f).lower() != "x" and int(f) > 0:
+                min_fret = min(min_fret, int(f))
+        if min_fret == 99:
+            min_fret = 1
+            
+        gp_chord.firstFret = min_fret if min_fret > 4 else 1
+        
+        gp_chord_strings = [-1] * 6
+        for string_idx, fret_str in enumerate(frets):
+            if string_idx < 6:
+                if fret_str is not None and str(fret_str).lower() != "x":
+                    gp_chord_strings[string_idx] = int(fret_str)
+                else:
+                    gp_chord_strings[string_idx] = -1
+        gp_chord.strings = gp_chord_strings
+        beat.effect.chord = gp_chord
 
 def _get_or_create_measure(song, track, idx, ts_num, ts_den):
     while len(track.measures) <= idx:
-        header = guitarpro.MeasureHeader()
-        header.number = len(track.measures) + 1
-        header.start = 0 if len(track.measures) == 0 else track.measures[-1].header.start + (960 * 4 * ts_num // ts_den)
-        header.timeSignature.numerator = ts_num
-        header.timeSignature.denominator.value = ts_den
-        
+        # 如果 song.measureHeaders 里还没有这个 header，则创建
         if len(song.measureHeaders) <= idx:
+            header = guitarpro.MeasureHeader()
+            header.number = len(song.measureHeaders) + 1
+            header.start = 0 if len(song.measureHeaders) == 0 else song.measureHeaders[-1].start + int(960 * 4 * ts_num / ts_den)
+            header.timeSignature.numerator = ts_num
+            header.timeSignature.denominator.value = ts_den
             song.measureHeaders.append(header)
         else:
             header = song.measureHeaders[idx]
@@ -193,7 +285,7 @@ def _get_or_create_measure(song, track, idx, ts_num, ts_den):
         track.measures.append(measure)
     return track.measures[idx]
 
-def _build_gp5_simple_binary(title, tempo, ts_num, ts_den, key, sections, lyrics_beats, rhythm_energy, song, track):
+def _build_gp5_simple_binary(title, tempo, ts_num, ts_den, key, sections, lyrics_beats, rhythm_energy, song, track, intro_bars=None):
     
     # Calculate ticks per measure based on time signature
     # In Guitar Pro, a quarter note is 960 ticks.

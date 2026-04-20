@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <div id="alphaTab" data-file="/alphatab/examples/canon.gp"></div>
+  <script src="/Users/unknownseed/Developer/biubiutab/apps/web/node_modules/@coderline/alphatab/dist/alphaTab.js"></script>
+  <script>
+    const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'), { core: { engine: 'svg' }, display: { layoutMode: 1 } });
+    api.scoreLoaded.on(() => {
+      setTimeout(() => {
+        const canvases = document.querySelectorAll('.at-canvas');
+        let info = [];
+        canvases.forEach((c, i) => {
+          info.push(`Canvas ${i}: svgs=${c.querySelectorAll('svg').length}`);
+        });
+        console.log(info.join('\n'));
+      }, 2000);
+    });
+  </script>
+</body>
+</html>

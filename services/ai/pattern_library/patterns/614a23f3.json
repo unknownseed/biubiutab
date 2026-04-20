@@ -1,0 +1,4836 @@
+{
+  "id": "614a23f3",
+  "is_dual": true,
+  "meta": {
+    "title": "NEW BOY",
+    "bpm": 135,
+    "time_signature": "4/4",
+    "source_file": ""
+  },
+  "layers": {
+    "rhythm": {
+      "verse": [
+        {
+          "duration": 4,
+          "notes": [],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 4,
+          "notes": [],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 4,
+          "notes": [],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 4,
+          "notes": [],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 111
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 111
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 111
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 111
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 2,
+              "velocity": 111
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 2,
+              "velocity": 111
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 4,
+              "velocity": 111
+            },
+            {
+              "string": 6,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 4,
+              "velocity": 111
+            },
+            {
+              "string": 6,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        }
+      ],
+      "chorus": [
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 3,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 3,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 3,
+              "velocity": 111
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 3,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 3,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 3,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 3,
+              "velocity": 111
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 3,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 111
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 111
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 3,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 3,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 3,
+              "velocity": 111
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 3,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 3,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 3,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 3,
+              "velocity": 111
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 5,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 3,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 111
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 111
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 111
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 111
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 111
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 111
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 0,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 0,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 2,
+              "velocity": 111
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 2,
+              "velocity": 111
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 3,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 4,
+              "velocity": 111
+            },
+            {
+              "string": 6,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 4,
+              "velocity": 111
+            },
+            {
+              "string": 6,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 1,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 2,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 3,
+              "fret": 2,
+              "velocity": 95
+            },
+            {
+              "string": 4,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 5,
+              "fret": 4,
+              "velocity": 95
+            },
+            {
+              "string": 6,
+              "fret": 2,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        }
+      ]
+    },
+    "lead": {
+      "verse": [
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95,
+              "tie": true
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 15,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95,
+              "tie": true
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 15,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 15,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95,
+              "tie": true
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 15,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 4,
+          "notes": [],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 4,
+          "notes": [],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 4,
+          "notes": [],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 4,
+          "notes": [],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 4,
+          "notes": [],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        }
+      ],
+      "chorus": [
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95,
+              "tie": true
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 15,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95,
+              "tie": true
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 15,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 15,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95,
+              "tie": true
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 15,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95,
+              "tie": true
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 15,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95,
+              "tie": true
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 15,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95,
+              "tie": true
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 15,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95,
+              "tie": true
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 15,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 17,
+              "velocity": 95,
+              "tie": true
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 2,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        },
+        {
+          "duration": 8,
+          "notes": [
+            {
+              "string": 3,
+              "fret": 14,
+              "velocity": 95
+            }
+          ],
+          "effects": {
+            "slide": [],
+            "bend": false,
+            "hammer": false
+          }
+        }
+      ]
+    }
+  }
+}
