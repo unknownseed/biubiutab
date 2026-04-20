@@ -310,6 +310,18 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
         }
       });
 
+      api.postRenderFinished?.on?.(() => {
+        // When track is switched or rendering completes, ensure cursor and scroll sync
+        if (api.playerState !== 1) {
+          if ((api as any)._forceUpdateCursor) {
+            (api as any)._forceUpdateCursor();
+          }
+          if ((api as any)._syncScrollToCursor) {
+            (api as any)._syncScrollToCursor();
+          }
+        }
+      });
+
       // Optional: keep track of user manual scrolling to temporarily disable auto-scroll
       let isUserScrolling = false;
       let scrollTimeout: NodeJS.Timeout;
@@ -734,24 +746,17 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
     if (alphaTabApiRef.current && alphaTabApiRef.current.score) {
       const track = alphaTabApiRef.current.score.tracks[activeTrackIndex];
       if (track) {
-        // Correct API for AlphaTab to change visible tracks
+        // We use renderTracks to switch the track.
         alphaTabApiRef.current.renderTracks([track]);
         
-        // After changing track, AlphaTab might recalculate layout or cursor position.
-        // We should preserve the current time position.
+        // In Horizontal layout, AlphaTab caches the layout heights.
+        // A track with chords has a different height than one without (Lead).
+        // updateSettings() clears this cache and recalculates the SVG container height perfectly.
+        alphaTabApiRef.current.updateSettings();
+        
+        // Restore the time position after switching tracks
         const currentMs = currentTime * 1000;
-        // Small delay to allow render to complete before forcing position update
-        setTimeout(() => {
-          if (alphaTabApiRef.current) {
-            alphaTabApiRef.current.timePosition = currentMs;
-            if (alphaTabApiRef.current.playerState !== 1 && (alphaTabApiRef.current as any)._forceUpdateCursor) {
-              (alphaTabApiRef.current as any)._forceUpdateCursor();
-            }
-            if ((alphaTabApiRef.current as any)._syncScrollToCursor) {
-              (alphaTabApiRef.current as any)._syncScrollToCursor();
-            }
-          }
-        }, 50);
+        alphaTabApiRef.current.timePosition = currentMs;
       }
     }
   }, [activeTrackIndex]);
@@ -809,18 +814,18 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
             ))}
           </div>
         )}
-        <div className="flex flex-col md:flex-row gap-4 items-stretch h-auto md:h-[160px]">
+        <div className="flex flex-col md:flex-row gap-4 items-stretch h-auto min-h-[160px]">
           <div className="flex-shrink-0 flex items-center justify-center bg-zinc-900 border border-zinc-800 p-4 md:w-[160px] rounded-none">
             <LargeChordDiagram chord={currentChordBlock?.chord || "N"} />
           </div>
           <div
-            className="flex-1 w-full rounded-none bg-zinc-50 overflow-hidden border border-zinc-800 relative"
+            className="flex-1 w-full rounded-none bg-zinc-50 overflow-hidden border border-zinc-800 relative min-h-[160px]"
           >
             <div
               ref={containerRef}
               className="absolute inset-0 overflow-x-auto overflow-y-hidden at-surface"
               style={{ 
-                transform: "translateY(-16px)",
+                transform: "translateY(-8px)",
                 height: "calc(100% + 16px)"
               }}
             />

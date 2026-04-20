@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<body>
+  <div id="alphaTab" data-file="/alphatab/examples/canon.gp"></div>
+  <button id="btn1">Track 1</button>
+  <button id="btn2">Track 2</button>
+  <script src="/Users/unknownseed/Developer/biubiutab/apps/web/node_modules/@coderline/alphatab/dist/alphaTab.js"></script>
+  <script>
+    const api = new alphaTab.AlphaTabApi(document.querySelector('#alphaTab'), { core: { engine: 'svg' } });
+    api.scoreLoaded.on((score) => {
+      console.log('scoreLoaded fired!');
+      document.getElementById('btn1').onclick = () => {
+        api.renderTracks([score.tracks[0]]);
+        api.updateSettings();
+      };
+      document.getElementById('btn2').onclick = () => {
+        api.renderTracks([score.tracks[1]]);
+        api.updateSettings();
+      };
+    });
+  </script>
+</body>
+</html>
