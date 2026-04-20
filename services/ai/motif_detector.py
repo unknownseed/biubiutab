@@ -1,7 +1,9 @@
 import librosa
 import numpy as np
 
-def extract_rhythm_motif(accompaniment_path: str, beat_times: list[float], ts_num: int = 4) -> list[dict] | None:
+from typing import Optional
+
+def extract_rhythm_motif(accompaniment_path: str, beat_times: list[float], ts_num: int = 4) -> Optional[list[dict]]:
     """
     Extracts the dominant rhythmic skeleton from the first 4 bars of the audio.
     Returns a template_beats array, or None if extraction fails.

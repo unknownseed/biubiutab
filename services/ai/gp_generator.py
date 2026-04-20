@@ -38,17 +38,19 @@ def _gp_safe_text(s: str) -> str:
     out = t.encode("cp1252", "ignore").decode("cp1252").strip()
     return out
 
+from typing import Optional
+
 def generate_gp5_binary(
     title: str,
     tempo: int,
     time_signature: str,
     key: str,
     sections: list[SectionOut],
-    lyrics_beats: list[str | None] | None = None,
-    rhythm_energy: float | None = None,
+    lyrics_beats: Optional[list[Optional[str]]] = None,
+    rhythm_energy: Optional[float] = None,
     intro_bars: dict = None,
-    accompaniment_path: str | None = None,
-    beat_times: list[float] | None = None,
+    accompaniment_path: Optional[str] = None,
+    beat_times: Optional[list[float]] = None,
 ) -> bytes:
     song = guitarpro.Song()
     song.tracks.clear()
@@ -97,20 +99,52 @@ def generate_gp5_binary(
     if accompaniment_path and beat_times:
         motif_template_beats = extract_rhythm_motif(accompaniment_path, beat_times, ts_num)
         
-    if motif_template_beats:
-        template_id = {
-            "is_dual": False,
-            "layers": {
-                "rhythm": motif_template_beats
-            }
-        }
-        print("[AI] Extracted and applied motif rhythm skeleton from original audio.")
-    else:
-        template_id = find_best_pattern(bpm=tempo, section_energy=energy)
+    template_id = find_best_pattern(bpm=tempo, section_energy=energy)
 
     if template_id and chords_seq:
         # ── Step 2: Transplant pattern ──────────────────────────────────────
         result = transplant_pattern(template_id, chords_seq)
+        
+        # ── Step 2.1: Inject Motif to the intro/first bars if available ──────
+        if motif_template_beats and len(result["rhythm_beats"]) > 0:
+            print("[AI] Extracted motif rhythm skeleton. Applying to intro...")
+            # We overwrite the first N beats of the transplanted result with the motif
+            # A motif is typically 4 bars long
+            motif_len = len(motif_template_beats)
+            for i in range(min(motif_len, len(result["rhythm_beats"]))):
+                # We keep the chord_name and voicing from the original transplantation
+                # but we swap the 'notes' (rhythm pattern) to the motif's notes
+                # so the rhythm matches the audio, but the chords match our analysis
+                motif_beat = motif_template_beats[i]
+                
+                # However, motif notes are currently hardcoded to [string 1,2,3] or [5]. 
+                # Let's dynamically map the motif's rhythm to the current chord voicing
+                current_voicing = result["rhythm_beats"][i].get("voicing")
+                
+                new_notes = []
+                for m_note in motif_beat.get("notes", []):
+                    string_num = m_note["string"]
+                    
+                    if current_voicing and string_num in current_voicing and current_voicing[string_num] >= 0:
+                        new_notes.append({"string": string_num, "fret": current_voicing[string_num]})
+                    else:
+                        # Fallback if the string is muted in this chord
+                        # Just pick the root note or a safe string
+                        if string_num == 5: # Bass
+                            # Find the lowest played string
+                            for s in [6, 5, 4]:
+                                if current_voicing and current_voicing.get(s, -1) >= 0:
+                                    new_notes.append({"string": s, "fret": current_voicing[s]})
+                                    break
+                        else:
+                            # Strum: find highest strings
+                            for s in [1, 2, 3, 4]:
+                                if current_voicing and current_voicing.get(s, -1) >= 0:
+                                    new_notes.append({"string": s, "fret": current_voicing[s]})
+                                    break
+
+                result["rhythm_beats"][i]["notes"] = new_notes
+                result["rhythm_beats"][i]["duration"] = motif_beat.get("duration", 8)
         
         # ── Step 2.5: Apply Style Fuser (Humanization & Dynamics) ───────────
         if accompaniment_path and beat_times:
