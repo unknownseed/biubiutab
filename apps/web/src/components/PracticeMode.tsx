@@ -67,6 +67,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
   const guitarSamplerRef = useRef<GuitarSampler | null>(null);
   const initPromiseRef = useRef<Promise<void> | null>(null);
   const isMountedRef = useRef(true);
+  const loadedGp5DataRef = useRef<Uint8Array | null>(null);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -210,12 +211,14 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
       setIsPlayerReady(false);
       setIsInitializing(true);
       
-      const myInitPromise = initPromiseRef.current;
       await ensureAlphaTabScript();
-      if (!isMountedRef.current || initPromiseRef.current !== myInitPromise) return;
+      if (!isMountedRef.current) return;
       
       const mod = window.alphaTab;
       if (!containerRef.current) return;
+
+      // CRITICAL FIX: Ensure no ghost instances from React StrictMode concurrent rendering
+      containerRef.current.innerHTML = "";
 
       mod.Logger.logLevel = mod.LogLevel.Info;
       const scriptFile = new URL(ALPHATAB_SCRIPT_URL, window.location.href).toString();
@@ -294,11 +297,12 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
           setActiveTrackIndex(0);
         }
         
-        // Do NOT call api.renderTracks([score.tracks[0]]) here!
-        // AlphaTab's load() method automatically initiates rendering of the tracks specified 
-        // in settings.core.tracks (which we set to [0]) or passed to load(data, [0]).
-        // Calling it here causes a race condition where AlphaTab renders the track twice,
-        // resulting in two identical tracks stacking on top of each other.
+        // Force rendering ONLY the first track when score loads.
+        // If the GP5 has multiple tracks (e.g. Rhythm and Lead), AlphaTab might
+        // default to rendering all of them if the load() track filter is ignored.
+        if (score.tracks && score.tracks.length > 0) {
+          api.renderTracks([score.tracks[0]]);
+        }
         
         score.tracks.forEach((t: any) => {
           if (t.playbackInfo) {
@@ -483,7 +487,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
         if (!USE_TONE_JS) {
           setPlayerError("正在加载高质量 GM 吉他音源 (约5.8MB)...");
           const res = await fetch(ALPHATAB_SOUNDFONT_URL, { cache: "force-cache" });
-          if (!isMountedRef.current || initPromiseRef.current !== myInitPromise) {
+          if (!isMountedRef.current) {
             api.destroy();
             return;
           }
@@ -500,6 +504,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
 
       try {
         let ok = false;
+        loadedGp5DataRef.current = gp5Data;
         try {
           ok = api.load(gp5Data, [0]);
         } catch {
@@ -535,11 +540,11 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
 
   useEffect(() => {
     const api = alphaTabApiRef.current;
-    if (!api) return;
+    if (!api || !gp5Data) return;
     
-    // Check if the current score is already loaded
-    if (api.score) {
-      return; // Skip reloading the same data
+    // Prevent loading the exact same data multiple times
+    if (loadedGp5DataRef.current === gp5Data) {
+      return;
     }
     
     try {
@@ -551,6 +556,9 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
         api.playPause();
       }
       api.timePosition = 0;
+      
+      loadedGp5DataRef.current = gp5Data;
+      
       let ok = false;
       try {
         ok = api.load(gp5Data, [0]);
@@ -571,6 +579,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
       }
       if (!ok) {
         setPlayerError("谱例加载失败");
+        loadedGp5DataRef.current = null;
       } else {
         setPlayerError(null);
       }
