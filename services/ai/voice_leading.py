@@ -28,6 +28,52 @@ def apply_voice_leading(chords: list[str]) -> list[str]:
             
     return out
 
+def optimize_voicings(chord_sequence: list[dict]) -> list[dict]:
+    """
+    Given a list of chord dicts [{"chord": "C", ...}], 
+    returns the list with an added "voicing" key containing the best fingering dict.
+    
+    To avoid creating 3 different fingerings for the same chord (like G) in one song,
+    we globally lock the first chosen voicing for each unique chord name.
+    """
+    if not chord_sequence:
+        return []
+        
+    prev_shape_dict = None
+    # Dictionary to remember the chosen voicing for a specific chord name
+    locked_voicings = {}
+    
+    for item in chord_sequence:
+        chord_name = item.get("chord", "N")
+        
+        # If we have already chosen a voicing for this exact chord in this song, reuse it!
+        if chord_name in locked_voicings:
+            item["voicing"] = locked_voicings[chord_name]
+            prev_shape_dict = locked_voicings[chord_name]
+            continue
+            
+        candidates = chord_shapes_for_label(chord_name, limit=5)
+        
+        if not candidates:
+            # Fallback empty shape
+            item["voicing"] = {1: -1, 2: -1, 3: -1, 4: -1, 5: -1, 6: -1}
+            continue
+            
+        candidate_dicts = [_shape_to_dict(c.frets_high_to_low) for c in candidates]
+        
+        if not prev_shape_dict:
+            # First chord: prefer the first (most standard) open chord
+            best_dict = candidate_dicts[0]
+        else:
+            # Find the candidate with minimum distance to the previous shape
+            best_dict = min(candidate_dicts, key=lambda c: _calculate_distance(prev_shape_dict, c))
+            
+        item["voicing"] = best_dict
+        locked_voicings[chord_name] = best_dict
+        prev_shape_dict = best_dict
+        
+    return chord_sequence
+
 def _shape_to_dict(frets: list[str]) -> dict[int, int]:
     chord_dict = {}
     for i, f in enumerate(frets):
@@ -54,36 +100,3 @@ def _calculate_distance(shape1: dict[int, int], shape2: dict[int, int]) -> float
             dist += abs(f1 - f2)
             
     return dist
-
-def optimize_voicings(chord_sequence: list[dict]) -> list[dict]:
-    """
-    Given a list of chord dicts [{"chord": "C", ...}], 
-    returns the list with an added "voicing" key containing the best fingering dict.
-    """
-    if not chord_sequence:
-        return []
-        
-    prev_shape_dict = None
-    
-    for item in chord_sequence:
-        chord_name = item.get("chord", "N")
-        candidates = chord_shapes_for_label(chord_name, limit=5)
-        
-        if not candidates:
-            # Fallback empty shape
-            item["voicing"] = {1: -1, 2: -1, 3: -1, 4: -1, 5: -1, 6: -1}
-            continue
-            
-        candidate_dicts = [_shape_to_dict(c.frets_high_to_low) for c in candidates]
-        
-        if not prev_shape_dict:
-            # First chord: prefer the first (most standard) open chord
-            best_dict = candidate_dicts[0]
-        else:
-            # Find the candidate with minimum distance to the previous shape
-            best_dict = min(candidate_dicts, key=lambda c: _calculate_distance(prev_shape_dict, c))
-            
-        item["voicing"] = best_dict
-        prev_shape_dict = best_dict
-        
-    return chord_sequence

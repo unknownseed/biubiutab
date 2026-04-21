@@ -367,16 +367,19 @@ def _add_chord_to_beat(beat, chord_name, voicing=None):
     from chord_shapes import chord_shape_for_label
     
     frets = None
-    if voicing:
+    # We always prioritize the global standard chord shape first,
+    # so that the visual diagram looks perfectly normal to beginners.
+    # The actual played notes (voicing) are handled at the Note level.
+    shape = chord_shape_for_label(chord_name)
+    if shape:
+        frets = shape.frets_high_to_low
+    elif voicing:
+        # Fallback to voicing dict only if the chord is completely unknown to our dictionary
         # voicing is a dict like {1: 0, 2: 1, 3: 0, 4: 2, 5: 3, 6: -1}
         frets = []
         for string_idx in range(1, 7):
             f = voicing.get(string_idx, -1)
             frets.append("x" if f == -1 else str(f))
-    else:
-        shape = chord_shape_for_label(chord_name)
-        if shape:
-            frets = shape.frets_high_to_low
 
     if frets:
         gp_chord = guitarpro.Chord(length=6)
