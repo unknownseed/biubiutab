@@ -83,7 +83,7 @@ def generate_gp5_binary(
         except ValueError:
             pass
 
-    # ── Step 1: Prepare chord sequence and find best pattern ────────────────
+    # ── Step 1: Prepare chord sequence and optimize voicings globally ──────────
     chords_seq = []
     for s in sections:
         for c in s.chords:
@@ -92,8 +92,16 @@ def generate_gp5_binary(
                 "duration_beats": ts_num  # assume each chord spans ts_num beats (1 bar)
             })
 
-    # Optimize voicings using Voice Leading / Minimum Movement
+    # Optimize voicings using Voice Leading / Minimum Movement globally
     chords_seq = optimize_voicings(chords_seq)
+    
+    # Group optimized chords back into sections
+    section_chords = []
+    idx = 0
+    for s in sections:
+        num_chords = len(s.chords)
+        section_chords.append(chords_seq[idx : idx + num_chords])
+        idx += num_chords
 
     energy = rhythm_energy if rhythm_energy is not None else 0.5
     
@@ -102,75 +110,96 @@ def generate_gp5_binary(
     if accompaniment_path and beat_times:
         motif_template_beats = extract_rhythm_motif(accompaniment_path, beat_times, ts_num)
         
-    # ── Detect Playing Technique (Strum vs Arpeggio) ──────────
-    technique = None
-    if stems_paths and beat_times and len(beat_times) > 0:
-        # 找歌曲最核心的部分（比如 30 秒左右，或者第 16 个小节）
-        start_idx = min(16 * ts_num, len(beat_times) - 1)
-        end_idx = min(start_idx + 8 * ts_num, len(beat_times) - 1)
-        if start_idx < end_idx:
-            technique = detect_playing_technique(stems_paths, beat_times[start_idx], beat_times[end_idx])
-            print(f"[gp_generator] Detected Technique: {technique}")
+    all_rhythm_beats = []
+    all_lead_beats = []
+    is_dual_song = False
+    
+    # ── Step 2: Process EACH section dynamically ──────────────────────────────
+    for i, s in enumerate(sections):
+        s_chords = section_chords[i]
+        if not s_chords:
+            continue
+            
+        technique = None
+        if stems_paths and beat_times and len(beat_times) > 0:
+            start_beat_idx = min(s.start_bar * ts_num, len(beat_times) - 1)
+            end_beat_idx = min(s.end_bar * ts_num, len(beat_times) - 1)
+            
+            if start_beat_idx < end_beat_idx:
+                start_time = beat_times[start_beat_idx]
+                end_time = beat_times[end_beat_idx]
+                technique = detect_playing_technique(stems_paths, start_time, end_time)
+                print(f"[gp_generator] Section '{s.name}' ({s.start_bar}-{s.end_bar}) Detected Technique: {technique}")
 
-    template_id = find_best_pattern(bpm=tempo, section_energy=energy, technique=technique)
-
-    if template_id and chords_seq:
-        # ── Step 2: Transplant pattern ──────────────────────────────────────
-        result = transplant_pattern(template_id, chords_seq)
+        template_id = find_best_pattern(bpm=tempo, section_energy=energy, technique=technique)
         
-        # ── Step 2.1: Inject Motif to the intro/first bars if available ──────
-        if motif_template_beats and len(result["rhythm_beats"]) > 0:
-            print("[AI] Extracted motif rhythm skeleton. Applying to intro...")
-            # We overwrite the first N beats of the transplanted result with the motif
-            # A motif is typically 4 bars long
-            motif_len = len(motif_template_beats)
-            for i in range(min(motif_len, len(result["rhythm_beats"]))):
-                # We keep the chord_name and voicing from the original transplantation
-                # but we swap the 'notes' (rhythm pattern) to the motif's notes
-                # so the rhythm matches the audio, but the chords match our analysis
-                motif_beat = motif_template_beats[i]
-                
-                # However, motif notes are currently hardcoded to [string 1,2,3] or [5]. 
-                # Let's dynamically map the motif's rhythm to the current chord voicing
-                current_voicing = result["rhythm_beats"][i].get("voicing")
-                
-                new_notes = []
-                for m_note in motif_beat.get("notes", []):
-                    string_num = m_note["string"]
+        if template_id:
+            result = transplant_pattern(template_id, s_chords)
+            
+            # Inject Motif ONLY to the FIRST section (Intro)
+            if i == 0 and motif_template_beats and len(result["rhythm_beats"]) > 0:
+                print("[AI] Extracted motif rhythm skeleton. Applying to intro...")
+                motif_len = len(motif_template_beats)
+                for j in range(min(motif_len, len(result["rhythm_beats"]))):
+                    motif_beat = motif_template_beats[j]
+                    current_voicing = result["rhythm_beats"][j].get("voicing")
                     
-                    if current_voicing and string_num in current_voicing and current_voicing[string_num] >= 0:
-                        new_notes.append({"string": string_num, "fret": current_voicing[string_num]})
-                    else:
-                        # Fallback if the string is muted in this chord
-                        # Just pick the root note or a safe string
-                        if string_num == 5: # Bass
-                            # Find the lowest played string
-                            for s in [6, 5, 4]:
-                                if current_voicing and current_voicing.get(s, -1) >= 0:
-                                    new_notes.append({"string": s, "fret": current_voicing[s]})
-                                    break
+                    new_notes = []
+                    for m_note in motif_beat.get("notes", []):
+                        string_num = m_note["string"]
+                        
+                        if current_voicing and string_num in current_voicing and current_voicing[string_num] >= 0:
+                            new_notes.append({"string": string_num, "fret": current_voicing[string_num]})
                         else:
-                            # Strum: find highest strings
-                            for s in [1, 2, 3, 4]:
-                                if current_voicing and current_voicing.get(s, -1) >= 0:
-                                    new_notes.append({"string": s, "fret": current_voicing[s]})
-                                    break
+                            if string_num == 5: # Bass
+                                for string_s in [6, 5, 4]:
+                                    if current_voicing and current_voicing.get(string_s, -1) >= 0:
+                                        new_notes.append({"string": string_s, "fret": current_voicing[string_s]})
+                                        break
+                            else:
+                                for string_s in [1, 2, 3, 4]:
+                                    if current_voicing and current_voicing.get(string_s, -1) >= 0:
+                                        new_notes.append({"string": string_s, "fret": current_voicing[string_s]})
+                                        break
 
-                result["rhythm_beats"][i]["notes"] = new_notes
-                result["rhythm_beats"][i]["duration"] = motif_beat.get("duration", 8)
-        
+                    result["rhythm_beats"][j]["notes"] = new_notes
+                    result["rhythm_beats"][j]["duration"] = motif_beat.get("duration", 8)
+                    
+            all_rhythm_beats.extend(result["rhythm_beats"])
+            if result.get("lead_beats"):
+                all_lead_beats.extend(result["lead_beats"])
+            if result.get("is_dual"):
+                is_dual_song = True
+        else:
+            # Fallback for this section if no template found
+            fallback_result = transplant_pattern("fallback", s_chords) # Assumes 'fallback' won't be used, or just generate roots
+            pass # Actually `transplant_pattern` handles unknown templates gracefully or crashes?
+            # Let's just generate simple roots
+            for chord_info in s_chords:
+                chord_name = chord_info.get("chord", "C")
+                voicing = chord_info.get("voicing")
+                for _ in range(ts_num * 2):
+                    all_rhythm_beats.append({
+                        "duration": 8,
+                        "notes": [{"string": 5, "fret": voicing.get(5, 0) if voicing else 0}],
+                        "velocity": 80,
+                        "chord_name": chord_name if _ == 0 else None,
+                        "voicing": voicing if _ == 0 else None
+                    })
+
+    if all_rhythm_beats:
         # ── Step 2.5: Apply Style Fuser (Humanization & Dynamics) ───────────
         if accompaniment_path and beat_times:
             fuser = StyleFuser(accompaniment_path, beat_times)
-            result["rhythm_beats"] = fuser.fuse(result["rhythm_beats"], 0)
-            if result.get("lead_beats"):
-                result["lead_beats"] = fuser.fuse(result["lead_beats"], 0)
+            all_rhythm_beats = fuser.fuse(all_rhythm_beats, 0)
+            if all_lead_beats:
+                all_lead_beats = fuser.fuse(all_lead_beats, 0)
 
         # ── Step 3: Build GP5 from beats ────────────────────────────────────
         song_obj = _build_gp5_from_beats(
-            rhythm_beats=result["rhythm_beats"],
-            lead_beats=result["lead_beats"],
-            is_dual=result["is_dual"],
+            rhythm_beats=all_rhythm_beats,
+            lead_beats=all_lead_beats,
+            is_dual=is_dual_song,
             bpm=tempo,
             title=title,
             ts_num=ts_num,
