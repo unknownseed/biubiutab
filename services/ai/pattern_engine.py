@@ -216,19 +216,26 @@ def _do_transplant(template_beats, chord_sequence, is_lead=False):
                 
                 if is_lead:
                     # 主音轨道：直接保留原有的品位，不套用和弦指法
-                    new_notes.append({
+                    new_note = {
                         "string": string_num,
                         "fret": t_note["fret"]
-                    })
+                    }
                 else:
                     target_fret = target_shape.get(string_num, -1)
                     if target_fret < 0:
                         continue
                         
-                    new_notes.append({
+                    new_note = {
                         "string": string_num,
                         "fret": target_fret
-                    })
+                    }
+                
+                # 复制音符级别的特效 (tie, ghost, etc.)
+                for effect_key in ["tie", "ghost", "vibrato", "bend", "hammer", "pull", "slide", "let_ring"]:
+                    if effect_key in t_note:
+                        new_note[effect_key] = t_note[effect_key]
+                        
+                new_notes.append(new_note)
                 
             if not new_notes and not is_lead:
                 for s in [5, 6, 4]:
@@ -241,6 +248,11 @@ def _do_transplant(template_beats, chord_sequence, is_lead=False):
                 "notes": new_notes,
                 "velocity": t_beat.get("velocity", 85)
             }
+            
+            # 复制节拍级别的特效 (strum_up, strum_down, let_ring, etc.)
+            if "effects" in t_beat:
+                beat_dict["effects"] = t_beat["effects"]
+                
             if is_first_beat_of_chord:
                 beat_dict["chord_name"] = chord_name
                 beat_dict["voicing"] = target_shape

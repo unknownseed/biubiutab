@@ -35,11 +35,21 @@ def _calc_clustering_polyphony_and_energy(segment, sr):
         short_intervals = np.sum(intervals < 0.05) # less than 50ms
         clustering = short_intervals / len(intervals)
         
-    # Polyphony via CQT
+    # Polyphony via CQT (improved with dB thresholding to ignore noise/reverb)
     try:
-        C = np.abs(librosa.cqt(segment, sr=sr))
-        threshold_cqt = np.mean(C) * 2
-        active_notes_per_frame = np.sum(C > threshold_cqt, axis=0)
+        # 1. Optionally do HPSS to reduce percussion interference on polyphony
+        y_harm, _ = librosa.effects.hpss(segment)
+        
+        C = np.abs(librosa.cqt(y_harm, sr=sr))
+        C_db = librosa.amplitude_to_db(C, ref=np.max)
+        
+        # 2. Use a relative dB threshold (-35 dB is a good empirical value)
+        # Anything louder than max - 35dB is considered an "active frequency band"
+        thr_db = -35
+        active = (C_db > thr_db).astype(np.int32)
+        
+        # 3. Sum along frequency axis to get polyphony per frame, then take median
+        active_notes_per_frame = np.sum(active, axis=0)
         polyphony = float(np.median(active_notes_per_frame))
     except Exception:
         polyphony = 1.0
@@ -79,13 +89,20 @@ def detect_playing_technique(stems_paths: dict, start_time: float, end_time: flo
             # or do the same calculation. Let's do the calculation for all.
             clustering, polyphony, energy_profile = _calc_clustering_polyphony_and_energy(y, sr)
             
-            # Classification rules
-            if clustering > 0.4 and polyphony > 2.5:
+            # Print debug info so you can see what the detector is "hearing"
+            print(f"[{source}] polyphony: {polyphony:.1f}, clustering: {clustering:.2f}, peaks: {energy_profile['peak_count']}")
+            
+            # Classification rules based on both Polyphony and Clustering
+            # 1. High clustering + high polyphony -> Definitely Strumming
+            if clustering > 0.4 and polyphony >= 3.0:
                 return "strum"
-            elif polyphony < 2.5 and energy_profile["peak_count"] >= 2:
+            # 2. Low clustering + lots of peaks -> Arpeggio
+            elif clustering < 0.3 and energy_profile["peak_count"] >= 2:
                 return "arpeggio"
-            elif clustering < 0.3:
+            # 3. Low polyphony (melody/riffs) -> We'll map to arpeggio for now (or a dedicated melody pattern later)
+            elif polyphony < 2.5:
                 return "arpeggio"
+            # 4. Fallback default
             else:
                 return "strum"
                 

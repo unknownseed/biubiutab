@@ -297,9 +297,45 @@ def _fill_track_measures(song, track, beats, ts_num, ts_den, show_chords):
                 # Check for accent
                 if beat_data.get("effects", {}).get("accent"):
                     note.effect.accentuatedNote = True
+                    
+                # Apply Note Effects (tie, hammer, slide, ghost, vibrato, letRing)
+                if note_data.get("tie"):
+                    note.type = guitarpro.NoteType.tie
+                if note_data.get("ghost"):
+                    note.effect.ghostNote = True
+                if note_data.get("hammer") or note_data.get("pull"):
+                    note.effect.hammer = True
+                if note_data.get("vibrato"):
+                    note.effect.vibrato = True
+                if note_data.get("let_ring"):
+                    note.effect.letRing = True
+                    
+                # Slide effect mapping
+                slides_list = note_data.get("slide")
+                if isinstance(slides_list, list) and slides_list:
+                    # Map the string/int to guitarpro.SlideType
+                    # Typical strings from alphaTab or internal might be "legatoSlideTo", "shiftSlideTo"
+                    for s_type in slides_list:
+                        # Just default to Legato Slide for simplicity if string isn't recognized
+                        if s_type == "shiftSlideTo" or s_type == 1:
+                            note.effect.slides.append(guitarpro.SlideType.shiftSlideTo)
+                        else:
+                            note.effect.slides.append(guitarpro.SlideType.legatoSlideTo)
+                elif note_data.get("slide"):
+                    # If it's just a boolean
+                    note.effect.slides.append(guitarpro.SlideType.legatoSlideTo)
 
                 gp_beat.notes.append(note)
                 notes_added += 1
+
+        # Apply Beat Effects (strumming directions, etc)
+        beat_effects = beat_data.get("effects", {})
+        if beat_effects.get("vibrato"):
+            gp_beat.effect.vibrato = True
+            
+        if beat_effects.get("strum_down") or beat_effects.get("strum_up"):
+            d = guitarpro.BeatStrokeDirection.down if beat_effects.get("strum_down") else guitarpro.BeatStrokeDirection.up
+            gp_beat.effect.stroke = guitarpro.BeatStroke(direction=d, value=4)
 
         if notes_added == 0:
             gp_beat.status = guitarpro.BeatStatus.rest
