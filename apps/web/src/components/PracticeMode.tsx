@@ -276,10 +276,17 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
       api.scoreLoaded?.on?.((score: any) => {
         const scoreTracks = score.tracks.map((t: any, i: number) => ({ name: t.name || `Track ${i + 1}`, index: i }));
         setTracks(scoreTracks);
-        setActiveTrackIndex(0);
-        if (score.tracks?.[0]) {
-          api.renderTracks([score.tracks[0]]);
+        
+        // Only reset to 0 if we aren't already on 0, to avoid triggering the useEffect
+        if (activeTrackIndexRef.current !== 0) {
+          setActiveTrackIndex(0);
         }
+        
+        // Do NOT call api.renderTracks([score.tracks[0]]) here!
+        // AlphaTab's load() method automatically initiates rendering of the tracks specified 
+        // in settings.core.tracks (which we set to [0]) or passed to load(data, [0]).
+        // Calling it here causes a race condition where AlphaTab renders the track twice,
+        // resulting in two identical tracks stacking on top of each other.
         
         score.tracks.forEach((t: any) => {
           if (t.playbackInfo) {
@@ -515,7 +522,9 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
     if (!api) return;
     try {
       setTracks([]);
-      setActiveTrackIndex(0);
+      if (activeTrackIndexRef.current !== 0) {
+        setActiveTrackIndex(0);
+      }
       if (api.playerState === 1) {
         api.playPause();
       }
@@ -743,24 +752,18 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
     activeTrackIndexRef.current = activeTrackIndex;
   }, [activeTrackIndex]);
 
-  useEffect(() => {
+  const handleTrackSwitch = (index: number) => {
+    setActiveTrackIndex(index);
     if (alphaTabApiRef.current && alphaTabApiRef.current.score) {
-      const track = alphaTabApiRef.current.score.tracks[activeTrackIndex];
+      const track = alphaTabApiRef.current.score.tracks[index];
       if (track) {
-        // We use renderTracks to switch the track.
         alphaTabApiRef.current.renderTracks([track]);
-        
-        // In Horizontal layout, AlphaTab caches the layout heights.
-        // A track with chords has a different height than one without (Lead).
-        // updateSettings() clears this cache and recalculates the SVG container height perfectly.
         alphaTabApiRef.current.updateSettings();
-        
-        // Restore the time position after switching tracks
         const currentMs = currentTime * 1000;
         alphaTabApiRef.current.timePosition = currentMs;
       }
     }
-  }, [activeTrackIndex]);
+  };
 
   const displayTitle = songTitle || practiceData?.metadata?.title || practiceData?.title || "未知曲目";
 
@@ -803,7 +806,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
             {tracks.map(t => (
               <button
                 key={t.index}
-                onClick={() => setActiveTrackIndex(t.index)}
+                onClick={() => handleTrackSwitch(t.index)}
                 className={`px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
                   activeTrackIndex === t.index 
                     ? 'bg-zinc-100 text-zinc-900 shadow-sm' 
