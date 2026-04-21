@@ -849,7 +849,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
           >
             <div
               ref={containerRef}
-              className="absolute inset-0 overflow-x-auto overflow-y-hidden at-surface"
+              className="absolute inset-0 overflow-x-auto overflow-y-hidden"
               style={{ 
                 transform: "translateY(-8px)",
                 height: "calc(100% + 16px)"
