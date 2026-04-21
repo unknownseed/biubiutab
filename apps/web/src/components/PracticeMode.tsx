@@ -329,8 +329,12 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
         if (pendingPlayRef.current) {
           pendingPlayRef.current = false;
           try {
-            api.playPause();
-          } catch {}
+            if (api.playerState === 0) {
+              api.playPause();
+            }
+          } catch (e) {
+            console.warn("Error starting playback on ready:", e);
+          }
         }
       });
 
@@ -428,9 +432,13 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
         const dur = lastChordEndTimeRef.current;
         if (dur > 0 && sec >= dur && api.playerState === 1) {
           try {
-            api.playPause(); // Pause the playback
+            if (api.playerState === 1) {
+              api.playPause(); // Pause the playback
+            }
             api.timePosition = 0; // Reset to start
-          } catch {}
+          } catch (e) {
+            console.warn("Error auto-stopping at end:", e);
+          }
           return;
         }
         
@@ -469,8 +477,12 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
           if (pendingPlayRef.current) {
             pendingPlayRef.current = false;
             try {
-              api.playPause();
-            } catch {}
+              if (api.playerState === 0) {
+                api.playPause();
+              }
+            } catch (e) {
+              console.warn("Error starting playback from timeout:", e);
+            }
           }
         }
       }, 300);
@@ -552,10 +564,15 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
       if (activeTrackIndexRef.current !== 0) {
         setActiveTrackIndex(0);
       }
-      if (api.playerState === 1) {
-        api.playPause();
+      
+      try {
+        if (api.playerState === 1) {
+          api.playPause();
+        }
+        api.timePosition = 0;
+      } catch (e) {
+        console.warn("Error pausing or resetting timePosition:", e);
       }
-      api.timePosition = 0;
       
       loadedGp5DataRef.current = gp5Data;
       
@@ -602,7 +619,11 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
 
     if (isPlaying) {
       if (USE_TONE_JS) guitarSamplerRef.current?.stopAll();
-      alphaTabApiRef.current.playPause();
+      try {
+        alphaTabApiRef.current.playPause();
+      } catch (e) {
+        console.warn("Error pausing:", e);
+      }
     } else if (countdown !== null) {
       // Cancel countdown if they click pause while counting down
       if (countdownTimerRef.current) {
@@ -632,8 +653,12 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
             countdownTimerRef.current = null;
           }
           setCountdown(null);
-          if (alphaTabApiRef.current) {
-            alphaTabApiRef.current.playPause();
+          try {
+            if (alphaTabApiRef.current?.playerState === 0) {
+              alphaTabApiRef.current.playPause();
+            }
+          } catch (e) {
+            console.warn("Error resuming playback:", e);
           }
         }
       }, intervalMs);
