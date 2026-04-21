@@ -156,6 +156,18 @@ def separate_stems(audio_path: str, output_dir: str) -> Dict[str, str]:
         if parts:
             _sum_wavs(parts, no_vocals_path)
 
+    # Build accompaniment = bass + other + guitar + piano (no drums, no vocals)
+    # This is perfect for harmonic and chord detection in 6-stems mode
+    accompaniment_path = stem_dir / "accompaniment.wav"
+    if not accompaniment_path.exists():
+        acc_parts: list[Path] = []
+        for k in ("bass", "other", "guitar", "piano"):
+            if k in stems:
+                acc_parts.append(stems[k])
+        if acc_parts:
+            _sum_wavs(acc_parts, accompaniment_path)
+            stems["accompaniment"] = accompaniment_path
+
     out: dict[str, str] = {k: str(v) for k, v in stems.items()}
     if no_vocals_path.exists():
         out["no_vocals"] = str(no_vocals_path)

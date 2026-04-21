@@ -283,8 +283,10 @@ async def _run_job(job_id: str) -> None:
             job.message = "正在寻找和弦的色彩与心跳的节拍..."
             job.preview = {"step": "hpss"}
 
-            # Choose accompaniment stem for HPSS
-            acc_path = stems_tmp.get("other") or stems_tmp.get("no_vocals") or str(upload_copy)
+            # Choose accompaniment stem for HPSS and chord detection
+            # 6-stems mode provides 'accompaniment' (bass+guitar+piano+other)
+            # which is perfect for chord detection as it excludes vocals and drums.
+            acc_path = stems_tmp.get("accompaniment") or stems_tmp.get("no_vocals") or stems_tmp.get("other") or str(upload_copy)
             try:
                 hpss_tmp = await asyncio.to_thread(extract_harmonic_percussive, acc_path)
             except Exception as e:
