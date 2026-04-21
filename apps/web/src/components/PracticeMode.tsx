@@ -215,6 +215,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
           scriptFile,
           useWorkers: false,
           logLevel: mod.LogLevel.Info,
+          tracks: [0],
         },
         player: {
           enablePlayer: true,
@@ -477,7 +478,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
       try {
         let ok = false;
         try {
-          ok = api.load(gp5Data);
+          ok = api.load(gp5Data, [0]);
         } catch {
           ok = false;
         }
@@ -521,7 +522,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
       api.timePosition = 0;
       let ok = false;
       try {
-        ok = api.load(gp5Data);
+        ok = api.load(gp5Data, [0]);
       } catch {
         ok = false;
       }
