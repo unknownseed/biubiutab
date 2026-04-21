@@ -520,6 +520,12 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
   useEffect(() => {
     const api = alphaTabApiRef.current;
     if (!api) return;
+    
+    // Check if the current score is already loaded
+    if (api.score) {
+      return; // Skip reloading the same data
+    }
+    
     try {
       setTracks([]);
       if (activeTrackIndexRef.current !== 0) {
