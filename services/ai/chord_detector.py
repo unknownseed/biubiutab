@@ -82,9 +82,10 @@ def _detect_chords_madmom_to_bars(audio_path: str, beat_times: np.ndarray, beats
     conf_th = float(os.environ.get("CHORD_MIN_CONFIDENCE", "0.28"))
     quality_delta = float(os.environ.get("CHORD_QUALITY_DELTA", "0.03"))
 
+    import math
     events: list[ChordEvent] = []
     beat_count = beat_times.size
-    bar_count = (beat_count - 1) // beats_per_bar
+    bar_count = math.ceil((beat_count - 1) / beats_per_bar)
     if bar_count < 1:
         bar_count = 1
 
@@ -251,6 +252,8 @@ def analyze_audio_multi(
 
     Backward compatible: `analyze_audio()` calls this with all paths = audio_path.
     """
+    from chord_simplifier import simplify_chord
+
     tempo_path = tempo_path or audio_path
     chord_path = chord_path or audio_path
     key_path = key_path or audio_path
@@ -261,11 +264,31 @@ def analyze_audio_multi(
     tempo_bpm, beat_times = detect_tempo(y_tempo, sr_tempo)
     if beat_times.size < 2:
         beat_times = np.asarray([0.0, float(duration_sec)], dtype=np.float32)
+    else:
+        # Extrapolate beat_times to cover the entire audio duration
+        avg_interval = (beat_times[-1] - beat_times[0]) / max(1, len(beat_times) - 1)
+        
+        # Extrapolate backwards to 0.0
+        front_beats = []
+        curr = beat_times[0] - avg_interval
+        while curr > 0.0:
+            front_beats.append(curr)
+            curr -= avg_interval
+        front_beats.reverse()
+        
+        # Extrapolate forwards to duration_sec
+        back_beats = []
+        curr = beat_times[-1] + avg_interval
+        while curr < duration_sec:
+            back_beats.append(curr)
+            curr += avg_interval
+            
+        beat_times = np.concatenate([front_beats, beat_times, back_beats]).astype(np.float32)
 
     # Chords (prefer madmom via audio_path=chord_path)
     y_chord, sr_chord = librosa.load(chord_path, sr=None, mono=True)
     chords = detect_chords(y_chord, sr_chord, beat_times, beats_per_bar=4, audio_path=chord_path)
-    bar_chords = [c.chord for c in chords]
+    bar_chords = [simplify_chord(c.chord) for c in chords]
 
     # Key (from chroma of key_path)
     y_key, sr_key = librosa.load(key_path, sr=None, mono=True)

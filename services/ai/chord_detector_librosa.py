@@ -128,6 +128,9 @@ def detect_key_from_chroma(chroma_mean: np.ndarray) -> str:
     return best_key
 
 
+import math
+
+# Simplify for beginners: removed dim, aug, add9
 _CHORD_QUALITIES: list[tuple[str, list[int], float]] = [
     ("", [0, 4, 7], 0.0),
     ("m", [0, 3, 7], 0.0),
@@ -136,9 +139,6 @@ _CHORD_QUALITIES: list[tuple[str, list[int], float]] = [
     ("m7", [0, 3, 7, 10], 0.03),
     ("sus2", [0, 2, 7], 0.02),
     ("sus4", [0, 5, 7], 0.02),
-    ("dim", [0, 3, 6], 0.02),
-    ("aug", [0, 4, 8], 0.02),
-    ("add9", [0, 2, 4, 7], 0.05),
 ]
 
 
@@ -175,7 +175,7 @@ def detect_chords(
 
     events: list[ChordEvent] = []
     beat_count = beat_times.size
-    bar_count = (beat_count - 1) // beats_per_bar
+    bar_count = math.ceil((beat_count - 1) / beats_per_bar)
     if bar_count < 1:
         bar_count = 1
 
@@ -217,7 +217,27 @@ def analyze_audio(audio_path: str, title: str) -> AudioAnalysis:
     tempo_bpm, beat_times = detect_tempo(y, sr)
 
     if beat_times.size < 2:
-        beat_times = np.asarray([0.0, float(librosa.get_duration(y=y, sr=sr))], dtype=np.float32)
+        beat_times = np.asarray([0.0, duration_sec], dtype=np.float32)
+    else:
+        # Extrapolate beat_times to cover the entire audio duration
+        avg_interval = (beat_times[-1] - beat_times[0]) / max(1, len(beat_times) - 1)
+        
+        # Extrapolate backwards to 0.0
+        front_beats = []
+        curr = beat_times[0] - avg_interval
+        while curr > 0.0:
+            front_beats.append(curr)
+            curr -= avg_interval
+        front_beats.reverse()
+        
+        # Extrapolate forwards to duration_sec
+        back_beats = []
+        curr = beat_times[-1] + avg_interval
+        while curr < duration_sec:
+            back_beats.append(curr)
+            curr += avg_interval
+            
+        beat_times = np.concatenate([front_beats, beat_times, back_beats]).astype(np.float32)
 
     chords = detect_chords(y, sr, beat_times, beats_per_bar=4)
     bar_chords = [c.chord for c in chords]
