@@ -67,13 +67,15 @@ def _sum_wavs(paths: list[Path], out_path: Path) -> None:
 
 def separate_stems(audio_path: str, output_dir: str) -> Dict[str, str]:
     """
-    使用 Demucs 做音源分离
+    使用 Demucs 做 6-stem 音源分离
 
     返回：
     {
       "vocals": ".../vocals.wav",
       "drums": ".../drums.wav",
       "bass": ".../bass.wav",
+      "guitar": ".../guitar.wav",
+      "piano": ".../piano.wav",
       "other": ".../other.wav",
       "no_vocals": ".../no_vocals.wav"
     }
@@ -85,7 +87,8 @@ def separate_stems(audio_path: str, output_dir: str) -> Dict[str, str]:
     out_root = Path(output_dir).expanduser().resolve()
     out_root.mkdir(parents=True, exist_ok=True)
 
-    model = (os.environ.get("DEMUCS_MODEL") or "htdemucs").strip()
+    # Use htdemucs_6s for separating guitar and piano
+    model = (os.environ.get("DEMUCS_MODEL") or "htdemucs_6s").strip()
     device = _pick_device()
     shifts = int(os.environ.get("DEMUCS_SHIFTS") or "1")
     jobs = int(os.environ.get("DEMUCS_JOBS") or "1")
@@ -132,7 +135,8 @@ def separate_stems(audio_path: str, output_dir: str) -> Dict[str, str]:
 
     # Standard demucs file names
     stems: dict[str, Path] = {}
-    for name in ("vocals", "drums", "bass", "other"):
+    # demucs 6-stems has: vocals, drums, bass, other, guitar, piano
+    for name in ("vocals", "drums", "bass", "other", "guitar", "piano"):
         p = stem_dir / f"{name}.wav"
         if p.exists():
             stems[name] = p
@@ -142,11 +146,11 @@ def separate_stems(audio_path: str, output_dir: str) -> Dict[str, str]:
         found = ", ".join(sorted([p.name for p in stem_dir.glob("*.wav")]))
         raise RuntimeError(f"demucs output missing expected stems in {stem_dir}. found=[{found}]")
 
-    # Build no_vocals = drums + bass + other when possible
+    # Build no_vocals = drums + bass + other + guitar + piano when possible
     no_vocals_path = stem_dir / "no_vocals.wav"
     if not no_vocals_path.exists():
         parts: list[Path] = []
-        for k in ("drums", "bass", "other"):
+        for k in ("drums", "bass", "other", "guitar", "piano"):
             if k in stems:
                 parts.append(stems[k])
         if parts:

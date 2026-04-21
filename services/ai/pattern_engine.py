@@ -36,9 +36,9 @@ def load_library():
                 
     print(f"[pattern_engine] 已加载 {len(_INDEX_CACHE)} 个节奏模板")
 
-def find_best_pattern(bpm, section_energy=0.5):
+def find_best_pattern(bpm, section_energy=0.5, technique=None):
     """
-    根据歌曲的 BPM 和段落能量，找到最匹配的模板。
+    根据歌曲的 BPM、段落能量和指定的演奏手法 (arpeggio/strum)，找到最匹配的模板。
     """
     if not _INDEX_CACHE:
         load_library()
@@ -47,6 +47,10 @@ def find_best_pattern(bpm, section_energy=0.5):
     best_score = -999
     
     for entry in _INDEX_CACHE:
+        # 如果指定了演奏手法，强制过滤
+        if technique and entry.get("technique") and entry.get("technique") != technique:
+            continue
+            
         template_bpm = entry.get("bpm", 120)
         
         # 核心评分：BPM 越接近，分数越高

@@ -17,9 +17,11 @@ except ImportError:
 try:
     from .pattern_engine import load_library, find_best_pattern, transplant_pattern
     from .style_fuser import StyleFuser
+    from .technique_detector import detect_playing_technique
 except ImportError:
     from pattern_engine import load_library, find_best_pattern, transplant_pattern
     from style_fuser import StyleFuser
+    from technique_detector import detect_playing_technique
 
 # Initialize pattern library
 load_library()
@@ -51,6 +53,7 @@ def generate_gp5_binary(
     intro_bars: dict = None,
     accompaniment_path: Optional[str] = None,
     beat_times: Optional[list[float]] = None,
+    stems_paths: Optional[dict] = None,
 ) -> bytes:
     song = guitarpro.Song()
     song.tracks.clear()
@@ -99,7 +102,17 @@ def generate_gp5_binary(
     if accompaniment_path and beat_times:
         motif_template_beats = extract_rhythm_motif(accompaniment_path, beat_times, ts_num)
         
-    template_id = find_best_pattern(bpm=tempo, section_energy=energy)
+    # ── Detect Playing Technique (Strum vs Arpeggio) ──────────
+    technique = None
+    if stems_paths and beat_times and len(beat_times) > 0:
+        # 找歌曲最核心的部分（比如 30 秒左右，或者第 16 个小节）
+        start_idx = min(16 * ts_num, len(beat_times) - 1)
+        end_idx = min(start_idx + 8 * ts_num, len(beat_times) - 1)
+        if start_idx < end_idx:
+            technique = detect_playing_technique(stems_paths, beat_times[start_idx], beat_times[end_idx])
+            print(f"[gp_generator] Detected Technique: {technique}")
+
+    template_id = find_best_pattern(bpm=tempo, section_energy=energy, technique=technique)
 
     if template_id and chords_seq:
         # ── Step 2: Transplant pattern ──────────────────────────────────────
