@@ -2,7 +2,7 @@
   "id": "66a5b638",
   "is_dual": true,
   "meta": {
-    "title": "我是一只鱼",
+    "title": "\u6211\u662f\u4e00\u53ea\u9c7c",
     "bpm": 94,
     "time_signature": "1/4",
     "source_file": ""
@@ -2638,5 +2638,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

@@ -2,7 +2,7 @@
   "id": "8594ba9f",
   "is_dual": true,
   "meta": {
-    "title": "冬雨",
+    "title": "\u51ac\u96e8",
     "bpm": 78,
     "time_signature": "4/4",
     "source_file": ""
@@ -4116,5 +4116,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

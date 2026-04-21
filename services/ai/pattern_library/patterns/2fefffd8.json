@@ -2,7 +2,7 @@
   "id": "2fefffd8",
   "is_dual": true,
   "meta": {
-    "title": "金属狂人 (Metals Madman)",
+    "title": "\u91d1\u5c5e\u72c2\u4eba (Metals Madman)",
     "bpm": 132,
     "time_signature": "4/4",
     "source_file": ""
@@ -2311,5 +2311,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

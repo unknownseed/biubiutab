@@ -2,7 +2,7 @@
   "id": "691a4199",
   "is_dual": true,
   "meta": {
-    "title": "花心",
+    "title": "\u82b1\u5fc3",
     "bpm": 250,
     "time_signature": "4/4",
     "source_file": ""
@@ -2993,5 +2993,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

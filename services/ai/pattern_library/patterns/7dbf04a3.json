@@ -2,7 +2,7 @@
   "id": "7dbf04a3",
   "is_dual": true,
   "meta": {
-    "title": "回到拉萨",
+    "title": "\u56de\u5230\u62c9\u8428",
     "bpm": 115,
     "time_signature": "4/4",
     "source_file": ""
@@ -2257,5 +2257,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

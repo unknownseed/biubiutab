@@ -2,7 +2,7 @@
   "id": "96bb5ccb",
   "is_dual": true,
   "meta": {
-    "title": "长安街上",
+    "title": "\u957f\u5b89\u8857\u4e0a",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -7262,5 +7262,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

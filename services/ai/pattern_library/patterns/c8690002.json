@@ -2,7 +2,7 @@
   "id": "c8690002",
   "is_dual": true,
   "meta": {
-    "title": "爱之初体验",
+    "title": "\u7231\u4e4b\u521d\u4f53\u9a8c",
     "bpm": 130,
     "time_signature": "4/4",
     "source_file": ""
@@ -4216,5 +4216,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

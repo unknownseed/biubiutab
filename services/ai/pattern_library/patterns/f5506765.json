@@ -2,7 +2,7 @@
   "id": "f5506765",
   "is_dual": false,
   "meta": {
-    "title": "青鸟1（原版）",
+    "title": "\u9752\u9e1f1\uff08\u539f\u7248\uff09",
     "bpm": 110,
     "time_signature": "4/4",
     "source_file": ""
@@ -2955,5 +2955,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "df2aa9cb",
   "is_dual": true,
   "meta": {
-    "title": "爱不留",
+    "title": "\u7231\u4e0d\u7559",
     "bpm": 68,
     "time_signature": "4/4",
     "source_file": ""
@@ -6957,5 +6957,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

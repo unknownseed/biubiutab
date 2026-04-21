@@ -2,7 +2,7 @@
   "id": "2ed5633a",
   "is_dual": true,
   "meta": {
-    "title": "原来的我",
+    "title": "\u539f\u6765\u7684\u6211",
     "bpm": 64,
     "time_signature": "4/4",
     "source_file": ""
@@ -6021,5 +6021,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

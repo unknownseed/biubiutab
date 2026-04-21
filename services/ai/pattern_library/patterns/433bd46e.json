@@ -2,7 +2,7 @@
   "id": "433bd46e",
   "is_dual": false,
   "meta": {
-    "title": "愚人码头",
+    "title": "\u611a\u4eba\u7801\u5934",
     "bpm": 94,
     "time_signature": "4/4",
     "source_file": ""
@@ -1771,5 +1771,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

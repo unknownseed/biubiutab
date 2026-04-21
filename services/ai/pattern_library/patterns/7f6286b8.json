@@ -2,7 +2,7 @@
   "id": "7f6286b8",
   "is_dual": true,
   "meta": {
-    "title": "路口",
+    "title": "\u8def\u53e3",
     "bpm": 148,
     "time_signature": "4/4",
     "source_file": ""
@@ -2511,5 +2511,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

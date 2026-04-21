@@ -2,7 +2,7 @@
   "id": "cdc0bddb",
   "is_dual": true,
   "meta": {
-    "title": "许巍——《那一年》",
+    "title": "\u8bb8\u5dcd\u2014\u2014\u300a\u90a3\u4e00\u5e74\u300b",
     "bpm": 110,
     "time_signature": "4/4",
     "source_file": ""
@@ -4657,5 +4657,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

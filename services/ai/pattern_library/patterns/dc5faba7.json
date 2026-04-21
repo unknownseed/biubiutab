@@ -2,7 +2,7 @@
   "id": "dc5faba7",
   "is_dual": false,
   "meta": {
-    "title": "·R§Ú§O¨«(¤ì¦N¥L¿W«µªO)",
+    "title": "\u00b7R\u00a7\u00da\u00a7O\u00a8\u00ab(\u00a4\u00ec\u00a6N\u00a5L\u00bfW\u00ab\u00b5\u00aaO)",
     "bpm": 90,
     "time_signature": "4/4",
     "source_file": ""
@@ -2363,5 +2363,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

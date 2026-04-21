@@ -2,7 +2,7 @@
   "id": "41a0e31f",
   "is_dual": false,
   "meta": {
-    "title": "执迷不悔",
+    "title": "\u6267\u8ff7\u4e0d\u6094",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -2194,5 +2194,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

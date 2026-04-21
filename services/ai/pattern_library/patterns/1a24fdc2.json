@@ -2,7 +2,7 @@
   "id": "1a24fdc2",
   "is_dual": true,
   "meta": {
-    "title": "爱很简单",
+    "title": "\u7231\u5f88\u7b80\u5355",
     "bpm": 75,
     "time_signature": "4/4",
     "source_file": ""
@@ -3210,5 +3210,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

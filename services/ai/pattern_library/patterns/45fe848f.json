@@ -2,7 +2,7 @@
   "id": "45fe848f",
   "is_dual": true,
   "meta": {
-    "title": "吉他弹唱（礼物）许巍",
+    "title": "\u5409\u4ed6\u5f39\u5531\uff08\u793c\u7269\uff09\u8bb8\u5dcd",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -6923,5 +6923,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "94dead76",
   "is_dual": true,
   "meta": {
-    "title": "执着·许巍  www.xiermusic.com  柳",
+    "title": "\u6267\u7740\u00b7\u8bb8\u5dcd  www.xiermusic.com  \u67f3",
     "bpm": 75,
     "time_signature": "4/4",
     "source_file": ""
@@ -5733,5 +5733,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

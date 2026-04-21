@@ -2,7 +2,7 @@
   "id": "513dfa10",
   "is_dual": false,
   "meta": {
-    "title": "§Ú¬°§A¶Ë¤ß (Capo¡G2)",
+    "title": "\u00a7\u00da\u00ac\u00b0\u00a7A\u00b6\u00cb\u00a4\u00df (Capo\u00a1G2)",
     "bpm": 60,
     "time_signature": "1/8",
     "source_file": ""
@@ -3554,5 +3554,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

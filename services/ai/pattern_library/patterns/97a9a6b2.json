@@ -2,7 +2,7 @@
   "id": "97a9a6b2",
   "is_dual": true,
   "meta": {
-    "title": "暮仔埔也敢去(伍佰)",
+    "title": "\u66ae\u4ed4\u57d4\u4e5f\u6562\u53bb(\u4f0d\u4f70)",
     "bpm": 175,
     "time_signature": "4/4",
     "source_file": ""
@@ -4159,5 +4159,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

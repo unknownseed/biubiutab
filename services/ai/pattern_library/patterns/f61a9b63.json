@@ -2,7 +2,7 @@
   "id": "f61a9b63",
   "is_dual": true,
   "meta": {
-    "title": "追梦人",
+    "title": "\u8ffd\u68a6\u4eba",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -3724,5 +3724,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

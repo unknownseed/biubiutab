@@ -2,7 +2,7 @@
   "id": "e751e587",
   "is_dual": true,
   "meta": {
-    "title": "外面的世界",
+    "title": "\u5916\u9762\u7684\u4e16\u754c",
     "bpm": 150,
     "time_signature": "4/4",
     "source_file": ""
@@ -3252,5 +3252,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

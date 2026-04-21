@@ -2,7 +2,7 @@
   "id": "8d9e7661",
   "is_dual": false,
   "meta": {
-    "title": "菊花台",
+    "title": "\u83ca\u82b1\u53f0",
     "bpm": 85,
     "time_signature": "4/4",
     "source_file": ""
@@ -1999,5 +1999,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

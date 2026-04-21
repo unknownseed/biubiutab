@@ -2,7 +2,7 @@
   "id": "191ccf94",
   "is_dual": false,
   "meta": {
-    "title": "甜蜜蜜",
+    "title": "\u751c\u871c\u871c",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -1907,5 +1907,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

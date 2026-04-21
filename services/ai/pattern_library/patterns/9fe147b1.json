@@ -2,7 +2,7 @@
   "id": "9fe147b1",
   "is_dual": true,
   "meta": {
-    "title": "信仰",
+    "title": "\u4fe1\u4ef0",
     "bpm": 72,
     "time_signature": "4/4",
     "source_file": ""
@@ -6120,5 +6120,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

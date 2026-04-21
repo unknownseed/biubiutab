@@ -2,7 +2,7 @@
   "id": "0f068a65",
   "is_dual": true,
   "meta": {
-    "title": "龙的传人",
+    "title": "\u9f99\u7684\u4f20\u4eba",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -3205,5 +3205,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

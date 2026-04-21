@@ -2,7 +2,7 @@
   "id": "2422a99c",
   "is_dual": false,
   "meta": {
-    "title": "布拉格广场_蔡依林(roromax制作QQ668013)",
+    "title": "\u5e03\u62c9\u683c\u5e7f\u573a_\u8521\u4f9d\u6797(roromax\u5236\u4f5cQQ668013)",
     "bpm": 95,
     "time_signature": "4/4",
     "source_file": ""
@@ -963,5 +963,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

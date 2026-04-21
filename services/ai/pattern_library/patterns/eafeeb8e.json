@@ -2,7 +2,7 @@
   "id": "eafeeb8e",
   "is_dual": true,
   "meta": {
-    "title": "你的样子·林志炫  www.shaowei.com  柳",
+    "title": "\u4f60\u7684\u6837\u5b50\u00b7\u6797\u5fd7\u70ab  www.shaowei.com  \u67f3",
     "bpm": 72,
     "time_signature": "4/4",
     "source_file": ""
@@ -5407,5 +5407,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

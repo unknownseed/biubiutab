@@ -2,7 +2,7 @@
   "id": "20048b50",
   "is_dual": true,
   "meta": {
-    "title": "当时的月亮       王菲",
+    "title": "\u5f53\u65f6\u7684\u6708\u4eae       \u738b\u83f2",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -5911,5 +5911,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

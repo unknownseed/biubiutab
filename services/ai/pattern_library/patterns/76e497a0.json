@@ -2,7 +2,7 @@
   "id": "76e497a0",
   "is_dual": true,
   "meta": {
-    "title": "忽然之间·莫文蔚  www.shaowei.com  柳",
+    "title": "\u5ffd\u7136\u4e4b\u95f4\u00b7\u83ab\u6587\u851a  www.shaowei.com  \u67f3",
     "bpm": 70,
     "time_signature": "4/4",
     "source_file": ""
@@ -3669,5 +3669,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

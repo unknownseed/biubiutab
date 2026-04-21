@@ -2,7 +2,7 @@
   "id": "27f87da7",
   "is_dual": true,
   "meta": {
-    "title": "吉尔拉--梦魇乐队谱",
+    "title": "\u5409\u5c14\u62c9--\u68a6\u9b47\u4e50\u961f\u8c31",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -3603,5 +3603,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "088614b5",
   "is_dual": true,
   "meta": {
-    "title": "命运的深渊（新做）",
+    "title": "\u547d\u8fd0\u7684\u6df1\u6e0a\uff08\u65b0\u505a\uff09",
     "bpm": 86,
     "time_signature": "4/4",
     "source_file": ""
@@ -3937,5 +3937,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

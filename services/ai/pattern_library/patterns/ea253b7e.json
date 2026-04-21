@@ -2,7 +2,7 @@
   "id": "ea253b7e",
   "is_dual": false,
   "meta": {
-    "title": "隐形的翅膀",
+    "title": "\u9690\u5f62\u7684\u7fc5\u8180",
     "bpm": 90,
     "time_signature": "4/4",
     "source_file": ""
@@ -1902,5 +1902,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

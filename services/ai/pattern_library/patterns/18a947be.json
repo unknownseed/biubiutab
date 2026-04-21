@@ -2,7 +2,7 @@
   "id": "18a947be",
   "is_dual": true,
   "meta": {
-    "title": "陈奕迅-十年（明年今日）",
+    "title": "\u9648\u5955\u8fc5-\u5341\u5e74\uff08\u660e\u5e74\u4eca\u65e5\uff09",
     "bpm": 62,
     "time_signature": "4/4",
     "source_file": ""
@@ -7434,5 +7434,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

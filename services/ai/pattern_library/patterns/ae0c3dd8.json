@@ -2,7 +2,7 @@
   "id": "ae0c3dd8",
   "is_dual": true,
   "meta": {
-    "title": "与你到永久",
+    "title": "\u4e0e\u4f60\u5230\u6c38\u4e45",
     "bpm": 66,
     "time_signature": "4/4",
     "source_file": ""
@@ -5169,5 +5169,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

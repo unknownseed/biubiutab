@@ -2,7 +2,7 @@
   "id": "f9c4a0b5",
   "is_dual": false,
   "meta": {
-    "title": "《少女的祈祷》   原唱：杨千华    配曲：庄家锐",
+    "title": "\u300a\u5c11\u5973\u7684\u7948\u7977\u300b   \u539f\u5531\uff1a\u6768\u5343\u534e    \u914d\u66f2\uff1a\u5e84\u5bb6\u9510",
     "bpm": 125,
     "time_signature": "4/4",
     "source_file": ""
@@ -1815,5 +1815,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

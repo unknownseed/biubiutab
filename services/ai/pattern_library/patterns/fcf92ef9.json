@@ -2,7 +2,7 @@
   "id": "fcf92ef9",
   "is_dual": false,
   "meta": {
-    "title": "冬季到台北来看雨",
+    "title": "\u51ac\u5b63\u5230\u53f0\u5317\u6765\u770b\u96e8",
     "bpm": 92,
     "time_signature": "4/4",
     "source_file": ""
@@ -2242,5 +2242,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

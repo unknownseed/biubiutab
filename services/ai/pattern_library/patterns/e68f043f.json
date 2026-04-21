@@ -2,7 +2,7 @@
   "id": "e68f043f",
   "is_dual": true,
   "meta": {
-    "title": "尺",
+    "title": "\u5c3a",
     "bpm": 125,
     "time_signature": "2/4",
     "source_file": ""
@@ -4414,5 +4414,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

@@ -2,7 +2,7 @@
   "id": "191b44ca",
   "is_dual": true,
   "meta": {
-    "title": "那些花儿·范玮琪  www.xiermusic.com  柳",
+    "title": "\u90a3\u4e9b\u82b1\u513f\u00b7\u8303\u73ae\u742a  www.xiermusic.com  \u67f3",
     "bpm": 115,
     "time_signature": "4/4",
     "source_file": ""
@@ -2040,5 +2040,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

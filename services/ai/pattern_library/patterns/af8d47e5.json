@@ -2,7 +2,7 @@
   "id": "af8d47e5",
   "is_dual": true,
   "meta": {
-    "title": "伤心1999 - 王杰 ",
+    "title": "\u4f24\u5fc31999 - \u738b\u6770 ",
     "bpm": 65,
     "time_signature": "4/4",
     "source_file": ""
@@ -6559,5 +6559,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

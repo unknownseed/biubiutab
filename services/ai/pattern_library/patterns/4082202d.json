@@ -2,7 +2,7 @@
   "id": "4082202d",
   "is_dual": true,
   "meta": {
-    "title": "我们这里还有鱼",
+    "title": "\u6211\u4eec\u8fd9\u91cc\u8fd8\u6709\u9c7c",
     "bpm": 63,
     "time_signature": "4/4",
     "source_file": ""
@@ -5728,5 +5728,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

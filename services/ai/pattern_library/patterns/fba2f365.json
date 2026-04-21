@@ -2,7 +2,7 @@
   "id": "fba2f365",
   "is_dual": false,
   "meta": {
-    "title": "¶Â¦â«ÕÀq",
+    "title": "\u00b6\u00c2\u00a6\u00e2\u00ab\u00d5\u00c0q",
     "bpm": 64,
     "time_signature": "4/4",
     "source_file": ""
@@ -2146,5 +2146,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

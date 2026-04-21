@@ -2,7 +2,7 @@
   "id": "3dcb109a",
   "is_dual": false,
   "meta": {
-    "title": "一千个伤心的理由",
+    "title": "\u4e00\u5343\u4e2a\u4f24\u5fc3\u7684\u7406\u7531",
     "bpm": 72,
     "time_signature": "4/4",
     "source_file": ""
@@ -1638,5 +1638,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

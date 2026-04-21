@@ -2,7 +2,7 @@
   "id": "8dd38db0",
   "is_dual": false,
   "meta": {
-    "title": "单人",
+    "title": "\u5355\u4eba",
     "bpm": 60,
     "time_signature": "2/4",
     "source_file": ""
@@ -1142,5 +1142,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

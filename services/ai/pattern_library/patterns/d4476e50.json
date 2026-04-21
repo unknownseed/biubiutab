@@ -2,7 +2,7 @@
   "id": "d4476e50",
   "is_dual": true,
   "meta": {
-    "title": "一路上有你",
+    "title": "\u4e00\u8def\u4e0a\u6709\u4f60",
     "bpm": 93,
     "time_signature": "4/4",
     "source_file": ""
@@ -3326,5 +3326,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

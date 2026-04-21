@@ -2,7 +2,7 @@
   "id": "b6168a48",
   "is_dual": true,
   "meta": {
-    "title": "来自我心",
+    "title": "\u6765\u81ea\u6211\u5fc3",
     "bpm": 72,
     "time_signature": "4/4",
     "source_file": ""
@@ -6688,5 +6688,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

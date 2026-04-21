@@ -2,7 +2,7 @@
   "id": "c971f2d0",
   "is_dual": true,
   "meta": {
-    "title": "ª÷ÄÝ¨g¤H Live & Basic",
+    "title": "\u00aa\u00f7\u00c4\u00dd\u00a8g\u00a4H Live & Basic",
     "bpm": 130,
     "time_signature": "4/4",
     "source_file": ""
@@ -7197,5 +7197,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

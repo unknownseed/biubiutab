@@ -2,7 +2,7 @@
   "id": "e68d23eb",
   "is_dual": true,
   "meta": {
-    "title": "青春",
+    "title": "\u9752\u6625",
     "bpm": 106,
     "time_signature": "6/8",
     "source_file": ""
@@ -2376,5 +2376,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

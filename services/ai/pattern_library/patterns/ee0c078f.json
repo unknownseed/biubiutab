@@ -2,7 +2,7 @@
   "id": "ee0c078f",
   "is_dual": false,
   "meta": {
-    "title": "一千年以后",
+    "title": "\u4e00\u5343\u5e74\u4ee5\u540e",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -4912,5 +4912,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

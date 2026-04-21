@@ -2,7 +2,7 @@
   "id": "32ea78ee",
   "is_dual": true,
   "meta": {
-    "title": "难念的经　　QQ:40641",
+    "title": "\u96be\u5ff5\u7684\u7ecf\u3000\u3000QQ:40641",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -8800,5 +8800,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

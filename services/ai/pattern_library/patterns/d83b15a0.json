@@ -2,7 +2,7 @@
   "id": "d83b15a0",
   "is_dual": false,
   "meta": {
-    "title": "泪桥（完美版）",
+    "title": "\u6cea\u6865\uff08\u5b8c\u7f8e\u7248\uff09",
     "bpm": 70,
     "time_signature": "4/4",
     "source_file": ""
@@ -4211,5 +4211,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

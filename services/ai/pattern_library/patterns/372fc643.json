@@ -2,7 +2,7 @@
   "id": "372fc643",
   "is_dual": true,
   "meta": {
-    "title": "一生最爱的人",
+    "title": "\u4e00\u751f\u6700\u7231\u7684\u4eba",
     "bpm": 74,
     "time_signature": "4/4",
     "source_file": ""
@@ -9797,5 +9797,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

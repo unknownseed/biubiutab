@@ -2,7 +2,7 @@
   "id": "afec5960",
   "is_dual": true,
   "meta": {
-    "title": "天使与海豚",
+    "title": "\u5929\u4f7f\u4e0e\u6d77\u8c5a",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -3619,5 +3619,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

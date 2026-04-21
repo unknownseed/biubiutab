@@ -2,7 +2,7 @@
   "id": "9b9bee67",
   "is_dual": true,
   "meta": {
-    "title": "郑均·溺爱  www.xiermusic.com  柳",
+    "title": "\u90d1\u5747\u00b7\u6eba\u7231  www.xiermusic.com  \u67f3",
     "bpm": 95,
     "time_signature": "4/4",
     "source_file": ""
@@ -3405,5 +3405,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

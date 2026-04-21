@@ -2,7 +2,7 @@
   "id": "d4bcf58d",
   "is_dual": true,
   "meta": {
-    "title": "彩虹-----许巍",
+    "title": "\u5f69\u8679-----\u8bb8\u5dcd",
     "bpm": 140,
     "time_signature": "4/4",
     "source_file": ""
@@ -4579,5 +4579,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

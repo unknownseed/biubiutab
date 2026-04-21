@@ -2,7 +2,7 @@
   "id": "47bbe48a",
   "is_dual": true,
   "meta": {
-    "title": "新长征路上的摇滚",
+    "title": "\u65b0\u957f\u5f81\u8def\u4e0a\u7684\u6447\u6eda",
     "bpm": 125,
     "time_signature": "4/4",
     "source_file": ""
@@ -3410,5 +3410,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

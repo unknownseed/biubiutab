@@ -2,7 +2,7 @@
   "id": "3b4e0b1f",
   "is_dual": true,
   "meta": {
-    "title": "晴天阴天雨天（郑中基）",
+    "title": "\u6674\u5929\u9634\u5929\u96e8\u5929\uff08\u90d1\u4e2d\u57fa\uff09",
     "bpm": 129,
     "time_signature": "2/4",
     "source_file": ""
@@ -1725,5 +1725,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

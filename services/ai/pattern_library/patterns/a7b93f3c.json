@@ -2,7 +2,7 @@
   "id": "a7b93f3c",
   "is_dual": true,
   "meta": {
-    "title": "朋友——吉他演奏版",
+    "title": "\u670b\u53cb\u2014\u2014\u5409\u4ed6\u6f14\u594f\u7248",
     "bpm": 130,
     "time_signature": "4/4",
     "source_file": ""
@@ -2683,5 +2683,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

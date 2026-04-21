@@ -2,7 +2,7 @@
   "id": "f4fa369b",
   "is_dual": true,
   "meta": {
-    "title": "“了”乐队节奏吉他手——Bicky    QQ:37627081    Email:bicky@citiz.net     ",
+    "title": "\u201c\u4e86\u201d\u4e50\u961f\u8282\u594f\u5409\u4ed6\u624b\u2014\u2014Bicky    QQ:37627081    Email:bicky@citiz.net     ",
     "bpm": 150,
     "time_signature": "4/4",
     "source_file": ""
@@ -5199,5 +5199,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

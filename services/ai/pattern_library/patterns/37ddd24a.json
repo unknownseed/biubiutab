@@ -2,7 +2,7 @@
   "id": "37ddd24a",
   "is_dual": false,
   "meta": {
-    "title": "掌心·无应良品",
+    "title": "\u638c\u5fc3\u00b7\u65e0\u5e94\u826f\u54c1",
     "bpm": 75,
     "time_signature": "4/4",
     "source_file": ""
@@ -4383,5 +4383,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

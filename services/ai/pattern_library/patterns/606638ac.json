@@ -2,7 +2,7 @@
   "id": "606638ac",
   "is_dual": true,
   "meta": {
-    "title": "（郑均）流星",
+    "title": "\uff08\u90d1\u5747\uff09\u6d41\u661f",
     "bpm": 88,
     "time_signature": "4/4",
     "source_file": ""
@@ -5416,5 +5416,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

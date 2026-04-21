@@ -2,7 +2,7 @@
   "id": "187a6871",
   "is_dual": true,
   "meta": {
-    "title": "搁浅 GATASBY",
+    "title": "\u6401\u6d45 GATASBY",
     "bpm": 76,
     "time_signature": "4/4",
     "source_file": ""
@@ -5177,5 +5177,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

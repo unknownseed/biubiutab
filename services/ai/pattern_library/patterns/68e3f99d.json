@@ -2,7 +2,7 @@
   "id": "68e3f99d",
   "is_dual": false,
   "meta": {
-    "title": "真心英雄·群星  www.shaowei.com  柳",
+    "title": "\u771f\u5fc3\u82f1\u96c4\u00b7\u7fa4\u661f  www.shaowei.com  \u67f3",
     "bpm": 130,
     "time_signature": "3/4",
     "source_file": ""
@@ -1915,5 +1915,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

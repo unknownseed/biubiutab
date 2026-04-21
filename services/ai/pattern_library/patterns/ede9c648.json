@@ -2,7 +2,7 @@
   "id": "ede9c648",
   "is_dual": true,
   "meta": {
-    "title": "看我七十二变",
+    "title": "\u770b\u6211\u4e03\u5341\u4e8c\u53d8",
     "bpm": 126,
     "time_signature": "4/4",
     "source_file": ""
@@ -3007,5 +3007,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

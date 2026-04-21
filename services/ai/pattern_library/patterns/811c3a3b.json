@@ -2,7 +2,7 @@
   "id": "811c3a3b",
   "is_dual": true,
   "meta": {
-    "title": "倩女幽魂",
+    "title": "\u5029\u5973\u5e7d\u9b42",
     "bpm": 120,
     "time_signature": "1/4",
     "source_file": ""
@@ -1878,5 +1878,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

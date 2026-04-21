@@ -2,7 +2,7 @@
   "id": "0063333e",
   "is_dual": true,
   "meta": {
-    "title": "困兽之斗(乐队谱)",
+    "title": "\u56f0\u517d\u4e4b\u6597(\u4e50\u961f\u8c31)",
     "bpm": 133,
     "time_signature": "4/4",
     "source_file": ""
@@ -2935,5 +2935,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

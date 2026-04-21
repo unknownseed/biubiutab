@@ -2,7 +2,7 @@
   "id": "08ca2af3",
   "is_dual": true,
   "meta": {
-    "title": "东风破",
+    "title": "\u4e1c\u98ce\u7834",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -1741,5 +1741,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

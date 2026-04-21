@@ -2,7 +2,7 @@
   "id": "9131b34d",
   "is_dual": false,
   "meta": {
-    "title": "启程",
+    "title": "\u542f\u7a0b",
     "bpm": 96,
     "time_signature": "4/4",
     "source_file": ""
@@ -1040,5 +1040,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

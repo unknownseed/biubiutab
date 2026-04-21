@@ -2,7 +2,7 @@
   "id": "9aebd59b",
   "is_dual": true,
   "meta": {
-    "title": "昨天今天",
+    "title": "\u6628\u5929\u4eca\u5929",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -3738,5 +3738,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

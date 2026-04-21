@@ -2,7 +2,7 @@
   "id": "70292222",
   "is_dual": true,
   "meta": {
-    "title": "有梦好甜蜜",
+    "title": "\u6709\u68a6\u597d\u751c\u871c",
     "bpm": 63,
     "time_signature": "4/4",
     "source_file": ""
@@ -3880,5 +3880,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

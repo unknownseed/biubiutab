@@ -2,7 +2,7 @@
   "id": "7aaf3a4f",
   "is_dual": true,
   "meta": {
-    "title": "烛光（木吉它版）",
+    "title": "\u70db\u5149\uff08\u6728\u5409\u5b83\u7248\uff09",
     "bpm": 75,
     "time_signature": "4/4",
     "source_file": ""
@@ -3710,5 +3710,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

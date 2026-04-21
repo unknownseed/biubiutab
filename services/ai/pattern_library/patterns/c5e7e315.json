@@ -2,7 +2,7 @@
   "id": "c5e7e315",
   "is_dual": true,
   "meta": {
-    "title": "请你别对我说再见",
+    "title": "\u8bf7\u4f60\u522b\u5bf9\u6211\u8bf4\u518d\u89c1",
     "bpm": 73,
     "time_signature": "2/4",
     "source_file": ""
@@ -5831,5 +5831,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "98300835",
   "is_dual": true,
   "meta": {
-    "title": "看星 (See The Stars)",
+    "title": "\u770b\u661f (See The Stars)",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -5420,5 +5420,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

@@ -2,7 +2,7 @@
   "id": "3a43cc55",
   "is_dual": true,
   "meta": {
-    "title": "如果这都不算爱    ",
+    "title": "\u5982\u679c\u8fd9\u90fd\u4e0d\u7b97\u7231    ",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -4866,5 +4866,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

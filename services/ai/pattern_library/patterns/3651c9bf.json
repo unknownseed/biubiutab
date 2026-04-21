@@ -2,7 +2,7 @@
   "id": "3651c9bf",
   "is_dual": true,
   "meta": {
-    "title": "离家的路",
+    "title": "\u79bb\u5bb6\u7684\u8def",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -5614,5 +5614,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

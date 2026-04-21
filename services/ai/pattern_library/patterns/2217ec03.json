@@ -2,7 +2,7 @@
   "id": "2217ec03",
   "is_dual": true,
   "meta": {
-    "title": "突然的自我",
+    "title": "\u7a81\u7136\u7684\u81ea\u6211",
     "bpm": 78,
     "time_signature": "4/4",
     "source_file": ""
@@ -4064,5 +4064,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

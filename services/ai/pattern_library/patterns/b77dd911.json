@@ -2,7 +2,7 @@
   "id": "b77dd911",
   "is_dual": true,
   "meta": {
-    "title": "說愛你",
+    "title": "\u8aaa\u611b\u4f60",
     "bpm": 125,
     "time_signature": "4/4",
     "source_file": ""
@@ -3524,5 +3524,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

@@ -2,7 +2,7 @@
   "id": "7eadf039",
   "is_dual": false,
   "meta": {
-    "title": "李香兰",
+    "title": "\u674e\u9999\u5170",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -2583,5 +2583,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "d36e2810",
   "is_dual": true,
   "meta": {
-    "title": "许愿树（郑中基）",
+    "title": "\u8bb8\u613f\u6811\uff08\u90d1\u4e2d\u57fa\uff09",
     "bpm": 70,
     "time_signature": "2/4",
     "source_file": ""
@@ -4505,5 +4505,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

@@ -2,7 +2,7 @@
   "id": "7501a7a6",
   "is_dual": false,
   "meta": {
-    "title": "棋子",
+    "title": "\u68cb\u5b50",
     "bpm": 120,
     "time_signature": "12/8",
     "source_file": ""
@@ -447,5 +447,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

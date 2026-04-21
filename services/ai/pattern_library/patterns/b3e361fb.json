@@ -2,7 +2,7 @@
   "id": "b3e361fb",
   "is_dual": true,
   "meta": {
-    "title": "Girl in flower house(花房姑娘)",
+    "title": "Girl in flower house(\u82b1\u623f\u59d1\u5a18)",
     "bpm": 112,
     "time_signature": "4/4",
     "source_file": ""
@@ -4442,5 +4442,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

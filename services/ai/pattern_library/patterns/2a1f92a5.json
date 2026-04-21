@@ -2,7 +2,7 @@
   "id": "2a1f92a5",
   "is_dual": true,
   "meta": {
-    "title": "干杯朋友",
+    "title": "\u5e72\u676f\u670b\u53cb",
     "bpm": 96,
     "time_signature": "4/4",
     "source_file": ""
@@ -4545,5 +4545,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

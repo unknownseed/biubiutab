@@ -2,7 +2,7 @@
   "id": "31bc43c5",
   "is_dual": false,
   "meta": {
-    "title": "爱情多瑙河·熊天平  www.shaowei.com  柳",
+    "title": "\u7231\u60c5\u591a\u7459\u6cb3\u00b7\u718a\u5929\u5e73  www.shaowei.com  \u67f3",
     "bpm": 45,
     "time_signature": "4/4",
     "source_file": ""
@@ -3885,5 +3885,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

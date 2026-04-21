@@ -2,7 +2,7 @@
   "id": "5a7c91cd",
   "is_dual": true,
   "meta": {
-    "title": "¤£¬O©w²z (Remix ª©) - ÁÂ¾^¾W",
+    "title": "\u00a4\u00a3\u00acO\u00a9w\u00b2z (Remix \u00aa\u00a9) - \u00c1\u00c2\u00be^\u00beW",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -3511,5 +3511,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

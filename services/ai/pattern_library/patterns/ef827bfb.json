@@ -2,7 +2,7 @@
   "id": "ef827bfb",
   "is_dual": true,
   "meta": {
-    "title": "I believe(范逸臣演唱)",
+    "title": "I believe(\u8303\u9038\u81e3\u6f14\u5531)",
     "bpm": 68,
     "time_signature": "4/4",
     "source_file": ""
@@ -2149,5 +2149,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

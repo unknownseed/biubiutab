@@ -2,7 +2,7 @@
   "id": "59a1e80f",
   "is_dual": false,
   "meta": {
-    "title": "简单爱",
+    "title": "\u7b80\u5355\u7231",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -1851,5 +1851,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

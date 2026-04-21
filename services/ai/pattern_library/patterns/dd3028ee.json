@@ -2,7 +2,7 @@
   "id": "dd3028ee",
   "is_dual": true,
   "meta": {
-    "title": "每天爱你多一些",
+    "title": "\u6bcf\u5929\u7231\u4f60\u591a\u4e00\u4e9b",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -3066,5 +3066,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

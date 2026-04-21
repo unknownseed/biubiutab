@@ -2,7 +2,7 @@
   "id": "52b5a0ee",
   "is_dual": true,
   "meta": {
-    "title": "风筝",
+    "title": "\u98ce\u7b5d",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -2076,5 +2076,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

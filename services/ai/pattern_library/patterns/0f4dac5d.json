@@ -2,7 +2,7 @@
   "id": "0f4dac5d",
   "is_dual": false,
   "meta": {
-    "title": "夕阳之歌",
+    "title": "\u5915\u9633\u4e4b\u6b4c",
     "bpm": 68,
     "time_signature": "4/4",
     "source_file": ""
@@ -3064,5 +3064,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

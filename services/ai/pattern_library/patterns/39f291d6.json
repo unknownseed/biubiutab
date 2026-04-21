@@ -2,7 +2,7 @@
   "id": "39f291d6",
   "is_dual": true,
   "meta": {
-    "title": "这一次我绝不放手",
+    "title": "\u8fd9\u4e00\u6b21\u6211\u7edd\u4e0d\u653e\u624b",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -3506,5 +3506,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

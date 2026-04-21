@@ -2,7 +2,7 @@
   "id": "605e68e2",
   "is_dual": false,
   "meta": {
-    "title": "哭砂",
+    "title": "\u54ed\u7802",
     "bpm": 72,
     "time_signature": "4/4",
     "source_file": ""
@@ -1591,5 +1591,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

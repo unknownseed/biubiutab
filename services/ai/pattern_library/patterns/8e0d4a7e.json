@@ -2,7 +2,7 @@
   "id": "8e0d4a7e",
   "is_dual": true,
   "meta": {
-    "title": "月亮惹的祸",
+    "title": "\u6708\u4eae\u60f9\u7684\u7978",
     "bpm": 72,
     "time_signature": "4/4",
     "source_file": ""
@@ -5245,5 +5245,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "fed4ab19",
   "is_dual": true,
   "meta": {
-    "title": "因为爱所以爱",
+    "title": "\u56e0\u4e3a\u7231\u6240\u4ee5\u7231",
     "bpm": 65,
     "time_signature": "4/4",
     "source_file": ""
@@ -6233,5 +6233,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

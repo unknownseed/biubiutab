@@ -2,7 +2,7 @@
   "id": "738948d9",
   "is_dual": true,
   "meta": {
-    "title": "猫咪森林(前奏和间奏)",
+    "title": "\u732b\u54aa\u68ee\u6797(\u524d\u594f\u548c\u95f4\u594f)",
     "bpm": 72,
     "time_signature": "4/4",
     "source_file": ""
@@ -5397,5 +5397,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

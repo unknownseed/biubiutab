@@ -2,7 +2,7 @@
   "id": "76d0f437",
   "is_dual": true,
   "meta": {
-    "title": "社會主義好",
+    "title": "\u793e\u6703\u4e3b\u7fa9\u597d",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -2784,5 +2784,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

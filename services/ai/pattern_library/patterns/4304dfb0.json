@@ -2,7 +2,7 @@
   "id": "4304dfb0",
   "is_dual": true,
   "meta": {
-    "title": "浪花一朵朵——任贤齐、阿牛、光良",
+    "title": "\u6d6a\u82b1\u4e00\u6735\u6735\u2014\u2014\u4efb\u8d24\u9f50\u3001\u963f\u725b\u3001\u5149\u826f",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -6954,5 +6954,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

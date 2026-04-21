@@ -2,7 +2,7 @@
   "id": "6c080b7f",
   "is_dual": true,
   "meta": {
-    "title": "故乡--许魏",
+    "title": "\u6545\u4e61--\u8bb8\u9b4f",
     "bpm": 71,
     "time_signature": "4/4",
     "source_file": ""
@@ -6964,5 +6964,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

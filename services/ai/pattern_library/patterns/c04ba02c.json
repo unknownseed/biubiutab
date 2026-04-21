@@ -2,7 +2,7 @@
   "id": "c04ba02c",
   "is_dual": true,
   "meta": {
-    "title": "怒放",
+    "title": "\u6012\u653e",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -4329,5 +4329,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

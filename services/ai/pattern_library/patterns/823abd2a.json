@@ -2,7 +2,7 @@
   "id": "823abd2a",
   "is_dual": true,
   "meta": {
-    "title": "一块红布",
+    "title": "\u4e00\u5757\u7ea2\u5e03",
     "bpm": 125,
     "time_signature": "4/4",
     "source_file": ""
@@ -5020,5 +5020,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

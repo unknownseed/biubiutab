@@ -2,7 +2,7 @@
   "id": "dd3413db",
   "is_dual": true,
   "meta": {
-    "title": "以父之名  湖南吉他网--http://www.hnguitar.com--收集整理",
+    "title": "\u4ee5\u7236\u4e4b\u540d  \u6e56\u5357\u5409\u4ed6\u7f51--http://www.hnguitar.com--\u6536\u96c6\u6574\u7406",
     "bpm": 90,
     "time_signature": "4/4",
     "source_file": ""
@@ -2777,5 +2777,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

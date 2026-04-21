@@ -2,7 +2,7 @@
   "id": "cdd2aa98",
   "is_dual": true,
   "meta": {
-    "title": "晚风",
+    "title": "\u665a\u98ce",
     "bpm": 65,
     "time_signature": "4/4",
     "source_file": ""
@@ -8325,5 +8325,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

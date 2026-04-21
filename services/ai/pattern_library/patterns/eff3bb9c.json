@@ -2,7 +2,7 @@
   "id": "eff3bb9c",
   "is_dual": true,
   "meta": {
-    "title": "王菲－怀念",
+    "title": "\u738b\u83f2\uff0d\u6000\u5ff5",
     "bpm": 89,
     "time_signature": "4/4",
     "source_file": ""
@@ -2106,5 +2106,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

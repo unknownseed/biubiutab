@@ -2,7 +2,7 @@
   "id": "63852945",
   "is_dual": false,
   "meta": {
-    "title": "开始懂了",
+    "title": "\u5f00\u59cb\u61c2\u4e86",
     "bpm": 56,
     "time_signature": "4/4",
     "source_file": ""
@@ -3892,5 +3892,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

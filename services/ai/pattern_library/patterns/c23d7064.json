@@ -2,7 +2,7 @@
   "id": "c23d7064",
   "is_dual": true,
   "meta": {
-    "title": "搁浅 ",
+    "title": "\u6401\u6d45 ",
     "bpm": 76,
     "time_signature": "4/4",
     "source_file": ""
@@ -5465,5 +5465,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "987be610",
   "is_dual": true,
   "meta": {
-    "title": "        蓝莲花   spinach",
+    "title": "        \u84dd\u83b2\u82b1   spinach",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -6296,5 +6296,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

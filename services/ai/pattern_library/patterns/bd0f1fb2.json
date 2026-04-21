@@ -2,7 +2,7 @@
   "id": "bd0f1fb2",
   "is_dual": true,
   "meta": {
-    "title": "你是我老婆",
+    "title": "\u4f60\u662f\u6211\u8001\u5a46",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -6815,5 +6815,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

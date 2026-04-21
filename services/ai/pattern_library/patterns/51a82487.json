@@ -2,7 +2,7 @@
   "id": "51a82487",
   "is_dual": true,
   "meta": {
-    "title": "你怎么舍得我难过",
+    "title": "\u4f60\u600e\u4e48\u820d\u5f97\u6211\u96be\u8fc7",
     "bpm": 110,
     "time_signature": "4/4",
     "source_file": ""
@@ -3020,5 +3020,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

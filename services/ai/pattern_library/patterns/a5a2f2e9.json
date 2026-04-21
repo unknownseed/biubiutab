@@ -2,7 +2,7 @@
   "id": "a5a2f2e9",
   "is_dual": true,
   "meta": {
-    "title": "¦Ç¦â­y¸ñ(ºt°Û·|)(³o¬O§Ú¤T¤jBeyondºq¤§¤¤³Ì³ßÅwªº¨ä¤¤¤@­º¨Óªº)",
+    "title": "\u00a6\u00c7\u00a6\u00e2\u00ady\u00b8\u00f1(\u00bat\u00b0\u00db\u00b7|)(\u00b3o\u00acO\u00a7\u00da\u00a4T\u00a4jBeyond\u00baq\u00a4\u00a7\u00a4\u00a4\u00b3\u00cc\u00b3\u00df\u00c5w\u00aa\u00ba\u00a8\u00e4\u00a4\u00a4\u00a4@\u00ad\u00ba\u00a8\u00d3\u00aa\u00ba)",
     "bpm": 72,
     "time_signature": "4/4",
     "source_file": ""
@@ -4701,5 +4701,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

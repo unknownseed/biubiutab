@@ -2,7 +2,7 @@
   "id": "515f4362",
   "is_dual": true,
   "meta": {
-    "title": "被动",
+    "title": "\u88ab\u52a8",
     "bpm": 72,
     "time_signature": "4/4",
     "source_file": ""
@@ -6659,5 +6659,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

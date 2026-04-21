@@ -2,7 +2,7 @@
   "id": "d169ac75",
   "is_dual": false,
   "meta": {
-    "title": "蒙娜丽莎·林志炫  www.shaowei.com  柳",
+    "title": "\u8499\u5a1c\u4e3d\u838e\u00b7\u6797\u5fd7\u70ab  www.shaowei.com  \u67f3",
     "bpm": 66,
     "time_signature": "4/4",
     "source_file": ""
@@ -3562,5 +3562,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

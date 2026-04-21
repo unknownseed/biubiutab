@@ -2,7 +2,7 @@
   "id": "adb06600",
   "is_dual": false,
   "meta": {
-    "title": "®e©ö¨ü¶Ëªº¤k¤H( solo )",
+    "title": "\u00aee\u00a9\u00f6\u00a8\u00fc\u00b6\u00cb\u00aa\u00ba\u00a4k\u00a4H( solo )",
     "bpm": 85,
     "time_signature": "4/4",
     "source_file": ""
@@ -2885,5 +2885,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

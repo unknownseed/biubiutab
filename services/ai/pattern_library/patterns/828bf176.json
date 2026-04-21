@@ -2,7 +2,7 @@
   "id": "828bf176",
   "is_dual": true,
   "meta": {
-    "title": "鸭子",
+    "title": "\u9e2d\u5b50",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -3451,5 +3451,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

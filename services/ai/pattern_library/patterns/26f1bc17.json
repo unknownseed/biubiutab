@@ -2,7 +2,7 @@
   "id": "26f1bc17",
   "is_dual": false,
   "meta": {
-    "title": "萤火",
+    "title": "\u8424\u706b",
     "bpm": 88,
     "time_signature": "4/4",
     "source_file": ""
@@ -2250,5 +2250,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

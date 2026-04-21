@@ -2,7 +2,7 @@
   "id": "b8f7c9af",
   "is_dual": true,
   "meta": {
-    "title": "天使也一样（任贤齐）",
+    "title": "\u5929\u4f7f\u4e5f\u4e00\u6837\uff08\u4efb\u8d24\u9f50\uff09",
     "bpm": 76,
     "time_signature": "4/4",
     "source_file": ""
@@ -5973,5 +5973,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

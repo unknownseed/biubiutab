@@ -2,7 +2,7 @@
   "id": "0b74dfcb",
   "is_dual": false,
   "meta": {
-    "title": "·Ï«BÀÛÀÛ",
+    "title": "\u00b7\u00cf\u00abB\u00c0\u00db\u00c0\u00db",
     "bpm": 70,
     "time_signature": "3/4",
     "source_file": ""
@@ -1244,5 +1244,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

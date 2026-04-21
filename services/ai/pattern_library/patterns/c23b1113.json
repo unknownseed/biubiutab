@@ -2,7 +2,7 @@
   "id": "c23b1113",
   "is_dual": true,
   "meta": {
-    "title": "礼物",
+    "title": "\u793c\u7269",
     "bpm": 130,
     "time_signature": "4/4",
     "source_file": ""
@@ -3735,5 +3735,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

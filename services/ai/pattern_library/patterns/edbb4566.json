@@ -2,7 +2,7 @@
   "id": "edbb4566",
   "is_dual": false,
   "meta": {
-    "title": "他不爱我",
+    "title": "\u4ed6\u4e0d\u7231\u6211",
     "bpm": 60,
     "time_signature": "4/4",
     "source_file": ""
@@ -908,5 +908,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

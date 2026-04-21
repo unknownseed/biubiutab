@@ -2,7 +2,7 @@
   "id": "ff2184bb",
   "is_dual": true,
   "meta": {
-    "title": "安静   G调    周杰伦   www. hsjy.com",
+    "title": "\u5b89\u9759   G\u8c03    \u5468\u6770\u4f26   www. hsjy.com",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -2387,5 +2387,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

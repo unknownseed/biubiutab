@@ -2,7 +2,7 @@
   "id": "1a1a151d",
   "is_dual": false,
   "meta": {
-    "title": "美错",
+    "title": "\u7f8e\u9519",
     "bpm": 75,
     "time_signature": "4/4",
     "source_file": ""
@@ -1371,5 +1371,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

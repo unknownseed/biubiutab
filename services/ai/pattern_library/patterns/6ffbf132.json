@@ -2,7 +2,7 @@
   "id": "6ffbf132",
   "is_dual": true,
   "meta": {
-    "title": "失恋太少",
+    "title": "\u5931\u604b\u592a\u5c11",
     "bpm": 78,
     "time_signature": "4/4",
     "source_file": ""
@@ -3351,5 +3351,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

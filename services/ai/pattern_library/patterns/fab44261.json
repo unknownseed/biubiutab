@@ -2,7 +2,7 @@
   "id": "fab44261",
   "is_dual": true,
   "meta": {
-    "title": "时光漫步",
+    "title": "\u65f6\u5149\u6f2b\u6b65",
     "bpm": 105,
     "time_signature": "4/4",
     "source_file": ""
@@ -5309,5 +5309,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

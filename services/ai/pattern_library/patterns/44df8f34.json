@@ -2,7 +2,7 @@
   "id": "44df8f34",
   "is_dual": false,
   "meta": {
-    "title": "勇气",
+    "title": "\u52c7\u6c14",
     "bpm": 280,
     "time_signature": "4/4",
     "source_file": ""
@@ -1430,5 +1430,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

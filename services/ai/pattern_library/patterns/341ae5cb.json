@@ -2,7 +2,7 @@
   "id": "341ae5cb",
   "is_dual": false,
   "meta": {
-    "title": "F4--流星雨——kapasu制作",
+    "title": "F4--\u6d41\u661f\u96e8\u2014\u2014kapasu\u5236\u4f5c",
     "bpm": 70,
     "time_signature": "4/4",
     "source_file": ""
@@ -658,5 +658,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

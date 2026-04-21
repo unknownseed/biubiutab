@@ -2,7 +2,7 @@
   "id": "86274305",
   "is_dual": false,
   "meta": {
-    "title": "盛夏的果实",
+    "title": "\u76db\u590f\u7684\u679c\u5b9e",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -2074,5 +2074,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

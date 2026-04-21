@@ -2,7 +2,7 @@
   "id": "32e3cd6d",
   "is_dual": true,
   "meta": {
-    "title": "两只蝴蝶",
+    "title": "\u4e24\u53ea\u8774\u8776",
     "bpm": 95,
     "time_signature": "4/4",
     "source_file": ""
@@ -2381,5 +2381,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

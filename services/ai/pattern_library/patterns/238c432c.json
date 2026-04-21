@@ -2,7 +2,7 @@
   "id": "238c432c",
   "is_dual": true,
   "meta": {
-    "title": "有没有人告诉你",
+    "title": "\u6709\u6ca1\u6709\u4eba\u544a\u8bc9\u4f60",
     "bpm": 66,
     "time_signature": "4/4",
     "source_file": ""
@@ -5521,5 +5521,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

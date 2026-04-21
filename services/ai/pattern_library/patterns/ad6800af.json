@@ -2,7 +2,7 @@
   "id": "ad6800af",
   "is_dual": false,
   "meta": {
-    "title": "送你一瓣的雪花",
+    "title": "\u9001\u4f60\u4e00\u74e3\u7684\u96ea\u82b1",
     "bpm": 144,
     "time_signature": "4/4",
     "source_file": ""
@@ -1851,5 +1851,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

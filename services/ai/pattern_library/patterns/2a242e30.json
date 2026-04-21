@@ -2,7 +2,7 @@
   "id": "2a242e30",
   "is_dual": true,
   "meta": {
-    "title": "狼",
+    "title": "\u72fc",
     "bpm": 72,
     "time_signature": "4/4",
     "source_file": ""
@@ -2767,5 +2767,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

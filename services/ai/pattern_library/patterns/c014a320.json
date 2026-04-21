@@ -2,7 +2,7 @@
   "id": "c014a320",
   "is_dual": true,
   "meta": {
-    "title": "我没有钱我不要脸",
+    "title": "\u6211\u6ca1\u6709\u94b1\u6211\u4e0d\u8981\u8138",
     "bpm": 129,
     "time_signature": "4/4",
     "source_file": ""
@@ -4149,5 +4149,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

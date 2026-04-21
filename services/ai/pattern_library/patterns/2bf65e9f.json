@@ -2,7 +2,7 @@
   "id": "2bf65e9f",
   "is_dual": true,
   "meta": {
-    "title": "枫",
+    "title": "\u67ab",
     "bpm": 65,
     "time_signature": "4/4",
     "source_file": ""
@@ -1986,5 +1986,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

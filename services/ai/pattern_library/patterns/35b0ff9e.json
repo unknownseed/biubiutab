@@ -2,7 +2,7 @@
   "id": "35b0ff9e",
   "is_dual": false,
   "meta": {
-    "title": "明年今日",
+    "title": "\u660e\u5e74\u4eca\u65e5",
     "bpm": 65,
     "time_signature": "4/4",
     "source_file": ""
@@ -3780,5 +3780,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

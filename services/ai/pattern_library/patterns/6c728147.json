@@ -2,7 +2,7 @@
   "id": "6c728147",
   "is_dual": true,
   "meta": {
-    "title": "天使也一样",
+    "title": "\u5929\u4f7f\u4e5f\u4e00\u6837",
     "bpm": 76,
     "time_signature": "4/4",
     "source_file": ""
@@ -6261,5 +6261,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

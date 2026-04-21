@@ -2,7 +2,7 @@
   "id": "8cef6b0a",
   "is_dual": true,
   "meta": {
-    "title": "光芒",
+    "title": "\u5149\u8292",
     "bpm": 148,
     "time_signature": "4/4",
     "source_file": ""
@@ -3643,5 +3643,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

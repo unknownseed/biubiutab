@@ -2,7 +2,7 @@
   "id": "6562a69e",
   "is_dual": false,
   "meta": {
-    "title": " 天下无双  ",
+    "title": " \u5929\u4e0b\u65e0\u53cc  ",
     "bpm": 90,
     "time_signature": "4/4",
     "source_file": ""
@@ -2099,5 +2099,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

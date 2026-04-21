@@ -2,7 +2,7 @@
   "id": "4830ada9",
   "is_dual": true,
   "meta": {
-    "title": "旋木－王菲",
+    "title": "\u65cb\u6728\uff0d\u738b\u83f2",
     "bpm": 122,
     "time_signature": "4/4",
     "source_file": ""
@@ -2622,5 +2622,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

@@ -2,7 +2,7 @@
   "id": "3f8dcb24",
   "is_dual": true,
   "meta": {
-    "title": "大约在冬季",
+    "title": "\u5927\u7ea6\u5728\u51ac\u5b63",
     "bpm": 72,
     "time_signature": "2/4",
     "source_file": ""
@@ -2380,5 +2380,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "0da28b2c",
   "is_dual": false,
   "meta": {
-    "title": "心爱的再会了",
+    "title": "\u5fc3\u7231\u7684\u518d\u4f1a\u4e86",
     "bpm": 64,
     "time_signature": "4/4",
     "source_file": ""
@@ -2818,5 +2818,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

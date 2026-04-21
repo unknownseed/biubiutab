@@ -2,7 +2,7 @@
   "id": "69b41af3",
   "is_dual": false,
   "meta": {
-    "title": "怎么办",
+    "title": "\u600e\u4e48\u529e",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -3169,5 +3169,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

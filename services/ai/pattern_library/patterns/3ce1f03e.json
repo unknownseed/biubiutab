@@ -2,7 +2,7 @@
   "id": "3ce1f03e",
   "is_dual": true,
   "meta": {
-    "title": "在雨中-汪峰",
+    "title": "\u5728\u96e8\u4e2d-\u6c6a\u5cf0",
     "bpm": 130,
     "time_signature": "4/4",
     "source_file": ""
@@ -3133,5 +3133,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

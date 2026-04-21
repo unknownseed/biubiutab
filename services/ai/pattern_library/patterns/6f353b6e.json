@@ -2,7 +2,7 @@
   "id": "6f353b6e",
   "is_dual": false,
   "meta": {
-    "title": "今夜",
+    "title": "\u4eca\u591c",
     "bpm": 138,
     "time_signature": "2/4",
     "source_file": ""
@@ -3474,5 +3474,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

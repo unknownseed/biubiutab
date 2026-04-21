@@ -2,7 +2,7 @@
   "id": "0ac7364b",
   "is_dual": false,
   "meta": {
-    "title": "忘忧草·周华健   www.shaowei.com  柳",
+    "title": "\u5fd8\u5fe7\u8349\u00b7\u5468\u534e\u5065   www.shaowei.com  \u67f3",
     "bpm": 85,
     "time_signature": "4/4",
     "source_file": ""
@@ -1860,5 +1860,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

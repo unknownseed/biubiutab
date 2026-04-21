@@ -2,7 +2,7 @@
   "id": "37329ae8",
   "is_dual": false,
   "meta": {
-    "title": "难忘的一天",
+    "title": "\u96be\u5fd8\u7684\u4e00\u5929",
     "bpm": 125,
     "time_signature": "4/4",
     "source_file": ""
@@ -1994,5 +1994,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

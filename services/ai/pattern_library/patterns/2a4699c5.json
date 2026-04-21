@@ -2,7 +2,7 @@
   "id": "2a4699c5",
   "is_dual": false,
   "meta": {
-    "title": "命中注定",
+    "title": "\u547d\u4e2d\u6ce8\u5b9a",
     "bpm": 92,
     "time_signature": "4/4",
     "source_file": ""
@@ -2382,5 +2382,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

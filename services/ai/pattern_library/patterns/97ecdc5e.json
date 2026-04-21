@@ -2,7 +2,7 @@
   "id": "97ecdc5e",
   "is_dual": true,
   "meta": {
-    "title": "海盗",
+    "title": "\u6d77\u76d7",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -2904,5 +2904,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

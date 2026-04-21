@@ -2,7 +2,7 @@
   "id": "8bfd6d58",
   "is_dual": false,
   "meta": {
-    "title": "顽石的飞行",
+    "title": "\u987d\u77f3\u7684\u98de\u884c",
     "bpm": 190,
     "time_signature": "4/4",
     "source_file": ""
@@ -2103,5 +2103,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

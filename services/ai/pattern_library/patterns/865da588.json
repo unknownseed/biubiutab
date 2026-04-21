@@ -2,7 +2,7 @@
   "id": "865da588",
   "is_dual": true,
   "meta": {
-    "title": "I磍l cry instead",
+    "title": "I\u78cdl cry instead",
     "bpm": 175,
     "time_signature": "4/4",
     "source_file": ""
@@ -4715,5 +4715,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

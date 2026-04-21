@@ -2,7 +2,7 @@
   "id": "3bc8ed59",
   "is_dual": false,
   "meta": {
-    "title": "绝恋",
+    "title": "\u7edd\u604b",
     "bpm": 88,
     "time_signature": "4/4",
     "source_file": ""
@@ -1974,5 +1974,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

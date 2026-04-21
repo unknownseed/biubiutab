@@ -2,7 +2,7 @@
   "id": "2ed003a0",
   "is_dual": true,
   "meta": {
-    "title": "世上只有",
+    "title": "\u4e16\u4e0a\u53ea\u6709",
     "bpm": 79,
     "time_signature": "4/4",
     "source_file": ""
@@ -4645,5 +4645,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

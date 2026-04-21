@@ -2,7 +2,7 @@
   "id": "eae81e71",
   "is_dual": false,
   "meta": {
-    "title": "直到世界末日·齐秦   www.shaowei.com  柳",
+    "title": "\u76f4\u5230\u4e16\u754c\u672b\u65e5\u00b7\u9f50\u79e6   www.shaowei.com  \u67f3",
     "bpm": 95,
     "time_signature": "4/4",
     "source_file": ""
@@ -2003,5 +2003,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

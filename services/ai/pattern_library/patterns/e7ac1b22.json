@@ -2,7 +2,7 @@
   "id": "e7ac1b22",
   "is_dual": true,
   "meta": {
-    "title": "只想一生跟你走",
+    "title": "\u53ea\u60f3\u4e00\u751f\u8ddf\u4f60\u8d70",
     "bpm": 72,
     "time_signature": "4/4",
     "source_file": ""
@@ -4537,5 +4537,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "e5c30dbd",
   "is_dual": true,
   "meta": {
-    "title": "美丽新世界（电吉他版）",
+    "title": "\u7f8e\u4e3d\u65b0\u4e16\u754c\uff08\u7535\u5409\u4ed6\u7248\uff09",
     "bpm": 100,
     "time_signature": "6/8",
     "source_file": ""
@@ -4283,5 +4283,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

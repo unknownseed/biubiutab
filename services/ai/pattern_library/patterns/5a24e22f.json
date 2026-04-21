@@ -2,7 +2,7 @@
   "id": "5a24e22f",
   "is_dual": false,
   "meta": {
-    "title": "牵挂",
+    "title": "\u7275\u6302",
     "bpm": 85,
     "time_signature": "4/4",
     "source_file": ""
@@ -3818,5 +3818,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

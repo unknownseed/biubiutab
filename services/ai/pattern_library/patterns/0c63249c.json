@@ -2,7 +2,7 @@
   "id": "0c63249c",
   "is_dual": true,
   "meta": {
-    "title": "完美生活—许巍-菜虫子编配",
+    "title": "\u5b8c\u7f8e\u751f\u6d3b\u2014\u8bb8\u5dcd-\u83dc\u866b\u5b50\u7f16\u914d",
     "bpm": 86,
     "time_signature": "4/4",
     "source_file": ""
@@ -7030,5 +7030,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

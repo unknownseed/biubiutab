@@ -2,7 +2,7 @@
   "id": "bec63eb5",
   "is_dual": false,
   "meta": {
-    "title": "§ÚÄ@·N",
+    "title": "\u00a7\u00da\u00c4@\u00b7N",
     "bpm": 85,
     "time_signature": "4/4",
     "source_file": ""
@@ -2013,5 +2013,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

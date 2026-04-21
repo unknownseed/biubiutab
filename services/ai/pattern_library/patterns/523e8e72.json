@@ -2,7 +2,7 @@
   "id": "523e8e72",
   "is_dual": false,
   "meta": {
-    "title": "月亮代表我的心",
+    "title": "\u6708\u4eae\u4ee3\u8868\u6211\u7684\u5fc3",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -1901,5 +1901,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

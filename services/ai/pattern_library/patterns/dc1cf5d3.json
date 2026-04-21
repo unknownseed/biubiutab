@@ -2,7 +2,7 @@
   "id": "dc1cf5d3",
   "is_dual": true,
   "meta": {
-    "title": "风花雪",
+    "title": "\u98ce\u82b1\u96ea",
     "bpm": 88,
     "time_signature": "4/4",
     "source_file": ""
@@ -4536,5 +4536,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

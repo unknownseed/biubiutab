@@ -2,7 +2,7 @@
   "id": "855d0ab7",
   "is_dual": true,
   "meta": {
-    "title": "后来",
+    "title": "\u540e\u6765",
     "bpm": 74,
     "time_signature": "4/4",
     "source_file": ""
@@ -5511,5 +5511,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

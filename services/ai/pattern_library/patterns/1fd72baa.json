@@ -2,7 +2,7 @@
   "id": "1fd72baa",
   "is_dual": true,
   "meta": {
-    "title": "©M¥­»P·R",
+    "title": "\u00a9M\u00a5\u00ad\u00bbP\u00b7R",
     "bpm": 85,
     "time_signature": "4/4",
     "source_file": ""
@@ -5235,5 +5235,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

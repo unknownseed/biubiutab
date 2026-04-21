@@ -2,7 +2,7 @@
   "id": "4ff2e32e",
   "is_dual": false,
   "meta": {
-    "title": "梦醒了（2）",
+    "title": "\u68a6\u9192\u4e86\uff082\uff09",
     "bpm": 102,
     "time_signature": "4/4",
     "source_file": ""
@@ -1597,5 +1597,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

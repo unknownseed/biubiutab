@@ -2,7 +2,7 @@
   "id": "57ae704b",
   "is_dual": false,
   "meta": {
-    "title": "爱的路上只有我和你",
+    "title": "\u7231\u7684\u8def\u4e0a\u53ea\u6709\u6211\u548c\u4f60",
     "bpm": 74,
     "time_signature": "4/4",
     "source_file": ""
@@ -2528,5 +2528,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

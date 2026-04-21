@@ -2,7 +2,7 @@
   "id": "5798d018",
   "is_dual": true,
   "meta": {
-    "title": "荒-----演唱会版",
+    "title": "\u8352-----\u6f14\u5531\u4f1a\u7248",
     "bpm": 139,
     "time_signature": "4/4",
     "source_file": ""
@@ -2445,5 +2445,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

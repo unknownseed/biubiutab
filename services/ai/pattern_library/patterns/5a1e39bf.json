@@ -2,7 +2,7 @@
   "id": "5a1e39bf",
   "is_dual": false,
   "meta": {
-    "title": "曹操",
+    "title": "\u66f9\u64cd",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -3422,5 +3422,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

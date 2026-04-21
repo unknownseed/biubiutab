@@ -2,7 +2,7 @@
   "id": "a1c6d2ec",
   "is_dual": false,
   "meta": {
-    "title": "借口（总谱）",
+    "title": "\u501f\u53e3\uff08\u603b\u8c31\uff09",
     "bpm": 65,
     "time_signature": "4/4",
     "source_file": ""
@@ -1520,5 +1520,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

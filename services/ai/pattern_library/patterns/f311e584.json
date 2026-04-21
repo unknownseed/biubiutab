@@ -2,7 +2,7 @@
   "id": "f311e584",
   "is_dual": false,
   "meta": {
-    "title": "灰姑娘",
+    "title": "\u7070\u59d1\u5a18",
     "bpm": 70,
     "time_signature": "4/4",
     "source_file": ""
@@ -3360,5 +3360,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

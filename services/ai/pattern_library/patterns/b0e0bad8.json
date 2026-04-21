@@ -2,7 +2,7 @@
   "id": "b0e0bad8",
   "is_dual": false,
   "meta": {
-    "title": "K歌之王（完美版）   ",
+    "title": "K\u6b4c\u4e4b\u738b\uff08\u5b8c\u7f8e\u7248\uff09   ",
     "bpm": 69,
     "time_signature": "4/4",
     "source_file": ""
@@ -3724,5 +3724,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

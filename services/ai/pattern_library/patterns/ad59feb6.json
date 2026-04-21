@@ -2,7 +2,7 @@
   "id": "ad59feb6",
   "is_dual": true,
   "meta": {
-    "title": "雪在飞",
+    "title": "\u96ea\u5728\u98de",
     "bpm": 114,
     "time_signature": "4/4",
     "source_file": ""
@@ -3960,5 +3960,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

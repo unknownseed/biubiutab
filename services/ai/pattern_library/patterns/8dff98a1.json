@@ -2,7 +2,7 @@
   "id": "8dff98a1",
   "is_dual": true,
   "meta": {
-    "title": "美人",
+    "title": "\u7f8e\u4eba",
     "bpm": 155,
     "time_signature": "4/4",
     "source_file": ""
@@ -3188,5 +3188,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

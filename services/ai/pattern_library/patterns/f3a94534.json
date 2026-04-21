@@ -2,7 +2,7 @@
   "id": "f3a94534",
   "is_dual": false,
   "meta": {
-    "title": "齐秦.狼",
+    "title": "\u9f50\u79e6.\u72fc",
     "bpm": 66,
     "time_signature": "4/4",
     "source_file": ""
@@ -1474,5 +1474,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

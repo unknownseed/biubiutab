@@ -4,7524 +4,8599 @@
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b30d4706",
     "bpm": 112,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "605e68e2",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "0f4dac5d",
     "bpm": 68,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "8f1a4fa4",
     "bpm": 69,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "cadc7ec8",
     "bpm": 165,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "d4476e50",
     "bpm": 93,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "feedcbba",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "80033bcb",
     "bpm": 73,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "ba3e7403",
     "bpm": 115,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "512d7696",
     "bpm": 61,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "dff694d2",
     "bpm": 135,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f474fb8b",
     "bpm": 116,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "10ef81c0",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b37c178b",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "216a34b2",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "da3671e1",
     "bpm": 164,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b5a6f24f",
     "bpm": 110,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a746284d",
     "bpm": 180,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "3ebee488",
     "bpm": 115,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e6c13732",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "34fb56b4",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "fdc48afe",
     "bpm": 86,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b6452f02",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6d04e6d0",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "58ac25fa",
     "bpm": 86,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "dd3028ee",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "cdec5257",
     "bpm": 102,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "82a589a5",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "31f6df42",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d83b15a0",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a14f37be",
     "bpm": 110,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "ffcb76f0",
     "bpm": 126,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9131b34d",
     "bpm": 96,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "341ae5cb",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "1752dea8",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d36e2810",
     "bpm": 70,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "eb1b38b6",
     "bpm": 89,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "6413f9c0",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c31f72ae",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9af4776a",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "af88d0e3",
     "bpm": 138,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "fed4ab19",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6773867a",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "eab28f5b",
     "bpm": 83,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "fab44261",
     "bpm": 105,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "4188a771",
     "bpm": 65,
     "time_signature": "2/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "48682348",
     "bpm": 63,
     "time_signature": "1/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "05c996fa",
     "bpm": 110,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6d95e446",
     "bpm": 82,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "31e98996",
     "bpm": 132,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a8a5f3c1",
     "bpm": 116,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "dc2a18f9",
     "bpm": 200,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a0b40114",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "f5429b18",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6bf3306c",
     "bpm": 88,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "1bdbdb00",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c7478603",
     "bpm": 88,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "5c6dbe0c",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "44486126",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "4a4a13c0",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "58e7b81d",
     "bpm": 96,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e94b8c36",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9e51f542",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ed030ed9",
     "bpm": 168,
     "time_signature": "3/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7846e826",
     "bpm": 88,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "69dcdbaa",
     "bpm": 78,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e59eef0c",
     "bpm": 110,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "86c3af7e",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "add62000",
     "bpm": 160,
     "time_signature": "3/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c0574301",
     "bpm": 108,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "bd1acdbf",
     "bpm": 82,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "523e8e72",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ede9c648",
     "bpm": 126,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "aa971fad",
     "bpm": 87,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "26b101f0",
     "bpm": 124,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e522b003",
     "bpm": 105,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "191b44ca",
     "bpm": 115,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "7dfa866e",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b97ebdc4",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b64af533",
     "bpm": 125,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "da566898",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e5d4772e",
     "bpm": 102,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "cf7163d9",
     "bpm": 170,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6726eba0",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9b9bee67",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "1e617d1a",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "aea20ad9",
     "bpm": 102,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ad582099",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7f4a5adc",
     "bpm": 87,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "07a9ace4",
     "bpm": 143,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "90d49a53",
     "bpm": 125,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b0b0c2a1",
     "bpm": 79,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "931a53e8",
     "bpm": 150,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "31bc43c5",
     "bpm": 45,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "8af316b4",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a84b0b19",
     "bpm": 140,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "d169ac75",
     "bpm": 66,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e86a1b3d",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e18a9411",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "110f535b",
     "bpm": 112,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "be6cdbad",
     "bpm": 85,
     "time_signature": "6/8",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "4304dfb0",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "96385715",
     "bpm": 69,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "fd638925",
     "bpm": 135,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3c8915de",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2824fe9c",
     "bpm": 120,
     "time_signature": "1/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "c1fd3030",
     "bpm": 68,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "dc9fdeb8",
     "bpm": 83,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "c9929ed4",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "60d1cd9b",
     "bpm": 150,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "45fe848f",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "4e99c998",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7dbf04a3",
     "bpm": 115,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "5a7c91cd",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9c894a9d",
     "bpm": 78,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6d2c3d05",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "50b4d47b",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "eff3bb9c",
     "bpm": 89,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "f65f67d8",
     "bpm": 74,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f9d57957",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "20b36395",
     "bpm": 95,
     "time_signature": "6/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "506b4950",
     "bpm": 180,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "78ea2443",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "40f213ff",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d146fa97",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "1555ae56",
     "bpm": 88,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "6be66602",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f0cd1190",
     "bpm": 175,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "df2aa9cb",
     "bpm": 68,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ee13b282",
     "bpm": 73,
     "time_signature": "2/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "67b0c207",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b1342fdb",
     "bpm": 66,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c23d7064",
     "bpm": 76,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f311e584",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9ff68462",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3ce1f03e",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "886b1cbd",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e0e51c66",
     "bpm": 92,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "fa9dca73",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "2e836f88",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "222bdcb0",
     "bpm": 93,
     "time_signature": "12/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "fe103a06",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ebf44b5b",
     "bpm": 220,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "092bfb26",
     "bpm": 150,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2d5b1c93",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e5b1e24c",
     "bpm": 88,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b4f7de7a",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "7413736c",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "703ac987",
     "bpm": 180,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a35624c6",
     "bpm": 87,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "45e431f8",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "671be7ad",
     "bpm": 52,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b078be93",
     "bpm": 55,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "bac7fb34",
     "bpm": 171,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "57c48ae3",
     "bpm": 63,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "48bd5760",
     "bpm": 67,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "047f4e73",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "fede6a4c",
     "bpm": 56,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a79625fb",
     "bpm": 100,
     "time_signature": "6/8",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "bae1da96",
     "bpm": 126,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "57ae704b",
     "bpm": 74,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "72bedb44",
     "bpm": 70,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "2addffe4",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "865da588",
     "bpm": 175,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "7774e265",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3dcfb0c7",
     "bpm": 125,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "cf0e6287",
     "bpm": 125,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "8febf17e",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3408d8c2",
     "bpm": 98,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "8e4b3f25",
     "bpm": 155,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "f4d8b6b7",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "675a064c",
     "bpm": 111,
     "time_signature": "3/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "738948d9",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b20278ea",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b38eced2",
     "bpm": 72,
     "time_signature": "1/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "99ff5d98",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5361b085",
     "bpm": 88,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "12735735",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "dd3413db",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2217ec03",
     "bpm": 78,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ac2e9861",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "2a4699c5",
     "bpm": 92,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "c6cee23b",
     "bpm": 128,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "0261e68c",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2a1f92a5",
     "bpm": 96,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "44f2f0e3",
     "bpm": 66,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "521d96f6",
     "bpm": 89,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a4a68ec8",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "524dddc5",
     "bpm": 74,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5483bcbc",
     "bpm": 77,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e13051a8",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "3abb1883",
     "bpm": 82,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9e5ac581",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "d4bcf58d",
     "bpm": 140,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "2116c51f",
     "bpm": 180,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "79b8a0a9",
     "bpm": 92,
     "time_signature": "6/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5f561935",
     "bpm": 179,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c2e75f14",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d81f8f6b",
     "bpm": 165,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "03419800",
     "bpm": 98,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e2288074",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "56a2cdb7",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e9bd14a1",
     "bpm": 73,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6c44eb88",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "939a687b",
     "bpm": 165,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "32e3cd6d",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "eded8c7e",
     "bpm": 155,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "edbb4566",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "7f6286b8",
     "bpm": 148,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "2299dd00",
     "bpm": 105,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9135fc80",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "f5b60e18",
     "bpm": 138,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "cd9bf98b",
     "bpm": 66,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "89870849",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "05ce22cc",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "31a77a8f",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "84dc722f",
     "bpm": 75,
     "time_signature": "1/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "0573b29d",
     "bpm": 92,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "25024322",
     "bpm": 90,
     "time_signature": "2/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d9ac482a",
     "bpm": 118,
     "time_signature": "3/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9aebd59b",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "1217aae2",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a26a1619",
     "bpm": 96,
     "time_signature": "6/8",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5ff233ad",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d095a504",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "69c9765a",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "82199622",
     "bpm": 150,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "093659b2",
     "bpm": 86,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2fdf50ec",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e194e42f",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "95f2015b",
     "bpm": 175,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b77dd911",
     "bpm": 125,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "f7a43aeb",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "17eb6087",
     "bpm": 128,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e448d6df",
     "bpm": 74,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "372fc643",
     "bpm": 74,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "03fa6632",
     "bpm": 108,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "0ef4ac2a",
     "bpm": 130,
     "time_signature": "3/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d60f68e0",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "7c5106c4",
     "bpm": 140,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "dcd292eb",
     "bpm": 68,
     "time_signature": "2/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "eb09799a",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "613e6dd9",
     "bpm": 96,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "16799458",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "63f55243",
     "bpm": 91,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "70c19c05",
     "bpm": 111,
     "time_signature": "3/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "187a6871",
     "bpm": 76,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f2fbdc3c",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f0ccf374",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f0645e54",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e1c094e2",
     "bpm": 135,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "76294487",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "5a1b5051",
     "bpm": 138,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "824d2469",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "4620ee16",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "47f6032f",
     "bpm": 96,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "491164b8",
     "bpm": 140,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e752f80d",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d46d91f3",
     "bpm": 63,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "14533144",
     "bpm": 200,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "07c5d833",
     "bpm": 50,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "d6787e9e",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "37ddd24a",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b8511578",
     "bpm": 112,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b5c779c3",
     "bpm": 88,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c23b1113",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "23dfbfd8",
     "bpm": 102,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a290cd9b",
     "bpm": 110,
     "time_signature": "12/8",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "076b6718",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5a1e39bf",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c1b2c9cf",
     "bpm": 155,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ce3ab799",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "d94aba5e",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "8321ed08",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2ed5633a",
     "bpm": 64,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "eae81e71",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "60202113",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "5eb742ee",
     "bpm": 136,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "cb9351d6",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "8594ba9f",
     "bpm": 78,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "79d62103",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b84d3823",
     "bpm": 69,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "509e3301",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "eafe957b",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "672471f6",
     "bpm": 82,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5e86044d",
     "bpm": 110,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d9294119",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "01539716",
     "bpm": 108,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "103883d9",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "05351573",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "7405f0a8",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "4e7901b4",
     "bpm": 110,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "13a302bc",
     "bpm": 98,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "7eadf039",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "1006854d",
     "bpm": 93,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "ad59feb6",
     "bpm": 114,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d4ed26bf",
     "bpm": 184,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "cc4b366f",
     "bpm": 120,
     "time_signature": "3/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5493e996",
     "bpm": 88,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "7f16a4ba",
     "bpm": 151,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "987be610",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "36023790",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b9ef12b3",
     "bpm": 78,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "4d99a9e3",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9d066ba7",
     "bpm": 83,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "c014a320",
     "bpm": 129,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ef827bfb",
     "bpm": 68,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "2422a99c",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3da21a9f",
     "bpm": 80,
     "time_signature": "12/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "41a0e31f",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d23daaff",
     "bpm": 105,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "ff2184bb",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "f0597768",
     "bpm": 160,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "811c3a3b",
     "bpm": 120,
     "time_signature": "1/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "3d6d4fbe",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "da12e538",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "eaa3852e",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "805e7c70",
     "bpm": 70,
     "time_signature": "2/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "6ffbf132",
     "bpm": 78,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "24b00e29",
     "bpm": 108,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c8690002",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5f551d05",
     "bpm": 160,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "18a947be",
     "bpm": 62,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a8a26947",
     "bpm": 95,
     "time_signature": "3/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a1dd0ccd",
     "bpm": 84,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "3c5e39e1",
     "bpm": 133,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3f7bf9c0",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "2855e2cb",
     "bpm": 64,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d6324696",
     "bpm": 64,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9c48c59d",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "0b74dfcb",
     "bpm": 70,
     "time_signature": "3/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "823abd2a",
     "bpm": 125,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "8c48635e",
     "bpm": 160,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "82f4fdd8",
     "bpm": 140,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "54e1ae46",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "26d035b7",
     "bpm": 88,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e631028e",
     "bpm": 74,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "1a1a151d",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "5a24e22f",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ba1097e5",
     "bpm": 111,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e5c30dbd",
     "bpm": 100,
     "time_signature": "6/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ad80f8b8",
     "bpm": 67,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "134cc5bf",
     "bpm": 138,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "298f2def",
     "bpm": 81,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "2e2262c8",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "d95c76e5",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "0da28b2c",
     "bpm": 64,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "1ec94222",
     "bpm": 62,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "7442bda3",
     "bpm": 59,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b18706d9",
     "bpm": 137,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7ce726f9",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c119756d",
     "bpm": 82,
     "time_signature": "6/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "0480a810",
     "bpm": 66,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "1fa045a3",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "8f3b8f46",
     "bpm": 160,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "dc1cf5d3",
     "bpm": 88,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "249d453c",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "93809eb2",
     "bpm": 73,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "1831bca6",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "026dcd62",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "2193e4b5",
     "bpm": 76,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c04ba02c",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "18afb9da",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b26b4a68",
     "bpm": 137,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b9ddc1e9",
     "bpm": 89,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "fc26bdd0",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "dd1a7ddc",
     "bpm": 140,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "52b5a0ee",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "f4c1d7f0",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "544a1a08",
     "bpm": 86,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9b1cb57d",
     "bpm": 125,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9b84c291",
     "bpm": 84,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "1c2a7244",
     "bpm": 132,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d555bf76",
     "bpm": 108,
     "time_signature": "3/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "1c941917",
     "bpm": 138,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "670aec69",
     "bpm": 71,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "649c9f38",
     "bpm": 55,
     "time_signature": "2/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "47ff73e9",
     "bpm": 81,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "16e7bb97",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "579e1af7",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "bf318246",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "96dadd67",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "305eeb3e",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "0dbadcc8",
     "bpm": 72,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "828bf176",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e9ca2418",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "0c63249c",
     "bpm": 86,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "4a23ac6d",
     "bpm": 102,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "5386a73a",
     "bpm": 96,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "eec577be",
     "bpm": 96,
     "time_signature": "2/8",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "227190b5",
     "bpm": 110,
     "time_signature": "3/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "10cf6cde",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c971f2d0",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7b7052d2",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "238c432c",
     "bpm": 66,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "92c5380b",
     "bpm": 64,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b4b0384d",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3ad6514d",
     "bpm": 105,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "86274305",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b0a51d71",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "8507b056",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "96973195",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "f4fa369b",
     "bpm": 150,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "0ac7364b",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "30b5f6f6",
     "bpm": 81,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7dae8d52",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "4b4447ca",
     "bpm": 128,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "85ffd2e5",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "58151fa3",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "292f2746",
     "bpm": 95,
     "time_signature": "3/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6dcf53b3",
     "bpm": 83,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "73a3c5fc",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ba26bcac",
     "bpm": 82,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "cb5722e7",
     "bpm": 84,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "88754f5c",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9c20ea99",
     "bpm": 169,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "db3f7a17",
     "bpm": 92,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b7501fba",
     "bpm": 102,
     "time_signature": "3/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b33f8580",
     "bpm": 150,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "11d5fe40",
     "bpm": 74,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6c080b7f",
     "bpm": 71,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ec230e79",
     "bpm": 98,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "75cf4ad3",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "8afd23e1",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "4b5bfb4d",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "aeb6bf23",
     "bpm": 73,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "709cf154",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "26247314",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "4be13cc7",
     "bpm": 92,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "167f59e7",
     "bpm": 74,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "5532bc31",
     "bpm": 91,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2a242e30",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "21c64efc",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "afec5960",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "39ca5af5",
     "bpm": 200,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9060a318",
     "bpm": 150,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "dc59176f",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "8eae92b1",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "c01faca0",
     "bpm": 68,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "4a7d286a",
     "bpm": 150,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9f60e876",
     "bpm": 125,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "7324e749",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2fa94dc7",
     "bpm": 136,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "24fe4477",
     "bpm": 81,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "c8262027",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "8dc449da",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "970a8abf",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "51a82487",
     "bpm": 110,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5664fc00",
     "bpm": 90,
     "time_signature": "3/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "f21dcbd7",
     "bpm": 102,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f0585881",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "abc7f774",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a7b93f3c",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "d2c9129c",
     "bpm": 101,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "70292222",
     "bpm": 63,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e3000289",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "dbfaf491",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c1fd81dc",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "47963571",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6c0288b4",
     "bpm": 135,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "353a736b",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f94dc5f7",
     "bpm": 126,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "8dd38db0",
     "bpm": 60,
     "time_signature": "2/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c1991f10",
     "bpm": 180,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "fb05abe0",
     "bpm": 108,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e3d21d1a",
     "bpm": 56,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "08ca2af3",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "76411d9e",
     "bpm": 180,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f95e57b8",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "1036cc8e",
     "bpm": 80,
     "time_signature": "9/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "464c4543",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e8a19963",
     "bpm": 79,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c47945b6",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "994175ce",
     "bpm": 50,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "f9e5a6fb",
     "bpm": 96,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "af8d47e5",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "253ac690",
     "bpm": 128,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "39f291d6",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b76804fb",
     "bpm": 64,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "92efba6b",
     "bpm": 115,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "44f43610",
     "bpm": 87,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "82e47c22",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "ad34b290",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5798d018",
     "bpm": 139,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b9a09e82",
     "bpm": 71,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "fbca98b6",
     "bpm": 110,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a9dfaddb",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "96bb5ccb",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "0e29fbbe",
     "bpm": 124,
     "time_signature": "6/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "97d3c23c",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "14b56bd1",
     "bpm": 160,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c41d1b29",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "88411965",
     "bpm": 64,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "fe191709",
     "bpm": 145,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a17af52c",
     "bpm": 154,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b3e361fb",
     "bpm": 112,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "0063333e",
     "bpm": 133,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "41cd2bd6",
     "bpm": 80,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2dab53b7",
     "bpm": 112,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e2f87f89",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "adf03c04",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "0f068a65",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "f4e0f18a",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "87502185",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ee41eeb3",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "4246de28",
     "bpm": 70,
     "time_signature": "6/8",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "02a17303",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "606638ac",
     "bpm": 88,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e751e587",
     "bpm": 150,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9bffba87",
     "bpm": 81,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "1b1a9864",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "cdc0bddb",
     "bpm": 110,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2cfdda25",
     "bpm": 96,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "eb06a084",
     "bpm": 180,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b02b628c",
     "bpm": 118,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "fcebfff8",
     "bpm": 82,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6a8be52e",
     "bpm": 124,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "ae0c3dd8",
     "bpm": 66,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "4b7dd264",
     "bpm": 80,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "198b37d8",
     "bpm": 110,
     "time_signature": "3/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "331bacea",
     "bpm": 78,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5bc46739",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a016e72d",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "bcf09d8d",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "47bbe48a",
     "bpm": 125,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "4e980a54",
     "bpm": 120,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3dbef6ee",
     "bpm": 135,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "68e3f99d",
     "bpm": 130,
     "time_signature": "3/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b623aeec",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "58703113",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "8d9e7661",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "54cd02e1",
     "bpm": 146,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "20b2e473",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2f130b1c",
     "bpm": 116,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e95eb605",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a4e9a9db",
     "bpm": 95,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "26f1bc17",
     "bpm": 88,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "0dac1c62",
     "bpm": 100,
     "time_signature": "1/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2c335818",
     "bpm": 99,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "227d0c61",
     "bpm": 55,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "751cc212",
     "bpm": 145,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e76612a2",
     "bpm": 150,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "efac44bb",
     "bpm": 87,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "5151e54e",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3dcb109a",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "8ddff163",
     "bpm": 83,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "1bcc6ae2",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "0fc84e23",
     "bpm": 77,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "fde304fe",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "8b48e27c",
     "bpm": 135,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "4474d0af",
     "bpm": 57,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b27ae99d",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "97e4cdbb",
     "bpm": 87,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "679d2b00",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3856400b",
     "bpm": 137,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "236f5428",
     "bpm": 120,
     "time_signature": "3/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "008a2106",
     "bpm": 74,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c658b249",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5bbc8249",
     "bpm": 132,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d89c7216",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f3a94534",
     "bpm": 66,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "cacec069",
     "bpm": 83,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "317fc26b",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9771a1a0",
     "bpm": 93,
     "time_signature": "12/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7c9c85fd",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "37f6f6dd",
     "bpm": 96,
     "time_signature": "3/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "4ff2e32e",
     "bpm": 102,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7230da68",
     "bpm": 104,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "515f4362",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e746a1ed",
     "bpm": 97,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "4830ada9",
     "bpm": 122,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "513dfa10",
     "bpm": 60,
     "time_signature": "1/8",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "58090102",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9090ac92",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7834b940",
     "bpm": 124,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "0696c13c",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6562a69e",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ffce1c75",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a44f2c42",
     "bpm": 126,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b6b63885",
     "bpm": 156,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "711f5c15",
     "bpm": 135,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "36b361bd",
     "bpm": 140,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "630f57b7",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "584b72bc",
     "bpm": 79,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9afe048f",
     "bpm": 170,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c7ba8fd9",
     "bpm": 110,
     "time_signature": "1/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6461ef7b",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "13e1c596",
     "bpm": 65,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f2033bd1",
     "bpm": 184,
     "time_signature": "12/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "92a0ad5a",
     "bpm": 128,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "94dead76",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "4e718776",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "32e8996e",
     "bpm": 62,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "fa9518fa",
     "bpm": 102,
     "time_signature": "3/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "cddb60ec",
     "bpm": 160,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "44d83691",
     "bpm": 105,
     "time_signature": "12/8",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "8cef6b0a",
     "bpm": 148,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "d80c49da",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "bb97f51a",
     "bpm": 170,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ee0c078f",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ab237994",
     "bpm": 155,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "94ed4fee",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "27254103",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f370a8e6",
     "bpm": 125,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "89df67a0",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6a2c8308",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "77bc527d",
     "bpm": 125,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "72a45099",
     "bpm": 82,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "124db74b",
     "bpm": 110,
     "time_signature": "6/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9a9c5dd5",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "826463a5",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "594dce15",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "ed8a22b7",
     "bpm": 128,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ab0a9de5",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "97ecdc5e",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "91bc6a89",
     "bpm": 154,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "46a23190",
     "bpm": 106,
     "time_signature": "1/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "bec63eb5",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "97104273",
     "bpm": 124,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "58096dab",
     "bpm": 68,
     "time_signature": "6/8",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "226f7b50",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "8cc68a1f",
     "bpm": 73,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e6162989",
     "bpm": 92,
     "time_signature": "1/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "8aaac005",
     "bpm": 135,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "eaaaa06a",
     "bpm": 140,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e1bb6bfa",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "cdd2aa98",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "6601e9af",
     "bpm": 64,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "470543be",
     "bpm": 175,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7ac66e1f",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a0fe6229",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "81f1642b",
     "bpm": 175,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "babb2ed2",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "398c31ac",
     "bpm": 68,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "fa4f8812",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b5e41371",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "daa70687",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b38a4ab5",
     "bpm": 88,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "58f131dd",
     "bpm": 103,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "dc5faba7",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "841f93e0",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "73b960bd",
     "bpm": 145,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "6df6f130",
     "bpm": 148,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "dd337871",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "dcea762b",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "ac703bb9",
     "bpm": 86,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b38ba68f",
     "bpm": 98,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "995795e9",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "d33d0f33",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "55f6edc9",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "293a347a",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "8b7ab14f",
     "bpm": 67,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "4bd63a0f",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a39f8ab9",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "799154c1",
     "bpm": 200,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ff01fb62",
     "bpm": 123,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "49e55c04",
     "bpm": 81,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "ae774677",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2fda4c1b",
     "bpm": 79,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "5f00fe0f",
     "bpm": 92,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "8e0d4a7e",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7bf8b2b6",
     "bpm": 97,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "f5506765",
     "bpm": 110,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "023cc65c",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "40c15066",
     "bpm": 83,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "1a24fdc2",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b903dc16",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9a107c91",
     "bpm": 89,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "332609ed",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2fde2fe2",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "cdc5daac",
     "bpm": 125,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "97a9a6b2",
     "bpm": 175,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "116fafab",
     "bpm": 135,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "60bf92ab",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "523c8ed4",
     "bpm": 160,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "8df7bd14",
     "bpm": 59,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "8cfe17e8",
     "bpm": 102,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e5213ff3",
     "bpm": 124,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "92f956c5",
     "bpm": 98,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7ac63d0a",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ea253b7e",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "614a23f3",
     "bpm": 135,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "45ca3b15",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e0486c98",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "66a5b638",
     "bpm": 94,
     "time_signature": "1/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "60ea2849",
     "bpm": 68,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "c2604f77",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7728c5d2",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b5205065",
     "bpm": 150,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "d494cdee",
     "bpm": 67,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "32ea78ee",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7be3643d",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "6039304e",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "ee5c23b2",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "ce80691c",
     "bpm": 147,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "64af3c03",
     "bpm": 65,
     "time_signature": "1/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c1791b69",
     "bpm": 115,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3fd45bd6",
     "bpm": 74,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "d8467648",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "dd73637f",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "6adebfd8",
     "bpm": 150,
     "time_signature": "1/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c1333971",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "161aeb26",
     "bpm": 68,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "1fd72baa",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "90f989c4",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "01ea8343",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f2a9bdb8",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "bdce2897",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "7bf5ea0d",
     "bpm": 132,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "32347af5",
     "bpm": 103,
     "time_signature": "1/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6eacd1d3",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e68d23eb",
     "bpm": 106,
     "time_signature": "6/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "28dfacc3",
     "bpm": 74,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2899b9f7",
     "bpm": 63,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "2ab826b4",
     "bpm": 110,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "16019a83",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3a43cc55",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "23aa2084",
     "bpm": 76,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "2ed003a0",
     "bpm": 79,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c3d09b69",
     "bpm": 114,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2c6b2527",
     "bpm": 102,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3ab8fc7b",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6624d0f0",
     "bpm": 62,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a1c6d2ec",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "2dcfa211",
     "bpm": 45,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "27037d8c",
     "bpm": 160,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "eafeeb8e",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "191ccf94",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "59a1e80f",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a7ce822e",
     "bpm": 84,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "64ff6720",
     "bpm": 132,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "546b5f67",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "4082202d",
     "bpm": 63,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5fb82792",
     "bpm": 62,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "adb06600",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "58d89138",
     "bpm": 120,
     "time_signature": "12/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "19d32eee",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "469551f3",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9fe147b1",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "491174e2",
     "bpm": 82,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "8ff30721",
     "bpm": 150,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "4e426aa1",
     "bpm": 105,
     "time_signature": "6/8",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "6178f519",
     "bpm": 112,
     "time_signature": "1/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a3c80080",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "48c1a084",
     "bpm": 160,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "433bd46e",
     "bpm": 94,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ef878f15",
     "bpm": 84,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d79d5791",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "3f8dcb24",
     "bpm": 72,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "76d0f437",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "1297a11f",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a72599ae",
     "bpm": 116,
     "time_signature": "12/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3f07c5f1",
     "bpm": 110,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c13adcb4",
     "bpm": 137,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c1f6ae5f",
     "bpm": 175,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f616f484",
     "bpm": 64,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "12543f5b",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a89f11ed",
     "bpm": 111,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ac0795d5",
     "bpm": 100,
     "time_signature": "3/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "65b6285b",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b501ecc8",
     "bpm": 74,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a11e5d44",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "c58f8f8f",
     "bpm": 82,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a61c8253",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "88fab925",
     "bpm": 77,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7501a7a6",
     "bpm": 120,
     "time_signature": "12/8",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "348979e4",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "59b138fe",
     "bpm": 62,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6fc35494",
     "bpm": 158,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "0e655f40",
     "bpm": 155,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "dc22543d",
     "bpm": 88,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "d69847f1",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3b7ee371",
     "bpm": 64,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "958c4b03",
     "bpm": 88,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "6c39eceb",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "c5e7e315",
     "bpm": 73,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "56cd8a80",
     "bpm": 170,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "1cad60f1",
     "bpm": 110,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "19101ad5",
     "bpm": 68,
     "time_signature": "2/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "cb59086d",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "bcf6b1d1",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6f353b6e",
     "bpm": 138,
     "time_signature": "2/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9de7c6cc",
     "bpm": 92,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "20048b50",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "0c1f14aa",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "32bda6a2",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "0c4f3573",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b3f21c31",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "65acbe5e",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "8ed5d99f",
     "bpm": 70,
     "time_signature": "1/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "58739f04",
     "bpm": 112,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "69a556bb",
     "bpm": 128,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "169aaa8d",
     "bpm": 150,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "da1f161c",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "08273825",
     "bpm": 71,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "4b0ad9dc",
     "bpm": 180,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9e02d662",
     "bpm": 74,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "36deec22",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e9853de9",
     "bpm": 137,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "4059cdb0",
     "bpm": 189,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "8ca45f0c",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "1d9d88e9",
     "bpm": 240,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "4e6ba412",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6b299126",
     "bpm": 93,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5b95660f",
     "bpm": 135,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3b4e0b1f",
     "bpm": 129,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c6ff811c",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "97fb8f31",
     "bpm": 63,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "aaf69a4e",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "56ec4000",
     "bpm": 150,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e68f043f",
     "bpm": 125,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "002feccf",
     "bpm": 97,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5fbe1287",
     "bpm": 139,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6d359ccf",
     "bpm": 130,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "2bf65e9f",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "97acf144",
     "bpm": 140,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e1a2abfe",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3ff3094a",
     "bpm": 93,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "93f55306",
     "bpm": 95,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "02e0d980",
     "bpm": 133,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7e721c79",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "4c5845f7",
     "bpm": 102,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b53a92a3",
     "bpm": 98,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c05f9fd6",
     "bpm": 175,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "bada91e1",
     "bpm": 43,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "88110ce5",
     "bpm": 140,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "5b6115a3",
     "bpm": 66,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9910ef09",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b02a9d7b",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b0e0bad8",
     "bpm": 69,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7abb1e19",
     "bpm": 60,
     "time_signature": "6/8",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "086bd58d",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9327094d",
     "bpm": 115,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "bbd5663a",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "77939e2a",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6fc35790",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "8a960468",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "f531c805",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "2a22edef",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "74f1e252",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "bd0f1fb2",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a2d07943",
     "bpm": 105,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7341dc56",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b9bffe13",
     "bpm": 138,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6dc43a92",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "15a7fbe6",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7aaf3a4f",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e7ac1b22",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "030342ea",
     "bpm": 73,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9620d1a1",
     "bpm": 110,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "25af9d56",
     "bpm": 145,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e05042f4",
     "bpm": 57,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "cd955132",
     "bpm": 134,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f3b3f27b",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "f40710a9",
     "bpm": 122,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "ba42759b",
     "bpm": 82,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "db65fde9",
     "bpm": 69,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5c39cd81",
     "bpm": 78,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "f9897e1f",
     "bpm": 92,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b6168a48",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "da9920b7",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b2dd23c1",
     "bpm": 68,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "d72812ae",
     "bpm": 74,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "622ddc5d",
     "bpm": 138,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "efe0ad92",
     "bpm": 94,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "914c5e7d",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "37fa1186",
     "bpm": 55,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "46522b40",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "47825530",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "24bd3c4b",
     "bpm": 76,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f6ffb904",
     "bpm": 90,
     "time_signature": "3/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ac5456ba",
     "bpm": 96,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "768ab94f",
     "bpm": 123,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "81386600",
     "bpm": 120,
     "time_signature": "12/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "259454ca",
     "bpm": 100,
     "time_signature": "9/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2ccae78a",
     "bpm": 140,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "fba2f365",
     "bpm": 64,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "986cb8bc",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "4015fce0",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "26e8f719",
     "bpm": 144,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "52c4112a",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "8fcd78eb",
     "bpm": 107,
     "time_signature": "1/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b0059d74",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "73ce7370",
     "bpm": 105,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "d727f31e",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9e897d9e",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "fbf64901",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "7c9150af",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "fad69091",
     "bpm": 83,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "50ae9c90",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "eea6c5df",
     "bpm": 109,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "fb24a2bd",
     "bpm": 137,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ad6800af",
     "bpm": 144,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "91f124a8",
     "bpm": 125,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d46b2677",
     "bpm": 78,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2da4cdb6",
     "bpm": 64,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "62d4bcaa",
     "bpm": 99,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b09dcec6",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "34843d73",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9317564b",
     "bpm": 63,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "31604d4a",
     "bpm": 50,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "58933ae5",
     "bpm": 83,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "76e497a0",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "0e699bb8",
     "bpm": 140,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7d4d5d0c",
     "bpm": 92,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7d5f62de",
     "bpm": 60,
     "time_signature": "2/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a46e94fa",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7f8955df",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "662e7c5d",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "2b36ce04",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3cb6a84d",
     "bpm": 140,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "fa9320f2",
     "bpm": 81,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "07f559a6",
     "bpm": 106,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "dc989bf0",
     "bpm": 128,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3e45b155",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "0b5d4251",
     "bpm": 170,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "27bfcc18",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e8840cf5",
     "bpm": 150,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "43b472db",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "24d1db89",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "97aee4bb",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "af6a1c06",
     "bpm": 132,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9fca4d09",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "56e6f227",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a5a2f2e9",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "057660af",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "4aeab801",
     "bpm": 150,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a5852181",
     "bpm": 133,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "2a0129d2",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a143a941",
     "bpm": 110,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f3d673f3",
     "bpm": 125,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "85c463b7",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e9287483",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "855d0ab7",
     "bpm": 74,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "1b830e32",
     "bpm": 60,
     "time_signature": "2/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "209652a3",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "8494b33d",
     "bpm": 185,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "8bfd6d58",
     "bpm": 190,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "605bd07d",
     "bpm": 71,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ffae30eb",
     "bpm": 120,
     "time_signature": "2/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "2c9aa9e4",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3bc8ed59",
     "bpm": 88,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "7fda7c98",
     "bpm": 74,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "4d0a954a",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a1a6922c",
     "bpm": 64,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c5a12514",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "407238e6",
     "bpm": 62,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "3f596aac",
     "bpm": 115,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e43c79df",
     "bpm": 94,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "7aa32b7d",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a9d6a18d",
     "bpm": 81,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "fd0c6763",
     "bpm": 80,
     "time_signature": "3/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5256d48a",
     "bpm": 78,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "691a4199",
     "bpm": 250,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "89de2e16",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "67df76be",
     "bpm": 137,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "83736d3d",
     "bpm": 68,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f18b14b9",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ddd07d91",
     "bpm": 64,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "607d4845",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a80ac260",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c94f2a28",
     "bpm": 118,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "d9cf0104",
     "bpm": 87,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d80e4f72",
     "bpm": 160,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "bab8343e",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "0b7005fe",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "35b0ff9e",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "27a98326",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b02671b4",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "a575585e",
     "bpm": 145,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c800c359",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "874be61e",
     "bpm": 55,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "63852945",
     "bpm": 56,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6c728147",
     "bpm": 76,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "69b41af3",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "bf36cee8",
     "bpm": 96,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "61ffb92e",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "6ddb134b",
     "bpm": 120,
     "time_signature": "2/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "088614b5",
     "bpm": 86,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "adc63472",
     "bpm": 88,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c9633233",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "654ac24b",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "db14d1a3",
     "bpm": 84,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9b113aa5",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "094c18e1",
     "bpm": 78,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9bf9eb8c",
     "bpm": 83,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "06778163",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "44b3cfdd",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "4076497c",
     "bpm": 66,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "ee0f3473",
     "bpm": 100,
     "time_signature": "3/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "526b9b96",
     "bpm": 100,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "f4e8986c",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "649f3923",
     "bpm": 140,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "ffe20c30",
     "bpm": 122,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "4950f377",
     "bpm": 139,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e19b8aff",
     "bpm": 140,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "0b8c4920",
     "bpm": 79,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b39d70f4",
     "bpm": 175,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "dc7b65ff",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "3e61bfa6",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ef1d8bb1",
     "bpm": 135,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "3651c9bf",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "7ac5d83d",
     "bpm": 132,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "4ed17f6d",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d186c5e3",
     "bpm": 95,
     "time_signature": "3/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "6820f1d4",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5700dd39",
     "bpm": 90,
     "time_signature": "1/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "36829660",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "fabe5aa0",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "549a1c27",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "56a4c905",
     "bpm": 81,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "938e88ce",
     "bpm": 70,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "ad1193dd",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9bd153f6",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9af892cf",
     "bpm": 82,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5f5af9e4",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "96b6d47b",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "8dff98a1",
     "bpm": 155,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ea5930fd",
     "bpm": 136,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "096e8e87",
     "bpm": 95,
     "time_signature": "3/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "3a7729b6",
     "bpm": 135,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b8f7c9af",
     "bpm": 76,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "cfff8266",
     "bpm": 132,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f61a9b63",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "52470ca2",
     "bpm": 135,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ee78740e",
     "bpm": 128,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "7a674d03",
     "bpm": 144,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "3251e782",
     "bpm": 180,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "0a942605",
     "bpm": 69,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "db237f84",
     "bpm": 90,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "37329ae8",
     "bpm": 125,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "ae888639",
     "bpm": 118,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b3de5d82",
     "bpm": 125,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f9c4a0b5",
     "bpm": 125,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "b6bbbf4d",
     "bpm": 74,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "d9a73986",
     "bpm": 66,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9aa56251",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "44df8f34",
     "bpm": 280,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "e191460b",
     "bpm": 85,
     "time_signature": "6/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f07b621e",
     "bpm": 140,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "38b9c205",
     "bpm": 110,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "98300835",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "32014c48",
     "bpm": 110,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "2fefffd8",
     "bpm": 132,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "60b6a6ab",
     "bpm": 80,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5ce0d29f",
     "bpm": 72,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "27f87da7",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "7c5b48fe",
     "bpm": 60,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3e370ff4",
     "bpm": 82,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "f71d73da",
     "bpm": 75,
     "time_signature": "1/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3f1e76d2",
     "bpm": 126,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "e96dff2f",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "add954c8",
     "bpm": 124,
     "time_signature": "3/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "5373c15f",
     "bpm": 109,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "da56eb9f",
     "bpm": 200,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "0b451f30",
     "bpm": 69,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "b947fc4b",
     "bpm": 78,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "1dda517e",
     "bpm": 85,
     "time_signature": "6/8",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "fcf92ef9",
     "bpm": 92,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "c6ecc26d",
     "bpm": 137,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "a2c03d79",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "03b4e584",
     "bpm": 80,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "d0702c83",
     "bpm": 166,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "9cbdb08f",
     "bpm": 75,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "9ab14b10",
     "bpm": 102,
     "time_signature": "3/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "07a81c9b",
     "bpm": 108,
     "time_signature": "3/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "27927d7a",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "42be5c11",
     "bpm": 66,
     "time_signature": "2/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "6e8bef0a",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": false,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "002a4219",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "dae8b11c",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "3f7f221d",
     "bpm": 85,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "arpeggio"
   },
   {
     "id": "ed3e031a",
     "bpm": 65,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   },
   {
     "id": "d75082e5",
     "bpm": 120,
     "time_signature": "4/4",
     "is_dual": true,
-    "source": ""
+    "source": "",
+    "technique": "strum"
   }
 ]

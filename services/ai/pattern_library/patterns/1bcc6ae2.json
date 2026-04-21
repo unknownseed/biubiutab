@@ -2,7 +2,7 @@
   "id": "1bcc6ae2",
   "is_dual": true,
   "meta": {
-    "title": "许巍《那一年》 http://guanjh.126.com 六弦琴魔",
+    "title": "\u8bb8\u5dcd\u300a\u90a3\u4e00\u5e74\u300b http://guanjh.126.com \u516d\u5f26\u7434\u9b54",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -3105,5 +3105,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

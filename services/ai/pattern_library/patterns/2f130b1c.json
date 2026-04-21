@@ -2,7 +2,7 @@
   "id": "2f130b1c",
   "is_dual": true,
   "meta": {
-    "title": "我恨我痴心",
+    "title": "\u6211\u6068\u6211\u75f4\u5fc3",
     "bpm": 116,
     "time_signature": "4/4",
     "source_file": ""
@@ -2699,5 +2699,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

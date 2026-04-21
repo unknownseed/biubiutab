@@ -2,7 +2,7 @@
   "id": "931a53e8",
   "is_dual": true,
   "meta": {
-    "title": "¦Û¥Ñ Solo",
+    "title": "\u00a6\u00db\u00a5\u00d1 Solo",
     "bpm": 150,
     "time_signature": "4/4",
     "source_file": ""
@@ -4894,5 +4894,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

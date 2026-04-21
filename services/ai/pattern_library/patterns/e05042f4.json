@@ -2,7 +2,7 @@
   "id": "e05042f4",
   "is_dual": false,
   "meta": {
-    "title": "爱你一万年",
+    "title": "\u7231\u4f60\u4e00\u4e07\u5e74",
     "bpm": 57,
     "time_signature": "4/4",
     "source_file": ""
@@ -6587,5 +6587,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

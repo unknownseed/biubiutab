@@ -2,7 +2,7 @@
   "id": "01ea8343",
   "is_dual": true,
   "meta": {
-    "title": "遗失的美好",
+    "title": "\u9057\u5931\u7684\u7f8e\u597d",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -3434,5 +3434,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

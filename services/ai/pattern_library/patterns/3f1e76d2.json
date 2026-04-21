@@ -2,7 +2,7 @@
   "id": "3f1e76d2",
   "is_dual": true,
   "meta": {
-    "title": "老想你",
+    "title": "\u8001\u60f3\u4f60",
     "bpm": 126,
     "time_signature": "4/4",
     "source_file": ""
@@ -2316,5 +2316,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

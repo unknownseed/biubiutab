@@ -2,7 +2,7 @@
   "id": "5eb742ee",
   "is_dual": false,
   "meta": {
-    "title": "别怕我伤心",
+    "title": "\u522b\u6015\u6211\u4f24\u5fc3",
     "bpm": 136,
     "time_signature": "4/4",
     "source_file": ""
@@ -1713,5 +1713,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

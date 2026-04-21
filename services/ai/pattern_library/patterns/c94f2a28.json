@@ -2,7 +2,7 @@
   "id": "c94f2a28",
   "is_dual": true,
   "meta": {
-    "title": "春天花会开（任贤齐）",
+    "title": "\u6625\u5929\u82b1\u4f1a\u5f00\uff08\u4efb\u8d24\u9f50\uff09",
     "bpm": 118,
     "time_signature": "4/4",
     "source_file": ""
@@ -4189,5 +4189,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

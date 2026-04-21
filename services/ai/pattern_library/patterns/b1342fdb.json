@@ -2,7 +2,7 @@
   "id": "b1342fdb",
   "is_dual": true,
   "meta": {
-    "title": "倒带",
+    "title": "\u5012\u5e26",
     "bpm": 66,
     "time_signature": "4/4",
     "source_file": ""
@@ -3733,5 +3733,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

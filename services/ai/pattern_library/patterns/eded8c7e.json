@@ -2,7 +2,7 @@
   "id": "eded8c7e",
   "is_dual": true,
   "meta": {
-    "title": "小薇",
+    "title": "\u5c0f\u8587",
     "bpm": 155,
     "time_signature": "4/4",
     "source_file": ""
@@ -1890,5 +1890,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

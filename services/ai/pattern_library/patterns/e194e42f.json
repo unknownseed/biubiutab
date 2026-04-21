@@ -2,7 +2,7 @@
   "id": "e194e42f",
   "is_dual": false,
   "meta": {
-    "title": "烟花易冷",
+    "title": "\u70df\u82b1\u6613\u51b7",
     "bpm": 75,
     "time_signature": "4/4",
     "source_file": ""
@@ -2661,5 +2661,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

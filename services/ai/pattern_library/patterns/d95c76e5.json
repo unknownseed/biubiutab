@@ -2,7 +2,7 @@
   "id": "d95c76e5",
   "is_dual": true,
   "meta": {
-    "title": "礼物－许巍",
+    "title": "\u793c\u7269\uff0d\u8bb8\u5dcd",
     "bpm": 70,
     "time_signature": "4/4",
     "source_file": ""
@@ -5032,5 +5032,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

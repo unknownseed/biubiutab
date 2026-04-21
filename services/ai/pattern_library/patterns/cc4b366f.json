@@ -2,7 +2,7 @@
   "id": "cc4b366f",
   "is_dual": true,
   "meta": {
-    "title": "吉他谱 http://www.jitapu.com",
+    "title": "\u5409\u4ed6\u8c31 http://www.jitapu.com",
     "bpm": 120,
     "time_signature": "3/4",
     "source_file": ""
@@ -2059,5 +2059,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

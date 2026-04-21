@@ -2,7 +2,7 @@
   "id": "ad80f8b8",
   "is_dual": true,
   "meta": {
-    "title": "§i¸Ñ",
+    "title": "\u00a7i\u00b8\u00d1",
     "bpm": 67,
     "time_signature": "4/4",
     "source_file": ""
@@ -3569,5 +3569,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

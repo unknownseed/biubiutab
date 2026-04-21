@@ -2,7 +2,7 @@
   "id": "97aee4bb",
   "is_dual": true,
   "meta": {
-    "title": "赤裸裸",
+    "title": "\u8d64\u88f8\u88f8",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -1874,5 +1874,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

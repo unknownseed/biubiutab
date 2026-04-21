@@ -2,7 +2,7 @@
   "id": "3251e782",
   "is_dual": false,
   "meta": {
-    "title": "时代曲",
+    "title": "\u65f6\u4ee3\u66f2",
     "bpm": 180,
     "time_signature": "4/4",
     "source_file": ""
@@ -1367,5 +1367,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

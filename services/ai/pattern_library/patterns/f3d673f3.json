@@ -2,7 +2,7 @@
   "id": "f3d673f3",
   "is_dual": false,
   "meta": {
-    "title": "再见",
+    "title": "\u518d\u89c1",
     "bpm": 125,
     "time_signature": "4/4",
     "source_file": ""
@@ -3219,5 +3219,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

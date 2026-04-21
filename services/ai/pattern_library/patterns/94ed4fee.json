@@ -2,7 +2,7 @@
   "id": "94ed4fee",
   "is_dual": false,
   "meta": {
-    "title": "江南",
+    "title": "\u6c5f\u5357",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -1893,5 +1893,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

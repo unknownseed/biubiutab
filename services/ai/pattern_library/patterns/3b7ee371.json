@@ -2,7 +2,7 @@
   "id": "3b7ee371",
   "is_dual": true,
   "meta": {
-    "title": "爱情的尽头 --伍 佰(40K)",
+    "title": "\u7231\u60c5\u7684\u5c3d\u5934 --\u4f0d \u4f70(40K)",
     "bpm": 64,
     "time_signature": "4/4",
     "source_file": ""
@@ -2664,5 +2664,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

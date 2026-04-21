@@ -2,7 +2,7 @@
   "id": "7d5f62de",
   "is_dual": false,
   "meta": {
-    "title": "悄无声息",
+    "title": "\u6084\u65e0\u58f0\u606f",
     "bpm": 60,
     "time_signature": "2/4",
     "source_file": ""
@@ -3235,5 +3235,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

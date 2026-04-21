@@ -2,7 +2,7 @@
   "id": "9d066ba7",
   "is_dual": true,
   "meta": {
-    "title": "天黑·阿杜  www.xiermusic.com  柳",
+    "title": "\u5929\u9ed1\u00b7\u963f\u675c  www.xiermusic.com  \u67f3",
     "bpm": 83,
     "time_signature": "4/4",
     "source_file": ""
@@ -3082,5 +3082,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

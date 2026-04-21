@@ -2,7 +2,7 @@
   "id": "4e7901b4",
   "is_dual": true,
   "meta": {
-    "title": "情非得以",
+    "title": "\u60c5\u975e\u5f97\u4ee5",
     "bpm": 110,
     "time_signature": "4/4",
     "source_file": ""
@@ -5900,5 +5900,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

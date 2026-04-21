@@ -2,7 +2,7 @@
   "id": "34843d73",
   "is_dual": false,
   "meta": {
-    "title": "对你太在乎-陈慧琳",
+    "title": "\u5bf9\u4f60\u592a\u5728\u4e4e-\u9648\u6167\u7433",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -2020,5 +2020,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

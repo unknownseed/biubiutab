@@ -2,7 +2,7 @@
   "id": "adc63472",
   "is_dual": true,
   "meta": {
-    "title": "·L¯º -  ¼B¼wµØ",
+    "title": "\u00b7L\u00af\u00ba -  \u00bcB\u00bcw\u00b5\u00d8",
     "bpm": 88,
     "time_signature": "4/4",
     "source_file": ""
@@ -3129,5 +3129,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

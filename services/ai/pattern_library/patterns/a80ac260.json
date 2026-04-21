@@ -2,7 +2,7 @@
   "id": "a80ac260",
   "is_dual": false,
   "meta": {
-    "title": "©ú¦~¤µ¤é (Chord Solo)",
+    "title": "\u00a9\u00fa\u00a6~\u00a4\u00b5\u00a4\u00e9 (Chord Solo)",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -1827,5 +1827,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

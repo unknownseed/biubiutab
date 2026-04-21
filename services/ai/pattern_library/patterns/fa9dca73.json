@@ -2,7 +2,7 @@
   "id": "fa9dca73",
   "is_dual": true,
   "meta": {
-    "title": "吉他谱 http://www.jitapu.com",
+    "title": "\u5409\u4ed6\u8c31 http://www.jitapu.com",
     "bpm": 75,
     "time_signature": "4/4",
     "source_file": ""
@@ -2835,5 +2835,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

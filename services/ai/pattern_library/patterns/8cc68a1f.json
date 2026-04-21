@@ -2,7 +2,7 @@
   "id": "8cc68a1f",
   "is_dual": true,
   "meta": {
-    "title": "谅綹網°礚羘ラΤ羘",
+    "title": "\u8c05\u7db9\u7db2\u00b0\u791a\u7f98\u30e9\u03a4\u7f98",
     "bpm": 73,
     "time_signature": "4/4",
     "source_file": ""
@@ -3822,5 +3822,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

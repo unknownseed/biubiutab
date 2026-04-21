@@ -2,7 +2,7 @@
   "id": "8cfe17e8",
   "is_dual": false,
   "meta": {
-    "title": "月牙泉[田震]",
+    "title": "\u6708\u7259\u6cc9[\u7530\u9707]",
     "bpm": 102,
     "time_signature": "4/4",
     "source_file": ""
@@ -1904,5 +1904,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

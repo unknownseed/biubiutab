@@ -2,7 +2,7 @@
   "id": "58096dab",
   "is_dual": false,
   "meta": {
-    "title": "春花秋月（伍佰）",
+    "title": "\u6625\u82b1\u79cb\u6708\uff08\u4f0d\u4f70\uff09",
     "bpm": 68,
     "time_signature": "6/8",
     "source_file": ""
@@ -4012,5 +4012,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

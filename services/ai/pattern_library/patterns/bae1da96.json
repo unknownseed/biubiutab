@@ -2,7 +2,7 @@
   "id": "bae1da96",
   "is_dual": true,
   "meta": {
-    "title": "时光",
+    "title": "\u65f6\u5149",
     "bpm": 126,
     "time_signature": "4/4",
     "source_file": ""
@@ -4216,5 +4216,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

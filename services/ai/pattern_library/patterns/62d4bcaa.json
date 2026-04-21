@@ -2,7 +2,7 @@
   "id": "62d4bcaa",
   "is_dual": true,
   "meta": {
-    "title": "双截棍",
+    "title": "\u53cc\u622a\u68cd",
     "bpm": 99,
     "time_signature": "4/4",
     "source_file": ""
@@ -6451,5 +6451,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

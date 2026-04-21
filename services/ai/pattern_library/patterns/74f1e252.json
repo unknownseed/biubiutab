@@ -2,7 +2,7 @@
   "id": "74f1e252",
   "is_dual": true,
   "meta": {
-    "title": "我的天使",
+    "title": "\u6211\u7684\u5929\u4f7f",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -4239,5 +4239,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

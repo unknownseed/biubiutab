@@ -2,7 +2,7 @@
   "id": "01539716",
   "is_dual": true,
   "meta": {
-    "title": "蓝色理想",
+    "title": "\u84dd\u8272\u7406\u60f3",
     "bpm": 108,
     "time_signature": "4/4",
     "source_file": ""
@@ -3184,5 +3184,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

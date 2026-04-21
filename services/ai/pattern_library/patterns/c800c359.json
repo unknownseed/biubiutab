@@ -2,7 +2,7 @@
   "id": "c800c359",
   "is_dual": true,
   "meta": {
-    "title": "如果只得一星期",
+    "title": "\u5982\u679c\u53ea\u5f97\u4e00\u661f\u671f",
     "bpm": 90,
     "time_signature": "4/4",
     "source_file": ""
@@ -3164,5 +3164,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

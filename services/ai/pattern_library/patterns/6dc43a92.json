@@ -2,7 +2,7 @@
   "id": "6dc43a92",
   "is_dual": false,
   "meta": {
-    "title": "一个人万岁",
+    "title": "\u4e00\u4e2a\u4eba\u4e07\u5c81",
     "bpm": 60,
     "time_signature": "4/4",
     "source_file": ""
@@ -3582,5 +3582,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

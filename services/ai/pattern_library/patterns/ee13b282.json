@@ -2,7 +2,7 @@
   "id": "ee13b282",
   "is_dual": false,
   "meta": {
-    "title": "周杰伦  七里香-showme  （无可挑剔）",
+    "title": "\u5468\u6770\u4f26  \u4e03\u91cc\u9999-showme  \uff08\u65e0\u53ef\u6311\u5254\uff09",
     "bpm": 73,
     "time_signature": "2/4",
     "source_file": ""
@@ -4475,5 +4475,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

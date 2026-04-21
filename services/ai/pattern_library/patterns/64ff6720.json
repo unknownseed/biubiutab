@@ -2,7 +2,7 @@
   "id": "64ff6720",
   "is_dual": false,
   "meta": {
-    "title": "今宵多珍重",
+    "title": "\u4eca\u5bb5\u591a\u73cd\u91cd",
     "bpm": 132,
     "time_signature": "4/4",
     "source_file": ""
@@ -2280,5 +2280,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "13e1c596",
   "is_dual": true,
   "meta": {
-    "title": "离别",
+    "title": "\u79bb\u522b",
     "bpm": 65,
     "time_signature": "2/4",
     "source_file": ""
@@ -2944,5 +2944,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

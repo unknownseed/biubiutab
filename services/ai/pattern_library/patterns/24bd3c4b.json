@@ -2,7 +2,7 @@
   "id": "24bd3c4b",
   "is_dual": false,
   "meta": {
-    "title": "超人不会飞",
+    "title": "\u8d85\u4eba\u4e0d\u4f1a\u98de",
     "bpm": 76,
     "time_signature": "4/4",
     "source_file": ""
@@ -3635,5 +3635,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

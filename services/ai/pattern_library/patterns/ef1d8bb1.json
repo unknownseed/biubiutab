@@ -2,7 +2,7 @@
   "id": "ef1d8bb1",
   "is_dual": false,
   "meta": {
-    "title": "MV－王菲",
+    "title": "MV\uff0d\u738b\u83f2",
     "bpm": 135,
     "time_signature": "4/4",
     "source_file": ""
@@ -1828,5 +1828,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

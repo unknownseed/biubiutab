@@ -2,7 +2,7 @@
   "id": "8eae92b1",
   "is_dual": false,
   "meta": {
-    "title": "征服",
+    "title": "\u5f81\u670d",
     "bpm": 60,
     "time_signature": "4/4",
     "source_file": ""
@@ -3615,5 +3615,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

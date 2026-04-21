@@ -2,7 +2,7 @@
   "id": "613e6dd9",
   "is_dual": true,
   "meta": {
-    "title": "情书",
+    "title": "\u60c5\u4e66",
     "bpm": 96,
     "time_signature": "2/4",
     "source_file": ""
@@ -2704,5 +2704,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "c1791b69",
   "is_dual": true,
   "meta": {
-    "title": "阿斯匹灵",
+    "title": "\u963f\u65af\u5339\u7075",
     "bpm": 115,
     "time_signature": "4/4",
     "source_file": ""
@@ -3623,5 +3623,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

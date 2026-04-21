@@ -2,7 +2,7 @@
   "id": "b9a09e82",
   "is_dual": true,
   "meta": {
-    "title": "别来无恙:::演唱会版（谢霆锋）",
+    "title": "\u522b\u6765\u65e0\u6059:::\u6f14\u5531\u4f1a\u7248\uff08\u8c22\u9706\u950b\uff09",
     "bpm": 71,
     "time_signature": "4/4",
     "source_file": ""
@@ -7306,5 +7306,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

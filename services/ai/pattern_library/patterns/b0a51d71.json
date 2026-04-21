@@ -2,7 +2,7 @@
   "id": "b0a51d71",
   "is_dual": false,
   "meta": {
-    "title": "¶V°Ý¶V¶Ë¤ß (Solo) - Ä¬¥Ã±d",
+    "title": "\u00b6V\u00b0\u00dd\u00b6V\u00b6\u00cb\u00a4\u00df (Solo) - \u00c4\u00ac\u00a5\u00c3\u00b1d",
     "bpm": 60,
     "time_signature": "4/4",
     "source_file": ""
@@ -1377,5 +1377,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

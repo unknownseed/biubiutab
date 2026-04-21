@@ -2,7 +2,7 @@
   "id": "7c5b48fe",
   "is_dual": true,
   "meta": {
-    "title": "男人哭吧不是罪",
+    "title": "\u7537\u4eba\u54ed\u5427\u4e0d\u662f\u7f6a",
     "bpm": 60,
     "time_signature": "4/4",
     "source_file": ""
@@ -5289,5 +5289,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

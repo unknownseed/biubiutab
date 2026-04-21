@@ -2,7 +2,7 @@
   "id": "0fc84e23",
   "is_dual": true,
   "meta": {
-    "title": "七里香(rock版乐队谱)-周杰伦",
+    "title": "\u4e03\u91cc\u9999(rock\u7248\u4e50\u961f\u8c31)-\u5468\u6770\u4f26",
     "bpm": 77,
     "time_signature": "4/4",
     "source_file": ""
@@ -5747,5 +5747,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

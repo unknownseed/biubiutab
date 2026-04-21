@@ -2,7 +2,7 @@
   "id": "7a674d03",
   "is_dual": false,
   "meta": {
-    "title": "不再让你孤单",
+    "title": "\u4e0d\u518d\u8ba9\u4f60\u5b64\u5355",
     "bpm": 144,
     "time_signature": "4/4",
     "source_file": ""
@@ -1508,5 +1508,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

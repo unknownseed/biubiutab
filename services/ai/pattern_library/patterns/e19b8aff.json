@@ -2,7 +2,7 @@
   "id": "e19b8aff",
   "is_dual": true,
   "meta": {
-    "title": "简单粗暴",
+    "title": "\u7b80\u5355\u7c97\u66b4",
     "bpm": 140,
     "time_signature": "4/4",
     "source_file": ""
@@ -3358,5 +3358,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

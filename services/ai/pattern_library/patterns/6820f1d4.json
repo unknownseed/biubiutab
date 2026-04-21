@@ -2,7 +2,7 @@
   "id": "6820f1d4",
   "is_dual": false,
   "meta": {
-    "title": "花祭",
+    "title": "\u82b1\u796d",
     "bpm": 70,
     "time_signature": "4/4",
     "source_file": ""
@@ -2312,5 +2312,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

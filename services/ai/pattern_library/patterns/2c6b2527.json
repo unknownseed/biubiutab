@@ -2,7 +2,7 @@
   "id": "2c6b2527",
   "is_dual": true,
   "meta": {
-    "title": "那个傻瓜爱过你--赵传",
+    "title": "\u90a3\u4e2a\u50bb\u74dc\u7231\u8fc7\u4f60--\u8d75\u4f20",
     "bpm": 102,
     "time_signature": "4/4",
     "source_file": ""
@@ -2260,5 +2260,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

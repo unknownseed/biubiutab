@@ -2,7 +2,7 @@
   "id": "026dcd62",
   "is_dual": false,
   "meta": {
-    "title": "不让我的眼泪陪我过夜",
+    "title": "\u4e0d\u8ba9\u6211\u7684\u773c\u6cea\u966a\u6211\u8fc7\u591c",
     "bpm": 65,
     "time_signature": "4/4",
     "source_file": ""
@@ -1661,5 +1661,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

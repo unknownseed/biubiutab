@@ -2,7 +2,7 @@
   "id": "9e5ac581",
   "is_dual": true,
   "meta": {
-    "title": "心碎的冰咖啡",
+    "title": "\u5fc3\u788e\u7684\u51b0\u5496\u5561",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -3234,5 +3234,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

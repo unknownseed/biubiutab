@@ -2,7 +2,7 @@
   "id": "9cbdb08f",
   "is_dual": true,
   "meta": {
-    "title": "摇滚版吻别（垃圾点，别介意啊）",
+    "title": "\u6447\u6eda\u7248\u543b\u522b\uff08\u5783\u573e\u70b9\uff0c\u522b\u4ecb\u610f\u554a\uff09",
     "bpm": 75,
     "time_signature": "4/4",
     "source_file": ""
@@ -6445,5 +6445,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

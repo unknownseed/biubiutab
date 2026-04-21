@@ -2,7 +2,7 @@
   "id": "b30d4706",
   "is_dual": true,
   "meta": {
-    "title": "门外看 (The Door Outside Seeing)",
+    "title": "\u95e8\u5916\u770b (The Door Outside Seeing)",
     "bpm": 112,
     "time_signature": "4/4",
     "source_file": ""
@@ -5001,5 +5001,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

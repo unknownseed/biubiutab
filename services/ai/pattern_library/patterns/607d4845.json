@@ -2,7 +2,7 @@
   "id": "607d4845",
   "is_dual": false,
   "meta": {
-    "title": "翅膀",
+    "title": "\u7fc5\u8180",
     "bpm": 72,
     "time_signature": "4/4",
     "source_file": ""
@@ -1761,5 +1761,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

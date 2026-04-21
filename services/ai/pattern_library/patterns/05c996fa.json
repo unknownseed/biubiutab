@@ -2,7 +2,7 @@
   "id": "05c996fa",
   "is_dual": true,
   "meta": {
-    "title": "干妹妹",
+    "title": "\u5e72\u59b9\u59b9",
     "bpm": 110,
     "time_signature": "4/4",
     "source_file": ""
@@ -5741,5 +5741,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

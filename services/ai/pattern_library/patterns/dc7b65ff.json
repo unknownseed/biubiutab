@@ -2,7 +2,7 @@
   "id": "dc7b65ff",
   "is_dual": true,
   "meta": {
-    "title": "轨迹",
+    "title": "\u8f68\u8ff9",
     "bpm": 75,
     "time_signature": "4/4",
     "source_file": ""
@@ -2399,5 +2399,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

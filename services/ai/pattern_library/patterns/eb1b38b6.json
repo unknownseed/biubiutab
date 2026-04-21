@@ -2,7 +2,7 @@
   "id": "eb1b38b6",
   "is_dual": true,
   "meta": {
-    "title": "亲爱的你",
+    "title": "\u4eb2\u7231\u7684\u4f60",
     "bpm": 89,
     "time_signature": "4/4",
     "source_file": ""
@@ -2146,5 +2146,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

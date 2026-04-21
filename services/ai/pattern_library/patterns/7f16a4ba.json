@@ -2,7 +2,7 @@
   "id": "7f16a4ba",
   "is_dual": true,
   "meta": {
-    "title": "paul-（政中）",
+    "title": "paul-\uff08\u653f\u4e2d\uff09",
     "bpm": 151,
     "time_signature": "4/4",
     "source_file": ""
@@ -4150,5 +4150,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

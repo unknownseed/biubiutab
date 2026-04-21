@@ -2,7 +2,7 @@
   "id": "b02a9d7b",
   "is_dual": false,
   "meta": {
-    "title": "发如雪",
+    "title": "\u53d1\u5982\u96ea",
     "bpm": 60,
     "time_signature": "4/4",
     "source_file": ""
@@ -2477,5 +2477,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "24fe4477",
   "is_dual": true,
   "meta": {
-    "title": "K歌之王",
+    "title": "K\u6b4c\u4e4b\u738b",
     "bpm": 81,
     "time_signature": "4/4",
     "source_file": ""
@@ -2533,5 +2533,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

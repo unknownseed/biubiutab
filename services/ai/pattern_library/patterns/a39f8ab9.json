@@ -2,7 +2,7 @@
   "id": "a39f8ab9",
   "is_dual": true,
   "meta": {
-    "title": "许巍--我的最爱-永远支持你!",
+    "title": "\u8bb8\u5dcd--\u6211\u7684\u6700\u7231-\u6c38\u8fdc\u652f\u6301\u4f60!",
     "bpm": 95,
     "time_signature": "4/4",
     "source_file": ""
@@ -6161,5 +6161,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "594dce15",
   "is_dual": false,
   "meta": {
-    "title": "给我一首歌的时间",
+    "title": "\u7ed9\u6211\u4e00\u9996\u6b4c\u7684\u65f6\u95f4",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -522,5 +522,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

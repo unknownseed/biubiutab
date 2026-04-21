@@ -2,7 +2,7 @@
   "id": "f9d57957",
   "is_dual": false,
   "meta": {
-    "title": "容祖儿  -  挥着翅膀的女孩",
+    "title": "\u5bb9\u7956\u513f  -  \u6325\u7740\u7fc5\u8180\u7684\u5973\u5b69",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -1641,5 +1641,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

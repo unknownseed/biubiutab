@@ -2,7 +2,7 @@
   "id": "fb05abe0",
   "is_dual": true,
   "meta": {
-    "title": "童年（吉他五重奏）",
+    "title": "\u7ae5\u5e74\uff08\u5409\u4ed6\u4e94\u91cd\u594f\uff09",
     "bpm": 108,
     "time_signature": "4/4",
     "source_file": ""
@@ -4259,5 +4259,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

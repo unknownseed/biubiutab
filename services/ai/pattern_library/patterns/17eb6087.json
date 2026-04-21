@@ -2,7 +2,7 @@
   "id": "17eb6087",
   "is_dual": true,
   "meta": {
-    "title": "流浪歌手的情人",
+    "title": "\u6d41\u6d6a\u6b4c\u624b\u7684\u60c5\u4eba",
     "bpm": 128,
     "time_signature": "4/4",
     "source_file": ""
@@ -2856,5 +2856,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

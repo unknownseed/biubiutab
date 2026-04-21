@@ -2,7 +2,7 @@
   "id": "8ca45f0c",
   "is_dual": false,
   "meta": {
-    "title": "真的是我",
+    "title": "\u771f\u7684\u662f\u6211",
     "bpm": 60,
     "time_signature": "4/4",
     "source_file": ""
@@ -3816,5 +3816,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

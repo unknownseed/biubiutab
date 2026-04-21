@@ -2,7 +2,7 @@
   "id": "07c5d833",
   "is_dual": true,
   "meta": {
-    "title": "靠近我-天空猪",
+    "title": "\u9760\u8fd1\u6211-\u5929\u7a7a\u732a",
     "bpm": 50,
     "time_signature": "2/4",
     "source_file": ""
@@ -3443,5 +3443,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

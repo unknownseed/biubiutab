@@ -2,7 +2,7 @@
   "id": "e448d6df",
   "is_dual": true,
   "meta": {
-    "title": "光辉岁月 (Glorious Years)",
+    "title": "\u5149\u8f89\u5c81\u6708 (Glorious Years)",
     "bpm": 74,
     "time_signature": "4/4",
     "source_file": ""
@@ -5193,5 +5193,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

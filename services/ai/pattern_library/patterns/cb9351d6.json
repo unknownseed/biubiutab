@@ -2,7 +2,7 @@
   "id": "cb9351d6",
   "is_dual": true,
   "meta": {
-    "title": "许巍－－在别处",
+    "title": "\u8bb8\u5dcd\uff0d\uff0d\u5728\u522b\u5904",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -4457,5 +4457,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

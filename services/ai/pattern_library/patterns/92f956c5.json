@@ -2,7 +2,7 @@
   "id": "92f956c5",
   "is_dual": false,
   "meta": {
-    "title": "Shall We Talk - ³¯«³¨³",
+    "title": "Shall We Talk - \u00b3\u00af\u00ab\u00b3\u00a8\u00b3",
     "bpm": 98,
     "time_signature": "4/4",
     "source_file": ""
@@ -2104,5 +2104,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

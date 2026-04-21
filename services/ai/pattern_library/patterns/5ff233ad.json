@@ -2,7 +2,7 @@
   "id": "5ff233ad",
   "is_dual": false,
   "meta": {
-    "title": "有梦好甜蜜（我为歌狂主题曲）",
+    "title": "\u6709\u68a6\u597d\u751c\u871c\uff08\u6211\u4e3a\u6b4c\u72c2\u4e3b\u9898\u66f2\uff09",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -1270,5 +1270,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

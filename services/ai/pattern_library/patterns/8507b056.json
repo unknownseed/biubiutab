@@ -2,7 +2,7 @@
   "id": "8507b056",
   "is_dual": true,
   "meta": {
-    "title": "玩笑",
+    "title": "\u73a9\u7b11",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -1478,5 +1478,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

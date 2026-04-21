@@ -2,7 +2,7 @@
   "id": "b5205065",
   "is_dual": false,
   "meta": {
-    "title": "继续堕落",
+    "title": "\u7ee7\u7eed\u5815\u843d",
     "bpm": 150,
     "time_signature": "4/4",
     "source_file": ""
@@ -1519,5 +1519,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "2fa94dc7",
   "is_dual": true,
   "meta": {
-    "title": "《每一刻都是崭新的》",
+    "title": "\u300a\u6bcf\u4e00\u523b\u90fd\u662f\u5d2d\u65b0\u7684\u300b",
     "bpm": 136,
     "time_signature": "4/4",
     "source_file": ""
@@ -1617,5 +1617,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

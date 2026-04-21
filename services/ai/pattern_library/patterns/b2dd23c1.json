@@ -2,7 +2,7 @@
   "id": "b2dd23c1",
   "is_dual": false,
   "meta": {
-    "title": "«ç»ò±Ë±o§A Jacky Cheung",
+    "title": "\u00ab\u00e7\u00bb\u00f2\u00b1\u00cb\u00b1o\u00a7A Jacky Cheung",
     "bpm": 68,
     "time_signature": "4/4",
     "source_file": ""
@@ -4154,5 +4154,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

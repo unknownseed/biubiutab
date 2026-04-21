@@ -2,7 +2,7 @@
   "id": "b6bbbf4d",
   "is_dual": true,
   "meta": {
-    "title": "爱不要停摆（张震岳）",
+    "title": "\u7231\u4e0d\u8981\u505c\u6446\uff08\u5f20\u9707\u5cb3\uff09",
     "bpm": 74,
     "time_signature": "4/4",
     "source_file": ""
@@ -3909,5 +3909,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

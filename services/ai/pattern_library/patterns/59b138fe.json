@@ -2,7 +2,7 @@
   "id": "59b138fe",
   "is_dual": false,
   "meta": {
-    "title": "亲密爱人",
+    "title": "\u4eb2\u5bc6\u7231\u4eba",
     "bpm": 62,
     "time_signature": "4/4",
     "source_file": ""
@@ -4143,5 +4143,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

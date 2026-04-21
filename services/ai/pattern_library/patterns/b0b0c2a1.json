@@ -2,7 +2,7 @@
   "id": "b0b0c2a1",
   "is_dual": true,
   "meta": {
-    "title": "水妖-许魏……",
+    "title": "\u6c34\u5996-\u8bb8\u9b4f\u2026\u2026",
     "bpm": 79,
     "time_signature": "4/4",
     "source_file": ""
@@ -3055,5 +3055,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

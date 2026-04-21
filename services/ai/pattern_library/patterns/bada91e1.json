@@ -2,7 +2,7 @@
   "id": "bada91e1",
   "is_dual": false,
   "meta": {
-    "title": "记事本",
+    "title": "\u8bb0\u4e8b\u672c",
     "bpm": 43,
     "time_signature": "4/4",
     "source_file": ""
@@ -1071,5 +1071,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

@@ -2,7 +2,7 @@
   "id": "55f6edc9",
   "is_dual": true,
   "meta": {
-    "title": "我的秋天(标准版)",
+    "title": "\u6211\u7684\u79cb\u5929(\u6807\u51c6\u7248)",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -4173,5 +4173,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

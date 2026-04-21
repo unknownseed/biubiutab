@@ -2,7 +2,7 @@
   "id": "b38eced2",
   "is_dual": true,
   "meta": {
-    "title": "周杰伦歌曲串烧",
+    "title": "\u5468\u6770\u4f26\u6b4c\u66f2\u4e32\u70e7",
     "bpm": 72,
     "time_signature": "1/8",
     "source_file": ""
@@ -2408,5 +2408,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

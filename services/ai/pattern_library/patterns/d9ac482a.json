@@ -2,7 +2,7 @@
   "id": "d9ac482a",
   "is_dual": true,
   "meta": {
-    "title": "白桦林",
+    "title": "\u767d\u6866\u6797",
     "bpm": 118,
     "time_signature": "3/4",
     "source_file": ""
@@ -7225,5 +7225,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

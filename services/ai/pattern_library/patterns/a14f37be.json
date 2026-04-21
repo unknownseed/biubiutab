@@ -2,7 +2,7 @@
   "id": "a14f37be",
   "is_dual": false,
   "meta": {
-    "title": "DI—DA",
+    "title": "DI\u2014DA",
     "bpm": 110,
     "time_signature": "4/4",
     "source_file": ""
@@ -357,5 +357,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

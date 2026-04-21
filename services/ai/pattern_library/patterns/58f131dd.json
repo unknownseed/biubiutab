@@ -2,7 +2,7 @@
   "id": "58f131dd",
   "is_dual": false,
   "meta": {
-    "title": "梦醒了(1)",
+    "title": "\u68a6\u9192\u4e86(1)",
     "bpm": 103,
     "time_signature": "4/4",
     "source_file": ""
@@ -1743,5 +1743,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

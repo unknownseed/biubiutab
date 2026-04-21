@@ -2,7 +2,7 @@
   "id": "f4d8b6b7",
   "is_dual": true,
   "meta": {
-    "title": "好聚好散（任贤齐）",
+    "title": "\u597d\u805a\u597d\u6563\uff08\u4efb\u8d24\u9f50\uff09",
     "bpm": 65,
     "time_signature": "4/4",
     "source_file": ""
@@ -4680,5 +4680,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

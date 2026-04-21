@@ -2,7 +2,7 @@
   "id": "5256d48a",
   "is_dual": true,
   "meta": {
-    "title": "浮躁",
+    "title": "\u6d6e\u8e81",
     "bpm": 78,
     "time_signature": "2/4",
     "source_file": ""
@@ -4296,5 +4296,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

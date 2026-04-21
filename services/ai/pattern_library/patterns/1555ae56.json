@@ -2,7 +2,7 @@
   "id": "1555ae56",
   "is_dual": true,
   "meta": {
-    "title": "上帝救救我",
+    "title": "\u4e0a\u5e1d\u6551\u6551\u6211",
     "bpm": 88,
     "time_signature": "4/4",
     "source_file": ""
@@ -7019,5 +7019,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

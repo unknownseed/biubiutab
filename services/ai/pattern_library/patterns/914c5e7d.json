@@ -2,7 +2,7 @@
   "id": "914c5e7d",
   "is_dual": false,
   "meta": {
-    "title": "那些花儿",
+    "title": "\u90a3\u4e9b\u82b1\u513f",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -1935,5 +1935,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

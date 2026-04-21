@@ -2,7 +2,7 @@
   "id": "a016e72d",
   "is_dual": true,
   "meta": {
-    "title": "特别的想念--赵传",
+    "title": "\u7279\u522b\u7684\u60f3\u5ff5--\u8d75\u4f20",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -3608,5 +3608,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

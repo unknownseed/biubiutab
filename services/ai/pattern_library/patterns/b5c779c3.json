@@ -2,7 +2,7 @@
   "id": "b5c779c3",
   "is_dual": false,
   "meta": {
-    "title": "挥动翅膀的女孩",
+    "title": "\u6325\u52a8\u7fc5\u8180\u7684\u5973\u5b69",
     "bpm": 88,
     "time_signature": "4/4",
     "source_file": ""
@@ -2474,5 +2474,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

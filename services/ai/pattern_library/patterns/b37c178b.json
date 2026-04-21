@@ -2,7 +2,7 @@
   "id": "b37c178b",
   "is_dual": true,
   "meta": {
-    "title": "龙卷风",
+    "title": "\u9f99\u5377\u98ce",
     "bpm": 72,
     "time_signature": "4/4",
     "source_file": ""
@@ -2614,5 +2614,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

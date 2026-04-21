@@ -2,7 +2,7 @@
   "id": "a35624c6",
   "is_dual": true,
   "meta": {
-    "title": "安慰(郑钧)",
+    "title": "\u5b89\u6170(\u90d1\u94a7)",
     "bpm": 87,
     "time_signature": "4/4",
     "source_file": ""
@@ -4555,5 +4555,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

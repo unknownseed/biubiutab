@@ -2,7 +2,7 @@
   "id": "a2d07943",
   "is_dual": true,
   "meta": {
-    "title": "田震《爱不后悔》",
+    "title": "\u7530\u9707\u300a\u7231\u4e0d\u540e\u6094\u300b",
     "bpm": 105,
     "time_signature": "4/4",
     "source_file": ""
@@ -2227,5 +2227,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

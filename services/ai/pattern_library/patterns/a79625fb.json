@@ -2,7 +2,7 @@
   "id": "a79625fb",
   "is_dual": false,
   "meta": {
-    "title": "蝴蝶花",
+    "title": "\u8774\u8776\u82b1",
     "bpm": 100,
     "time_signature": "6/8",
     "source_file": ""
@@ -1367,5 +1367,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

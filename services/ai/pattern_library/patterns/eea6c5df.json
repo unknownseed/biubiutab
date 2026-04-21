@@ -2,7 +2,7 @@
   "id": "eea6c5df",
   "is_dual": false,
   "meta": {
-    "title": "龙拳（前奏）",
+    "title": "\u9f99\u62f3\uff08\u524d\u594f\uff09",
     "bpm": 109,
     "time_signature": "4/4",
     "source_file": ""
@@ -4123,5 +4123,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

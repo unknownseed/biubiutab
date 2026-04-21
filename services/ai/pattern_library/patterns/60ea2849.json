@@ -2,7 +2,7 @@
   "id": "60ea2849",
   "is_dual": true,
   "meta": {
-    "title": "281公里 （完美版）",
+    "title": "281\u516c\u91cc \uff08\u5b8c\u7f8e\u7248\uff09",
     "bpm": 68,
     "time_signature": "4/4",
     "source_file": ""
@@ -6473,5 +6473,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

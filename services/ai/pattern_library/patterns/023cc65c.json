@@ -2,7 +2,7 @@
   "id": "023cc65c",
   "is_dual": true,
   "meta": {
-    "title": "天鹅之死--sgk0--sgk0@163.com",
+    "title": "\u5929\u9e45\u4e4b\u6b7b--sgk0--sgk0@163.com",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -2657,5 +2657,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

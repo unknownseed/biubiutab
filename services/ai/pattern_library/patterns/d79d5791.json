@@ -2,7 +2,7 @@
   "id": "d79d5791",
   "is_dual": false,
   "meta": {
-    "title": "国境之南",
+    "title": "\u56fd\u5883\u4e4b\u5357",
     "bpm": 72,
     "time_signature": "4/4",
     "source_file": ""
@@ -2018,5 +2018,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

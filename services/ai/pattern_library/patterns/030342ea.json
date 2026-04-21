@@ -2,7 +2,7 @@
   "id": "030342ea",
   "is_dual": true,
   "meta": {
-    "title": "谁愿放手",
+    "title": "\u8c01\u613f\u653e\u624b",
     "bpm": 73,
     "time_signature": "4/4",
     "source_file": ""
@@ -3494,5 +3494,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

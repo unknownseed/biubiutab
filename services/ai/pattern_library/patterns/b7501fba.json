@@ -2,7 +2,7 @@
   "id": "b7501fba",
   "is_dual": true,
   "meta": {
-    "title": "春花秋月",
+    "title": "\u6625\u82b1\u79cb\u6708",
     "bpm": 102,
     "time_signature": "3/4",
     "source_file": ""
@@ -2827,5 +2827,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "1cad60f1",
   "is_dual": false,
   "meta": {
-    "title": "小帆船",
+    "title": "\u5c0f\u5e06\u8239",
     "bpm": 110,
     "time_signature": "4/4",
     "source_file": ""
@@ -1805,5 +1805,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

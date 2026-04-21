@@ -2,7 +2,7 @@
   "id": "fe103a06",
   "is_dual": true,
   "meta": {
-    "title": "¨k¤H¤£¸ÓÅý¤k¤H¬y²\\ - Ä¬¥Ã±d",
+    "title": "\u00a8k\u00a4H\u00a4\u00a3\u00b8\u00d3\u00c5\u00fd\u00a4k\u00a4H\u00acy\u00b2\\ - \u00c4\u00ac\u00a5\u00c3\u00b1d",
     "bpm": 95,
     "time_signature": "4/4",
     "source_file": ""
@@ -6090,5 +6090,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

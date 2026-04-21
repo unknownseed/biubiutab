@@ -2,7 +2,7 @@
   "id": "07a81c9b",
   "is_dual": true,
   "meta": {
-    "title": "长伴千世纪",
+    "title": "\u957f\u4f34\u5343\u4e16\u7eaa",
     "bpm": 108,
     "time_signature": "3/4",
     "source_file": ""
@@ -3198,5 +3198,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

@@ -2,7 +2,7 @@
   "id": "7b7052d2",
   "is_dual": true,
   "meta": {
-    "title": "都怪我",
+    "title": "\u90fd\u602a\u6211",
     "bpm": 70,
     "time_signature": "4/4",
     "source_file": ""
@@ -6754,5 +6754,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

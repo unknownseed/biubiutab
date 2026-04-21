@@ -2,7 +2,7 @@
   "id": "3ad6514d",
   "is_dual": true,
   "meta": {
-    "title": "爱不后悔",
+    "title": "\u7231\u4e0d\u540e\u6094",
     "bpm": 105,
     "time_signature": "4/4",
     "source_file": ""
@@ -2227,5 +2227,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

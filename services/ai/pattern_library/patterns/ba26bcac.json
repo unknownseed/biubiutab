@@ -2,7 +2,7 @@
   "id": "ba26bcac",
   "is_dual": false,
   "meta": {
-    "title": "稻香",
+    "title": "\u7a3b\u9999",
     "bpm": 82,
     "time_signature": "4/4",
     "source_file": ""
@@ -2306,5 +2306,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

@@ -2,7 +2,7 @@
   "id": "b5a6f24f",
   "is_dual": true,
   "meta": {
-    "title": "起床（无印良品）",
+    "title": "\u8d77\u5e8a\uff08\u65e0\u5370\u826f\u54c1\uff09",
     "bpm": 110,
     "time_signature": "4/4",
     "source_file": ""
@@ -3754,5 +3754,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

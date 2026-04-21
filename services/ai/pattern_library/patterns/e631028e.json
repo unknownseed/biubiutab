@@ -2,7 +2,7 @@
   "id": "e631028e",
   "is_dual": true,
   "meta": {
-    "title": "ÇéÈË",
+    "title": "\u00c7\u00e9\u00c8\u00cb",
     "bpm": 74,
     "time_signature": "4/4",
     "source_file": ""
@@ -4916,5 +4916,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

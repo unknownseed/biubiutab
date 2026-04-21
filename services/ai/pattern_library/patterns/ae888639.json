@@ -2,7 +2,7 @@
   "id": "ae888639",
   "is_dual": true,
   "meta": {
-    "title": "早安女士",
+    "title": "\u65e9\u5b89\u5973\u58eb",
     "bpm": 118,
     "time_signature": "4/4",
     "source_file": ""
@@ -3194,5 +3194,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

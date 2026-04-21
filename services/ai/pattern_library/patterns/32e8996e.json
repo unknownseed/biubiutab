@@ -2,7 +2,7 @@
   "id": "32e8996e",
   "is_dual": false,
   "meta": {
-    "title": "币ボ魁",
+    "title": "\u5e01\u30dc\u9b41",
     "bpm": 62,
     "time_signature": "4/4",
     "source_file": ""
@@ -3450,5 +3450,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

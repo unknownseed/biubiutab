@@ -2,7 +2,7 @@
   "id": "aa971fad",
   "is_dual": true,
   "meta": {
-    "title": "屋顶",
+    "title": "\u5c4b\u9876",
     "bpm": 87,
     "time_signature": "4/4",
     "source_file": ""
@@ -2432,5 +2432,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

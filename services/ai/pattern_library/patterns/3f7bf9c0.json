@@ -2,7 +2,7 @@
   "id": "3f7bf9c0",
   "is_dual": true,
   "meta": {
-    "title": "肩纒づノ - 谅綹網",
+    "title": "\u80a9\u7e92\u3065\u30ce - \u8c05\u7db9\u7db2",
     "bpm": 95,
     "time_signature": "4/4",
     "source_file": ""
@@ -2082,5 +2082,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

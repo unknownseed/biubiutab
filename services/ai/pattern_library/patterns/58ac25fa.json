@@ -2,7 +2,7 @@
   "id": "58ac25fa",
   "is_dual": true,
   "meta": {
-    "title": "我要走天涯",
+    "title": "\u6211\u8981\u8d70\u5929\u6daf",
     "bpm": 86,
     "time_signature": "2/4",
     "source_file": ""
@@ -2188,5 +2188,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

@@ -2,7 +2,7 @@
   "id": "6624d0f0",
   "is_dual": true,
   "meta": {
-    "title": "离开我",
+    "title": "\u79bb\u5f00\u6211",
     "bpm": 62,
     "time_signature": "4/4",
     "source_file": ""
@@ -4993,5 +4993,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

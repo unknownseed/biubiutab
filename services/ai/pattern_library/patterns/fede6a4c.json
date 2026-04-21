@@ -2,7 +2,7 @@
   "id": "fede6a4c",
   "is_dual": true,
   "meta": {
-    "title": "美丽世界的孤儿",
+    "title": "\u7f8e\u4e3d\u4e16\u754c\u7684\u5b64\u513f",
     "bpm": 56,
     "time_signature": "4/4",
     "source_file": ""
@@ -1475,5 +1475,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

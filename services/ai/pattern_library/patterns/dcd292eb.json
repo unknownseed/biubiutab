@@ -2,7 +2,7 @@
   "id": "dcd292eb",
   "is_dual": false,
   "meta": {
-    "title": "音乐虫子",
+    "title": "\u97f3\u4e50\u866b\u5b50",
     "bpm": 68,
     "time_signature": "2/4",
     "source_file": ""
@@ -2120,5 +2120,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

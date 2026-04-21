@@ -2,7 +2,7 @@
   "id": "c1991f10",
   "is_dual": true,
   "meta": {
-    "title": "Everybody磗 Trying To Be My Baby",
+    "title": "Everybody\u78d7 Trying To Be My Baby",
     "bpm": 180,
     "time_signature": "4/4",
     "source_file": ""
@@ -4090,5 +4090,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

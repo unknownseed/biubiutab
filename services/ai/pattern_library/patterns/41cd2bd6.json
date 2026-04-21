@@ -2,7 +2,7 @@
   "id": "41cd2bd6",
   "is_dual": true,
   "meta": {
-    "title": "庸人（谢霆锋）",
+    "title": "\u5eb8\u4eba\uff08\u8c22\u9706\u950b\uff09",
     "bpm": 80,
     "time_signature": "2/4",
     "source_file": ""
@@ -5003,5 +5003,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

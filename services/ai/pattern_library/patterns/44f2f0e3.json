@@ -2,7 +2,7 @@
   "id": "44f2f0e3",
   "is_dual": false,
   "meta": {
-    "title": "小小的太阳      张宇",
+    "title": "\u5c0f\u5c0f\u7684\u592a\u9633      \u5f20\u5b87",
     "bpm": 66,
     "time_signature": "4/4",
     "source_file": ""
@@ -3256,5 +3256,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

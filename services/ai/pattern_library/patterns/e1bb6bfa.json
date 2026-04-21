@@ -2,7 +2,7 @@
   "id": "e1bb6bfa",
   "is_dual": true,
   "meta": {
-    "title": "有没有一首歌会让你想起我·周华健  www.shaowei.com  柳",
+    "title": "\u6709\u6ca1\u6709\u4e00\u9996\u6b4c\u4f1a\u8ba9\u4f60\u60f3\u8d77\u6211\u00b7\u5468\u534e\u5065  www.shaowei.com  \u67f3",
     "bpm": 75,
     "time_signature": "4/4",
     "source_file": ""
@@ -6374,5 +6374,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

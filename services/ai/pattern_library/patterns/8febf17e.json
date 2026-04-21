@@ -2,7 +2,7 @@
   "id": "8febf17e",
   "is_dual": true,
   "meta": {
-    "title": "飞得更高",
+    "title": "\u98de\u5f97\u66f4\u9ad8",
     "bpm": 90,
     "time_signature": "4/4",
     "source_file": ""
@@ -6466,5 +6466,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

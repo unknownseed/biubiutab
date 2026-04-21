@@ -2,7 +2,7 @@
   "id": "8b48e27c",
   "is_dual": true,
   "meta": {
-    "title": "路漫漫",
+    "title": "\u8def\u6f2b\u6f2b",
     "bpm": 135,
     "time_signature": "4/4",
     "source_file": ""
@@ -4199,5 +4199,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

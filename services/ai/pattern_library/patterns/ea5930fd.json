@@ -2,7 +2,7 @@
   "id": "ea5930fd",
   "is_dual": false,
   "meta": {
-    "title": "半夜十一点钟",
+    "title": "\u534a\u591c\u5341\u4e00\u70b9\u949f",
     "bpm": 136,
     "time_signature": "4/4",
     "source_file": ""
@@ -3014,5 +3014,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

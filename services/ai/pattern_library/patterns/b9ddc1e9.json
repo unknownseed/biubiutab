@@ -2,7 +2,7 @@
   "id": "b9ddc1e9",
   "is_dual": true,
   "meta": {
-    "title": "但愿人长久",
+    "title": "\u4f46\u613f\u4eba\u957f\u4e45",
     "bpm": 89,
     "time_signature": "4/4",
     "source_file": ""
@@ -2906,5 +2906,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

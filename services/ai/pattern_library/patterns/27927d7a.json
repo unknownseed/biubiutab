@@ -2,7 +2,7 @@
   "id": "27927d7a",
   "is_dual": false,
   "meta": {
-    "title": "一无所有",
+    "title": "\u4e00\u65e0\u6240\u6709",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -2533,5 +2533,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

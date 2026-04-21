@@ -2,7 +2,7 @@
   "id": "986cb8bc",
   "is_dual": false,
   "meta": {
-    "title": "晴天",
+    "title": "\u6674\u5929",
     "bpm": 70,
     "time_signature": "4/4",
     "source_file": ""
@@ -2070,5 +2070,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

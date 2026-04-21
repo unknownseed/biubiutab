@@ -2,7 +2,7 @@
   "id": "4950f377",
   "is_dual": true,
   "meta": {
-    "title": "活火山",
+    "title": "\u6d3b\u706b\u5c71",
     "bpm": 139,
     "time_signature": "4/4",
     "source_file": ""
@@ -1372,5 +1372,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

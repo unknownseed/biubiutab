@@ -2,7 +2,7 @@
   "id": "970a8abf",
   "is_dual": true,
   "meta": {
-    "title": "雨一直下",
+    "title": "\u96e8\u4e00\u76f4\u4e0b",
     "bpm": 90,
     "time_signature": "4/4",
     "source_file": ""
@@ -5945,5 +5945,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

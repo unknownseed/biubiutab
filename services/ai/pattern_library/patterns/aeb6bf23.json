@@ -2,7 +2,7 @@
   "id": "aeb6bf23",
   "is_dual": true,
   "meta": {
-    "title": "七里香",
+    "title": "\u4e03\u91cc\u9999",
     "bpm": 73,
     "time_signature": "4/4",
     "source_file": ""
@@ -5747,5 +5747,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

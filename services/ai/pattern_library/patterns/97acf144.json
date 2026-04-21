@@ -2,7 +2,7 @@
   "id": "97acf144",
   "is_dual": true,
   "meta": {
-    "title": "今夜——许巍       节奏吉他手——Bicky     QQ:37627081    bicky@citiz.net   “了”乐队",
+    "title": "\u4eca\u591c\u2014\u2014\u8bb8\u5dcd       \u8282\u594f\u5409\u4ed6\u624b\u2014\u2014Bicky     QQ:37627081    bicky@citiz.net   \u201c\u4e86\u201d\u4e50\u961f",
     "bpm": 140,
     "time_signature": "4/4",
     "source_file": ""
@@ -3874,5 +3874,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

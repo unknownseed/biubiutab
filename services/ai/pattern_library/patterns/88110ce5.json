@@ -2,7 +2,7 @@
   "id": "88110ce5",
   "is_dual": true,
   "meta": {
-    "title": "活着Viva ",
+    "title": "\u6d3b\u7740Viva ",
     "bpm": 140,
     "time_signature": "4/4",
     "source_file": ""
@@ -1902,5 +1902,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

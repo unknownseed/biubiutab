@@ -2,7 +2,7 @@
   "id": "48682348",
   "is_dual": true,
   "meta": {
-    "title": "狼(97新版）",
+    "title": "\u72fc(97\u65b0\u7248\uff09",
     "bpm": 63,
     "time_signature": "1/4",
     "source_file": ""
@@ -6501,5 +6501,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

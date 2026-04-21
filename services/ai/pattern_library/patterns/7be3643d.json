@@ -2,7 +2,7 @@
   "id": "7be3643d",
   "is_dual": true,
   "meta": {
-    "title": "蓝莲花",
+    "title": "\u84dd\u83b2\u82b1",
     "bpm": 90,
     "time_signature": "4/4",
     "source_file": ""
@@ -5543,5 +5543,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

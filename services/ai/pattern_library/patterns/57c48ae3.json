@@ -2,7 +2,7 @@
   "id": "57c48ae3",
   "is_dual": true,
   "meta": {
-    "title": "麦克",
+    "title": "\u9ea6\u514b",
     "bpm": 63,
     "time_signature": "4/4",
     "source_file": ""
@@ -3986,5 +3986,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

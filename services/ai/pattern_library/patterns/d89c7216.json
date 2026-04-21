@@ -2,7 +2,7 @@
   "id": "d89c7216",
   "is_dual": true,
   "meta": {
-    "title": "痛哭的人",
+    "title": "\u75db\u54ed\u7684\u4eba",
     "bpm": 60,
     "time_signature": "4/4",
     "source_file": ""
@@ -11313,5 +11313,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

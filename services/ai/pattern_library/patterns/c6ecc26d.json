@@ -2,7 +2,7 @@
   "id": "c6ecc26d",
   "is_dual": true,
   "meta": {
-    "title": "晴天",
+    "title": "\u6674\u5929",
     "bpm": 137,
     "time_signature": "4/4",
     "source_file": ""
@@ -3503,5 +3503,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

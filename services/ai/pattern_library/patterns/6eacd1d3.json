@@ -2,7 +2,7 @@
   "id": "6eacd1d3",
   "is_dual": false,
   "meta": {
-    "title": "挪威森林（伍佰）",
+    "title": "\u632a\u5a01\u68ee\u6797\uff08\u4f0d\u4f70\uff09",
     "bpm": 70,
     "time_signature": "4/4",
     "source_file": ""
@@ -2555,5 +2555,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

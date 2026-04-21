@@ -2,7 +2,7 @@
   "id": "002a4219",
   "is_dual": true,
   "meta": {
-    "title": "怕黑的女人",
+    "title": "\u6015\u9ed1\u7684\u5973\u4eba",
     "bpm": 85,
     "time_signature": "4/4",
     "source_file": ""
@@ -4519,5 +4519,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

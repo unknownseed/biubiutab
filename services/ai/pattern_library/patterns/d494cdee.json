@@ -2,7 +2,7 @@
   "id": "d494cdee",
   "is_dual": true,
   "meta": {
-    "title": "闪亮的瞬间",
+    "title": "\u95ea\u4eae\u7684\u77ac\u95f4",
     "bpm": 67,
     "time_signature": "2/4",
     "source_file": ""
@@ -11949,5 +11949,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

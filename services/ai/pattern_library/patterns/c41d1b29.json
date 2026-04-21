@@ -2,7 +2,7 @@
   "id": "c41d1b29",
   "is_dual": true,
   "meta": {
-    "title": "狂流",
+    "title": "\u72c2\u6d41",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -4577,5 +4577,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

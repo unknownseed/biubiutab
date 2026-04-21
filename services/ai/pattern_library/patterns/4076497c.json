@@ -2,7 +2,7 @@
   "id": "4076497c",
   "is_dual": true,
   "meta": {
-    "title": "无情的雨无情的你",
+    "title": "\u65e0\u60c5\u7684\u96e8\u65e0\u60c5\u7684\u4f60",
     "bpm": 66,
     "time_signature": "2/4",
     "source_file": ""
@@ -2625,5 +2625,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

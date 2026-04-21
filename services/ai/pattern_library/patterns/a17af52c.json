@@ -2,7 +2,7 @@
   "id": "a17af52c",
   "is_dual": true,
   "meta": {
-    "title": "树枝孤鸟",
+    "title": "\u6811\u679d\u5b64\u9e1f",
     "bpm": 154,
     "time_signature": "4/4",
     "source_file": ""
@@ -3394,5 +3394,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

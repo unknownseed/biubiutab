@@ -2,7 +2,7 @@
   "id": "407238e6",
   "is_dual": true,
   "meta": {
-    "title": "我思念的城市",
+    "title": "\u6211\u601d\u5ff5\u7684\u57ce\u5e02",
     "bpm": 62,
     "time_signature": "4/4",
     "source_file": ""
@@ -8455,5 +8455,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

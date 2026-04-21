@@ -2,7 +2,7 @@
   "id": "96dadd67",
   "is_dual": true,
   "meta": {
-    "title": "¤@À»§Y¤¤ - ÁÂ¾^¾W",
+    "title": "\u00a4@\u00c0\u00bb\u00a7Y\u00a4\u00a4 - \u00c1\u00c2\u00be^\u00beW",
     "bpm": 75,
     "time_signature": "4/4",
     "source_file": ""
@@ -3864,5 +3864,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

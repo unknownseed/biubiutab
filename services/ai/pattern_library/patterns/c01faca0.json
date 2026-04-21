@@ -2,7 +2,7 @@
   "id": "c01faca0",
   "is_dual": true,
   "meta": {
-    "title": "流着泪的你的脸（任贤齐）",
+    "title": "\u6d41\u7740\u6cea\u7684\u4f60\u7684\u8138\uff08\u4efb\u8d24\u9f50\uff09",
     "bpm": 68,
     "time_signature": "2/4",
     "source_file": ""
@@ -2836,5 +2836,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

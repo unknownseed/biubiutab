@@ -2,7 +2,7 @@
   "id": "babb2ed2",
   "is_dual": true,
   "meta": {
-    "title": "真心英雄",
+    "title": "\u771f\u5fc3\u82f1\u96c4",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -3283,5 +3283,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

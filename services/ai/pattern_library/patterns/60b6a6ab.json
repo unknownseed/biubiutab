@@ -2,7 +2,7 @@
   "id": "60b6a6ab",
   "is_dual": true,
   "meta": {
-    "title": "世界第一等",
+    "title": "\u4e16\u754c\u7b2c\u4e00\u7b49",
     "bpm": 80,
     "time_signature": "2/4",
     "source_file": ""
@@ -2666,5 +2666,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

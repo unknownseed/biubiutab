@@ -2,7 +2,7 @@
   "id": "da566898",
   "is_dual": false,
   "meta": {
-    "title": "低等动物",
+    "title": "\u4f4e\u7b49\u52a8\u7269",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -670,5 +670,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

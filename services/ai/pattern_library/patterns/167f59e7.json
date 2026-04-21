@@ -2,7 +2,7 @@
   "id": "167f59e7",
   "is_dual": true,
   "meta": {
-    "title": "别来无恙",
+    "title": "\u522b\u6765\u65e0\u6059",
     "bpm": 74,
     "time_signature": "4/4",
     "source_file": ""
@@ -5671,5 +5671,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

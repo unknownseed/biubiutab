@@ -2,7 +2,7 @@
   "id": "e43c79df",
   "is_dual": false,
   "meta": {
-    "title": "听妈妈的话",
+    "title": "\u542c\u5988\u5988\u7684\u8bdd",
     "bpm": 94,
     "time_signature": "4/4",
     "source_file": ""
@@ -867,5 +867,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

@@ -2,7 +2,7 @@
   "id": "9ab14b10",
   "is_dual": true,
   "meta": {
-    "title": "恋恋风尘",
+    "title": "\u604b\u604b\u98ce\u5c18",
     "bpm": 102,
     "time_signature": "3/4",
     "source_file": ""
@@ -3172,5 +3172,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "07f559a6",
   "is_dual": true,
   "meta": {
-    "title": "零缺点",
+    "title": "\u96f6\u7f3a\u70b9",
     "bpm": 106,
     "time_signature": "2/4",
     "source_file": ""
@@ -951,5 +951,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

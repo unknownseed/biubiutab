@@ -2,7 +2,7 @@
   "id": "544a1a08",
   "is_dual": false,
   "meta": {
-    "title": "回到过去",
+    "title": "\u56de\u5230\u8fc7\u53bb",
     "bpm": 86,
     "time_signature": "4/4",
     "source_file": ""
@@ -2614,5 +2614,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

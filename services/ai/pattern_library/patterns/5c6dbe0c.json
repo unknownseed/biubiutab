@@ -2,7 +2,7 @@
   "id": "5c6dbe0c",
   "is_dual": true,
   "meta": {
-    "title": "纪念日",
+    "title": "\u7eaa\u5ff5\u65e5",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -2645,5 +2645,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

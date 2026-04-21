@@ -2,7 +2,7 @@
   "id": "d69847f1",
   "is_dual": true,
   "meta": {
-    "title": "你的样子",
+    "title": "\u4f60\u7684\u6837\u5b50",
     "bpm": 72,
     "time_signature": "4/4",
     "source_file": ""
@@ -7833,5 +7833,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

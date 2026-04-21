@@ -2,7 +2,7 @@
   "id": "654ac24b",
   "is_dual": false,
   "meta": {
-    "title": "钢铁男子",
+    "title": "\u94a2\u94c1\u7537\u5b50",
     "bpm": 65,
     "time_signature": "4/4",
     "source_file": ""
@@ -1307,5 +1307,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

@@ -2,7 +2,7 @@
   "id": "db237f84",
   "is_dual": true,
   "meta": {
-    "title": "再见我的初恋",
+    "title": "\u518d\u89c1\u6211\u7684\u521d\u604b",
     "bpm": 90,
     "time_signature": "4/4",
     "source_file": ""
@@ -1885,5 +1885,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

@@ -2,7 +2,7 @@
   "id": "d095a504",
   "is_dual": true,
   "meta": {
-    "title": "那就这样吧（动力火车）",
+    "title": "\u90a3\u5c31\u8fd9\u6837\u5427\uff08\u52a8\u529b\u706b\u8f66\uff09",
     "bpm": 90,
     "time_signature": "4/4",
     "source_file": ""
@@ -2709,5 +2709,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

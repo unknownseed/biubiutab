@@ -2,7 +2,7 @@
   "id": "c1fd3030",
   "is_dual": true,
   "meta": {
-    "title": "世界末日·周杰伦  www.shaowei.com  柳",
+    "title": "\u4e16\u754c\u672b\u65e5\u00b7\u5468\u6770\u4f26  www.shaowei.com  \u67f3",
     "bpm": 68,
     "time_signature": "4/4",
     "source_file": ""
@@ -3273,5 +3273,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

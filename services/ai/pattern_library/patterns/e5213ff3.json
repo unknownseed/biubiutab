@@ -2,7 +2,7 @@
   "id": "e5213ff3",
   "is_dual": true,
   "meta": {
-    "title": "浪子归",
+    "title": "\u6d6a\u5b50\u5f52",
     "bpm": 124,
     "time_signature": "4/4",
     "source_file": ""
@@ -4293,5 +4293,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "3e370ff4",
   "is_dual": true,
   "meta": {
-    "title": "估计错误（谢霆锋）   “了”乐队  bicky:37627081",
+    "title": "\u4f30\u8ba1\u9519\u8bef\uff08\u8c22\u9706\u950b\uff09   \u201c\u4e86\u201d\u4e50\u961f  bicky:37627081",
     "bpm": 82,
     "time_signature": "4/4",
     "source_file": ""
@@ -6889,5 +6889,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

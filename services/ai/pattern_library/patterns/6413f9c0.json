@@ -2,7 +2,7 @@
   "id": "6413f9c0",
   "is_dual": true,
   "meta": {
-    "title": "天意 ",
+    "title": "\u5929\u610f ",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -3360,5 +3360,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

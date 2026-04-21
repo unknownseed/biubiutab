@@ -2,7 +2,7 @@
   "id": "fa9518fa",
   "is_dual": true,
   "meta": {
-    "title": "同桌的你（风行版）",
+    "title": "\u540c\u684c\u7684\u4f60\uff08\u98ce\u884c\u7248\uff09",
     "bpm": 102,
     "time_signature": "3/4",
     "source_file": ""
@@ -2410,5 +2410,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

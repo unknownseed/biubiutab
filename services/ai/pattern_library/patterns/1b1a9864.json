@@ -2,7 +2,7 @@
   "id": "1b1a9864",
   "is_dual": true,
   "meta": {
-    "title": "只要你過得比我好(改版)",
+    "title": "\u53ea\u8981\u4f60\u904e\u5f97\u6bd4\u6211\u597d(\u6539\u7248)",
     "bpm": 75,
     "time_signature": "4/4",
     "source_file": ""
@@ -2858,5 +2858,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

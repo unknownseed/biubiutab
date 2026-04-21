@@ -2,7 +2,7 @@
   "id": "7e721c79",
   "is_dual": true,
   "meta": {
-    "title": "七里香  C调版本 ",
+    "title": "\u4e03\u91cc\u9999  C\u8c03\u7248\u672c ",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -7666,5 +7666,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

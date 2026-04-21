@@ -2,7 +2,7 @@
   "id": "bcf6b1d1",
   "is_dual": true,
   "meta": {
-    "title": "平淡-许巍",
+    "title": "\u5e73\u6de1-\u8bb8\u5dcd",
     "bpm": 90,
     "time_signature": "4/4",
     "source_file": ""
@@ -6037,5 +6037,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

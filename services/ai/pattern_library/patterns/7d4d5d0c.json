@@ -2,7 +2,7 @@
   "id": "7d4d5d0c",
   "is_dual": true,
   "meta": {
-    "title": "晴朗",
+    "title": "\u6674\u6717",
     "bpm": 92,
     "time_signature": "4/4",
     "source_file": ""
@@ -3784,5 +3784,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

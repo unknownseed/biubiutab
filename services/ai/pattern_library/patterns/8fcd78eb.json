@@ -2,7 +2,7 @@
   "id": "8fcd78eb",
   "is_dual": true,
   "meta": {
-    "title": "Çé·ÇµÃÒÑ",
+    "title": "\u00c7\u00e9\u00b7\u00c7\u00b5\u00c3\u00d2\u00d1",
     "bpm": 107,
     "time_signature": "1/4",
     "source_file": ""
@@ -4927,5 +4927,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

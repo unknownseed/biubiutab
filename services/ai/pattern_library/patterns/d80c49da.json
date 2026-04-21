@@ -2,7 +2,7 @@
   "id": "d80c49da",
   "is_dual": true,
   "meta": {
-    "title": "因为",
+    "title": "\u56e0\u4e3a",
     "bpm": 60,
     "time_signature": "4/4",
     "source_file": ""
@@ -3764,5 +3764,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

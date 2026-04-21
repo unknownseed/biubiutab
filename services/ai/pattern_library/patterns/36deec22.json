@@ -2,7 +2,7 @@
   "id": "36deec22",
   "is_dual": false,
   "meta": {
-    "title": "天黑黑",
+    "title": "\u5929\u9ed1\u9ed1",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -1847,5 +1847,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

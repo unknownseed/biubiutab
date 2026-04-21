@@ -2,7 +2,7 @@
   "id": "1217aae2",
   "is_dual": true,
   "meta": {
-    "title": " 在雨中",
+    "title": " \u5728\u96e8\u4e2d",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -2852,5 +2852,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

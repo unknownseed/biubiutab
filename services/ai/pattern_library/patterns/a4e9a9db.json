@@ -2,7 +2,7 @@
   "id": "a4e9a9db",
   "is_dual": true,
   "meta": {
-    "title": " 又见炊烟",
+    "title": " \u53c8\u89c1\u708a\u70df",
     "bpm": 95,
     "time_signature": "2/4",
     "source_file": ""
@@ -2075,5 +2075,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

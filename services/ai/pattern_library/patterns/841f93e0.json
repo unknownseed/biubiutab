@@ -2,7 +2,7 @@
   "id": "841f93e0",
   "is_dual": true,
   "meta": {
-    "title": "冲动的惩罚",
+    "title": "\u51b2\u52a8\u7684\u60e9\u7f5a",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -1809,5 +1809,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

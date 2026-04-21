@@ -2,7 +2,7 @@
   "id": "67df76be",
   "is_dual": true,
   "meta": {
-    "title": "¤£¦AµS¿Ý( 91 Live )",
+    "title": "\u00a4\u00a3\u00a6A\u00b5S\u00bf\u00dd( 91 Live )",
     "bpm": 137,
     "time_signature": "4/4",
     "source_file": ""
@@ -3768,5 +3768,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "d727f31e",
   "is_dual": true,
   "meta": {
-    "title": "思念是一种病",
+    "title": "\u601d\u5ff5\u662f\u4e00\u79cd\u75c5",
     "bpm": 90,
     "time_signature": "4/4",
     "source_file": ""
@@ -3442,5 +3442,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

@@ -2,7 +2,7 @@
   "id": "d4ed26bf",
   "is_dual": true,
   "meta": {
-    "title": "一个人的孤单",
+    "title": "\u4e00\u4e2a\u4eba\u7684\u5b64\u5355",
     "bpm": 184,
     "time_signature": "4/4",
     "source_file": ""
@@ -2880,5 +2880,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

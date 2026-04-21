@@ -2,7 +2,7 @@
   "id": "78ea2443",
   "is_dual": true,
   "meta": {
-    "title": "ぃ琌﹚瞶 - 谅綹網",
+    "title": "\u3043\u740c\ufe5a\u77b6 - \u8c05\u7db9\u7db2",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -4176,5 +4176,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

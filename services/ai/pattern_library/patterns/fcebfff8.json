@@ -2,7 +2,7 @@
   "id": "fcebfff8",
   "is_dual": true,
   "meta": {
-    "title": "估计错误",
+    "title": "\u4f30\u8ba1\u9519\u8bef",
     "bpm": 82,
     "time_signature": "4/4",
     "source_file": ""
@@ -6889,5 +6889,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "38b9c205",
   "is_dual": false,
   "meta": {
-    "title": "张宇《回头太难》",
+    "title": "\u5f20\u5b87\u300a\u56de\u5934\u592a\u96be\u300b",
     "bpm": 110,
     "time_signature": "4/4",
     "source_file": ""
@@ -1061,5 +1061,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

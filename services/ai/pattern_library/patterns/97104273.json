@@ -2,7 +2,7 @@
   "id": "97104273",
   "is_dual": true,
   "meta": {
-    "title": "闷",
+    "title": "\u95f7",
     "bpm": 124,
     "time_signature": "4/4",
     "source_file": ""
@@ -4234,5 +4234,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

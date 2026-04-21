@@ -2,7 +2,7 @@
   "id": "fa4f8812",
   "is_dual": true,
   "meta": {
-    "title": "他还是不懂    SHE",
+    "title": "\u4ed6\u8fd8\u662f\u4e0d\u61c2    SHE",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -3242,5 +3242,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

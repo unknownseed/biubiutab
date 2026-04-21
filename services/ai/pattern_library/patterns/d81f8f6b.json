@@ -2,7 +2,7 @@
   "id": "d81f8f6b",
   "is_dual": true,
   "meta": {
-    "title": "自   由",
+    "title": "\u81ea   \u7531",
     "bpm": 165,
     "time_signature": "4/4",
     "source_file": ""
@@ -5487,5 +5487,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "e9bd14a1",
   "is_dual": false,
   "meta": {
-    "title": "Às±²­· - ©PªN­Û",
+    "title": "\u00c0s\u00b1\u00b2\u00ad\u00b7 - \u00a9P\u00aaN\u00ad\u00db",
     "bpm": 73,
     "time_signature": "4/4",
     "source_file": ""
@@ -931,5 +931,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

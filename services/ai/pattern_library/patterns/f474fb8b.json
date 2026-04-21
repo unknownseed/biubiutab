@@ -2,7 +2,7 @@
   "id": "f474fb8b",
   "is_dual": true,
   "meta": {
-    "title": "痛并快乐者",
+    "title": "\u75db\u5e76\u5feb\u4e50\u8005",
     "bpm": 116,
     "time_signature": "4/4",
     "source_file": ""
@@ -3323,5 +3323,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

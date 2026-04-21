@@ -2,7 +2,7 @@
   "id": "bab8343e",
   "is_dual": true,
   "meta": {
-    "title": "宣言--huyanbin",
+    "title": "\u5ba3\u8a00--huyanbin",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -4717,5 +4717,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

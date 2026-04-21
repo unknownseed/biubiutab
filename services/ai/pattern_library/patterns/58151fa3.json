@@ -2,7 +2,7 @@
   "id": "58151fa3",
   "is_dual": true,
   "meta": {
-    "title": "商品社会",
+    "title": "\u5546\u54c1\u793e\u4f1a",
     "bpm": 65,
     "time_signature": "4/4",
     "source_file": ""
@@ -7757,5 +7757,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

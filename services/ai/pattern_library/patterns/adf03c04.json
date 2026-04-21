@@ -2,7 +2,7 @@
   "id": "adf03c04",
   "is_dual": true,
   "meta": {
-    "title": " 单车  ",
+    "title": " \u5355\u8f66  ",
     "bpm": 65,
     "time_signature": "4/4",
     "source_file": ""
@@ -2234,5 +2234,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

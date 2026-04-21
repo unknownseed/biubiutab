@@ -2,7 +2,7 @@
   "id": "e6c13732",
   "is_dual": true,
   "meta": {
-    "title": "怒放的生命--汪峰",
+    "title": "\u6012\u653e\u7684\u751f\u547d--\u6c6a\u5cf0",
     "bpm": 90,
     "time_signature": "4/4",
     "source_file": ""
@@ -5441,5 +5441,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

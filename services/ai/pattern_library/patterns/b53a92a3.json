@@ -2,7 +2,7 @@
   "id": "b53a92a3",
   "is_dual": false,
   "meta": {
-    "title": "身边",
+    "title": "\u8eab\u8fb9",
     "bpm": 98,
     "time_signature": "4/4",
     "source_file": ""
@@ -3370,5 +3370,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

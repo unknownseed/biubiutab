@@ -2,7 +2,7 @@
   "id": "20b36395",
   "is_dual": true,
   "meta": {
-    "title": "光阴的故事",
+    "title": "\u5149\u9634\u7684\u6545\u4e8b",
     "bpm": 95,
     "time_signature": "6/8",
     "source_file": ""
@@ -4135,5 +4135,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

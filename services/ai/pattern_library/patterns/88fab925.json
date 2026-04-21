@@ -2,7 +2,7 @@
   "id": "88fab925",
   "is_dual": true,
   "meta": {
-    "title": "全世界失眠",
+    "title": "\u5168\u4e16\u754c\u5931\u7720",
     "bpm": 77,
     "time_signature": "4/4",
     "source_file": ""
@@ -2455,5 +2455,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "331bacea",
   "is_dual": true,
   "meta": {
-    "title": "伤心太平洋",
+    "title": "\u4f24\u5fc3\u592a\u5e73\u6d0b",
     "bpm": 78,
     "time_signature": "4/4",
     "source_file": ""
@@ -3844,5 +3844,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

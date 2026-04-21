@@ -2,7 +2,7 @@
   "id": "ac703bb9",
   "is_dual": true,
   "meta": {
-    "title": "白鸽",
+    "title": "\u767d\u9e3d",
     "bpm": 86,
     "time_signature": "4/4",
     "source_file": ""
@@ -4939,5 +4939,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

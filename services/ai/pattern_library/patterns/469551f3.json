@@ -2,7 +2,7 @@
   "id": "469551f3",
   "is_dual": false,
   "meta": {
-    "title": "枫叶",
+    "title": "\u67ab\u53f6",
     "bpm": 90,
     "time_signature": "4/4",
     "source_file": ""
@@ -5517,5 +5517,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

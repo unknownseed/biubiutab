@@ -2,7 +2,7 @@
   "id": "bbd5663a",
   "is_dual": false,
   "meta": {
-    "title": "姑娘",
+    "title": "\u59d1\u5a18",
     "bpm": 65,
     "time_signature": "4/4",
     "source_file": ""
@@ -4953,5 +4953,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

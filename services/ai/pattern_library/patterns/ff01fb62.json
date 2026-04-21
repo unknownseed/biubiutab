@@ -2,7 +2,7 @@
   "id": "ff01fb62",
   "is_dual": true,
   "meta": {
-    "title": "赤裸裸.箱琴版",
+    "title": "\u8d64\u88f8\u88f8.\u7bb1\u7434\u7248",
     "bpm": 123,
     "time_signature": "4/4",
     "source_file": ""
@@ -3548,5 +3548,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

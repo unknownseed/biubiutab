@@ -2,7 +2,7 @@
   "id": "7774e265",
   "is_dual": true,
   "meta": {
-    "title": "金明",
+    "title": "\u91d1\u660e",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -3508,5 +3508,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

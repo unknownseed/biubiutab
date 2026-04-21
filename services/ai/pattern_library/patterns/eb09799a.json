@@ -2,7 +2,7 @@
   "id": "eb09799a",
   "is_dual": true,
   "meta": {
-    "title": "饿狼传说        king",
+    "title": "\u997f\u72fc\u4f20\u8bf4        king",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -3610,5 +3610,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

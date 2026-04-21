@@ -2,7 +2,7 @@
   "id": "2fda4c1b",
   "is_dual": false,
   "meta": {
-    "title": "死不了",
+    "title": "\u6b7b\u4e0d\u4e86",
     "bpm": 79,
     "time_signature": "4/4",
     "source_file": ""
@@ -1145,5 +1145,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

@@ -2,7 +2,7 @@
   "id": "69c9765a",
   "is_dual": true,
   "meta": {
-    "title": "龙的传人（摇滚版）",
+    "title": "\u9f99\u7684\u4f20\u4eba\uff08\u6447\u6eda\u7248\uff09",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -3302,5 +3302,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

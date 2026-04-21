@@ -2,7 +2,7 @@
   "id": "076b6718",
   "is_dual": false,
   "meta": {
-    "title": "青鸟（木吉他伴奏）",
+    "title": "\u9752\u9e1f\uff08\u6728\u5409\u4ed6\u4f34\u594f\uff09",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -3075,5 +3075,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

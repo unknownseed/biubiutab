@@ -2,7 +2,7 @@
   "id": "32014c48",
   "is_dual": true,
   "meta": {
-    "title": "阿诗玛",
+    "title": "\u963f\u8bd7\u739b",
     "bpm": 110,
     "time_signature": "4/4",
     "source_file": ""
@@ -3146,5 +3146,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

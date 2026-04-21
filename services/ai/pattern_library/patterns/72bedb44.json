@@ -2,7 +2,7 @@
   "id": "72bedb44",
   "is_dual": true,
   "meta": {
-    "title": "世界第一等",
+    "title": "\u4e16\u754c\u7b2c\u4e00\u7b49",
     "bpm": 70,
     "time_signature": "2/4",
     "source_file": ""
@@ -4460,5 +4460,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

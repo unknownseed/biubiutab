@@ -2,7 +2,7 @@
   "id": "5483bcbc",
   "is_dual": true,
   "meta": {
-    "title": "她的睫毛",
+    "title": "\u5979\u7684\u776b\u6bdb",
     "bpm": 77,
     "time_signature": "4/4",
     "source_file": ""
@@ -3566,5 +3566,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

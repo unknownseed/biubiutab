@@ -2,7 +2,7 @@
   "id": "c58f8f8f",
   "is_dual": false,
   "meta": {
-    "title": "大海",
+    "title": "\u5927\u6d77",
     "bpm": 82,
     "time_signature": "4/4",
     "source_file": ""
@@ -2560,5 +2560,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

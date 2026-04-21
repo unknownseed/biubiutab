@@ -2,7 +2,7 @@
   "id": "d8467648",
   "is_dual": true,
   "meta": {
-    "title": "情人",
+    "title": "\u60c5\u4eba",
     "bpm": 72,
     "time_signature": "4/4",
     "source_file": ""
@@ -4618,5 +4618,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

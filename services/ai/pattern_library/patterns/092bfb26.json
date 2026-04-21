@@ -2,7 +2,7 @@
   "id": "092bfb26",
   "is_dual": true,
   "meta": {
-    "title": "¦Û¥Ñ Solo - ±i¾_À®",
+    "title": "\u00a6\u00db\u00a5\u00d1 Solo - \u00b1i\u00be_\u00c0\u00ae",
     "bpm": 150,
     "time_signature": "4/4",
     "source_file": ""
@@ -5545,5 +5545,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

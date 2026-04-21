@@ -2,7 +2,7 @@
   "id": "086bd58d",
   "is_dual": true,
   "meta": {
-    "title": "The night we say goodbye·林志炫 www.xiermusic.com  柳",
+    "title": "The night we say goodbye\u00b7\u6797\u5fd7\u70ab www.xiermusic.com  \u67f3",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -2584,5 +2584,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

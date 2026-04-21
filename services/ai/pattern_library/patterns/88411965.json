@@ -2,7 +2,7 @@
   "id": "88411965",
   "is_dual": true,
   "meta": {
-    "title": "用心良苦",
+    "title": "\u7528\u5fc3\u826f\u82e6",
     "bpm": 64,
     "time_signature": "4/4",
     "source_file": ""
@@ -4631,5 +4631,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

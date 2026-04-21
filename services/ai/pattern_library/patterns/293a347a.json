@@ -2,7 +2,7 @@
   "id": "293a347a",
   "is_dual": true,
   "meta": {
-    "title": "梦一场     那英",
+    "title": "\u68a6\u4e00\u573a     \u90a3\u82f1",
     "bpm": 100,
     "time_signature": "4/4",
     "source_file": ""
@@ -2593,5 +2593,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "622ddc5d",
   "is_dual": true,
   "meta": {
-    "title": "结果-花儿    http://bugnet.126.com",
+    "title": "\u7ed3\u679c-\u82b1\u513f    http://bugnet.126.com",
     "bpm": 138,
     "time_signature": "4/4",
     "source_file": ""
@@ -4681,5 +4681,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

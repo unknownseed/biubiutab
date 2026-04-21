@@ -2,7 +2,7 @@
   "id": "9f60e876",
   "is_dual": false,
   "meta": {
-    "title": "且听风吟－朴树",
+    "title": "\u4e14\u542c\u98ce\u541f\uff0d\u6734\u6811",
     "bpm": 125,
     "time_signature": "4/4",
     "source_file": ""
@@ -1516,5 +1516,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

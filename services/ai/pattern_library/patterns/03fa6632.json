@@ -2,7 +2,7 @@
   "id": "03fa6632",
   "is_dual": true,
   "meta": {
-    "title": "情非得已·庾澄庆  weishenglong.yeah.net  柳",
+    "title": "\u60c5\u975e\u5f97\u5df2\u00b7\u5ebe\u6f84\u5e86  weishenglong.yeah.net  \u67f3",
     "bpm": 108,
     "time_signature": "4/4",
     "source_file": ""
@@ -4252,5 +4252,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

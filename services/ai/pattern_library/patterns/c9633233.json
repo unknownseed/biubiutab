@@ -2,7 +2,7 @@
   "id": "c9633233",
   "is_dual": true,
   "meta": {
-    "title": "去年冬天",
+    "title": "\u53bb\u5e74\u51ac\u5929",
     "bpm": 60,
     "time_signature": "4/4",
     "source_file": ""
@@ -7893,5 +7893,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

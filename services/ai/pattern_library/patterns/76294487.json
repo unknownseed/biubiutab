@@ -2,7 +2,7 @@
   "id": "76294487",
   "is_dual": true,
   "meta": {
-    "title": "Ë­Ô¸·ÅÊÖ",
+    "title": "\u00cb\u00ad\u00d4\u00b8\u00b7\u00c5\u00ca\u00d6",
     "bpm": 75,
     "time_signature": "4/4",
     "source_file": ""
@@ -3557,5 +3557,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

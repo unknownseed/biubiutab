@@ -2,7 +2,7 @@
   "id": "56cd8a80",
   "is_dual": false,
   "meta": {
-    "title": "微风香水",
+    "title": "\u5fae\u98ce\u9999\u6c34",
     "bpm": 170,
     "time_signature": "4/4",
     "source_file": ""
@@ -1217,5 +1217,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

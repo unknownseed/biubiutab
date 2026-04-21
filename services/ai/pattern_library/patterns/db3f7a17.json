@@ -2,7 +2,7 @@
   "id": "db3f7a17",
   "is_dual": false,
   "meta": {
-    "title": "我愿意",
+    "title": "\u6211\u613f\u610f",
     "bpm": 92,
     "time_signature": "4/4",
     "source_file": ""
@@ -1688,5 +1688,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

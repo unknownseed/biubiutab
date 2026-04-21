@@ -2,7 +2,7 @@
   "id": "70c19c05",
   "is_dual": true,
   "meta": {
-    "title": "她在睡梦中",
+    "title": "\u5979\u5728\u7761\u68a6\u4e2d",
     "bpm": 111,
     "time_signature": "3/4",
     "source_file": ""
@@ -1766,5 +1766,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

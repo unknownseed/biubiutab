@@ -2,7 +2,7 @@
   "id": "7846e826",
   "is_dual": true,
   "meta": {
-    "title": "旧日足迹 (Old Day Footprint)",
+    "title": "\u65e7\u65e5\u8db3\u8ff9 (Old Day Footprint)",
     "bpm": 88,
     "time_signature": "4/4",
     "source_file": ""
@@ -5203,5 +5203,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

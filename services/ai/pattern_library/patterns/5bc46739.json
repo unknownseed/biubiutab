@@ -2,7 +2,7 @@
   "id": "5bc46739",
   "is_dual": true,
   "meta": {
-    "title": "离别",
+    "title": "\u79bb\u522b",
     "bpm": 70,
     "time_signature": "4/4",
     "source_file": ""
@@ -5580,5 +5580,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

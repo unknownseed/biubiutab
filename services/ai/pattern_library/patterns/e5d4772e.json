@@ -2,7 +2,7 @@
   "id": "e5d4772e",
   "is_dual": false,
   "meta": {
-    "title": "有谁共鸣",
+    "title": "\u6709\u8c01\u5171\u9e23",
     "bpm": 102,
     "time_signature": "4/4",
     "source_file": ""
@@ -2620,5 +2620,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

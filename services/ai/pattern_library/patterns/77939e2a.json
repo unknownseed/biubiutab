@@ -2,7 +2,7 @@
   "id": "77939e2a",
   "is_dual": true,
   "meta": {
-    "title": "盛夏的果实--莫文蔚",
+    "title": "\u76db\u590f\u7684\u679c\u5b9e--\u83ab\u6587\u851a",
     "bpm": 120,
     "time_signature": "4/4",
     "source_file": ""
@@ -3658,5 +3658,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

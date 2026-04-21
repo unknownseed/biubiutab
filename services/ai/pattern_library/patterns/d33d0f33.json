@@ -2,7 +2,7 @@
   "id": "d33d0f33",
   "is_dual": false,
   "meta": {
-    "title": " 轨迹 (Gui Ji)",
+    "title": " \u8f68\u8ff9 (Gui Ji)",
     "bpm": 75,
     "time_signature": "4/4",
     "source_file": ""
@@ -1754,5 +1754,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "3c5e39e1",
   "is_dual": true,
   "meta": {
-    "title": "冲冲冲(伍佰)",
+    "title": "\u51b2\u51b2\u51b2(\u4f0d\u4f70)",
     "bpm": 133,
     "time_signature": "4/4",
     "source_file": ""
@@ -5575,5 +5575,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

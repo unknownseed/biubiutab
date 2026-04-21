@@ -2,7 +2,7 @@
   "id": "4e718776",
   "is_dual": true,
   "meta": {
-    "title": "浮躁",
+    "title": "\u6d6e\u8e81",
     "bpm": 75,
     "time_signature": "4/4",
     "source_file": ""
@@ -4151,5 +4151,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

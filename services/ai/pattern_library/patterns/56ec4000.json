@@ -2,7 +2,7 @@
   "id": "56ec4000",
   "is_dual": false,
   "meta": {
-    "title": "亲爱的，那不是爱情",
+    "title": "\u4eb2\u7231\u7684\uff0c\u90a3\u4e0d\u662f\u7231\u60c5",
     "bpm": 150,
     "time_signature": "4/4",
     "source_file": ""
@@ -1088,5 +1088,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

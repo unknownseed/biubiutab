@@ -2,7 +2,7 @@
   "id": "c7478603",
   "is_dual": true,
   "meta": {
-    "title": "英雄",
+    "title": "\u82f1\u96c4",
     "bpm": 88,
     "time_signature": "4/4",
     "source_file": ""
@@ -4674,5 +4674,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

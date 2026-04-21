@@ -2,7 +2,7 @@
   "id": "b02671b4",
   "is_dual": true,
   "meta": {
-    "title": "灰姑娘·郑钧  weishenglong.yeah.net  柳",
+    "title": "\u7070\u59d1\u5a18\u00b7\u90d1\u94a7  weishenglong.yeah.net  \u67f3",
     "bpm": 75,
     "time_signature": "4/4",
     "source_file": ""
@@ -4071,5 +4071,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

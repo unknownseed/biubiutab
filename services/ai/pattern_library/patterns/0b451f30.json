@@ -2,7 +2,7 @@
   "id": "0b451f30",
   "is_dual": false,
   "meta": {
-    "title": "抱抱",
+    "title": "\u62b1\u62b1",
     "bpm": 69,
     "time_signature": "4/4",
     "source_file": ""
@@ -2058,5 +2058,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "73ce7370",
   "is_dual": true,
   "meta": {
-    "title": "两天",
+    "title": "\u4e24\u5929",
     "bpm": 105,
     "time_signature": "4/4",
     "source_file": ""
@@ -3787,5 +3787,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

@@ -2,7 +2,7 @@
   "id": "805e7c70",
   "is_dual": false,
   "meta": {
-    "title": "梅花三弄",
+    "title": "\u6885\u82b1\u4e09\u5f04",
     "bpm": 70,
     "time_signature": "2/4",
     "source_file": ""
@@ -1596,5 +1596,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }

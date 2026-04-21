@@ -2,7 +2,7 @@
   "id": "6039304e",
   "is_dual": true,
   "meta": {
-    "title": "为你难过",
+    "title": "\u4e3a\u4f60\u96be\u8fc7",
     "bpm": 60,
     "time_signature": "4/4",
     "source_file": ""
@@ -4904,5 +4904,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

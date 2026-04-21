@@ -2,7 +2,7 @@
   "id": "a0fe6229",
   "is_dual": true,
   "meta": {
-    "title": "解脱——张惠妹",
+    "title": "\u89e3\u8131\u2014\u2014\u5f20\u60e0\u59b9",
     "bpm": 95,
     "time_signature": "4/4",
     "source_file": ""
@@ -5159,5 +5159,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

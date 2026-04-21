@@ -2,7 +2,7 @@
   "id": "db14d1a3",
   "is_dual": true,
   "meta": {
-    "title": "我是一只小小鸟",
+    "title": "\u6211\u662f\u4e00\u53ea\u5c0f\u5c0f\u9e1f",
     "bpm": 84,
     "time_signature": "4/4",
     "source_file": ""
@@ -4430,5 +4430,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

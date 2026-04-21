@@ -2,7 +2,7 @@
   "id": "2a22edef",
   "is_dual": true,
   "meta": {
-    "title": "温暖",
+    "title": "\u6e29\u6696",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -3996,5 +3996,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

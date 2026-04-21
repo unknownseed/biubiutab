@@ -2,7 +2,7 @@
   "id": "292f2746",
   "is_dual": true,
   "meta": {
-    "title": "硬币",
+    "title": "\u786c\u5e01",
     "bpm": 95,
     "time_signature": "3/4",
     "source_file": ""
@@ -3470,5 +3470,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

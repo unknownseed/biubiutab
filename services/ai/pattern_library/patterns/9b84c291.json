@@ -2,7 +2,7 @@
   "id": "9b84c291",
   "is_dual": true,
   "meta": {
-    "title": "骑士精神",
+    "title": "\u9a91\u58eb\u7cbe\u795e",
     "bpm": 84,
     "time_signature": "2/4",
     "source_file": ""
@@ -1370,5 +1370,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "arpeggio"
 }

@@ -2,7 +2,7 @@
   "id": "02a17303",
   "is_dual": true,
   "meta": {
-    "title": "挥着翅膀的女孩（吉他弹唱谱）",
+    "title": "\u6325\u7740\u7fc5\u8180\u7684\u5973\u5b69\uff08\u5409\u4ed6\u5f39\u5531\u8c31\uff09",
     "bpm": 80,
     "time_signature": "4/4",
     "source_file": ""
@@ -3356,5 +3356,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

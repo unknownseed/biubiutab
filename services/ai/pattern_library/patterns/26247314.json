@@ -2,7 +2,7 @@
   "id": "26247314",
   "is_dual": true,
   "meta": {
-    "title": " 在雨中（乐队完整版）！",
+    "title": " \u5728\u96e8\u4e2d\uff08\u4e50\u961f\u5b8c\u6574\u7248\uff09\uff01",
     "bpm": 130,
     "time_signature": "4/4",
     "source_file": ""
@@ -3927,5 +3927,6 @@
         }
       ]
     }
-  }
+  },
+  "technique": "strum"
 }

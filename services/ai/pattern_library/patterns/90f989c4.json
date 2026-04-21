@@ -2,7 +2,7 @@
   "id": "90f989c4",
   "is_dual": false,
   "meta": {
-    "title": "放生",
+    "title": "\u653e\u751f",
     "bpm": 70,
     "time_signature": "4/4",
     "source_file": ""
@@ -3469,5 +3469,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

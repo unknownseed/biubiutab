@@ -2,7 +2,7 @@
   "id": "58703113",
   "is_dual": false,
   "meta": {
-    "title": "旅行",
+    "title": "\u65c5\u884c",
     "bpm": 72,
     "time_signature": "4/4",
     "source_file": ""
@@ -3170,5 +3170,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "strum"
 }

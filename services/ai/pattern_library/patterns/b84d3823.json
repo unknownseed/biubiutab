@@ -2,7 +2,7 @@
   "id": "b84d3823",
   "is_dual": false,
   "meta": {
-    "title": "爱后余生",
+    "title": "\u7231\u540e\u4f59\u751f",
     "bpm": 69,
     "time_signature": "4/4",
     "source_file": ""
@@ -1510,5 +1510,6 @@
       ]
     },
     "lead": null
-  }
+  },
+  "technique": "arpeggio"
 }
