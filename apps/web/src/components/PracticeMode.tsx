@@ -66,6 +66,14 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
   const alphaTabApiRef = useRef<any>(null);
   const guitarSamplerRef = useRef<GuitarSampler | null>(null);
   const initPromiseRef = useRef<Promise<void> | null>(null);
+  const isMountedRef = useRef(true);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => {
+      isMountedRef.current = false;
+    };
+  }, []);
   const pollRef = useRef<NodeJS.Timeout | null>(null);
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const pendingPlayRef = useRef(false);
@@ -201,7 +209,11 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
       setPlayerError(null);
       setIsPlayerReady(false);
       setIsInitializing(true);
+      
+      const myInitPromise = initPromiseRef.current;
       await ensureAlphaTabScript();
+      if (!isMountedRef.current || initPromiseRef.current !== myInitPromise) return;
+      
       const mod = window.alphaTab;
       if (!containerRef.current) return;
 
@@ -471,6 +483,10 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
         if (!USE_TONE_JS) {
           setPlayerError("正在加载高质量 GM 吉他音源 (约5.8MB)...");
           const res = await fetch(ALPHATAB_SOUNDFONT_URL, { cache: "force-cache" });
+          if (!isMountedRef.current || initPromiseRef.current !== myInitPromise) {
+            api.destroy();
+            return;
+          }
           if (!res.ok) throw new Error(`soundfont http ${res.status}`);
           const buf = await res.arrayBuffer();
           api.loadSoundFont(buf, false);
