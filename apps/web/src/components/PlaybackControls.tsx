@@ -61,9 +61,9 @@ export const PlaybackControls = React.memo(function PlaybackControls({
   const progressRef = useRef<HTMLDivElement>(null);
 
   const displayTime = isDragging ? dragTime : currentTime;
-  const progressPercent = duration > 0 ? (displayTime / duration) * 100 : 0;
-  const loopAPercent = duration > 0 && loopA !== null ? (loopA / duration) * 100 : null;
-  const loopBPercent = duration > 0 && loopB !== null ? (loopB / duration) * 100 : null;
+  const progressPercent = duration > 0 ? Math.min(100, Math.max(0, (displayTime / duration) * 100)) : 0;
+  const loopAPercent = duration > 0 && loopA !== null ? Math.min(100, Math.max(0, (loopA / duration) * 100)) : null;
+  const loopBPercent = duration > 0 && loopB !== null ? Math.min(100, Math.max(0, (loopB / duration) * 100)) : null;
 
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     setIsDragging(true);

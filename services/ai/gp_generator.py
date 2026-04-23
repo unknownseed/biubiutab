@@ -54,6 +54,7 @@ def generate_gp5_binary(
     accompaniment_path: Optional[str] = None,
     beat_times: Optional[list[float]] = None,
     stems_paths: Optional[dict] = None,
+    level: int = 4,
 ) -> bytes:
     song = guitarpro.Song()
     song.tracks.clear()
@@ -87,8 +88,14 @@ def generate_gp5_binary(
     chords_seq = []
     for s in sections:
         for c in s.chords:
+            chord_name = c.chord
+            # If generating for beginner modes (level < 4), strictly strip down to pure triads
+            if level < 4:
+                from chord_simplifier import simplify_chord
+                chord_name = simplify_chord(chord_name, force_triads=True)
+                
             chords_seq.append({
-                "chord": c.chord,
+                "chord": chord_name,
                 "duration_beats": ts_num  # assume each chord spans ts_num beats (1 bar)
             })
 
@@ -115,6 +122,18 @@ def generate_gp5_binary(
     is_dual_song = False
     
     # ── Step 2: Process EACH section dynamically ──────────────────────────────
+    # Pre-calculate where strumming should start for beginner modes
+    first_strum_idx = -1
+    for i, s in enumerate(sections):
+        name_lower = s.name.lower()
+        if "chorus" in name_lower or "bridge" in name_lower or "outro" in name_lower:
+            first_strum_idx = i
+            break
+            
+    # If no chorus found, or it's only at the very end, fallback to splitting the song
+    if first_strum_idx == -1 or first_strum_idx >= len(sections) - 1:
+        first_strum_idx = max(1, len(sections) // 2)
+
     for i, s in enumerate(sections):
         s_chords = section_chords[i]
         if not s_chords:
@@ -131,6 +150,13 @@ def generate_gp5_binary(
                 technique = detect_playing_technique(stems_paths, start_time, end_time)
                 print(f"[gp_generator] Section '{s.name}' ({s.start_bar}-{s.end_bar}) Detected Technique: {technique}")
 
+        if level < 4:
+            from beginner_patterns import generate_beginner_beats
+            is_strum = (i >= first_strum_idx)
+            rhythm_beats = generate_beginner_beats(level, s.name, s_chords, ts_num, is_strum=is_strum)
+            all_rhythm_beats.extend(rhythm_beats)
+            continue
+            
         template_id = find_best_pattern(bpm=tempo, section_energy=energy, technique=technique)
         
         if template_id:
@@ -364,7 +390,10 @@ def _fill_track_measures(song, track, beats, ts_num, ts_den, show_chords):
             
         if beat_effects.get("strum_down") or beat_effects.get("strum_up"):
             d = guitarpro.BeatStrokeDirection.down if beat_effects.get("strum_down") else guitarpro.BeatStrokeDirection.up
-            gp_beat.effect.stroke = guitarpro.BeatStroke(direction=d, value=4)
+            # Only use pickStroke (which renders as ^ or v above the staff).
+            # This ensures all notes are played at the exact same time (crisp attack),
+            # instead of a slow arpeggiated roll (which stroke/wavy line does).
+            gp_beat.effect.pickStroke = d
 
         if notes_added == 0:
             gp_beat.status = guitarpro.BeatStatus.rest

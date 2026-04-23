@@ -59,9 +59,11 @@ export type PracticeModeProps = {
   gp5Data: Uint8Array;
   songTitle?: string;
   jobId?: string;
+  level?: number;
+  onLevelChange?: (level: number) => void;
 };
 
-export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }: PracticeModeProps) {
+export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, level = 4, onLevelChange }: PracticeModeProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const alphaTabApiRef = useRef<any>(null);
   const guitarSamplerRef = useRef<GuitarSampler | null>(null);
@@ -565,14 +567,8 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
         setActiveTrackIndex(0);
       }
       
-      try {
-        if (api.playerState === 1) {
-          api.playPause();
-        }
-        api.timePosition = 0;
-      } catch (e) {
-        console.warn("Error pausing or resetting timePosition:", e);
-      }
+      // Let AlphaTab handle pausing and resetting internally when loading new data
+      // Removing manual playPause and timePosition=0 here to prevent AudioWorklet race conditions
       
       loadedGp5DataRef.current = gp5Data;
       
@@ -729,19 +725,30 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
   // Also apply transposition
   const chordBlocks = useMemo(() => {
     const safeBpm = bpm || 120;
-    const rawChordBlocks: (ChordBlock & { realStartTime: number, realEndTime: number })[] = practiceData?.chordBlocks?.map((b: any, i: number) => ({
-      id: `chord-${i}`,
-      chord: b.chord,
-      realStartTime: b.startTime,
-      realEndTime: b.endTime,
-      startTime: (b.startBeat * 60) / safeBpm, // ideal time for AlphaTab sync
-      endTime: (b.endBeat * 60) / safeBpm,
-      startBeat: b.startBeat,
-      endBeat: b.endBeat,
-      isBarStart: b.isBarStart,
-      isBarEnd: b.isBarEnd,
-      section: b.section,
-    })) || [];
+    const rawChordBlocks: (ChordBlock & { realStartTime: number, realEndTime: number })[] = practiceData?.chordBlocks?.map((b: any, i: number) => {
+      // If we are in a beginner mode (level < 4), strip the chord to a basic triad
+      let chordName = b.chord;
+      if (level < 4 && chordName && chordName !== "N" && chordName !== "None") {
+        chordName = chordName.replace(/maj7|maj|m7|sus2|sus4|sus|7/g, (match: string) => match === "m7" ? "m" : "");
+        // Strip bass notes for absolute beginners
+        if (chordName.includes("/")) {
+          chordName = chordName.split("/")[0];
+        }
+      }
+      return {
+        id: `chord-${i}`,
+        chord: chordName,
+        realStartTime: b.startTime,
+        realEndTime: b.endTime,
+        startTime: (b.startBeat * 60) / safeBpm, // ideal time for AlphaTab sync
+        endTime: (b.endBeat * 60) / safeBpm,
+        startBeat: b.startBeat,
+        endBeat: b.endBeat,
+        isBarStart: b.isBarStart,
+        isBarEnd: b.isBarEnd,
+        section: b.section,
+      };
+    }) || [];
 
     if (!rawChordBlocks.length) return [];
     
@@ -856,6 +863,37 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
         </div>
       ) : null}
 
+      {/* Difficulty Selector */}
+      {onLevelChange && (
+        <div className="flex flex-col gap-2 mb-2">
+          <div className="text-xs font-serif tracking-widest text-zinc-400">选择练习难度：</div>
+          <div className="flex flex-wrap gap-2">
+            {[
+              { id: 1, icon: "🌱", label: "启蒙", desc: "只练左手换和弦" },
+              { id: 2, icon: "🌿", label: "小白", desc: "基础四分音符" },
+              { id: 3, icon: "🌳", label: "初级", desc: "流行万能节奏" },
+              { id: 4, icon: "🔥", label: "中级", desc: "智能原版编配" }
+            ].map(l => (
+              <button
+                key={l.id}
+                onClick={() => onLevelChange(l.id)}
+                className={`group flex items-center gap-3 px-4 py-2 border rounded-none transition-all duration-300 ${
+                  level === l.id 
+                    ? "bg-zinc-100 text-zinc-900 border-zinc-100 shadow-sm" 
+                    : "bg-zinc-900/50 text-zinc-400 border-zinc-800 hover:border-zinc-600 hover:bg-zinc-800"
+                }`}
+              >
+                <span className="text-base">{l.icon}</span>
+                <div className="flex flex-col items-start">
+                  <span className={`text-sm font-medium ${level === l.id ? "text-zinc-900" : "text-zinc-200"}`}>{l.label}</span>
+                  <span className={`text-[10px] ${level === l.id ? "text-zinc-600" : "text-zinc-500 group-hover:text-zinc-400"}`}>{l.desc}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="flex flex-col gap-6">
         {tracks.length > 1 && (
           <div className="flex gap-2 mb-[-8px]">
@@ -903,6 +941,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
         onSeek={(time, block) => handleSeek(time, block)}
         loopA={loopA}
         loopB={loopB}
+        duration={lastChordEndTime}
       />
 
         <PlaybackControls
@@ -910,7 +949,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId }
         isPlayerReady={isPlayerReady}
         isLoading={isInitializing}
         currentTime={currentTime}
-        duration={duration}
+        duration={lastChordEndTime}
         onPlayPause={handlePlayPause}
         onSeek={(t) => handleSeek(t)}
         playbackRate={playbackRate}

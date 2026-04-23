@@ -544,29 +544,36 @@ async def _run_job(job_id: str) -> None:
         except Exception:
             intro_bars = {}
 
-        gp5_bytes = generate_gp5_binary(
-            title=_clean_title(analysis.title),
-            tempo=analysis.tempo_bpm,
-            time_signature=analysis.time_signature,
-            key=analysis.key,
-            sections=display_sections,
-            intro_bars=intro_bars,
-            lyrics_beats=lyrics_beats,
-            rhythm_energy=rhythm_energy,
-            accompaniment_path=str(upload_copy),
-            beat_times=[float(x) for x in getattr(analysis, "beat_times", [])] if analysis else [],
-            stems_paths=stems_tmp,
-        )
+        # Generate all 4 levels of GP5 files for the user to choose from
+        for level in [1, 2, 3, 4]:
+            gp5_bytes = generate_gp5_binary(
+                title=_clean_title(analysis.title),
+                tempo=analysis.tempo_bpm,
+                time_signature=analysis.time_signature,
+                key=analysis.key,
+                sections=display_sections,
+                intro_bars=intro_bars,
+                lyrics_beats=lyrics_beats,
+                rhythm_energy=rhythm_energy,
+                accompaniment_path=str(upload_copy),
+                beat_times=[float(x) for x in getattr(analysis, "beat_times", [])] if analysis else [],
+                stems_paths=stems_tmp,
+                level=level,
+            )
 
-        # Write results artifacts under storage/results/{job_id}/
-        try:
-            results_dir.mkdir(parents=True, exist_ok=True)
-            (results_dir / "result.gp5").write_bytes(gp5_bytes)
-            
-            if isinstance(vocal_melody, dict) and isinstance(vocal_melody.get("alphatex"), str):
-                (results_dir / "melody.alphatex").write_text(vocal_melody["alphatex"], encoding="utf-8")
-        except Exception:
-            pass
+            # Write results artifacts under storage/results/{job_id}/
+            try:
+                results_dir.mkdir(parents=True, exist_ok=True)
+                (results_dir / f"result_l{level}.gp5").write_bytes(gp5_bytes)
+                
+                # We also save the default (level 4) as result.gp5 for backward compatibility
+                if level == 4:
+                    (results_dir / "result.gp5").write_bytes(gp5_bytes)
+                    
+                if isinstance(vocal_melody, dict) and isinstance(vocal_melody.get("alphatex"), str):
+                    (results_dir / "melody.alphatex").write_text(vocal_melody["alphatex"], encoding="utf-8")
+            except Exception:
+                pass
 
         job.result = JobResult(
             title=_clean_title(analysis.title),
@@ -594,6 +601,7 @@ async def _run_job(job_id: str) -> None:
                 "rhythm_energy_high": float(os.environ.get("RHYTHM_ENERGY_HIGH", "0.55")),
                 "visualization": visualization,
             },
+            # Here we must also simplify the chords for the React frontend timeline
             practiceData=generate_practice_data(
                 beat_grid=beat_grid.tolist() if hasattr(beat_grid, "tolist") else beat_grid,
                 chords=analysis.bar_chords,
@@ -682,19 +690,25 @@ async def get_job_result(job_id: str) -> JobResult:
 
 
 @app.get("/jobs/{job_id}/result.gp5")
-async def get_job_result_gp5(job_id: str):
+async def get_job_result_gp5(job_id: str, level: Optional[int] = 4):
     job = _jobs.get(job_id)
     if not job:
         raise HTTPException(status_code=404, detail="job not found")
     if job.status != "succeeded":
         raise HTTPException(status_code=409, detail="job not ready")
         
-    gp5_path = _storage_root() / "results" / job_id / "result.gp5"
+    filename = f"result_l{level}.gp5" if level in [1, 2, 3] else "result.gp5"
+    gp5_path = _storage_root() / "results" / job_id / filename
+    
+    # Fallback to result.gp5 if the specific level doesn't exist (for old jobs)
+    if not gp5_path.exists():
+        gp5_path = _storage_root() / "results" / job_id / "result.gp5"
+        
     if not gp5_path.exists():
         raise HTTPException(status_code=404, detail="gp5 file not found")
         
     return FileResponse(
         path=gp5_path, 
         media_type="application/octet-stream",
-        filename=f"{job_id}.gp5"
+        filename=f"{job_id}_l{level}.gp5"
     )

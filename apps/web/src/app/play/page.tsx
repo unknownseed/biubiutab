@@ -14,6 +14,7 @@ export default function PlayPage() {
             className="object-contain opacity-[0.06] grayscale-[50%]"
             sizes="85vw"
             unoptimized
+            priority
           />
         </div>
       </div>

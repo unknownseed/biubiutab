@@ -59,7 +59,28 @@ export default function EditorClient({ jobId }: { jobId: string }) {
   const viewerRef = useRef<AlphaTabViewerHandle | null>(null);
   const [downloadOpen, setDownloadOpen] = useState(false);
   const [viewMode, setViewMode] = useState<"full" | "practice">("practice");
+  const [level, setLevel] = useState<number>(4);
   const toast = useToast();
+
+  useEffect(() => {
+    let cancelled = false;
+    if (job?.status === "succeeded") {
+      const fetchLevel = async () => {
+        try {
+          const gp5Res = await fetch(`/api/jobs/${jobId}/gp5?level=${level}`);
+          if (!gp5Res.ok) throw new Error("GP5 下载失败");
+          const buf = await gp5Res.arrayBuffer();
+          if (cancelled) return;
+          setGp5Data(new Uint8Array(buf));
+        } catch (e) {
+          if (cancelled) return;
+          setError("无法加载吉他谱数据。");
+        }
+      };
+      void fetchLevel();
+    }
+    return () => { cancelled = true; };
+  }, [level, jobId, job?.status]);
 
   useEffect(() => {
     let cancelled = false;
@@ -77,18 +98,8 @@ export default function EditorClient({ jobId }: { jobId: string }) {
           const res = await getJson<JobResult>(`/api/jobs/${jobId}/result`);
           if (cancelled) return;
           setResult(res);
-          
-          try {
-            const gp5Res = await fetch(`/api/jobs/${jobId}/gp5`);
-            if (!gp5Res.ok) throw new Error("GP5 下载失败");
-            const buf = await gp5Res.arrayBuffer();
-            if (cancelled) return;
-            setGp5Data(new Uint8Array(buf));
-            toast.push({ title: "谱例已就绪", description: "你可以开始编辑或导出。", variant: "success" });
-          } catch (e) {
-            if (cancelled) return;
-            setError("无法加载吉他谱数据。");
-          }
+          // GP5 fetch is handled by the level-dependent effect above.
+          toast.push({ title: "谱例已就绪", description: "你可以开始练习或导出。", variant: "success" });
           return;
         }
         window.setTimeout(() => void poll(), 800);
@@ -216,7 +227,14 @@ export default function EditorClient({ jobId }: { jobId: string }) {
           ) : null}
           {result && gp5Data ? (
             viewMode === "practice" && result.practiceData ? (
-              <PracticeMode practiceData={result.practiceData} gp5Data={gp5Data} songTitle={result.title} jobId={jobId} />
+              <PracticeMode 
+                practiceData={result.practiceData} 
+                gp5Data={gp5Data} 
+                songTitle={result.title} 
+                jobId={jobId} 
+                level={level}
+                onLevelChange={setLevel}
+              />
             ) : (
               <AlphaTabViewer
                 ref={viewerRef}

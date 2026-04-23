@@ -61,7 +61,7 @@ def detect_playing_technique(stems_paths: dict, start_time: float, end_time: flo
     Detect playing technique (arpeggio, strum, or rest) for a specific section.
     Fallback logic: guitar -> piano -> other.
     """
-    sources_to_try = ["guitar", "piano", "other", "no_vocals"]
+    sources_to_try = ["guitar", "piano", "accompaniment", "other", "no_vocals"]
     
     for source in sources_to_try:
         audio_path = stems_paths.get(source)
@@ -78,33 +78,28 @@ def detect_playing_technique(stems_paths: dict, start_time: float, end_time: flo
             y, sr = librosa.load(audio_path, sr=22050, offset=offset, duration=duration)
             
             # Check if this stem has any actual energy (is not silent)
-            rms = librosa.feature.rms(y=y)[0]
-            variance = np.var(rms)
+            max_amp = float(np.max(np.abs(y)))
             
             # If the source is effectively silent, move to the next fallback source
-            if variance < 0.0001 and source != "other" and source != "no_vocals":
+            if max_amp < 0.015 and source not in ("other", "no_vocals", "accompaniment"):
+                print(f"[{source}] is silent (max_amp={max_amp:.4f}), skipping...")
                 continue
                 
-            # If we are using a fallback source (other/no_vocals), we might just default to 'strum' 
-            # or do the same calculation. Let's do the calculation for all.
+            # Calculate metrics
             clustering, polyphony, energy_profile = _calc_clustering_polyphony_and_energy(y, sr)
             
-            # Print debug info so you can see what the detector is "hearing"
-            print(f"[{source}] polyphony: {polyphony:.1f}, clustering: {clustering:.2f}, peaks: {energy_profile['peak_count']}")
+            print(f"[{source}] max_amp: {max_amp:.3f}, polyphony: {polyphony:.1f}, clustering: {clustering:.2f}, peaks: {energy_profile['peak_count']}")
             
-            # Classification rules based on both Polyphony and Clustering
-            # 1. High clustering + high polyphony -> Definitely Strumming
-            if clustering > 0.4 and polyphony >= 3.0:
+            # Classification rules:
+            # 1. Strumming often has many notes packed within 50ms (high clustering) and plays multiple strings (polyphony >= 2.0)
+            if clustering >= 0.15 and polyphony >= 1.8:
                 return "strum"
-            # 2. Low clustering + lots of peaks -> Arpeggio
-            elif clustering < 0.3 and energy_profile["peak_count"] >= 2:
-                return "arpeggio"
-            # 3. Low polyphony (melody/riffs) -> We'll map to arpeggio for now (or a dedicated melody pattern later)
-            elif polyphony < 2.5:
-                return "arpeggio"
-            # 4. Fallback default
+            # 2. Block chords (high polyphony) without obvious sweeping
+            elif polyphony >= 3.0:
+                return "strum"
+            # 3. Everything else (low polyphony, or evenly spaced notes)
             else:
-                return "strum"
+                return "arpeggio"
                 
         except Exception as e:
             # If loading/processing fails, fallback to next source

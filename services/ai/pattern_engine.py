@@ -252,6 +252,15 @@ def _do_transplant(template_beats, chord_sequence, is_lead=False):
             # 复制节拍级别的特效 (strum_up, strum_down, let_ring, etc.)
             if "effects" in t_beat:
                 beat_dict["effects"] = t_beat["effects"]
+            else:
+                # 如果模板没有显式指定扫弦方向，我们可以根据节奏的特性，或者至少提供一个干净的基础字典
+                # 但这里我们需要识别出这是否是一个“和弦扫弦”。如果一个节拍里有多根弦同时弹响，我们默认给它加上扫弦标记
+                # 这样可以保证中级(Level 4)里的所有扫弦动作都能继承刚才我们优化的 pickStroke 特效
+                if len(new_notes) >= 3 and not is_lead:
+                    # 简单的推测：如果是正拍（比如 duration=4 或者前半拍），通常是下拨
+                    beat_dict["effects"] = {"strum_down": True}
+                else:
+                    beat_dict["effects"] = {}
                 
             if is_first_beat_of_chord:
                 beat_dict["chord_name"] = chord_name

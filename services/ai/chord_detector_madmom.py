@@ -67,31 +67,10 @@ def detect_chords_madmom(audio_path: str) -> List[Dict[str, float | str]]:
 
 def simplify_chord_name(chord: str) -> str:
     """
-    简化 madmom 输出的和弦名称
-
-    madmom 可能输出 'C:maj' 或 'C:min7'
-    简化为 'C' 或 'Cm7'
+    Calls the shared chord_simplifier.
     """
-    if ":" not in chord:
-        return chord
-
-    root, quality = chord.split(":", 1)
-
-    # 映射表
-    quality_map = {
-        "maj": "",
-        "min": "m",
-        "maj7": "maj7",
-        "min7": "m7",
-        "7": "7",
-        "dim": "dim",
-        "aug": "aug",
-        "sus2": "sus2",
-        "sus4": "sus4",
-    }
-
-    simplified_quality = quality_map.get(quality, quality)
-    return f"{root}{simplified_quality}"
+    from chord_simplifier import simplify_chord
+    return simplify_chord(chord, force_triads=False)
 
 
 def align_chords_to_beats(

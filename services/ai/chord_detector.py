@@ -288,7 +288,10 @@ def analyze_audio_multi(
     # Chords (prefer madmom via audio_path=chord_path)
     y_chord, sr_chord = librosa.load(chord_path, sr=None, mono=True)
     chords = detect_chords(y_chord, sr_chord, beat_times, beats_per_bar=4, audio_path=chord_path)
-    bar_chords = [simplify_chord(c.chord) for c in chords]
+    # Standard simplification applied universally across all modes.
+    # Strips complex jazz extensions but preserves basic 7ths and sus chords.
+    # Beginner triad stripping happens later in gp_generator if level < 4.
+    bar_chords = [simplify_chord(c.chord, force_triads=False) for c in chords]
 
     # Key (from chroma of key_path)
     y_key, sr_key = librosa.load(key_path, sr=None, mono=True)

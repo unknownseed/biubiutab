@@ -1,14 +1,14 @@
 import re
 
-def simplify_chord(chord: str) -> str:
+def simplify_chord(chord: str, force_triads: bool = False) -> str:
     """
-    Simplifies chords for beginners.
-    - Removes 'addX' (e.g. add9, add11)
-    - Maps 'aug' to major
-    - Maps 'dim' or 'dim7' to minor or m7
-    - Maps 'm7b5' to m7
-    - Simplifies 6, 9, 11, 13 to 7th or triad
-    - Keeps maj, m, 7, maj7, m7, sus2, sus4
+    Simplifies chords.
+    If force_triads=True (for beginner modes):
+      - Strips all 7ths, maj7s, m7s, sus, etc. down to pure Major/Minor triads.
+    Otherwise (for advanced/original mode):
+      - Removes 'addX' (e.g. add9, add11)
+      - Maps 'aug' to major, 'dim' to minor
+      - Keeps 7ths, maj7, m7, sus2, sus4
     """
     if not chord or chord == "N":
         return "N"
@@ -40,7 +40,6 @@ def simplify_chord(chord: str) -> str:
         base = base.replace('mM7', 'm').replace('minmaj7', 'm')
 
     # 6. Simplify extended chords (6, 9, 11, 13) down to 7ths or triads
-    # match X9 -> X7, Xm9 -> Xm7, Xmaj9 -> Xmaj7
     base = re.sub(r'maj(9|11|13)', 'maj7', base)
     base = re.sub(r'm(9|11|13)', 'm7', base)
     base = re.sub(r'(?<!m)(?<!maj)(9|11|13)', '7', base) # X9 -> X7
@@ -51,6 +50,20 @@ def simplify_chord(chord: str) -> str:
     
     # Clean up empty brackets if any
     base = base.replace('()', '')
+    
+    # 7. For beginner modes: ruthlessly strip all 7ths, sus, maj7, m7 to pure Major/Minor triads
+    if force_triads:
+        # e.g., Cmaj7 -> C, Cm7 -> Cm, G7 -> G, Asus4 -> A
+        base = re.sub(r'maj7|maj', '', base)
+        base = re.sub(r'm7', 'm', base)
+        base = re.sub(r'sus2|sus4|sus', '', base)
+        base = re.sub(r'7', '', base)
+        
+        # If the bass note is no longer useful or confusing for a pure triad,
+        # we can strip the slash chord entirely, or keep it. Let's keep it but simplify the base.
+        # Actually, for absolute beginners, slash chords (e.g. D/F#) are hard.
+        # We can drop the bass note to force pure root chords.
+        bass = ""
     
     return f"{base}{bass}"
 
