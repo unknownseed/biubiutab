@@ -11,6 +11,12 @@ from pathlib import Path
 from typing import Literal, Optional
 import json
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+except ImportError:
+    pass
+
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
@@ -357,7 +363,7 @@ async def _run_job(job_id: str) -> None:
 
             vocals_path = stems_tmp.get("vocals")
             if vocals_path:
-                lyrics = await asyncio.to_thread(transcribe_lyrics, vocals_path, "zh")
+                lyrics = await asyncio.to_thread(transcribe_lyrics, vocals_path, "zh", job.title)
             else:
                 lyrics = None
 

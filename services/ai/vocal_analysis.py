@@ -22,9 +22,9 @@ def _pick_device() -> str:
         return "cpu"
 
 
-def transcribe_lyrics(audio_path: str, language: str = "zh") -> Dict[str, Any]:
+def transcribe_lyrics(audio_path: str, language: str = "zh", song_title: Optional[str] = None) -> Dict[str, Any]:
     """
-    使用 faster-whisper 对 vocals stem 做歌词识别
+    使用 faster-whisper 对 vocals stem 做歌词识别，并接入 DeepSeek 歌词校验（Four-Pass）
 
     返回：
     {
@@ -55,18 +55,87 @@ def transcribe_lyrics(audio_path: str, language: str = "zh") -> Dict[str, Any]:
 
     try:
         wm = WhisperModel(model_name, device=device, compute_type=compute_type)
-        segments_iter, info = wm.transcribe(str(in_path), language=language or None, vad_filter=True)
+        # 强制开启 word_level_timestamps 以获取逐字时间戳
+        segments_iter, info = wm.transcribe(str(in_path), language=language or None, vad_filter=True, word_timestamps=True)
+        
         segments: list[dict[str, Any]] = []
         texts: list[str] = []
+        all_whisper_words = []
+        
         for s in segments_iter:
             t = (s.text or "").strip()
             if not t:
                 continue
+                
             segments.append({"start": float(s.start), "end": float(s.end), "text": t})
             texts.append(t)
-        text = "".join(texts).strip()
-        out: dict[str, Any] = {"text": text, "segments": segments, "language": getattr(info, "language", None)}
-        logger.info("[whisper] done segments=%s chars=%s", len(segments), len(text))
+            
+            # 收集所有的逐字时间戳
+            if getattr(s, "words", None):
+                for w in s.words:
+                    word_text = w.word.strip()
+                    if word_text:
+                        all_whisper_words.append({
+                            "word": word_text,
+                            "start": float(w.start),
+                            "end": float(w.end)
+                        })
+
+        raw_text = "".join(texts).strip()
+        logger.info("[whisper] transcription done, segments=%s chars=%s", len(segments), len(raw_text))
+
+        # ─── 接入 DeepSeek 歌词校验流程 ───
+        try:
+            logger.info("[lyric_verifier] 准备引入 DeepSeek API 进行二次校验")
+            from lyric_verifier import verify_lyrics, align_text_to_word_timestamps
+            
+            # 调用 DeepSeek 进行检索/纠错
+            verify_result = verify_lyrics(raw_text, song_title=song_title)
+            verified_text = verify_result.get("verified_lyrics", raw_text)
+            
+            # 将修正后的歌词强制对齐回 Whisper 提供的字级时间戳
+            if all_whisper_words and verify_result.get("has_changes", False):
+                aligned_words = align_text_to_word_timestamps(verified_text, all_whisper_words)
+                
+                # 将所有对齐后的字，每15个字合并成一个长句子 segment
+                # 这样前端 AlphaTab 就能更好地渲染，而不会把每个字都当成一句独立的歌词
+                new_segments = []
+                current_text = ""
+                current_start = None
+                current_end = None
+                
+                for i, aw in enumerate(aligned_words):
+                    if current_start is None:
+                        current_start = aw["start"]
+                    current_end = aw["end"]
+                    
+                    word = aw["word"]
+                    # 如果 current_text 的最后一个字符是英文/数字，且当前 word 也是英文/数字，则中间加个空格
+                    if current_text and current_text[-1].isalnum() and word and word[0].isalnum():
+                        current_text += " " + word
+                    else:
+                        current_text += word
+                    
+                    # 以标点符号断句，或者每15个 Token 断句
+                    is_punct = word in "，。！？；：、\n\t"
+                    # 这里长度判断改为 current_text.strip() 长度，避免被空格影响太多
+                    if is_punct or len(current_text) >= 15 or i == len(aligned_words) - 1:
+                        if current_text.strip():
+                            new_segments.append({
+                                "start": current_start,
+                                "end": current_end,
+                                "text": current_text.strip()
+                            })
+                        current_text = ""
+                        current_start = None
+                        
+                segments = new_segments
+                raw_text = verified_text
+                
+        except Exception as e:
+            logger.exception("[lyric_verifier] DeepSeek verification pipeline failed: %s", e)
+
+        out: dict[str, Any] = {"text": raw_text, "segments": segments, "language": getattr(info, "language", None)}
         return out
     except Exception as e:
         logger.exception("[whisper] failed: %s", e)
@@ -91,11 +160,9 @@ def lyrics_to_beats(segments: List[Dict[str, Any]], beat_times: Any, beats: int)
             continue
 
         # Split into words (or characters if Chinese)
-        # A simple heuristic: if it contains spaces, split by space; else treat as chars.
-        if " " in text:
-            words = text.split()
-        else:
-            words = list(text)
+        # A smart regex: matches English words (letters/numbers/apostrophes) or single non-space characters (like Chinese chars, punctuation).
+        import re
+        words = re.findall(r'[a-zA-Z0-9\']+|[^\s]', text)
 
         if not words:
             continue
