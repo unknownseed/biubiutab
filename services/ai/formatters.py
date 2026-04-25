@@ -319,7 +319,8 @@ def generate_practice_data(
     beat_grid: list[float],
     chords: list[str],
     aligned_lyrics: list[dict] | None,
-    tempo_bpm: int = 120
+    tempo_bpm: int = 120,
+    raw_segments: list[dict] | None = None
 ) -> dict:
     """
     Generate data for frontend practice mode:
@@ -368,7 +369,18 @@ def generate_practice_data(
             })
         
     lyrics_data = []
-    if aligned_lyrics:
+    # 如果有我们刚在 vocal_analysis 里直接生成的高精度 raw_segments（单字/短句），优先使用它！
+    # 因为 aligned_lyrics 是基于主旋律音符的，如果某些字没有对应的旋律音符，就会被丢弃，导致漏字。
+    if raw_segments:
+        for s in raw_segments:
+            text = s.get("text", "").strip()
+            if text:
+                lyrics_data.append({
+                    "text": text,
+                    "startTime": float(s.get("start", 0.0)),
+                    "endTime": float(s.get("end", 0.0))
+                })
+    elif aligned_lyrics:
         for n in aligned_lyrics:
             text = n.get("lyric")
             if text:

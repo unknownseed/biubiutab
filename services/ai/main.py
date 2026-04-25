@@ -620,7 +620,8 @@ async def _run_job(job_id: str) -> None:
                 beat_grid=beat_grid.tolist() if hasattr(beat_grid, "tolist") else beat_grid,
                 chords=analysis.bar_chords,
                 aligned_lyrics=vocal_melody.get("aligned_melody") if isinstance(vocal_melody, dict) else None,
-                tempo_bpm=analysis.tempo_bpm
+                tempo_bpm=analysis.tempo_bpm,
+                raw_segments=lyrics.get("segments") if isinstance(lyrics, dict) else None
             ),
         )
 

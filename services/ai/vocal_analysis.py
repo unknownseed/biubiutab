@@ -99,21 +99,37 @@ def transcribe_lyrics(audio_path: str, language: str = "zh", song_title: Optiona
             verified_text = verify_result.get("verified_lyrics", raw_text)
             
             # 将修正后的歌词强制对齐回 Whisper 提供的字级时间戳
-            if all_whisper_words and verify_result.get("has_changes", False):
-                aligned_words = align_text_to_word_timestamps(verified_text, all_whisper_words)
-                
-                # 将所有对齐后的字，每15个字合并成一个长句子 segment
-                # 这样前端 AlphaTab 就能更好地渲染，而不会把每个字都当成一句独立的歌词
-                new_segments = []
-                for aw in aligned_words:
-                    new_segments.append({
-                        "start": aw["start"],
-                        "end": aw["end"],
-                        "text": aw["word"]
-                    })
-                        
-                segments = new_segments
+            if verify_result.get("has_changes", False):
                 raw_text = verified_text
+                
+                if all_whisper_words:
+                    aligned_words = align_text_to_word_timestamps(verified_text, all_whisper_words)
+                    
+                    # 我们直接将每一个字作为一个独立的 segment 返回
+                    new_segments = []
+                    for aw in aligned_words:
+                        word = aw["word"].strip()
+                        if word and word not in "\n\t":
+                            new_segments.append({
+                                "start": aw["start"],
+                                "end": aw["end"],
+                                "text": word
+                            })
+                            
+                    segments = new_segments
+            else:
+                # 如果没有经过修改（比如原词完美，或者匹配失败降级），也要保证单字拆分给前端
+                if all_whisper_words:
+                    new_segments = []
+                    for w in all_whisper_words:
+                        word = w["word"].strip()
+                        if word and word not in "\n\t":
+                            new_segments.append({
+                                "start": w["start"],
+                                "end": w["end"],
+                                "text": word
+                            })
+                    segments = new_segments
                 
         except Exception as e:
             logger.exception("[lyric_verifier] DeepSeek verification pipeline failed: %s", e)

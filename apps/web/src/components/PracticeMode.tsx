@@ -376,9 +376,13 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       const syncScrollToCursor = () => {
         if (isUserScrolling || !containerRef.current || !scrollContainer) return;
         requestAnimationFrame(() => {
-          const cursor = containerRef.current!.querySelector('.at-cursor-beat') 
-            || containerRef.current!.querySelector('.at-cursor-bar')
-            || containerRef.current!.querySelector('rect[fill="rgba(255, 255, 255, 0.2)"]'); 
+          // Double check inside the animation frame callback
+          // because the component might have unmounted while waiting for the frame
+          if (!containerRef.current || !scrollContainer) return;
+
+          const cursor = containerRef.current.querySelector('.at-cursor-beat') 
+            || containerRef.current.querySelector('.at-cursor-bar')
+            || containerRef.current.querySelector('rect[fill="rgba(255, 255, 255, 0.2)"]'); 
             
           if (cursor) {
             // Get the cursor position relative to the scroll container's internal content
@@ -791,23 +795,51 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
 
   const chordLyrics = useMemo(() => {
     const rawLyrics = practiceData?.lyrics || [];
-    if (!chordBlocks?.length) return [];
+    if (!chordBlocks?.length || !rawLyrics.length) return [];
     
-    return chordBlocks.map((block: any) => {
-      if (!rawLyrics.length) {
-        return { text: "", startTime: block.startTime, endTime: block.endTime };
+    // 初始化每个和弦块的歌词数组
+    const blockTexts: string[] = new Array(chordBlocks.length).fill("");
+    
+    // 遍历每一个字，把它分配给在时间上最接近它的吉他和弦块，保证 100% 不漏字
+    rawLyrics.forEach((l: any) => {
+      const mid = (l.startTime + l.endTime) / 2;
+      
+      let bestBlockIdx = -1;
+      let minDistance = Infinity;
+      
+      for (let i = 0; i < chordBlocks.length; i++) {
+        const block = chordBlocks[i];
+        
+        // 如果正好落在这个和弦块内，完美匹配
+        if (mid >= block.realStartTime && mid < block.realEndTime) {
+          bestBlockIdx = i;
+          break;
+        }
+        
+        // 否则计算距离
+        let dist = 0;
+        if (mid < block.realStartTime) {
+          dist = block.realStartTime - mid;
+        } else {
+          dist = mid - block.realEndTime;
+        }
+        
+        if (dist < minDistance) {
+          minDistance = dist;
+          bestBlockIdx = i;
+        }
       }
-      const blockLyrics = rawLyrics.filter((l: any) => {
-        const mid = (l.startTime + l.endTime) / 2;
-        return mid >= block.realStartTime && mid < block.realEndTime;
-      });
-      const text = blockLyrics.map((l: any) => l.text).join("").trim();
-      return {
-        text,
-        startTime: block.startTime,
-        endTime: block.endTime,
-      };
+      
+      if (bestBlockIdx !== -1) {
+        blockTexts[bestBlockIdx] += l.text;
+      }
     });
+    
+    return chordBlocks.map((block: any, i: number) => ({
+      text: blockTexts[i].trim(),
+      startTime: block.startTime,
+      endTime: block.endTime,
+    }));
   }, [chordBlocks, practiceData?.lyrics]);
 
   const activeTrackIndexRef = useRef(activeTrackIndex);
