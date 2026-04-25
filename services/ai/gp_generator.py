@@ -84,6 +84,23 @@ def generate_gp5_binary(
         except ValueError:
             pass
 
+    # 将歌词添加到谱子的全局信息中
+    # 经测试，全局 Lyrics 也可能引起 AlphaTab 的某些不可预知行为，暂且注释掉
+    # if lyrics_beats:
+    #     try:
+    #         valid_lyrics = [str(x).strip() for x in lyrics_beats if x and str(x).strip()]
+    #         if valid_lyrics:
+    #             full_lyrics_str = " ".join(valid_lyrics)
+    #             safe_lyrics = _gp_safe_text(full_lyrics_str)
+    #             if safe_lyrics:
+    #                 line = guitarpro.LyricLine()
+    #                 line.startingMeasure = 1
+    #                 line.lyrics = safe_lyrics
+    #                 song.lyrics.trackChoice = 1
+    #                 song.lyrics.lines.append(line)
+    #     except Exception as e:
+    #         print(f"[gp_generator] Error setting global lyrics: {e}")
+
     # ── Step 1: Prepare chord sequence and optimize voicings globally ──────────
     chords_seq = []
     for s in sections:
@@ -229,7 +246,8 @@ def generate_gp5_binary(
             bpm=tempo,
             title=title,
             ts_num=ts_num,
-            ts_den=ts_den
+            ts_den=ts_den,
+            lyrics_beats=lyrics_beats
         )
         out = io.BytesIO()
         guitarpro.write(song_obj, out)
@@ -241,7 +259,7 @@ def generate_gp5_binary(
         sections=sections, lyrics_beats=lyrics_beats, rhythm_energy=rhythm_energy, song=song, track=track, intro_bars=intro_bars
     )
 
-def _build_gp5_from_beats(rhythm_beats, lead_beats, is_dual, bpm, title, ts_num, ts_den):
+def _build_gp5_from_beats(rhythm_beats, lead_beats, is_dual, bpm, title, ts_num, ts_den, lyrics_beats=None):
     song = guitarpro.Song()
     song.title = _gp_safe_text(title) or "score"
     song.tempo = max(40, min(240, int(bpm)))
@@ -271,41 +289,13 @@ def _build_gp5_from_beats(rhythm_beats, lead_beats, is_dual, bpm, title, ts_num,
         tracks_to_fill.append((lead_track, lead_beats, False))
 
     for track, beats, show_chords in tracks_to_fill:
-        _fill_track_measures(song, track, beats, ts_num, ts_den, show_chords)
+        _fill_track_measures(song, track, beats, ts_num, ts_den, show_chords, lyrics_beats)
 
-    # 确保所有轨道的小节数对齐，并且每个小节至少有一个休止符（防止 AlphaTab 崩溃）
-    for track in song.tracks:
-        while len(track.measures) < len(song.measureHeaders):
-            idx = len(track.measures)
-            header = song.measureHeaders[idx]
-            measure = guitarpro.Measure(track, header)
-            track.measures.append(measure)
-
-        for m in track.measures:
-            v = m.voices[0]
-            if len(v.beats) == 0:
-                # 使用贪心算法填补休止符，直到补齐 ticks_per_measure
-                ticks_per_measure = int(960 * 4 * ts_num / ts_den)
-                remaining_ticks = ticks_per_measure
-                current_start = m.header.start
-                
-                while remaining_ticks > 0:
-                    for allowed_duration in [1, 2, 4, 8, 16, 32, 64]:
-                        allowed_ticks = int(960 * 4 / allowed_duration)
-                        if allowed_ticks <= remaining_ticks:
-                            gp_beat = guitarpro.Beat(v)
-                            gp_beat.start = current_start
-                            gp_beat.duration.value = allowed_duration
-                            gp_beat.status = guitarpro.BeatStatus.rest
-                            v.beats.append(gp_beat)
-                            
-                            remaining_ticks -= allowed_ticks
-                            current_start += allowed_ticks
-                            break
-
+    # 移除所有的 track.measures 校验和休止符填补，交给 AlphaTab 自己处理。
+    # 之前那些为了防崩溃而强行填满小节的冗余代码，反而容易打乱原有的数据结构。
     return song
 
-def _fill_track_measures(song, track, beats, ts_num, ts_den, show_chords):
+def _fill_track_measures(song, track, beats, ts_num, ts_den, show_chords, lyrics_beats=None):
     ticks_per_measure = int(960 * 4 * ts_num / ts_den)
     
     measure_idx = 0
@@ -336,6 +326,24 @@ def _fill_track_measures(song, track, beats, ts_num, ts_den, show_chords):
             voicing = beat_data.get("voicing")
             if chord_name:
                 _add_chord_to_beat(gp_beat, chord_name, voicing)
+
+        # 将跨越这个音符时间范围的所有歌词聚合在一起，防止吉他音符太少导致歌词漏显示
+        txt_list = []
+        if lyrics_beats and show_chords:
+            # lyrics_beats 中的每个元素对应一拍（四分音符 = 960 ticks）
+            start_quarter = current_start // 960
+            end_quarter = (current_start + beat_ticks - 1) // 960
+            for q in range(start_quarter, end_quarter + 1):
+                if 0 <= q < len(lyrics_beats) and lyrics_beats[q]:
+                    txt_list.append(str(lyrics_beats[q]).strip())
+                    # 一旦被当前音符“吃掉”，就置空，防止后续音符重复显示
+                    lyrics_beats[q] = None
+        
+        if txt_list:
+            clean_txt = " ".join(txt_list).strip()
+            safe_txt = _gp_safe_text(clean_txt)
+            if safe_txt:
+                gp_beat.text = safe_txt
 
         notes_added = 0
         for note_data in beat_data.get("notes", []):

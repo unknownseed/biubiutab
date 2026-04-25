@@ -62,16 +62,19 @@ def extract_harmonic_percussive(audio_path: str) -> Dict[str, str]:
     if not in_path.exists():
         raise FileNotFoundError(f"audio_path not found: {audio_path}")
 
-    sr = int(os.environ.get("AUDIO_SR") or "44100")
+    sr = int(os.environ.get("AUDIO_SR") or "22050")  # 降低采样率，极大缓解内存和计算压力
     margin = float(os.environ.get("HPSS_MARGIN") or "3.0")
     kernel_size = int(os.environ.get("HPSS_KERNEL_SIZE") or "31")
 
     logger.info("[hpss] start input=%s sr=%s margin=%s kernel_size=%s", in_path, sr, margin, kernel_size)
 
-    y, _sr = librosa.load(str(in_path), sr=sr, mono=True)
-    if not np.isfinite(y).all():
-        y = np.nan_to_num(y)
+    # 限制最多处理前 6 分钟的音频，防止极端长文件导致 OOM 和假死
+    y, _sr = librosa.load(str(in_path), sr=sr, mono=True, duration=360.0)
+    
+    # 替换全局 NaN
+    y = np.nan_to_num(y)
 
+    # 执行 STFT 和中值滤波（这里是耗时大户，降低 sr 后速度会提升约 4 倍）
     y_h, y_p = librosa.effects.hpss(y, margin=margin, kernel_size=kernel_size)
 
     base = in_path.with_suffix("")

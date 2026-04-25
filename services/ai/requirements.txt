@@ -10,6 +10,9 @@ numpy==1.26.4
 scipy==1.13.1
 soundfile==0.13.1
 faster-whisper==1.1.0
+stable-ts>=2.19.1
 basic-pitch==0.4.0
 demucs==4.0.1
 PyGuitarPro==0.10.1
+av==15.1.0
+openai>=1.0.0

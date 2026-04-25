@@ -11,6 +11,14 @@ from pathlib import Path
 from typing import Literal, Optional
 import json
 
+# 修复底层的科学计算库（OpenBLAS / MKL / OpenMP）在多线程并发时的死锁问题
+# 这必须在引入任何音频处理、矩阵运算（如 numpy, librosa, torch）之前设置！
+os.environ["OMP_NUM_THREADS"] = "1"
+os.environ["OPENBLAS_NUM_THREADS"] = "1"
+os.environ["MKL_NUM_THREADS"] = "1"
+os.environ["VECLIB_MAXIMUM_THREADS"] = "1"
+os.environ["NUMEXPR_NUM_THREADS"] = "1"
+
 try:
     from dotenv import load_dotenv
     load_dotenv()
