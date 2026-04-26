@@ -8,6 +8,7 @@ const nextConfig = {
       },
     ],
   },
+  serverExternalPackages: ["@coderline/alphatab"],
 };
 
 export default nextConfig;

@@ -1,0 +1,34 @@
+{
+  "module": "warmup",
+  "description": "预习模块：手指热身与基础元素拆解，熟悉歌曲的核心和弦与基础节奏。",
+  "chord_switches": [
+    {
+      "title": "核心和弦转换",
+      "gp5_url": "/gp5/No-Regret-for-my-life/warmup.gp5",
+      "tempo": 50,
+      "loop_bars": [
+        1,
+        2
+      ]
+    }
+  ],
+  "rhythm_patterns": [
+    {
+      "name": "基础节奏预习",
+      "gp5_url": "/gp5/No-Regret-for-my-life/warmup.gp5",
+      "tempo": 60
+    }
+  ],
+  "challenges": [
+    {
+      "title": "示例难点",
+      "section": "intro",
+      "bar_range": [
+        1,
+        2
+      ],
+      "demo_audio": "",
+      "demo_video": ""
+    }
+  ]
+}

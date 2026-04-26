@@ -1,0 +1,18 @@
+{
+  "module": "basic",
+  "description": "基础模块：分段慢速跟弹，完整弹奏全曲的简化版。",
+  "sections": [
+    {
+      "name": "intro",
+      "label": "intro 慢速跟弹",
+      "gp5_url": "/gp5/No-Regret-for-my-life/basic.gp5",
+      "loop_bars": [
+        1,
+        4
+      ],
+      "tempo": 75,
+      "tips": "注意 intro 段落的节奏稳定。",
+      "demo_video": ""
+    }
+  ]
+}

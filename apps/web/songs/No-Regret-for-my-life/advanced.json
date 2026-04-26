@@ -1,0 +1,22 @@
+{
+  "module": "advanced",
+  "description": "进阶模块：原速全曲练习，强化技术难点。",
+  "full_song": {
+    "gp5_url": "/gp5/No-Regret-for-my-life/advanced.gp5",
+    "tempo": 100,
+    "demo_video": ""
+  },
+  "challenges": [
+    {
+      "title": "示例难点",
+      "gp5_url": "/gp5/No-Regret-for-my-life/advanced.gp5",
+      "loop_bars": [
+        1,
+        2
+      ],
+      "tempo": 80,
+      "tips": "攻克难点：示例难点",
+      "demo_video": ""
+    }
+  ]
+}

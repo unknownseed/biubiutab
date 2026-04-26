@@ -1,0 +1,10 @@
+{
+  "module": "advanced",
+  "description": "进阶模块：原速全曲练习，强化技术难点。",
+  "full_song": {
+    "gp5_url": "/gp5/new-song/advanced.gp5",
+    "tempo": 80,
+    "demo_video": null
+  },
+  "challenges": []
+}

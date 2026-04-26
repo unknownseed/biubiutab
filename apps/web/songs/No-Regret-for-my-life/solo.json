@@ -1,0 +1,22 @@
+{
+  "module": "solo",
+  "description": "Solo 创作模块：即兴演奏，根据和弦进行自由发挥。",
+  "backing": {
+    "gp5_url": "/gp5/No-Regret-for-my-life/solo.gp5",
+    "loop_bars": [
+      1,
+      8
+    ],
+    "bpm": 100,
+    "style": "folk"
+  },
+  "scales": {
+    "primary": "C major"
+  },
+  "chord_tones": [
+    "C",
+    "G",
+    "Am",
+    "F"
+  ]
+}

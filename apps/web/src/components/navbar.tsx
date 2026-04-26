@@ -42,10 +42,10 @@ export default function Navbar({ initialUser }: { initialUser: User | null }) {
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-6">
         <div className="flex items-center gap-6 md:gap-10">
           <Link href="/" className="flex items-center gap-2 group shrink-0">
-            <div className="flex items-center justify-center w-8 h-8 rounded-full bg-paper-50 text-retro-green font-serif font-bold text-lg group-hover:bg-wood-400 group-hover:text-paper-50 transition-colors duration-500">
+            <div className="flex items-center justify-center w-6 h-6 rounded-full bg-paper-50 text-retro-green font-serif font-bold text-sm group-hover:bg-wood-400 group-hover:text-paper-50 transition-colors duration-500">
               B
             </div>
-            <span className="font-logo text-2xl md:text-3xl text-paper-50 tracking-wide opacity-90 group-hover:opacity-100 transition-opacity">
+            <span className="font-logo text-lg md:text-xl text-paper-50 tracking-wide opacity-90 group-hover:opacity-100 transition-opacity">
               BiuBiu Tab
             </span>
           </Link>
@@ -59,13 +59,9 @@ export default function Navbar({ initialUser }: { initialUser: User | null }) {
               BiuBIU弹唱
               <span className={`absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 ${mounted && (pathname.startsWith("/play") || pathname.startsWith("/editor")) ? "bg-wood-400" : "bg-transparent group-hover:bg-wood-400"}`} />
             </Link>
-            <Link href="#" className="relative group transition-colors duration-300 hover:text-paper-50">
+            <Link href="/learn" className={`relative group transition-colors duration-300 ${mounted && pathname.startsWith("/learn") ? "text-paper-50" : "hover:text-paper-50"}`}>
               BiuBiu教学
-              <span className="absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 bg-transparent group-hover:bg-wood-400" />
-            </Link>
-            <Link href="#" className="relative group transition-colors duration-300 hover:text-paper-50">
-              BiuBiu AI
-              <span className="absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 bg-transparent group-hover:bg-wood-400" />
+              <span className={`absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 ${mounted && pathname.startsWith("/learn") ? "bg-wood-400" : "bg-transparent group-hover:bg-wood-400"}`} />
             </Link>
             <Link href="#" className="relative group transition-colors duration-300 hover:text-paper-50">
               价格

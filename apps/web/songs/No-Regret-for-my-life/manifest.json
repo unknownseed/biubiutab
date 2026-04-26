@@ -1,0 +1,53 @@
+{
+  "id": "Song1",
+  "bpm": 100,
+  "key": "C",
+  "capo": 0,
+  "slug": "No-Regret-for-my-life",
+  "title": "无悔这一生",
+  "artist": "Beyond",
+  "status": "draft",
+  "structure": [
+    {
+      "name": "intro",
+      "end_bar": 4,
+      "start_bar": 1,
+      "demo_audio": "",
+      "demo_video": ""
+    }
+  ],
+  "challenges": [
+    {
+      "title": "示例难点",
+      "section": "intro",
+      "bar_range": [
+        1,
+        2
+      ],
+      "demo_audio": "",
+      "demo_video": ""
+    }
+  ],
+  "difficulty": {
+    "overall": "beginner",
+    "left_hand": [],
+    "right_hand": []
+  },
+  "core_chords": [
+    "C",
+    "G",
+    "Am",
+    "F"
+  ],
+  "source_files": {
+    "base_gp5": "base.gp5",
+    "full_audio": "",
+    "full_video": ""
+  },
+  "learning_goals": [],
+  "time_signature": "4/4",
+  "copyright_status": "public_domain",
+  "scale_suggestions": {
+    "primary": "C major"
+  }
+}
