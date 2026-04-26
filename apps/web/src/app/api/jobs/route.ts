@@ -1,9 +1,11 @@
 import { aiFetch } from "@/lib/ai";
+import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
 type CreateJobBody = {
-  storedFilename: string;
+  storedFilename?: string;
+  url?: string;
   title?: string;
 };
 
@@ -14,21 +16,38 @@ function safeObjectKey(filename: string): string | null {
 }
 
 export async function POST(req: Request) {
+  const supabase = await createClient();
+  const { data: { user } } = await supabase.auth.getUser();
+
   const body = (await req.json().catch(() => null)) as CreateJobBody | null;
-  if (!body?.storedFilename) return new Response("missing storedFilename", { status: 400 });
+  if (!body) return new Response("bad request", { status: 400 });
 
-  const safe = safeObjectKey(body.storedFilename);
-  if (!safe) return new Response("invalid filename", { status: 400 });
+  let audioPath = "";
+  let storageProvider = "";
 
-  // 这里的 safe 就是存放在 Cloudflare R2 bucket 中的文件 Key
-  // 我们将 storage_provider 设置为 r2，以便后端知道去哪里下载它
+  if (body.url) {
+    if (!body.url.startsWith("http://") && !body.url.startsWith("https://")) {
+      return new Response("invalid url", { status: 400 });
+    }
+    audioPath = body.url;
+    storageProvider = "url";
+  } else if (body.storedFilename) {
+    const safe = safeObjectKey(body.storedFilename);
+    if (!safe) return new Response("invalid filename", { status: 400 });
+    audioPath = safe;
+    storageProvider = "r2";
+  } else {
+    return new Response("missing input", { status: 400 });
+  }
+
   const res = await aiFetch("/jobs", {
     method: "POST",
     headers: { "content-type": "application/json" },
     body: JSON.stringify({ 
-      audio_path: safe,
-      storage_provider: "r2",
-      title: body.title 
+      audio_path: audioPath,
+      storage_provider: storageProvider,
+      title: body.title,
+      user_id: user?.id || null
     }),
   });
   const text = await res.text();

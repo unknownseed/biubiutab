@@ -8,7 +8,7 @@ import time
 import uuid
 from dataclasses import dataclass
 from pathlib import Path
-from typing import Literal, Optional
+from typing import Literal, Optional, Union
 import json
 
 # 修复底层的科学计算库（OpenBLAS / MKL / OpenMP）在多线程并发时的死锁问题
@@ -72,10 +72,9 @@ class CreateJobRequest(BaseModel):
     audio_path: str = Field(min_length=1)
     title: Optional[str] = None
     storage_provider: Optional[str] = None
-
+    user_id: Optional[str] = None
 
 JobStatus = Literal["queued", "processing", "succeeded", "failed"]
-
 
 class JobResponse(BaseModel):
     id: str
@@ -84,6 +83,8 @@ class JobResponse(BaseModel):
     message: Optional[str] = None
     error: Optional[str] = None
     preview: Optional[dict] = None
+    storage_provider: Optional[str] = None
+    user_id: Optional[str] = None
 
 
 class ChordModel(BaseModel):
@@ -122,11 +123,12 @@ class JobState:
     progress: int
     message: Optional[str]
     error: Optional[str]
-    audio_path: Path
+    audio_path: Union[Path, str]
     title: str
     result: Optional[JobResult]
     preview: Optional[dict]
     storage_provider: Optional[str] = None
+    user_id: Optional[str] = None
 
 
 def _clean_title(title: str) -> str:
@@ -223,10 +225,42 @@ def _cleanup_expired(storage_root: Path) -> None:
 
 
 from supabase import create_client, Client
+import boto3
+from botocore.config import Config
 
 SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
 SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
 supabase: Optional[Client] = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
+
+R2_ACCOUNT_ID = os.environ.get("CLOUDFLARE_ACCOUNT_ID")
+R2_ACCESS_KEY = os.environ.get("CLOUDFLARE_ACCESS_KEY_ID")
+R2_SECRET_KEY = os.environ.get("CLOUDFLARE_SECRET_ACCESS_KEY")
+R2_BUCKET = os.environ.get("CLOUDFLARE_BUCKET_NAME") or "biubiutab-uploads"
+
+def _get_s3_client():
+    if not R2_ACCOUNT_ID or not R2_ACCESS_KEY or not R2_SECRET_KEY:
+        return None
+    return boto3.client(
+        's3',
+        endpoint_url=f"https://{R2_ACCOUNT_ID}.r2.cloudflarestorage.com",
+        aws_access_key_id=R2_ACCESS_KEY,
+        aws_secret_access_key=R2_SECRET_KEY,
+        config=Config(signature_version='s3v4'),
+        region_name='auto'
+    )
+
+def _upload_r2_artifact(local_path: Path, r2_key: str, content_type: str):
+    s3 = _get_s3_client()
+    if not s3:
+        return
+    if not local_path.exists():
+        return
+    s3.upload_file(
+        Filename=str(local_path),
+        Bucket=R2_BUCKET,
+        Key=r2_key,
+        ExtraArgs={'ContentType': content_type}
+    )
 
 app = FastAPI(title="Biubiutab - AI Service")
 _jobs: dict[str, JobState] = {}
@@ -242,6 +276,7 @@ def _jobstate_to_db_dict(job: JobState) -> dict:
         "title": job.title,
         "result": job.result.model_dump() if job.result else None,
         "preview": job.preview,
+        "user_id": job.user_id,
         # Note: we can optionally store storage_provider in the DB, 
         # but since we didn't add it to the SQL schema earlier, we will just use it in memory for now.
         # Alternatively we can add it to the 'preview' dict to avoid altering the SQL table again.
@@ -259,11 +294,12 @@ def _db_dict_to_jobstate(d: dict) -> JobState:
         progress=d["progress"],
         message=d.get("message"),
         error=d.get("error"),
-        audio_path=Path(d["audio_path"]),
+        audio_path=d["audio_path"] if provider == "url" else Path(d["audio_path"]),
         title=d["title"],
         result=JobResult(**d["result"]) if d.get("result") else None,
         preview=d.get("preview"),
-        storage_provider=provider
+        storage_provider=provider,
+        user_id=d.get("user_id")
     )
 
 async def _save_job_state(job: JobState):
@@ -311,6 +347,7 @@ def _job_to_response(job: JobState) -> JobResponse:
         message=job.message,
         error=job.error,
         preview=job.preview,
+        storage_provider=job.storage_provider,
     )
 
 
@@ -326,7 +363,7 @@ async def _run_job(job_id: str) -> None:
     await _save_job_state(job)
 
     try:
-        title = _clean_title(job.title or job.audio_path.name)
+        title = _clean_title(job.title or (job.audio_path.name if isinstance(job.audio_path, Path) else str(job.audio_path)))
 
         # Align with required storage layout under repoRoot/storage/
         storage_root = _storage_root()
@@ -339,7 +376,7 @@ async def _run_job(job_id: str) -> None:
 
         _cleanup_expired(storage_root)
 
-        ext = job.audio_path.suffix.lower() or ".wav"
+        ext = job.audio_path.suffix.lower() if isinstance(job.audio_path, Path) else ".mp3"
         upload_copy = uploads_dir / f"{job.id}{ext}"
         
         # If the file is in Cloudflare R2, download it first
@@ -347,25 +384,75 @@ async def _run_job(job_id: str) -> None:
             job.message = "正在从云端下载音轨..."
             await _save_job_state(job)
             
-            import boto3
-            from botocore.config import Config
-            s3_client = boto3.client(
-                's3',
-                endpoint_url=f"https://{os.environ.get('CLOUDFLARE_ACCOUNT_ID')}.r2.cloudflarestorage.com",
-                aws_access_key_id=os.environ.get('CLOUDFLARE_ACCESS_KEY_ID'),
-                aws_secret_access_key=os.environ.get('CLOUDFLARE_SECRET_ACCESS_KEY'),
-                config=Config(signature_version='s3v4'),
-                region_name='auto'
-            )
-            bucket_name = os.environ.get('CLOUDFLARE_BUCKET_NAME') or "biubiutab-uploads"
-            # job.audio_path is actually the S3 object key (e.g. 'uploads/xxx.mp3')
+            s3_client = _get_s3_client()
+            if not s3_client:
+                raise Exception("Missing R2 credentials")
+                
             # 使用 as_posix() 确保在 Windows 环境下也能生成正确的 / 路径
             r2_key = job.audio_path.as_posix()
             
             def _download_r2():
-                s3_client.download_file(bucket_name, r2_key, str(upload_copy))
+                s3_client.download_file(R2_BUCKET, r2_key, str(upload_copy))
             await asyncio.to_thread(_download_r2)
             
+        elif job.storage_provider == "url":
+            # YouTube bypass logic is no longer needed as we switched to Cobalt API
+            job.message = "正在从网络解析并下载音轨..."
+            await _save_job_state(job)
+            
+            def _download_cobalt():
+                import httpx
+                target_path = str(uploads_dir / f"{job.id}.mp3")
+                url_str = job.audio_path if isinstance(job.audio_path, str) else str(job.audio_path)
+                
+                api_url = "https://api.cobalt.tools/"
+                headers = {
+                    "Accept": "application/json",
+                    "Content-Type": "application/json",
+                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+                }
+                payload = {
+                    "url": url_str,
+                    "downloadMode": "audio",
+                    "audioFormat": "mp3"
+                }
+                
+                with httpx.Client(timeout=60.0, follow_redirects=True) as client:
+                    response = client.post(api_url, headers=headers, json=payload)
+                    response.raise_for_status()
+                    data = response.json()
+                    
+                    if data.get("status") == "error":
+                        raise Exception(f"Cobalt 解析失败: {data}")
+                        
+                    direct_url = data.get("url")
+                    if not direct_url:
+                        raise Exception(f"未能解析到下载链接: {data}")
+                        
+                    # 下载音频文件
+                    with client.stream("GET", direct_url, headers=headers) as stream_resp:
+                        stream_resp.raise_for_status()
+                        with open(target_path, "wb") as f:
+                            for chunk in stream_resp.iter_bytes(chunk_size=8192):
+                                if chunk:
+                                    f.write(chunk)
+                return job.title # Cobalt 不直接返回标题，我们保留原标题
+
+            await asyncio.to_thread(_download_cobalt)
+            
+            # The postprocessor changes the extension to .mp3
+            upload_copy = uploads_dir / f"{job.id}.mp3"
+            
+            # 将下载好的音频传到 R2，并把记录修改为 r2，让前端以后直接从 R2 播放原声
+            r2_key = f"uploads/{job.id}.mp3"
+            def _upload_url_audio():
+                _upload_r2_artifact(upload_copy, r2_key, "audio/mpeg")
+            await asyncio.to_thread(_upload_url_audio)
+            
+            job.audio_path = Path(r2_key)
+            job.storage_provider = "r2"
+            await _save_job_state(job)
+
         else:
             # Copy original local audio to storage/uploads/{job_id}.ext
             try:
@@ -757,6 +844,30 @@ async def _run_job(job_id: str) -> None:
                 (results_dir / "lyrics.lrc").write_text("\n".join(lines).strip() + "\n", encoding="utf-8")
         except Exception:
             pass
+        # If using R2, upload all generated artifacts back to cloud
+        if job.storage_provider == "r2":
+            job.message = "正在将伴奏和吉他谱送上云端..."
+            await _save_job_state(job)
+            
+            def _upload_all_r2():
+                # Upload stems
+                if stems_dir.exists():
+                    for f in stems_dir.iterdir():
+                        if f.is_file():
+                            r2_key = f"stems/{job.id}/{f.name}"
+                            _upload_r2_artifact(f, r2_key, "audio/wav")
+                # Upload results
+                if results_dir.exists():
+                    for f in results_dir.iterdir():
+                        if f.is_file():
+                            r2_key = f"results/{job.id}/{f.name}"
+                            ctype = "application/json" if f.suffix == ".json" else "application/octet-stream"
+                            if f.suffix == ".lrc" or f.suffix == ".alphatex":
+                                ctype = "text/plain"
+                            _upload_r2_artifact(f, r2_key, ctype)
+                            
+            await asyncio.to_thread(_upload_all_r2)
+
         job.status = "succeeded"
         job.progress = 100
         job.message = "一首完整的吉他谱已经凝固。"
@@ -772,11 +883,11 @@ async def _run_job(job_id: str) -> None:
 
 @app.post("/jobs", response_model=JobResponse)
 async def create_job(req: CreateJobRequest) -> JobResponse:
-    audio_path = Path(req.audio_path)
+    audio_path = req.audio_path if req.storage_provider == "url" else Path(req.audio_path)
     
-    # 如果是云端存储（如 r2），跳过本地存在性检查
-    if req.storage_provider != "r2":
-        if not audio_path.exists() or not audio_path.is_file():
+    # 如果是云端存储或网络链接，跳过本地存在性检查
+    if req.storage_provider not in ("r2", "url"):
+        if not isinstance(audio_path, Path) or not audio_path.exists() or not audio_path.is_file():
             raise HTTPException(status_code=400, detail="audio_path not found")
 
     storage = _storage_dir()
@@ -795,6 +906,7 @@ async def create_job(req: CreateJobRequest) -> JobResponse:
         result=None,
         preview={"step": "queued", "storage_provider": req.storage_provider},
         storage_provider=req.storage_provider,
+        user_id=req.user_id,
     )
     await _save_job_state(state)
     asyncio.create_task(_run_job(job_id))

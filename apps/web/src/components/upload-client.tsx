@@ -1,8 +1,10 @@
 "use client";
 
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useToast } from "./toast-provider";
+import { createClient } from "@/lib/supabase/client";
 import TimelineViewer, { type VisualizationPayload } from "./timeline-viewer";
 
 export type UploadResponse = {
@@ -196,6 +198,10 @@ export default function UploadClient() {
           })
         });
         
+        if (res.status === 401) {
+          throw new Error("请先登录后再上传歌曲");
+        }
+        
         if (!res.ok) {
           throw new Error("无法获取上传地址");
         }
@@ -233,8 +239,89 @@ export default function UploadClient() {
     });
   }
 
+  const supabase = createClient();
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [uploadMode, setUploadMode] = useState<"file" | "url">("file");
+  const [urlValue, setUrlValue] = useState("");
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data }) => setIsLoggedIn(!!data.session));
+  }, [supabase]);
+
+  const pollJob = async (jobId: string) => {
+    const poll = async () => {
+      try {
+        const latest = await getJson<JobResponse>(`/api/jobs/${jobId}`);
+        setJob(latest);
+        setPreview(latest.preview ?? null);
+        if (latest.status === "succeeded") {
+          setStatus("idle");
+          setPreview(null);
+          toast.push({ title: "生成完成", description: "已生成谱例，正在打开编辑页…", variant: "success" });
+          router.push(`/editor/${latest.id}`);
+          return;
+        }
+        if (latest.status === "failed") {
+          setStatus("failed");
+          const msg = friendlyErrorMessage(latest.error || "处理失败");
+          setError(msg);
+          toast.push({ title: "生成失败", description: msg, variant: "error" });
+          return;
+        }
+        window.setTimeout(() => void poll(), 800);
+      } catch (e) {
+        setStatus("failed");
+        setError(e instanceof Error ? e.message : "获取状态失败");
+        toast.push({ title: "网络错误", description: "获取状态失败，请刷新页面查看", variant: "error" });
+      }
+    };
+    window.setTimeout(() => void poll(), 500);
+  };
+
+  async function startUrlJob() {
+    if (!urlValue.trim()) return;
+
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      toast.push({ title: "需要登录", description: "请先登录后再制作吉他谱", variant: "error" });
+      router.push("/login?next=/");
+      return;
+    }
+
+    setError(null);
+    setStatus("processing");
+
+    try {
+      const created = await postJson<JobResponse>("/api/jobs", {
+        url: urlValue.trim(),
+        title: "网络音源",
+      });
+
+      if ((created as any).error) {
+        throw new Error((created as any).error);
+      }
+      
+      setJob(created);
+      pollJob(created.id);
+    } catch (e) {
+      setStatus("failed");
+      setError(e instanceof Error ? e.message : "未知错误");
+      toast.push({ title: "请求失败", description: e instanceof Error ? e.message : "未知错误", variant: "error" });
+    }
+  }
+
   async function start() {
     if (!file) return;
+
+    // 前端直接校验登录状态，避免不必要的上传
+    const { data: { session } } = await supabase.auth.getSession();
+    if (!session) {
+      toast.push({ title: "需要登录", description: "请先登录后再制作吉他谱", variant: "error" });
+      router.push("/login?next=/");
+      return;
+    }
+
     setError(null);
 
     if (!canStart) {
@@ -260,31 +347,15 @@ export default function UploadClient() {
         storedFilename: upload.storedFilename,
         title: upload.originalFilename,
       });
+      
+      // Handle the case where the user is not logged in (middleware intercepts)
+      if ((created as any).error) {
+        throw new Error((created as any).error);
+      }
       setJob(created);
       localStorage.setItem(`job:${created.id}:audio`, upload.storedFilename);
 
-      const poll = async () => {
-        const latest = await getJson<JobResponse>(`/api/jobs/${created.id}`);
-        setJob(latest);
-        setPreview(latest.preview ?? null);
-        if (latest.status === "succeeded") {
-          // Hide in-progress timeline immediately once done (before navigation).
-          setStatus("idle");
-          setPreview(null);
-          toast.push({ title: "生成完成", description: "已生成谱例，正在打开编辑页…", variant: "success" });
-          router.push(`/editor/${latest.id}`);
-          return;
-        }
-        if (latest.status === "failed") {
-          setStatus("failed");
-          const msg = friendlyErrorMessage(latest.error || "处理失败");
-          setError(msg);
-          toast.push({ title: "生成失败", description: msg, variant: "error" });
-          return;
-        }
-        window.setTimeout(() => void poll(), 800);
-      };
-      window.setTimeout(() => void poll(), 500);
+      pollJob(created.id);
     } catch (e) {
       setStatus("failed");
       setError(e instanceof Error ? e.message : "未知错误");
@@ -297,35 +368,77 @@ export default function UploadClient() {
       <div className="flex flex-col gap-8">
         {status !== "uploading" && status !== "processing" && (
           <>
-            <div className="flex items-center justify-between gap-4">
-              <div className="text-lg font-serif tracking-widest text-ink-800">音频上传</div>
+            <div className="flex items-center justify-between gap-4 border-b border-wood-400/20 pb-2">
+              <div className="flex items-center gap-6">
+                <button
+                  className={`text-lg font-serif tracking-widest pb-2 -mb-[9px] border-b-2 transition-colors ${
+                    uploadMode === "file" ? "border-retro-green text-retro-green" : "border-transparent text-ink-800 hover:text-retro-green"
+                  }`}
+                  onClick={() => setUploadMode("file")}
+                >
+                  本地上传
+                </button>
+                <button
+                  className={`text-lg font-serif tracking-widest pb-2 -mb-[9px] border-b-2 transition-colors ${
+                    uploadMode === "url" ? "border-retro-green text-retro-green" : "border-transparent text-ink-800 hover:text-retro-green"
+                  }`}
+                  onClick={() => setUploadMode("url")}
+                >
+                  在线音频
+                </button>
+              </div>
+              {isLoggedIn && (
+                <Link href="/dashboard" className="text-sm font-sans tracking-widest text-wood-500 hover:text-wood-600 transition-colors flex items-center gap-1">
+                  <span>我的曲谱</span>
+                  <span className="font-serif">→</span>
+                </Link>
+              )}
             </div>
 
-            <div
-              className="flex min-h-[200px] cursor-pointer flex-col items-center justify-center gap-4 rounded-none border border-dashed border-wood-400/30 bg-white/40 px-4 py-6 text-center transition-colors duration-500 hover:border-wood-400 hover:bg-white/60"
-              onClick={() => fileInputRef.current?.click()}
-              onDragOver={(e) => e.preventDefault()}
-              onDrop={(e) => {
-                e.preventDefault();
-                const dropped = e.dataTransfer.files?.[0] ?? null;
-                onPickFile(dropped);
-              }}
-              role="button"
-              tabIndex={0}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" || e.key === " ") fileInputRef.current?.click();
-              }}
-            >
-              <div className="text-wood-400/50 mb-2">
-                <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="17 8 12 3 7 8"/>
-                  <line x1="12" y1="3" x2="12" y2="15"/>
-                </svg>
+            {uploadMode === "file" ? (
+              <div
+                className="flex min-h-[200px] cursor-pointer flex-col items-center justify-center gap-4 rounded-none border border-dashed border-wood-400/30 bg-white/40 px-4 py-6 text-center transition-colors duration-500 hover:border-wood-400 hover:bg-white/60 mt-4"
+                onClick={() => fileInputRef.current?.click()}
+                onDragOver={(e) => e.preventDefault()}
+                onDrop={(e) => {
+                  e.preventDefault();
+                  const dropped = e.dataTransfer.files?.[0] ?? null;
+                  onPickFile(dropped);
+                }}
+                role="button"
+                tabIndex={0}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") fileInputRef.current?.click();
+                }}
+              >
+                <div className="text-wood-400/50 mb-2">
+                  <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                    <polyline points="17 8 12 3 7 8"/>
+                    <line x1="12" y1="3" x2="12" y2="15"/>
+                  </svg>
+                </div>
+                <div className="text-base font-serif tracking-widest text-ink-800">拖拽音频到这里，或点击选择</div>
+                <div className="text-xs text-ink-700/50 font-light tracking-wider">支持 MP3/WAV，最大 50MB</div>
               </div>
-              <div className="text-base font-serif tracking-widest text-ink-800">拖拽音频到这里，或点击选择</div>
-              <div className="text-xs text-ink-700/50 font-light tracking-wider">支持 MP3/WAV，最大 50MB</div>
-            </div>
+            ) : (
+              <div className="flex flex-col gap-4 mt-4">
+                <div className="flex flex-col gap-2 p-6 border border-wood-400/30 bg-white/40">
+                  <div className="text-sm font-serif tracking-widest text-ink-800">粘贴音频或视频链接</div>
+                  <div className="text-xs text-ink-700/50 font-light tracking-wider">支持 Bilibili、YouTube、网易云音乐、QQ音乐等平台</div>
+                  <input
+                    type="url"
+                    value={urlValue}
+                    onChange={(e) => setUrlValue(e.target.value)}
+                    placeholder="https://"
+                    className="mt-4 w-full border border-wood-400/30 bg-white px-4 py-3 text-sm font-sans tracking-widest text-ink-800 placeholder-ink-700/30 focus:border-retro-green focus:outline-none focus:ring-1 focus:ring-retro-green transition-all"
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") startUrlJob();
+                    }}
+                  />
+                </div>
+              </div>
+            )}
 
             <input
               ref={fileInputRef}
@@ -340,15 +453,23 @@ export default function UploadClient() {
         <div className="flex flex-col gap-6 text-sm">
           <div className="flex flex-wrap items-center justify-between gap-2 border-t border-wood-300/20 pt-6">
             <div className="text-ink-800">
-              {file ? (
-                <span className="font-serif tracking-widest">{file.name}</span>
+              {uploadMode === "file" ? (
+                file ? (
+                  <span className="font-serif tracking-widest">{file.name}</span>
+                ) : (
+                  <span className="text-ink-700/50 font-light tracking-widest">未选择文件</span>
+                )
               ) : (
-                <span className="text-ink-700/50 font-light tracking-widest">未选择文件</span>
+                urlValue ? (
+                  <span className="font-serif tracking-widest truncate max-w-md inline-block">{urlValue}</span>
+                ) : (
+                  <span className="text-ink-700/50 font-light tracking-widest">未输入链接</span>
+                )
               )}
             </div>
             <div className="text-ink-700/50 font-light tracking-widest">
-              {file ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : ""}
-              {durationSec != null ? ` · ${formatSeconds(durationSec)}` : ""}
+              {uploadMode === "file" && file ? `${(file.size / (1024 * 1024)).toFixed(1)} MB` : ""}
+              {uploadMode === "file" && durationSec != null ? ` · ${formatSeconds(durationSec)}` : ""}
             </div>
           </div>
 
@@ -418,8 +539,14 @@ export default function UploadClient() {
             <button
               type="button"
               className={`inline-flex items-center justify-center bg-retro-green px-12 py-4 text-sm font-serif tracking-[0.2em] text-paper-50 border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-retro-green disabled:opacity-30 disabled:hover:bg-retro-green disabled:hover:text-paper-50 disabled:hover:border-retro-green disabled:cursor-not-allowed group rounded-none ${(status === "uploading" || status === "processing") ? "" : "animate-breathe"}`}
-              onClick={() => void start()}
-              disabled={!file || status === "uploading" || status === "processing"}
+              onClick={() => {
+                if (uploadMode === "file") {
+                  void start();
+                } else {
+                  void startUrlJob();
+                }
+              }}
+              disabled={(uploadMode === "file" && !file) || (uploadMode === "url" && !urlValue) || status === "uploading" || status === "processing"}
             >
               <span className="transition-transform duration-500 group-hover:translate-x-2">
                 [ {(status === "uploading" || status === "processing") ? "正在分析音乐..." : "开始生成谱例"} ]

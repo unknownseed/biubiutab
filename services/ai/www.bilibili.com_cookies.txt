@@ -1,0 +1,32 @@
+# Netscape HTTP Cookie File
+# https://curl.haxx.se/rfc/cookie_spec.html
+# This is a generated file! Do not edit.
+
+.bilibili.com	TRUE	/	FALSE	1811743615	buvid4	027F6674-43F0-B61A-8562-223A7F1B3A3491950-024022616-gK8T/ixMPyb8/k965RVBFQ%3D%3D
+.bilibili.com	TRUE	/	FALSE	1781741450	header_theme_version	OPEN
+.bilibili.com	TRUE	/	FALSE	1781741450	enable_web_push	DISABLE
+.bilibili.com	TRUE	/	FALSE	1781741450	enable_feed_channel	ENABLE
+.bilibili.com	TRUE	/	FALSE	1793028330	CURRENT_QUALITY	0
+.bilibili.com	TRUE	/	FALSE	1808719614	theme-tip-show	SHOWED
+.bilibili.com	TRUE	/	FALSE	1793028946	theme-avatar-tip-show	SHOWED
+.bilibili.com	TRUE	/	FALSE	1811739562	buvid3	E1648837-75E9-EA54-60B7-8905B9AB640761607infoc
+.bilibili.com	TRUE	/	FALSE	1808715562	b_nut	1777179561
+.bilibili.com	TRUE	/	FALSE	1808715562	_uuid	7A438864-F10E5-15F8-A453-BD9B453A224C62343infoc
+.bilibili.com	TRUE	/	FALSE	1811739563	buvid_fp	2e2c96b069b3f6aa96506327463ed1c8
+www.bilibili.com	FALSE	/	FALSE	0	bmg_af_switch	1
+www.bilibili.com	FALSE	/	FALSE	0	bmg_src_def_domain	i2.hdslb.com
+.bilibili.com	TRUE	/	FALSE	1808719572	home_feed_column	4
+.bilibili.com	TRUE	/	FALSE	1808719572	browser_resolution	1288-828
+.bilibili.com	TRUE	/	FALSE	1808715565	lang	zh-Hans
+.bilibili.com	TRUE	/	FALSE	1811739592	rpdid	|(m~)luRkJ|0J'u~~~u~mlmu
+.bilibili.com	TRUE	/	FALSE	1777442704	bili_ticket	eyJhbGciOiJIUzI1NiIsImtpZCI6InMwMyIsInR5cCI6IkpXVCJ9.eyJleHAiOjE3Nzc0NDI3MDQsImlhdCI6MTc3NzE4MzQ0NCwicGx0IjotMX0.CDgAmxv5iXMnHAGmPaXb88_rMAGO8H_sFT9TQkI0GDk
+.bilibili.com	TRUE	/	FALSE	1777442704	bili_ticket_expires	1777442644
+.bilibili.com	TRUE	/	FALSE	1777184113	csrf_state	38d058030e10ac93a6dafa1f740c1de8
+.bilibili.com	TRUE	/	TRUE	1777269971	SESSDATA	d3d9d6d7%2C1792735570%2C51eea%2A41
+.bilibili.com	TRUE	/	TRUE	1777269971	bili_jct	802206e7542dcd579798ff961f00dafa
+.bilibili.com	TRUE	/	FALSE	1777269971	DedeUserID	591086493
+.bilibili.com	TRUE	/	TRUE	1777269971	DedeUserID__ckMd5	8ae7ed09947ab99d
+.bilibili.com	TRUE	/	FALSE	1808719613	CURRENT_FNVAL	2000
+.bilibili.com	TRUE	/	FALSE	0	sid	8mtxwoar
+.bilibili.com	TRUE	/	FALSE	1779775617	bp_t_offset_591086493	1195483599718055936
+.bilibili.com	TRUE	/	FALSE	0	b_lsid	F9A7609F_19DC8660F91

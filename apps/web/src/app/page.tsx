@@ -77,7 +77,7 @@ export default function MarketingPage() {
             </div>
             <div className="mt-8">
               <Link 
-                href="#" 
+                href="/login?mode=signup" 
                 className="inline-flex items-center justify-center px-12 py-5 text-sm tracking-[0.2em] text-paper-50 font-serif bg-wood-500 border border-wood-500 transition-colors duration-500 hover:bg-paper-100 hover:text-wood-500 hover:border-wood-500 rounded-none group"
               >
                 <span className="transition-transform duration-500 group-hover:translate-x-1">
