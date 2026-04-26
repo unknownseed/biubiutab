@@ -71,6 +71,7 @@ _force_utf8_io()
 class CreateJobRequest(BaseModel):
     audio_path: str = Field(min_length=1)
     title: Optional[str] = None
+    storage_provider: Optional[str] = None
 
 
 JobStatus = Literal["queued", "processing", "succeeded", "failed"]
@@ -125,6 +126,7 @@ class JobState:
     title: str
     result: Optional[JobResult]
     preview: Optional[dict]
+    storage_provider: Optional[str] = None
 
 
 def _clean_title(title: str) -> str:
@@ -220,8 +222,80 @@ def _cleanup_expired(storage_root: Path) -> None:
                 continue
 
 
+from supabase import create_client, Client
+
+SUPABASE_URL = os.environ.get("SUPABASE_URL", "")
+SUPABASE_KEY = os.environ.get("SUPABASE_KEY", "")
+supabase: Optional[Client] = create_client(SUPABASE_URL, SUPABASE_KEY) if SUPABASE_URL and SUPABASE_KEY else None
+
 app = FastAPI(title="Biubiutab - AI Service")
 _jobs: dict[str, JobState] = {}
+
+def _jobstate_to_db_dict(job: JobState) -> dict:
+    return {
+        "id": job.id,
+        "status": job.status,
+        "progress": job.progress,
+        "message": job.message,
+        "error": job.error,
+        "audio_path": str(job.audio_path),
+        "title": job.title,
+        "result": job.result.model_dump() if job.result else None,
+        "preview": job.preview,
+        # Note: we can optionally store storage_provider in the DB, 
+        # but since we didn't add it to the SQL schema earlier, we will just use it in memory for now.
+        # Alternatively we can add it to the 'preview' dict to avoid altering the SQL table again.
+    }
+
+def _db_dict_to_jobstate(d: dict) -> JobState:
+    # try to extract storage_provider if we stored it in preview
+    provider = None
+    if d.get("preview") and isinstance(d["preview"], dict):
+        provider = d["preview"].get("storage_provider")
+        
+    return JobState(
+        id=d["id"],
+        status=d["status"],
+        progress=d["progress"],
+        message=d.get("message"),
+        error=d.get("error"),
+        audio_path=Path(d["audio_path"]),
+        title=d["title"],
+        result=JobResult(**d["result"]) if d.get("result") else None,
+        preview=d.get("preview"),
+        storage_provider=provider
+    )
+
+async def _save_job_state(job: JobState):
+    _jobs[job.id] = job  # Keep in-memory cache as a fast local fallback
+    if not supabase:
+        return
+    data = _jobstate_to_db_dict(job)
+    def _do_update():
+        try:
+            supabase.table("ai_jobs").upsert(data).execute()
+        except Exception as e:
+            print(f"Failed to upsert job {job.id} to Supabase:", e)
+    await asyncio.to_thread(_do_update)
+
+async def _get_job_state(job_id: str) -> Optional[JobState]:
+    if not supabase:
+        return _jobs.get(job_id)
+    def _do_get():
+        try:
+            res = supabase.table("ai_jobs").select("*").eq("id", job_id).execute()
+            if res.data and len(res.data) > 0:
+                return _db_dict_to_jobstate(res.data[0])
+        except Exception as e:
+            print(f"Failed to get job {job_id} from Supabase:", e)
+        return None
+    
+    db_job = await asyncio.to_thread(_do_get)
+    if db_job:
+        _jobs[job_id] = db_job
+        return db_job
+    return _jobs.get(job_id)
+
 
 
 @app.get("/health")
@@ -241,7 +315,7 @@ def _job_to_response(job: JobState) -> JobResponse:
 
 
 async def _run_job(job_id: str) -> None:
-    job = _jobs.get(job_id)
+    job = await _get_job_state(job_id)
     if not job:
         return
 
@@ -249,6 +323,7 @@ async def _run_job(job_id: str) -> None:
     job.progress = 1
     job.message = "正在感受这首歌曲的呼吸..."
     job.preview = {"step": "loading"}
+    await _save_job_state(job)
 
     try:
         title = _clean_title(job.title or job.audio_path.name)
@@ -264,17 +339,44 @@ async def _run_job(job_id: str) -> None:
 
         _cleanup_expired(storage_root)
 
-        # Copy original audio to storage/uploads/{job_id}.ext for retention/debug.
         ext = job.audio_path.suffix.lower() or ".wav"
         upload_copy = uploads_dir / f"{job.id}{ext}"
-        try:
-            shutil.copy2(job.audio_path, upload_copy)
-        except Exception:
-            upload_copy = job.audio_path
+        
+        # If the file is in Cloudflare R2, download it first
+        if job.storage_provider == "r2":
+            job.message = "正在从云端下载音轨..."
+            await _save_job_state(job)
+            
+            import boto3
+            from botocore.config import Config
+            s3_client = boto3.client(
+                's3',
+                endpoint_url=f"https://{os.environ.get('CLOUDFLARE_ACCOUNT_ID')}.r2.cloudflarestorage.com",
+                aws_access_key_id=os.environ.get('CLOUDFLARE_ACCESS_KEY_ID'),
+                aws_secret_access_key=os.environ.get('CLOUDFLARE_SECRET_ACCESS_KEY'),
+                config=Config(signature_version='s3v4'),
+                region_name='auto'
+            )
+            bucket_name = os.environ.get('CLOUDFLARE_BUCKET_NAME') or "biubiutab-uploads"
+            # job.audio_path is actually the S3 object key (e.g. 'uploads/xxx.mp3')
+            # 使用 as_posix() 确保在 Windows 环境下也能生成正确的 / 路径
+            r2_key = job.audio_path.as_posix()
+            
+            def _download_r2():
+                s3_client.download_file(bucket_name, r2_key, str(upload_copy))
+            await asyncio.to_thread(_download_r2)
+            
+        else:
+            # Copy original local audio to storage/uploads/{job_id}.ext
+            try:
+                shutil.copy2(job.audio_path, upload_copy)
+            except Exception:
+                upload_copy = job.audio_path
 
         job.progress = 10
         job.message = "正在小心翼翼地剥离人声的轨迹..."
         job.preview = {"step": "demucs"}
+        await _save_job_state(job)
 
         t0 = time.time()
         stems_tmp: dict[str, str] = {}
@@ -296,6 +398,7 @@ async def _run_job(job_id: str) -> None:
             job.progress = 25
             job.message = "正在寻找和弦的色彩与心跳的节拍..."
             job.preview = {"step": "hpss"}
+            await _save_job_state(job)
 
             # Choose accompaniment stem for HPSS and chord detection
             # 6-stems mode provides 'accompaniment' (bass+guitar+piano+other)
@@ -328,6 +431,7 @@ async def _run_job(job_id: str) -> None:
             job.progress = 35
             job.message = "正在丈量音符的间距与调性..."
             job.preview = {**(job.preview or {}), "step": "analysis"}
+            await _save_job_state(job)
 
             try:
                 analysis = await asyncio.to_thread(
@@ -368,6 +472,7 @@ async def _run_job(job_id: str) -> None:
             job.progress = 60
             job.message = "正在倾听歌词中藏着的故事..."
             job.preview = {**(job.preview or {}), "step": "lyrics"}
+            await _save_job_state(job)
 
             vocals_path = stems_tmp.get("vocals")
             if vocals_path:
@@ -388,6 +493,7 @@ async def _run_job(job_id: str) -> None:
             job.progress = 70
             job.message = "正在捕捉风里的主旋律..."
             job.preview = {**(job.preview or {}), "step": "melody"}
+            await _save_job_state(job)
 
             if vocals_path:
                 try:
@@ -487,9 +593,11 @@ async def _run_job(job_id: str) -> None:
             job.progress = 65
             job.message = "正在梳理歌曲的起承转合..."
             job.preview = {**(job.preview or {}), "step": "sections"}
+            await _save_job_state(job)
 
         job.progress = 65
         job.message = "正在梳理歌曲的起承转合..."
+        await _save_job_state(job)
 
         sections = detect_sections(analysis.bar_chords)
 
@@ -506,6 +614,7 @@ async def _run_job(job_id: str) -> None:
 
         job.progress = 78
         job.message = "正在为前奏编写指尖的刻痕..."
+        await _save_job_state(job)
 
         # Keep existing melody extraction for intro/tab heuristics & as fallback.
         melody_mix = await asyncio.to_thread(detect_melody, str(upload_copy))
@@ -652,18 +761,23 @@ async def _run_job(job_id: str) -> None:
         job.progress = 100
         job.message = "一首完整的吉他谱已经凝固。"
         job.preview = {**(job.preview or {}), "step": "done"}
+        await _save_job_state(job)
     except Exception as e:
         job.status = "failed"
         job.error = str(e)
         job.message = "抱歉，琴弦在这里断了。"
         job.preview = {**(job.preview or {}), "step": "failed"}
+        await _save_job_state(job)
 
 
 @app.post("/jobs", response_model=JobResponse)
 async def create_job(req: CreateJobRequest) -> JobResponse:
     audio_path = Path(req.audio_path)
-    if not audio_path.exists() or not audio_path.is_file():
-        raise HTTPException(status_code=400, detail="audio_path not found")
+    
+    # 如果是云端存储（如 r2），跳过本地存在性检查
+    if req.storage_provider != "r2":
+        if not audio_path.exists() or not audio_path.is_file():
+            raise HTTPException(status_code=400, detail="audio_path not found")
 
     storage = _storage_dir()
     storage.mkdir(parents=True, exist_ok=True)
@@ -679,16 +793,17 @@ async def create_job(req: CreateJobRequest) -> JobResponse:
         audio_path=audio_path,
         title=title,
         result=None,
-        preview={"step": "queued"},
+        preview={"step": "queued", "storage_provider": req.storage_provider},
+        storage_provider=req.storage_provider,
     )
-    _jobs[job_id] = state
+    await _save_job_state(state)
     asyncio.create_task(_run_job(job_id))
     return _job_to_response(state)
 
 
 @app.get("/jobs/{job_id}", response_model=JobResponse)
 async def get_job(job_id: str) -> JobResponse:
-    job = _jobs.get(job_id)
+    job = await _get_job_state(job_id)
     if not job:
         raise HTTPException(status_code=404, detail="job not found")
     return _job_to_response(job)
@@ -696,7 +811,7 @@ async def get_job(job_id: str) -> JobResponse:
 
 @app.get("/jobs/{job_id}/result", response_model=JobResult)
 async def get_job_result(job_id: str) -> JobResult:
-    job = _jobs.get(job_id)
+    job = await _get_job_state(job_id)
     if not job:
         raise HTTPException(status_code=404, detail="job not found")
     if job.status != "succeeded" or not job.result:
@@ -706,7 +821,7 @@ async def get_job_result(job_id: str) -> JobResult:
 
 @app.get("/jobs/{job_id}/result.gp5")
 async def get_job_result_gp5(job_id: str, level: Optional[int] = 4):
-    job = _jobs.get(job_id)
+    job = await _get_job_state(job_id)
     if not job:
         raise HTTPException(status_code=404, detail="job not found")
     if job.status != "succeeded":

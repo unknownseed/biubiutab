@@ -5,10 +5,11 @@ import { useRouter } from "next/navigation";
 import { useToast } from "./toast-provider";
 import TimelineViewer, { type VisualizationPayload } from "./timeline-viewer";
 
-type UploadResponse = {
+export type UploadResponse = {
   storedFilename: string;
   originalFilename: string;
   size: number;
+  publicUrl?: string;
 };
 
 type JobResponse = {
@@ -183,29 +184,52 @@ export default function UploadClient() {
   }
 
   async function uploadWithProgress(selected: File): Promise<UploadResponse> {
-    return await new Promise<UploadResponse>((resolve, reject) => {
-      const form = new FormData();
-      form.append("file", selected);
+    return await new Promise<UploadResponse>(async (resolve, reject) => {
+      try {
+        // 1. 获取 Cloudflare R2 的预签名上传 URL
+        const res = await fetch("/api/upload-url", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ 
+            filename: selected.name, 
+            contentType: selected.type || "application/octet-stream" 
+          })
+        });
+        
+        if (!res.ok) {
+          throw new Error("无法获取上传地址");
+        }
+        
+        const { url, key, publicUrl } = await res.json();
 
-      const xhr = new XMLHttpRequest();
-      xhr.open("POST", "/api/uploads");
-      xhr.upload.onprogress = (event) => {
-        if (!event.lengthComputable) return;
-        setUploadProgress(Math.round((event.loaded / event.total) * 100));
-      };
-      xhr.onload = () => {
-        if (xhr.status < 200 || xhr.status >= 300) {
-          reject(new Error(xhr.responseText || `上传失败: ${xhr.status}`));
-          return;
-        }
-        try {
-          resolve(JSON.parse(xhr.responseText) as UploadResponse);
-        } catch {
-          reject(new Error("上传返回解析失败"));
-        }
-      };
-      xhr.onerror = () => reject(new Error("网络错误"));
-      xhr.send(form);
+        // 2. 使用 XHR 直传文件到 R2 以保留上传进度条
+        const xhr = new XMLHttpRequest();
+        xhr.open("PUT", url, true);
+        xhr.setRequestHeader("Content-Type", selected.type || "application/octet-stream");
+
+        xhr.upload.onprogress = (event) => {
+          if (!event.lengthComputable) return;
+          setUploadProgress(Math.round((event.loaded / event.total) * 100));
+        };
+        
+        xhr.onload = () => {
+          if (xhr.status < 200 || xhr.status >= 300) {
+            reject(new Error(`上传失败: ${xhr.status} ${xhr.responseText}`));
+            return;
+          }
+          resolve({
+            storedFilename: key, // 返回给后端的 R2 Object Key
+            originalFilename: selected.name,
+            size: selected.size,
+            publicUrl: publicUrl // 传递公网 URL 给外层预览
+          });
+        };
+        
+        xhr.onerror = () => reject(new Error("网络错误，无法连接到 R2"));
+        xhr.send(selected);
+      } catch (e) {
+        reject(e);
+      }
     });
   }
 
@@ -226,7 +250,12 @@ export default function UploadClient() {
       const upload = await uploadWithProgress(file);
       toast.push({ title: "上传成功", description: upload.originalFilename, variant: "success" });
       setStatus("processing");
-      setAudioSrc(`/api/uploads/${encodeURIComponent(upload.storedFilename)}`);
+      
+      // 使用预签名路由返回的公网地址进行播放
+      if (upload.publicUrl) {
+        setAudioSrc(upload.publicUrl);
+      }
+
       const created = await postJson<JobResponse>("/api/jobs", {
         storedFilename: upload.storedFilename,
         title: upload.originalFilename,

@@ -11,7 +11,10 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.1037.0",
+    "@aws-sdk/s3-request-presigner": "^3.1037.0",
     "@coderline/alphatab": "^1.8.2",
+    "@supabase/supabase-js": "^2.104.1",
     "@tombatossals/chords-db": "^0.5.1",
     "@tombatossals/react-chords": "^0.2.10",
     "@tonaljs/tonal": "^4.10.0",
@@ -19,7 +22,8 @@
     "next": "16.2.3",
     "react": "19.2.4",
     "react-dom": "19.2.4",
-    "tone": "^15.1.22"
+    "tone": "^15.1.22",
+    "uuid": "^14.0.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
