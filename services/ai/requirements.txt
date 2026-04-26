@@ -17,4 +17,4 @@ PyGuitarPro==0.10.1
 av==15.1.0
 openai>=1.0.0
 supabase>=2.4.0
-yt-dlp
+yt-dlp[default]

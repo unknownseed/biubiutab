@@ -396,50 +396,79 @@ async def _run_job(job_id: str) -> None:
             await asyncio.to_thread(_download_r2)
             
         elif job.storage_provider == "url":
-            # YouTube bypass logic is no longer needed as we switched to Cobalt API
             job.message = "正在从网络解析并下载音轨..."
             await _save_job_state(job)
             
-            def _download_cobalt():
-                import httpx
-                target_path = str(uploads_dir / f"{job.id}.mp3")
+            def _download_yt():
+                # 我们使用预编译的最新的 yt-dlp 二进制文件来绕过 Python 3.9 的限制
+                import subprocess
+                
+                target_path = str(uploads_dir / f"{job.id}")
                 url_str = job.audio_path if isinstance(job.audio_path, str) else str(job.audio_path)
                 
-                api_url = "https://api.cobalt.tools/"
-                headers = {
-                    "Accept": "application/json",
-                    "Content-Type": "application/json",
-                    "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
-                }
-                payload = {
-                    "url": url_str,
-                    "downloadMode": "audio",
-                    "audioFormat": "mp3"
-                }
+                # 动态判断当前操作系统，决定使用哪个 yt-dlp 二进制文件
+                import sys
+                import platform
                 
-                with httpx.Client(timeout=60.0, follow_redirects=True) as client:
-                    response = client.post(api_url, headers=headers, json=payload)
-                    response.raise_for_status()
-                    data = response.json()
+                # 如果是 macOS，使用我们刚刚下载的 yt-dlp (macOS 版)
+                if sys.platform == "darwin":
+                    yt_dlp_bin = _repo_root() / "services" / "ai" / "yt-dlp"
+                # 如果是 Linux (例如部署在 Render, AWS 等服务器上)
+                else:
+                    # 部署时需要在服务器上安装 yt-dlp linux 二进制文件，或者直接使用系统安装的 yt-dlp 命令
+                    yt_dlp_bin = "yt-dlp" 
+                
+                cmd = [
+                    str(yt_dlp_bin),
+                    "-f", "bestaudio/best",
+                    "-o", f"{target_path}.%(ext)s",
+                    "-x", "--audio-format", "mp3", "--audio-quality", "192",
+                    "--quiet", "--no-warnings",
+                    "--print", "%(title)s",
+                    "--no-simulate"
+                ]
+                
+                # 部署环境没有本地 Chrome 浏览器！
+                # 所以我们不能用 --cookies-from-browser chrome
+                # 我们改为：如果服务器上有 cookies.txt 文件，就使用它
+                cookies_file = _repo_root() / "services" / "ai" / "cookies.txt"
+                if cookies_file.exists():
+                    cmd.extend(["--cookies", str(cookies_file)])
+                elif sys.platform == "darwin":
+                    # 只有在本地 macOS 开发时，如果没有 cookies.txt，才尝试读取本地 Chrome
+                    cmd.extend(["--cookies-from-browser", "chrome"])
+                
+                # 开启外部 JS 解析支持，解决 YouTube 签名报错
+                cmd.extend([
+                    "--js-runtimes", "node",
+                    "--remote-components", "ejs:github"
+                ])
+                
+                if "bilibili.com" in url_str or "b23.tv" in url_str:
+                    cmd.extend([
+                        "--add-header",
+                        "User-Agent:Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36"
+                    ])
+                elif "youtube.com" in url_str or "youtu.be" in url_str:
+                    cmd.extend([
+                        "--extractor-args",
+                        "youtube:player_client=web,ios"
+                    ])
                     
-                    if data.get("status") == "error":
-                        raise Exception(f"Cobalt 解析失败: {data}")
-                        
-                    direct_url = data.get("url")
-                    if not direct_url:
-                        raise Exception(f"未能解析到下载链接: {data}")
-                        
-                    # 下载音频文件
-                    with client.stream("GET", direct_url, headers=headers) as stream_resp:
-                        stream_resp.raise_for_status()
-                        with open(target_path, "wb") as f:
-                            for chunk in stream_resp.iter_bytes(chunk_size=8192):
-                                if chunk:
-                                    f.write(chunk)
-                return job.title # Cobalt 不直接返回标题，我们保留原标题
-
-            await asyncio.to_thread(_download_cobalt)
+                cmd.append(url_str)
+                
+                try:
+                    result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+                    lines = [line.strip() for line in result.stdout.split('\n') if line.strip()]
+                    return lines[-1] if lines else job.title
+                except subprocess.CalledProcessError as e:
+                    print(f"yt-dlp binary failed: {e.stderr}")
+                    raise Exception(f"Failed to download audio: {e.stderr}")
             
+            real_title = await asyncio.to_thread(_download_yt)
+            if real_title:
+                job.title = _clean_title(real_title)
+                
             # The postprocessor changes the extension to .mp3
             upload_copy = uploads_dir / f"{job.id}.mp3"
             
@@ -850,21 +879,35 @@ async def _run_job(job_id: str) -> None:
             await _save_job_state(job)
             
             def _upload_all_r2():
-                # Upload stems
-                if stems_dir.exists():
-                    for f in stems_dir.iterdir():
-                        if f.is_file():
-                            r2_key = f"stems/{job.id}/{f.name}"
-                            _upload_r2_artifact(f, r2_key, "audio/wav")
-                # Upload results
+                s3_client = _get_s3_client()
+                if not s3_client:
+                    return
+                    
+                # 1. 上传所有 .gp5 和 output.json
                 if results_dir.exists():
-                    for f in results_dir.iterdir():
-                        if f.is_file():
-                            r2_key = f"results/{job.id}/{f.name}"
-                            ctype = "application/json" if f.suffix == ".json" else "application/octet-stream"
-                            if f.suffix == ".lrc" or f.suffix == ".alphatex":
-                                ctype = "text/plain"
-                            _upload_r2_artifact(f, r2_key, ctype)
+                    for f in results_dir.glob("*"):
+                        if f.is_file() and (f.suffix == ".gp5" or f.name == "output.json"):
+                            content_type = "application/octet-stream" if f.suffix == ".gp5" else "application/json"
+                            _upload_r2_artifact(f, f"results/{job.id}/{f.name}", content_type)
+                
+                # 2. 仅上传前端播放需要的 no_vocals，并将其转换为 mp3 以节省 90% 的空间
+                if stems_dir.exists():
+                    no_vocals_wav = stems_dir / "no_vocals.wav"
+                    if no_vocals_wav.exists():
+                        no_vocals_mp3 = stems_dir / "no_vocals.mp3"
+                        # 使用 ffmpeg 将 wav 压缩为 192kbps mp3
+                        os.system(f'ffmpeg -y -i "{no_vocals_wav}" -b:a 192k "{no_vocals_mp3}" -loglevel error')
+                        if no_vocals_mp3.exists():
+                            _upload_r2_artifact(no_vocals_mp3, f"stems/{job.id}/no_vocals.mp3", "audio/mpeg")
+                            
+                # 3. 原声音频 (audio_path) 如果在本地，也要确保上传 (在前面 url 处理时已经上传过了，这里处理 file 上传的情况)
+                # 如果是 r2，说明已经在云端了，不需要重复上传
+                if job.storage_provider != "r2":
+                    orig_ext = job.audio_path.suffix.lower() if isinstance(job.audio_path, Path) else ".mp3"
+                    orig_path = uploads_dir / f"{job.id}{orig_ext}"
+                    if orig_path.exists():
+                        # 为了极致压缩，如果是 wav 也可以转 mp3，但这里假设用户上传的已经是 mp3/m4a
+                        _upload_r2_artifact(orig_path, f"uploads/{job.id}{orig_ext}", "audio/mpeg")
                             
             await asyncio.to_thread(_upload_all_r2)
 

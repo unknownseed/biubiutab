@@ -29,9 +29,9 @@ export async function GET(req: Request, ctx: { params: Promise<{ jobId: string }
       const audioPath = dbJob.audio_path; // 例如: uploads/xxx.mp3
       return Response.redirect(`${publicDomain}/${audioPath}`);
     } 
-    // 去人声伴奏
+    // 2. 如果是无伴奏
     else if (type === "no_vocals") {
-      const stemPath = `stems/${jobId}/no_vocals.wav`;
+      const stemPath = `stems/${jobId}/no_vocals.mp3`;
       return Response.redirect(`${publicDomain}/${stemPath}`);
     }
     return new Response("invalid type", { status: 400 });

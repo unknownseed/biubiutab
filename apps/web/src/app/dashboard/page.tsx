@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
+import { DeleteButton } from './DeleteButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -12,11 +13,12 @@ export default async function DashboardPage() {
     redirect('/login')
   }
 
-  // 获取用户生成的曲目，按创建时间降序
+  // 获取用户已完成的曲目，按创建时间降序
   const { data: jobs, error } = await supabase
     .from('ai_jobs')
     .select('id, title, status, progress, created_at')
     .eq('user_id', user.id)
+    .eq('status', 'succeeded')
     .order('created_at', { ascending: false })
 
   return (
@@ -60,22 +62,14 @@ export default async function DashboardPage() {
                     {job.title || '未命名曲目'}
                   </h3>
                   <div className="mt-4 flex items-center justify-between text-xs tracking-widest font-light">
-                    <span className={
-                      job.status === 'succeeded' ? 'text-wood-600' :
-                      job.status === 'failed' ? 'text-red-500' :
-                      'text-retro-green'
-                    }>
-                      {job.status === 'succeeded' ? '已完成' :
-                       job.status === 'failed' ? '生成失败' :
-                       `处理中 (${job.progress}%)`}
-                    </span>
+                    <span className="text-wood-600">已完成</span>
                     <span className="text-ink-700/40">
                       {new Date(job.created_at).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
                 <div className="mt-6 border-t border-wood-400/10 pt-4 flex justify-between items-center">
-                  {job.status === 'succeeded' ? (
+                  <div className="flex items-center gap-2">
                     <Link 
                       href={`/editor/${job.id}`}
                       className="text-sm font-sans tracking-widest text-retro-green group-hover:text-wood-500 transition-colors inline-flex items-center gap-2"
@@ -83,11 +77,9 @@ export default async function DashboardPage() {
                       <span>跟弹模式</span>
                       <span>→</span>
                     </Link>
-                  ) : job.status === 'failed' ? (
-                    <span className="text-sm text-ink-700/30 tracking-widest">不可用</span>
-                  ) : (
-                    <span className="text-sm text-retro-green/50 tracking-widest animate-pulse">正在生成...</span>
-                  )}
+                  </div>
+                  
+                  <DeleteButton jobId={job.id} />
                 </div>
               </div>
             ))}
