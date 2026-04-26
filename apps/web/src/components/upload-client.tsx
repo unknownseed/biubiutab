@@ -18,6 +18,7 @@ type JobResponse = {
   id: string;
   status: "queued" | "processing" | "succeeded" | "failed";
   progress: number;
+  title?: string | null;
   message?: string | null;
   error?: string | null;
   preview?: unknown;

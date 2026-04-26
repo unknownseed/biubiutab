@@ -80,6 +80,7 @@ class JobResponse(BaseModel):
     id: str
     status: JobStatus
     progress: int = Field(ge=0, le=100)
+    title: Optional[str] = None
     message: Optional[str] = None
     error: Optional[str] = None
     preview: Optional[dict] = None
@@ -344,6 +345,7 @@ def _job_to_response(job: JobState) -> JobResponse:
         id=job.id,
         status=job.status,
         progress=job.progress,
+        title=job.title,
         message=job.message,
         error=job.error,
         preview=job.preview,
@@ -468,6 +470,7 @@ async def _run_job(job_id: str) -> None:
             real_title = await asyncio.to_thread(_download_yt)
             if real_title:
                 job.title = _clean_title(real_title)
+                title = job.title  # 更新局部变量，供后续分析及吉他谱生成使用
                 
             # The postprocessor changes the extension to .mp3
             upload_copy = uploads_dir / f"{job.id}.mp3"
@@ -592,7 +595,15 @@ async def _run_job(job_id: str) -> None:
 
             vocals_path = stems_tmp.get("vocals")
             if vocals_path:
-                lyrics = await asyncio.to_thread(transcribe_lyrics, vocals_path, "zh", job.title)
+                # 针对在线音源 (URL)，由于通常包含不可预期的前奏/讲话，或属于翻唱/Live版本
+                # 强行搜索标准录音室歌词并强制对齐，会导致时间轴和歌词内容错乱。
+                # 此时我们将 search_title 设为 None，仅使用 Whisper 转写 + LLM 上下文错字纠错。
+                orig_provider = job.preview.get("storage_provider") if isinstance(job.preview, dict) else None
+                search_title = job.title if orig_provider != "url" else None
+                
+                # 如果是 url 且有 piped 提取到的官方字幕，我们可以直接使用，但目前还是走 Whisper 
+                # (Whisper 识别准确率在纯人声轨道上极高，且自带时间戳对齐，比网上的非对齐歌词更好)
+                lyrics = await asyncio.to_thread(transcribe_lyrics, vocals_path, "zh", search_title)
             else:
                 lyrics = None
 
