@@ -270,7 +270,7 @@ export function TeachingSongForm({ initialData, songId }: { initialData: any, so
           disabled={isSubmitting}
           className="bg-primary text-ink-950 font-medium px-10 py-3 shadow-sm hover:shadow-md hover:-translate-y-0.5 transition-all duration-300 ease-out tracking-widest text-sm disabled:opacity-50 disabled:hover:translate-y-0 disabled:hover:shadow-sm"
         >
-          {isSubmitting ? '保存中...' : '保存配置'}
+          {isSubmitting ? '保存中...' : '保存配置 (将刷新当前页)'}
         </button>
       </div>
     </form>

@@ -44,9 +44,12 @@ export async function POST(
     if (!fs.existsSync(songsDir)) {
       fs.mkdirSync(songsDir, { recursive: true });
     }
+    
+    // 把 manifest 写入文件时，确保把最新的 slug 也合并进去
+    const manifestToWrite = { ...song.manifest, slug };
     fs.writeFileSync(
       path.join(songsDir, 'manifest.json'), 
-      JSON.stringify(song.manifest, null, 2)
+      JSON.stringify(manifestToWrite, null, 2)
     );
 
     // Execute Python script

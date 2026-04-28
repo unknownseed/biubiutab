@@ -103,7 +103,14 @@ async function postJson<T>(url: string, body: unknown): Promise<T> {
   });
   if (!res.ok) {
     const text = await res.text().catch(() => "");
-    throw new Error(friendlyErrorMessage(text || `Request failed: ${res.status}`));
+    let errorMsg = text || `Request failed: ${res.status}`;
+    try {
+      const parsed = JSON.parse(text);
+      if (parsed.message) errorMsg = parsed.message;
+    } catch(e) {
+      // Ignore parsing errors
+    }
+    throw new Error(friendlyErrorMessage(errorMsg));
   }
   return (await res.json()) as T;
 }

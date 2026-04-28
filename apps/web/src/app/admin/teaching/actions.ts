@@ -23,6 +23,10 @@ export async function saveTeachingSongAction(songId: string, formData: FormData)
   const videoFile = formData.get('videoFile') as File | null
   const audioFile = formData.get('audioFile') as File | null
 
+  if (!title || !slug) {
+    throw new Error('标题和 Slug 不能为空')
+  }
+
   let manifest: any = null
   try {
     if (manifestRaw) {
@@ -98,13 +102,19 @@ export async function saveTeachingSongAction(songId: string, formData: FormData)
   }
 
   if (isNew) {
-    const { error } = await supabase
+    const { error, data } = await supabase
       .from('teaching_songs')
       .insert([payload])
+      .select('id')
+      .single()
 
     if (error) {
       throw new Error('创建失败: ' + error.message)
     }
+    
+    revalidatePath('/admin/teaching')
+    // 新增成功后重定向到编辑页，防止直接重定向到列表页导致的上下文丢失
+    return redirect(`/admin/teaching/${data.id}`)
   } else {
     const { error } = await supabase
       .from('teaching_songs')
@@ -115,10 +125,11 @@ export async function saveTeachingSongAction(songId: string, formData: FormData)
     if (error) {
       throw new Error('更新失败: ' + error.message)
     }
+    
+    revalidatePath('/admin/teaching')
+    // 强制它停留在编辑页，不要跳走，因为要点“生成”按钮
+    return redirect(`/admin/teaching/${songId}`)
   }
-
-  revalidatePath('/admin/teaching')
-  redirect('/admin/teaching')
 }
 
 export async function deleteTeachingSongAction(songId: string) {
