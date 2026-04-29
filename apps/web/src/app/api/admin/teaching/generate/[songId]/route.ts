@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
-import { exec } from 'child_process';
+import { execFile } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';
 
-const execAsync = promisify(exec);
+const execFileAsync = promisify(execFile);
 
 // In Phase 4, this spawns a Python process to parse the GP5 file
 export async function POST(
@@ -54,7 +54,12 @@ export async function POST(
 
     // Execute Python script
     try {
-      const { stdout, stderr } = await execAsync(`python3 ${pythonScriptPath} ${slug}`);
+      const repoRoot = path.resolve(process.cwd(), '../..');
+      const { stdout, stderr } = await execFileAsync(
+        'python3',
+        [pythonScriptPath, slug],
+        { cwd: repoRoot }
+      );
       console.log('Python Output:', stdout);
       if (stderr) console.error('Python Error:', stderr);
     } catch (pyError: any) {

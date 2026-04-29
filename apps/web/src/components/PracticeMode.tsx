@@ -61,9 +61,10 @@ export type PracticeModeProps = {
   jobId?: string;
   level?: number;
   onLevelChange?: (level: number) => void;
+  initialLoopBars?: number[];
 };
 
-export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, level = 4, onLevelChange }: PracticeModeProps) {
+export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, level = 4, onLevelChange, initialLoopBars }: PracticeModeProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const alphaTabApiRef = useRef<any>(null);
   const guitarSamplerRef = useRef<GuitarSampler | null>(null);
@@ -110,8 +111,12 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
   const [countdown, setCountdown] = useState<number | null>(null);
   const countdownTimerRef = useRef<NodeJS.Timeout | null>(null);
 
-  const [tracks, setTracks] = useState<{name: string, index: number}[]>([]);
+  const [tracks, setTracks] = useState<{name: string, index: number, isSolo: boolean}[]>([]);
   const [activeTrackIndex, setActiveTrackIndex] = useState(0);
+  const initialLoopBarsRef = useRef<number[] | undefined>(initialLoopBars);
+  useEffect(() => {
+    initialLoopBarsRef.current = initialLoopBars;
+  }, [initialLoopBars]);
 
   // Audio source selection: 'midi', 'original', 'no_vocals'
   const [audioSource, setAudioSource] = useState<"midi" | "original" | "no_vocals">("midi");
@@ -176,6 +181,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
   }, [loopA, loopB]);
 
   const destroyEngine = () => {
+    isMountedRef.current = false;
     if (USE_TONE_JS) guitarSamplerRef.current?.stopAll();
     if (countdownTimerRef.current) {
       clearInterval(countdownTimerRef.current);
@@ -189,18 +195,24 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
-    if (alphaTabApiRef.current) {
-      try {
-        alphaTabApiRef.current.destroy();
-      } catch {}
-      alphaTabApiRef.current = null;
+    const api = alphaTabApiRef.current;
+    alphaTabApiRef.current = null;
+    if (api) {
+      const doDestroy = () => {
+        try {
+          api.destroy();
+        } catch {}
+      };
+      const ric = (window as any).requestIdleCallback as undefined | ((cb: () => void, opts?: { timeout?: number }) => void);
+      if (typeof ric === "function") {
+        ric(doDestroy, { timeout: 1000 });
+      } else {
+        setTimeout(doDestroy, 0);
+      }
     }
     if (containerRef.current) containerRef.current.innerHTML = "";
     initPromiseRef.current = null;
     pendingPlayRef.current = false;
-    setIsPlaying(false);
-    setIsPlayerReady(false);
-    setIsInitializing(false);
   };
 
   const ensureEngine = (autoPlay: boolean) => {
@@ -232,7 +244,6 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
           scriptFile,
           useWorkers: false,
           logLevel: mod.LogLevel.Info,
-          tracks: [0],
         },
         player: {
           enablePlayer: true,
@@ -291,9 +302,6 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       }
 
       api.scoreLoaded?.on?.((score: any) => {
-        const scoreTracks = score.tracks.map((t: any, i: number) => ({ name: t.name || `Track ${i + 1}`, index: i }));
-        setTracks(scoreTracks);
-        
         // Only reset to 0 if we aren't already on 0, to avoid triggering the useEffect
         if (activeTrackIndexRef.current !== 0) {
           setActiveTrackIndex(0);
@@ -304,6 +312,10 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
         // default to rendering all of them if the load() track filter is ignored.
         if (score.tracks && score.tracks.length > 0) {
           api.renderTracks([score.tracks[0]]);
+          try {
+            api.changeTrackSolo(score.tracks, false);
+            api.changeTrackSolo([score.tracks[0]], true);
+          } catch {}
         }
         
         score.tracks.forEach((t: any) => {
@@ -311,6 +323,13 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
             t.playbackInfo.program = 25; // 25 = Steel string guitar in GM
           }
         });
+
+        const scoreTracks = score.tracks.map((t: any, i: number) => ({
+          name: t.name || `Track ${i + 1}`,
+          index: i,
+          isSolo: !!t.playbackInfo?.isSolo,
+        }));
+        setTracks(scoreTracks);
       });
 
       api.playerStateChanged?.on?.((args: any) => {
@@ -328,6 +347,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       api.playerReady?.on?.(() => {
         setIsPlayerReady(true);
         setIsInitializing(false);
+        applyInitialLoopBars();
         if (pendingPlayRef.current) {
           pendingPlayRef.current = false;
           try {
@@ -341,6 +361,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       });
 
       api.postRenderFinished?.on?.(() => {
+        applyInitialLoopBars();
         // When track is switched or rendering completes, ensure cursor and scroll sync
         if (api.playerState !== 1) {
           if ((api as any)._forceUpdateCursor) {
@@ -524,21 +545,9 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
         let ok = false;
         loadedGp5DataRef.current = gp5Data;
         try {
-          ok = api.load(gp5Data, [0]);
+          ok = api.load(gp5Data);
         } catch {
           ok = false;
-        }
-        if (!ok) {
-          for (let i = 1; i <= 4; i++) {
-            try {
-              if (api.load(gp5Data, [i])) {
-                ok = true;
-                break;
-              }
-            } catch {
-              continue;
-            }
-          }
         }
         if (!ok) {
           throw new Error("谱例加载失败");
@@ -578,21 +587,9 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       
       let ok = false;
       try {
-        ok = api.load(gp5Data, [0]);
+        ok = api.load(gp5Data);
       } catch {
         ok = false;
-      }
-      if (!ok) {
-        for (let i = 1; i <= 4; i++) {
-          try {
-            if (api.load(gp5Data, [i])) {
-              ok = true;
-              break;
-            }
-          } catch {
-            continue;
-          }
-        }
       }
       if (!ok) {
         setPlayerError("谱例加载失败");
@@ -847,17 +844,72 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
     activeTrackIndexRef.current = activeTrackIndex;
   }, [activeTrackIndex]);
 
+  const applyInitialLoopBars = () => {
+    const api = alphaTabApiRef.current;
+    if (!api || !api.score) return;
+    const bars = initialLoopBarsRef.current;
+    if (!bars || bars.length < 2) return;
+    if (loopARef.current !== null || loopBRef.current !== null) return;
+    const startBar = Math.max(1, Number(bars[0] ?? 1));
+    const endBar = Math.max(startBar, Number(bars[1] ?? startBar));
+    const track0 = api.score.tracks?.[0];
+    const staff0 = track0?.staves?.[0];
+    const staffBars = staff0?.bars || [];
+    const startIdx = Math.min(staffBars.length - 1, Math.max(0, startBar - 1));
+    const endExclusiveIdx = Math.min(staffBars.length, Math.max(0, endBar));
+    const startBeat = staffBars[startIdx]?.voices?.[0]?.beats?.[0];
+    const endBeat = staffBars[endExclusiveIdx]?.voices?.[0]?.beats?.[0];
+    const safeBpm = bpm || practiceData?.metadata?.tempo || 120;
+    const fallbackA = ((startBar - 1) * 4 * 60) / safeBpm;
+    const fallbackB = ((endBar) * 4 * 60) / safeBpm;
+    const loopASec = typeof startBeat?.timer === "number" ? startBeat.timer / 1000 : fallbackA;
+    const loopBSec = typeof endBeat?.timer === "number" ? endBeat.timer / 1000 : fallbackB;
+    setLoopA(loopASec);
+    setLoopB(loopBSec);
+    try {
+      api.timePosition = loopASec * 1000;
+    } catch {}
+  };
+
   const handleTrackSwitch = (index: number) => {
+    const api = alphaTabApiRef.current;
     setActiveTrackIndex(index);
-    if (alphaTabApiRef.current && alphaTabApiRef.current.score) {
-      const track = alphaTabApiRef.current.score.tracks[index];
+    if (api && api.score) {
+      const track = api.score.tracks[index];
       if (track) {
-        alphaTabApiRef.current.renderTracks([track]);
-        alphaTabApiRef.current.updateSettings();
+        api.renderTracks([track]);
+        api.updateSettings();
+        try {
+          api.changeTrackSolo(api.score.tracks, false);
+          api.changeTrackSolo([track], true);
+        } catch {}
         const currentMs = currentTime * 1000;
-        alphaTabApiRef.current.timePosition = currentMs;
+        api.timePosition = currentMs;
+        const scoreTracks = api.score.tracks.map((tr: any, i: number) => ({
+          name: tr.name || `Track ${i + 1}`,
+          index: i,
+          isSolo: !!tr.playbackInfo?.isSolo,
+        }));
+        setTracks(scoreTracks);
       }
     }
+  };
+
+  const setSoloTrack = (index: number) => {
+    const api = alphaTabApiRef.current;
+    if (!api || !api.score) return;
+    const t = api.score.tracks[index];
+    if (!t) return;
+    try {
+      api.changeTrackSolo(api.score.tracks, false);
+      api.changeTrackSolo([t], true);
+    } catch {}
+    const scoreTracks = api.score.tracks.map((tr: any, i: number) => ({
+      name: tr.name || `Track ${i + 1}`,
+      index: i,
+      isSolo: !!tr.playbackInfo?.isSolo,
+    }));
+    setTracks(scoreTracks);
   };
 
   const displayTitle = songTitle || practiceData?.metadata?.title || practiceData?.title || "未知曲目";
@@ -930,17 +982,28 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
         {tracks.length > 1 && (
           <div className="flex gap-2 mb-[-8px]">
             {tracks.map(t => (
-              <button
-                key={t.index}
-                onClick={() => handleTrackSwitch(t.index)}
-                className={`px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
-                  activeTrackIndex === t.index 
-                    ? 'bg-zinc-100 text-zinc-900 shadow-sm' 
-                    : 'bg-zinc-800/50 text-zinc-400 hover:bg-zinc-800 hover:text-zinc-200 border border-zinc-800/50'
-                }`}
-              >
-                {t.name}
-              </button>
+              <div key={t.index} className="flex items-center gap-2">
+                <button
+                  onClick={() => handleTrackSwitch(t.index)}
+                  className={`px-4 py-1.5 text-sm font-medium rounded-full transition-colors ${
+                    activeTrackIndex === t.index 
+                      ? 'bg-zinc-100 text-zinc-900 shadow-sm' 
+                      : 'bg-zinc-800/50 text-zinc-200 hover:bg-zinc-800 border border-zinc-800/50'
+                  }`}
+                >
+                  {t.name}
+                </button>
+                <button
+                  onClick={() => setSoloTrack(t.index)}
+                  className={`px-3 py-1.5 text-xs font-bold rounded-full transition-colors border ${
+                    t.isSolo
+                      ? 'bg-yellow-500 text-zinc-950 border-yellow-400'
+                      : 'bg-zinc-900 text-zinc-300 border-zinc-700 hover:bg-zinc-800'
+                  }`}
+                >
+                  独奏
+                </button>
+              </div>
             ))}
           </div>
         )}

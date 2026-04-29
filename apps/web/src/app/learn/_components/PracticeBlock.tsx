@@ -105,6 +105,7 @@ export default function PracticeBlock({ title, gp5Url, loopBars, defaultTempo, t
                 practiceData={practiceData} 
                 gp5Data={gp5Data} 
                 songTitle={title} 
+                initialLoopBars={loopBars}
               />
             )}
           </div>

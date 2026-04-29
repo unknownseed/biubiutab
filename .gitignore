@@ -21,6 +21,8 @@ venv/
 
 # Project runtime data
 storage/
+apps/web/public/gp5/
+apps/web/apps/web/public/gp5/
 
 # Local env
 .env
@@ -28,4 +30,3 @@ storage/
 
 # Sample audio (may be large / copyrighted)
 sample audio/
-

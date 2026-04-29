@@ -40,6 +40,29 @@ def _copy_track_settings(src_track, dest_track):
         new_string = guitarpro.models.GuitarString(s.number, s.value)
         dest_track.strings.append(new_string)
 
+def _filter_tracks_by_name_keywords(song, keywords):
+    kws = [k.strip().lower() for k in (keywords or []) if isinstance(k, str) and k.strip()]
+    if not kws:
+        return song
+
+    matched = []
+    for t in song.tracks:
+        name = (t.name or "").lower()
+        if any(k in name for k in kws):
+            matched.append(t)
+
+    if not matched:
+        for t in song.tracks:
+            inst = getattr(getattr(t, "channel", None), "instrument", None)
+            if isinstance(inst, int) and 24 <= inst <= 31:
+                matched.append(t)
+
+    if not matched and song.tracks:
+        matched = [song.tracks[0]]
+
+    song.tracks = matched
+    return song
+
 def generate_gp5_variant(base_gp5_path: str, output_path: str, tempo: float = None, chords=None, keep_bars=None):
     """
     Generate a variant GP5 file based on the original base.gp5.
@@ -61,6 +84,8 @@ def generate_gp5_variant(base_gp5_path: str, output_path: str, tempo: float = No
         
     try:
         song = guitarpro.parse(base_gp5_path)
+
+        song = _filter_tracks_by_name_keywords(song, ["guitar", "吉他", "gtr"])
         
         # Override tempo if provided
         if tempo:

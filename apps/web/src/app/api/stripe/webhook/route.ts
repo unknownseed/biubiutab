@@ -124,6 +124,14 @@ export async function POST(req: Request) {
         const customer = session.customer;
 
         if (userId && subId) {
+          let currentPeriodEnd: string | null = null;
+          try {
+            const sub: any = await stripe.subscriptions.retrieve(String(subId));
+            if (sub?.current_period_end) {
+              currentPeriodEnd = new Date(sub.current_period_end * 1000).toISOString();
+            }
+          } catch (e) {}
+
           const { error: checkoutError } = await supabaseAdmin
             .from('subscriptions')
             .upsert({
@@ -132,6 +140,8 @@ export async function POST(req: Request) {
               stripe_subscription_id: subId,
               plan_type: session.metadata?.plan_type || 'monthly',
               status: 'active',
+              current_period_end: currentPeriodEnd,
+              updated_at: new Date().toISOString(),
             });
             
           if (checkoutError) {

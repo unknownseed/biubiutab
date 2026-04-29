@@ -2,7 +2,7 @@ import { createClient } from '@/lib/supabase/server';
 
 export interface UserSubscriptionInfo {
   isPro: boolean;
-  planType: 'free' | 'monthly' | 'yearly';
+  planType: 'free' | 'monthly' | 'quarterly' | 'yearly';
   usedQuota: number;
   totalQuota: number;
 }
@@ -26,13 +26,15 @@ export async function getUserSubscriptionInfo(userId?: string): Promise<UserSubs
     .eq('user_id', userId)
     .single();
 
-  const isPro = sub?.status === 'active' && new Date(sub.current_period_end) > new Date();
-  const planType = isPro ? sub.plan_type : 'free';
+  const now = new Date();
+  const periodEnd = sub?.current_period_end ? new Date(sub.current_period_end) : null;
+  const hasValidPeriodEnd = periodEnd instanceof Date && !Number.isNaN(periodEnd.getTime());
+  const isPro = sub?.status === 'active' && (!hasValidPeriodEnd || periodEnd! > now);
+  const planType = isPro ? (sub?.plan_type as UserSubscriptionInfo['planType']) : 'free';
   const totalQuota = isPro ? 100 : 3;
 
   // 2. 统计本月已使用的生成次数
   // 获取本月的第一天
-  const now = new Date();
   const firstDayOfMonth = new Date(now.getFullYear(), now.getMonth(), 1).toISOString();
 
   // count AI jobs created this month
