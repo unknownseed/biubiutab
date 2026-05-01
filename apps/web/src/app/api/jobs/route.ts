@@ -1,6 +1,7 @@
 import { aiFetch } from "@/lib/ai";
 import { createClient } from "@/lib/supabase/server";
 import { getUserSubscriptionInfo } from "@/lib/subscriptions";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -23,6 +24,15 @@ export async function POST(req: Request) {
   if (!user) {
     return new Response("Unauthorized", { status: 401 });
   }
+
+  const ip = (req.headers.get("x-forwarded-for") || req.headers.get("x-real-ip") || "").split(",")[0].trim() || "unknown";
+  const userLimit = Number(process.env.JOB_CREATE_PER_MIN_USER || "3");
+  const ipLimit = Number(process.env.JOB_CREATE_PER_MIN_IP || "15");
+  const w = 60_000;
+  const u = rateLimit(`job:user:${user.id}`, userLimit, w);
+  if (!u.ok) return new Response("rate limited", { status: 429, headers: { "retry-after": String(Math.ceil(u.retryAfterMs / 1000)) } });
+  const i = rateLimit(`job:ip:${ip}`, ipLimit, w);
+  if (!i.ok) return new Response("rate limited", { status: 429, headers: { "retry-after": String(Math.ceil(i.retryAfterMs / 1000)) } });
 
   // --- Phase 4: 全局权限拦截 (AI 算力保护) ---
   const subInfo = await getUserSubscriptionInfo(user.id);

@@ -266,6 +266,8 @@ def _upload_r2_artifact(local_path: Path, r2_key: str, content_type: str):
 app = FastAPI(title="Biubiutab - AI Service")
 _jobs: dict[str, JobState] = {}
 _MAX_CONCURRENCY = max(1, int(os.environ.get("AI_MAX_CONCURRENCY", "2")))
+_JOB_TIMEOUT_SEC = max(60, int(os.environ.get("AI_JOB_TIMEOUT_SEC", "1200")))
+_JOB_CANCELLED: set[str] = set()
 
 
 def _require_internal_auth(request: Request, x_ai_token: Optional[str] = Header(default=None, alias="x-ai-token")) -> None:
@@ -317,6 +319,10 @@ def _db_dict_to_jobstate(d: dict) -> JobState:
     )
 
 async def _save_job_state(job: JobState):
+    if job.id in _JOB_CANCELLED and job.status == "succeeded":
+        job.status = "failed"
+        job.error = job.error or "job timeout"
+        job.message = job.message or "任务超时"
     _jobs[job.id] = job  # Keep in-memory cache as a fast local fallback
     if not supabase:
         return
@@ -353,6 +359,18 @@ def health() -> dict[str, str]:
     return {"status": "ok"}
 
 
+@app.on_event("startup")
+async def _startup_tasks():
+    async def _loop_cleanup():
+        while True:
+            try:
+                _cleanup_expired(_storage_root())
+            except Exception:
+                pass
+            await asyncio.sleep(3600)
+    asyncio.create_task(_loop_cleanup())
+
+
 def _job_to_response(job: JobState) -> JobResponse:
     return JobResponse(
         id=job.id,
@@ -370,6 +388,21 @@ async def _run_job(job_id: str) -> None:
     job = await _get_job_state(job_id)
     if not job:
         return
+
+    async def _watch_timeout():
+        await asyncio.sleep(_JOB_TIMEOUT_SEC)
+        j = await _get_job_state(job_id)
+        if not j:
+            return
+        if j.status in {"queued", "processing"}:
+            _JOB_CANCELLED.add(job_id)
+            j.status = "failed"
+            j.error = "job timeout"
+            j.message = "任务超时"
+            j.preview = {**(j.preview or {}), "step": "failed"}
+            await _save_job_state(j)
+
+    asyncio.create_task(_watch_timeout())
 
     job.status = "processing"
     job.progress = 1
