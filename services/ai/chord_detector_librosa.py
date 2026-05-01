@@ -251,7 +251,7 @@ def analyze_audio(audio_path: str, title: str) -> AudioAnalysis:
         time_signature="4/4",
         key=key,
         bar_chords=bar_chords,
+        bar_chords_sub=[[c] for c in bar_chords],
         beat_times=beat_times,
         duration_sec=duration_sec,
     )
-

@@ -384,7 +384,7 @@ export default function UploadClient() {
                   }`}
                   onClick={() => setUploadMode("file")}
                 >
-                  本地上传
+                  本地音频
                 </button>
                 <button
                   className={`text-lg font-serif tracking-widest pb-2 -mb-[9px] border-b-2 transition-colors ${
@@ -404,20 +404,15 @@ export default function UploadClient() {
             </div>
 
             {uploadMode === "file" ? (
-              <div
+              <label
                 className="flex min-h-[200px] cursor-pointer flex-col items-center justify-center gap-4 rounded-none border border-dashed border-wood-400/30 bg-white/40 px-4 py-6 text-center transition-colors duration-500 hover:border-wood-400 hover:bg-white/60 mt-4"
-                onClick={() => fileInputRef.current?.click()}
                 onDragOver={(e) => e.preventDefault()}
                 onDrop={(e) => {
                   e.preventDefault();
                   const dropped = e.dataTransfer.files?.[0] ?? null;
                   onPickFile(dropped);
                 }}
-                role="button"
-                tabIndex={0}
-                onKeyDown={(e) => {
-                  if (e.key === "Enter" || e.key === " ") fileInputRef.current?.click();
-                }}
+                htmlFor="audio-file-input"
               >
                 <div className="text-wood-400/50 mb-2">
                   <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round">
@@ -428,7 +423,7 @@ export default function UploadClient() {
                 </div>
                 <div className="text-base font-serif tracking-widest text-ink-800">拖拽音频到这里，或点击选择</div>
                 <div className="text-xs text-ink-700/50 font-light tracking-wider">支持 MP3/WAV，最大 50MB</div>
-              </div>
+              </label>
             ) : (
               <div className="flex flex-col gap-4 mt-4">
                 <div className="flex flex-col gap-2 p-6 border border-wood-400/30 bg-white/40">
@@ -450,6 +445,7 @@ export default function UploadClient() {
 
             <input
               ref={fileInputRef}
+              id="audio-file-input"
               type="file"
               accept=".mp3,.wav,audio/mpeg,audio/wav"
               className="hidden"

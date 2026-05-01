@@ -137,7 +137,12 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
           audioRef.current.src = url;
           audioRef.current.load();
           if (alphaTabApiRef.current) {
-            audioRef.current.currentTime = alphaTabApiRef.current.timePosition / 1000;
+            const safeBpm = bpm || 120;
+            const b0 = practiceData?.chordBlocks?.[0];
+            const real0 = typeof b0?.startTime === "number" ? b0.startTime : 0;
+            const ideal0 = b0 ? (Number(b0.startBeat || 0) * 60) / safeBpm : 0;
+            const offset = Number.isFinite(real0 - ideal0) ? (real0 - ideal0) : 0;
+            audioRef.current.currentTime = alphaTabApiRef.current.timePosition / 1000 + offset;
           }
           if (isPlaying) {
             audioRef.current.play().catch(() => {});
@@ -311,10 +316,16 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
         // If the GP5 has multiple tracks (e.g. Rhythm and Lead), AlphaTab might
         // default to rendering all of them if the load() track filter is ignored.
         if (score.tracks && score.tracks.length > 0) {
-          api.renderTracks([score.tracks[0]]);
           try {
-            api.changeTrackSolo(score.tracks, false);
-            api.changeTrackSolo([score.tracks[0]], true);
+            const t0 = score.tracks[0];
+            const hasBeats = !!t0?.staves?.[0]?.bars?.[0]?.voices?.[0]?.beats;
+            if (hasBeats) {
+              api.renderTracks([t0]);
+              try {
+                api.changeTrackSolo(score.tracks, false);
+                api.changeTrackSolo([t0], true);
+              } catch {}
+            }
           } catch {}
         }
         
@@ -336,7 +347,12 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
         setIsPlaying(args.state === 1);
         if (audioRef.current && audioSourceRef.current !== "midi") {
           if (args.state === 1) {
-            audioRef.current.currentTime = api.timePosition / 1000;
+            const safeBpm = bpm || 120;
+            const b0 = practiceData?.chordBlocks?.[0];
+            const real0 = typeof b0?.startTime === "number" ? b0.startTime : 0;
+            const ideal0 = b0 ? (Number(b0.startBeat || 0) * 60) / safeBpm : 0;
+            const offset = Number.isFinite(real0 - ideal0) ? (real0 - ideal0) : 0;
+            audioRef.current.currentTime = api.timePosition / 1000 + offset;
             audioRef.current.play().catch(() => {});
           } else {
             audioRef.current.pause();
@@ -877,8 +893,10 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
     if (api && api.score) {
       const track = api.score.tracks[index];
       if (track) {
-        api.renderTracks([track]);
-        api.updateSettings();
+        try {
+          api.renderTracks([track]);
+          api.updateSettings();
+        } catch {}
         try {
           api.changeTrackSolo(api.score.tracks, false);
           api.changeTrackSolo([track], true);

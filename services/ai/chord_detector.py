@@ -42,6 +42,7 @@ class AudioAnalysis:
     time_signature: str
     key: str
     bar_chords: list[str]
+    bar_chords_sub: list[list[str]] | None
     beat_times: np.ndarray
     duration_sec: float
 
@@ -125,6 +126,151 @@ def _detect_chords_madmom_to_bars(audio_path: str, beat_times: np.ndarray, beats
         events.append(ChordEvent(start_sec=start_t, end_sec=end_t, chord=chord))
 
     return events
+
+
+def _detect_chords_madmom_to_bar_subchords(audio_path: str, beat_times: np.ndarray, beats_per_bar: int, slices_per_bar: int = 2) -> list[list[ChordEvent]]:
+    segs = detect_chords_madmom(audio_path)
+    if not segs or beat_times.size < 2:
+        return []
+
+    seg_starts = [float(s["time"]) for s in segs]
+    seg_ends = [float(s.get("end", float(s["time"]) + float(s.get("duration", 0.0)))) for s in segs]
+    seg_labels = [simplify_chord_name(str(s["chord"])) for s in segs]
+
+    y, sr = librosa.load(audio_path, sr=None, mono=True)
+    chroma = librosa.feature.chroma_cqt(y=y, sr=sr, hop_length=512)
+    frame_times = librosa.frames_to_time(np.arange(chroma.shape[1]), sr=sr, hop_length=512)
+    conf_th = float(os.environ.get("CHORD_MIN_CONFIDENCE", "0.28"))
+    quality_delta = float(os.environ.get("CHORD_QUALITY_DELTA", "0.03"))
+
+    import math
+
+    out: list[list[ChordEvent]] = []
+    beat_count = beat_times.size
+    bar_count = math.ceil((beat_count - 1) / beats_per_bar)
+    if bar_count < 1:
+        bar_count = 1
+
+    seg_idx = 0
+    half = max(1, beats_per_bar // max(1, slices_per_bar))
+
+    for bar in range(bar_count):
+        bar_events: list[ChordEvent] = []
+        for si in range(slices_per_bar):
+            start_beat = bar * beats_per_bar + si * half
+            end_beat = min(start_beat + half, (bar + 1) * beats_per_bar, beat_count - 1)
+            if start_beat >= beat_count - 1:
+                continue
+            start_t = float(beat_times[start_beat])
+            end_t = float(beat_times[end_beat])
+            if end_t <= start_t:
+                continue
+
+            mid = (start_t + end_t) / 2.0
+            while seg_idx + 1 < len(seg_starts) and seg_starts[seg_idx + 1] <= mid:
+                seg_idx += 1
+            while seg_idx + 1 < len(seg_starts) and seg_ends[seg_idx] <= mid:
+                seg_idx += 1
+
+            chord = seg_labels[seg_idx] if 0 <= seg_idx < len(seg_labels) else "N"
+            if chord.lower() in {"n", "no_chord", "nochord", "none"}:
+                chord = "N"
+
+            if chord != "N":
+                try:
+                    chord, conf = _refine_and_score_bar_chord(chroma, frame_times, start_t, end_t, chord, quality_delta)
+                    if conf < conf_th:
+                        chord = "N"
+                except Exception:
+                    pass
+
+            bar_events.append(ChordEvent(start_sec=start_t, end_sec=end_t, chord=chord))
+
+        out.append(bar_events)
+
+    return out
+
+
+def _detect_chords_madmom_bars_and_subchords(
+    audio_path: str,
+    y: np.ndarray,
+    sr: int,
+    beat_times: np.ndarray,
+    *,
+    beats_per_bar: int = 4,
+    slices_per_bar: int = 2,
+) -> tuple[list[ChordEvent], list[list[ChordEvent]]]:
+    segs = detect_chords_madmom(audio_path)
+    if not segs or beat_times.size < 2:
+        return ([], [])
+
+    seg_starts = [float(s["time"]) for s in segs]
+    seg_ends = [float(s.get("end", float(s["time"]) + float(s.get("duration", 0.0)))) for s in segs]
+    seg_labels = [simplify_chord_name(str(s["chord"])) for s in segs]
+
+    chroma = librosa.feature.chroma_cqt(y=y, sr=sr, hop_length=512)
+    frame_times = librosa.frames_to_time(np.arange(chroma.shape[1]), sr=sr, hop_length=512)
+    conf_th = float(os.environ.get("CHORD_MIN_CONFIDENCE", "0.28"))
+    quality_delta = float(os.environ.get("CHORD_QUALITY_DELTA", "0.03"))
+
+    import bisect
+    import math
+
+    def _pick_label(start_t: float, end_t: float) -> str:
+        if end_t <= start_t:
+            return "N"
+        mid = (start_t + end_t) / 2.0
+        i = bisect.bisect_right(seg_starts, mid) - 1
+        if i < 0:
+            i = 0
+        while i + 1 < len(seg_starts) and seg_ends[i] <= mid:
+            i += 1
+        chord = seg_labels[i] if 0 <= i < len(seg_labels) else "N"
+        if chord.lower() in {"n", "no_chord", "nochord", "none"}:
+            chord = "N"
+        if chord != "N":
+            try:
+                chord, conf = _refine_and_score_bar_chord(chroma, frame_times, start_t, end_t, chord, quality_delta)
+                if conf < conf_th:
+                    chord = "N"
+            except Exception:
+                pass
+        return chord
+
+    beat_count = beat_times.size
+    bar_count = math.ceil((beat_count - 1) / beats_per_bar)
+    if bar_count < 1:
+        bar_count = 1
+
+    bar_events: list[ChordEvent] = []
+    sub_events: list[list[ChordEvent]] = []
+
+    half = max(1, beats_per_bar // max(1, slices_per_bar))
+
+    for bar in range(bar_count):
+        start_beat = bar * beats_per_bar
+        end_beat = min(start_beat + beats_per_bar, beat_count - 1)
+        start_t = float(beat_times[start_beat])
+        end_t = float(beat_times[end_beat])
+        if end_t > start_t:
+            chord = _pick_label(start_t, end_t)
+            bar_events.append(ChordEvent(start_sec=start_t, end_sec=end_t, chord=chord))
+
+        bar_list: list[ChordEvent] = []
+        for si in range(slices_per_bar):
+            s0 = bar * beats_per_bar + si * half
+            s1 = min(s0 + half, (bar + 1) * beats_per_bar, beat_count - 1)
+            if s0 >= beat_count - 1:
+                continue
+            st = float(beat_times[s0])
+            et = float(beat_times[s1])
+            if et <= st:
+                continue
+            chord = _pick_label(st, et)
+            bar_list.append(ChordEvent(start_sec=st, end_sec=et, chord=chord))
+        sub_events.append(bar_list)
+
+    return (bar_events, sub_events)
 
 
 def _bar_chroma_slice(chroma: np.ndarray, frame_times: np.ndarray, start_t: float, end_t: float) -> np.ndarray | None:
@@ -287,11 +433,50 @@ def analyze_audio_multi(
 
     # Chords (prefer madmom via audio_path=chord_path)
     y_chord, sr_chord = librosa.load(chord_path, sr=None, mono=True)
-    chords = detect_chords(y_chord, sr_chord, beat_times, beats_per_bar=4, audio_path=chord_path)
-    # Standard simplification applied universally across all modes.
-    # Strips complex jazz extensions but preserves basic 7ths and sus chords.
-    # Beginner triad stripping happens later in gp_generator if level < 4.
-    bar_chords = [simplify_chord(c.chord, force_triads=False) for c in chords]
+
+    bar_chords_sub: list[list[str]] | None = None
+    try:
+        subdiv = int(os.environ.get("CHORD_BAR_SUBDIV", "2"))
+    except Exception:
+        subdiv = 2
+
+    prefer = (os.environ.get("CHORD_DETECTOR") or "madmom").lower().strip()
+    if prefer != "librosa" and _HAVE_MADMOM and chord_path and subdiv >= 2:
+        try:
+            bar_events, sub_events = _detect_chords_madmom_bars_and_subchords(
+                chord_path,
+                y_chord,
+                sr_chord,
+                beat_times,
+                beats_per_bar=4,
+                slices_per_bar=2,
+            )
+            bar_chords = [simplify_chord(c.chord, force_triads=False) for c in bar_events]
+            tmp: list[list[str]] = []
+            for i, evs in enumerate(sub_events):
+                labels = [simplify_chord(e.chord, force_triads=False) for e in evs] if evs else []
+                labels = [c for c in labels if c]
+                if not labels:
+                    labels = [bar_chords[i] if i < len(bar_chords) else "N"]
+                if len(labels) >= 2:
+                    a, b = labels[0], labels[1]
+                    if a == "N" and b != "N":
+                        labels = [b]
+                    elif a != "N" and b == "N":
+                        labels = [a]
+                    elif a == b:
+                        labels = [a]
+                    else:
+                        labels = [a, b]
+                tmp.append(labels)
+            bar_chords_sub = tmp
+        except Exception:
+            bar_chords_sub = None
+    else:
+        chords = detect_chords(y_chord, sr_chord, beat_times, beats_per_bar=4, audio_path=chord_path)
+        bar_chords = [simplify_chord(c.chord, force_triads=False) for c in chords]
+        if bar_chords_sub is None:
+            bar_chords_sub = [[c] for c in bar_chords]
 
     # Key (from chroma of key_path)
     y_key, sr_key = librosa.load(key_path, sr=None, mono=True)
@@ -304,6 +489,7 @@ def analyze_audio_multi(
         time_signature="4/4",
         key=key,
         bar_chords=bar_chords,
+        bar_chords_sub=bar_chords_sub,
         beat_times=beat_times,
         duration_sec=duration_sec,
     )
