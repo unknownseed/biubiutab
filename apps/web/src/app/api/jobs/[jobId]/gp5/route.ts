@@ -48,7 +48,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ jobId: string }
   }
 
   // 2. Fallback to local python backend fetching
-  const res = await aiFetch(`/jobs/${encodeURIComponent(jobId)}/result.gp5?level=${level}`, { method: "GET", headers: { "x-user-id": user.id } });
+  const res = await aiFetch(`/jobs/${encodeURIComponent(jobId)}/result.gp5?level=${level}`, { method: "GET", headers: { "x-user-id": user.id, "x-request-id": req.headers.get("x-request-id") || "" } });
   
   if (!res.ok) {
     return new Response(await res.text(), {

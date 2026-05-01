@@ -270,6 +270,15 @@ _JOB_TIMEOUT_SEC = max(60, int(os.environ.get("AI_JOB_TIMEOUT_SEC", "1200")))
 _JOB_CANCELLED: set[str] = set()
 
 
+@app.middleware("http")
+async def _request_id_middleware(request: Request, call_next):
+    rid = request.headers.get("x-request-id") or uuid.uuid4().hex
+    request.state.request_id = rid
+    response = await call_next(request)
+    response.headers["x-request-id"] = rid
+    return response
+
+
 def _require_internal_auth(request: Request, x_ai_token: Optional[str] = Header(default=None, alias="x-ai-token")) -> None:
     expected = (os.environ.get("AI_SERVICE_TOKEN") or "").strip()
     if expected:
@@ -361,6 +370,20 @@ def health() -> dict[str, str]:
 
 @app.on_event("startup")
 async def _startup_tasks():
+    strict = _truthy(os.environ.get("AI_STRICT_ENV", "")) or (os.environ.get("AI_ENV", "").strip().lower() in {"prod", "production"})
+    if strict:
+        required = [
+            "AI_SERVICE_TOKEN",
+            "SUPABASE_URL",
+            "SUPABASE_KEY",
+            "CLOUDFLARE_ACCOUNT_ID",
+            "CLOUDFLARE_ACCESS_KEY_ID",
+            "CLOUDFLARE_SECRET_ACCESS_KEY",
+            "CLOUDFLARE_BUCKET_NAME",
+        ]
+        missing = [k for k in required if not (os.environ.get(k) or "").strip()]
+        if missing:
+            raise RuntimeError("Missing env: " + ",".join(missing))
     async def _loop_cleanup():
         while True:
             try:

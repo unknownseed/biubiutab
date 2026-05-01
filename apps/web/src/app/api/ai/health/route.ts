@@ -2,8 +2,8 @@ import { aiBaseUrl, aiFetch } from "@/lib/ai";
 
 export const runtime = "nodejs";
 
-export async function GET() {
-  const res = await aiFetch("/health", { method: "GET" });
+export async function GET(req: Request) {
+  const res = await aiFetch("/health", { method: "GET", headers: { "x-request-id": req.headers.get("x-request-id") || "" } });
   const raw = await res.text();
 
   // Normalize to a stable JSON for the frontend.
@@ -34,4 +34,3 @@ export async function GET() {
     );
   }
 }
-

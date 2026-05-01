@@ -75,7 +75,7 @@ export async function POST(req: Request) {
 
   const res = await aiFetch("/jobs", {
     method: "POST",
-    headers: { "content-type": "application/json", "x-user-id": user.id },
+    headers: { "content-type": "application/json", "x-user-id": user.id, "x-request-id": req.headers.get("x-request-id") || "" },
     body: JSON.stringify({ 
       audio_path: audioPath,
       storage_provider: storageProvider,

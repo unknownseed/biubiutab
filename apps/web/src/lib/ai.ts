@@ -9,6 +9,10 @@ export async function aiFetch(pathname: string, init?: RequestInit): Promise<Res
     const headers = new Headers(init?.headers);
     const token = process.env.AI_SERVICE_TOKEN;
     if (token) headers.set("x-ai-token", token);
+    if (!headers.get("x-request-id")) {
+      const rid = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      headers.set("x-request-id", rid);
+    }
     const timeoutMs = Number(process.env.AI_FETCH_TIMEOUT_MS || "15000");
     const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
     const t = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;

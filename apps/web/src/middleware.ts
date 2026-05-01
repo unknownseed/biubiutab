@@ -1,9 +1,14 @@
 import { createServerClient } from '@supabase/ssr'
 import { NextResponse, type NextRequest } from 'next/server'
+import { newRequestId } from '@/lib/request-id'
 
 export async function middleware(request: NextRequest) {
+  const requestId = request.headers.get('x-request-id') || newRequestId()
+  const requestHeaders = new Headers(request.headers)
+  requestHeaders.set('x-request-id', requestId)
+
   let supabaseResponse = NextResponse.next({
-    request,
+    request: { headers: requestHeaders },
   })
 
   const supabase = createServerClient(
@@ -71,6 +76,7 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(url)
   }
 
+  supabaseResponse.headers.set('x-request-id', requestId)
   return supabaseResponse
 }
 
