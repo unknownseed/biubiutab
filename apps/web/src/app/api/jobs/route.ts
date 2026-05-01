@@ -56,6 +56,7 @@ export async function POST(req: Request) {
   } else if (body.storedFilename) {
     const safe = safeObjectKey(body.storedFilename);
     if (!safe) return new Response("invalid filename", { status: 400 });
+    if (!safe.startsWith(`uploads/${user.id}/`)) return new Response("invalid filename", { status: 400 });
     audioPath = safe;
     storageProvider = "r2";
   } else {

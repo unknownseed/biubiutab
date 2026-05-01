@@ -202,7 +202,8 @@ export default function UploadClient() {
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ 
             filename: selected.name, 
-            contentType: selected.type || "application/octet-stream" 
+            contentType: selected.type || "application/octet-stream",
+            size: selected.size,
           })
         });
         

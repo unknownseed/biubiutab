@@ -265,6 +265,7 @@ def _upload_r2_artifact(local_path: Path, r2_key: str, content_type: str):
 
 app = FastAPI(title="Biubiutab - AI Service")
 _jobs: dict[str, JobState] = {}
+_MAX_CONCURRENCY = max(1, int(os.environ.get("AI_MAX_CONCURRENCY", "2")))
 
 
 def _require_internal_auth(request: Request, x_ai_token: Optional[str] = Header(default=None, alias="x-ai-token")) -> None:
@@ -472,9 +473,12 @@ async def _run_job(job_id: str) -> None:
                 cmd.append(url_str)
                 
                 try:
-                    result = subprocess.run(cmd, capture_output=True, text=True, check=True)
+                    timeout_sec = max(30, int(os.environ.get("AI_YTDLP_TIMEOUT_SEC", "300")))
+                    result = subprocess.run(cmd, capture_output=True, text=True, check=True, timeout=timeout_sec)
                     lines = [line.strip() for line in result.stdout.split('\n') if line.strip()]
                     return lines[-1] if lines else job.title
+                except subprocess.TimeoutExpired:
+                    raise Exception("Failed to download audio: yt-dlp timeout")
                 except subprocess.CalledProcessError as e:
                     print(f"yt-dlp binary failed: {e.stderr}")
                     raise Exception(f"Failed to download audio: {e.stderr}")
@@ -919,7 +923,19 @@ async def _run_job(job_id: str) -> None:
                     if no_vocals_wav.exists():
                         no_vocals_mp3 = stems_dir / "no_vocals.mp3"
                         # 使用 ffmpeg 将 wav 压缩为 192kbps mp3
-                        os.system(f'ffmpeg -y -i "{no_vocals_wav}" -b:a 192k "{no_vocals_mp3}" -loglevel error')
+                        import subprocess
+                        timeout_sec = max(30, int(os.environ.get("AI_FFMPEG_TIMEOUT_SEC", "120")))
+                        try:
+                            subprocess.run(
+                                ["ffmpeg", "-y", "-i", str(no_vocals_wav), "-b:a", "192k", str(no_vocals_mp3), "-loglevel", "error"],
+                                capture_output=True,
+                                check=True,
+                                timeout=timeout_sec,
+                            )
+                        except subprocess.TimeoutExpired:
+                            return
+                        except subprocess.CalledProcessError:
+                            return
                         if no_vocals_mp3.exists():
                             _upload_r2_artifact(no_vocals_mp3, f"stems/{job.id}/no_vocals.mp3", "audio/mpeg")
                             
@@ -963,6 +979,9 @@ async def create_job(req: CreateJobRequest, x_user_id: Optional[str] = Header(de
     title = _clean_title((req.title or "").strip() or audio_path.name)
     if not x_user_id:
         raise HTTPException(status_code=400, detail="missing user")
+    running = sum(1 for j in _jobs.values() if j.status in {"queued", "processing"})
+    if running >= _MAX_CONCURRENCY:
+        raise HTTPException(status_code=429, detail="server busy")
     state = JobState(
         id=job_id,
         status="queued",
