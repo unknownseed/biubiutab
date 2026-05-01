@@ -3,6 +3,7 @@ import { stat } from "node:fs/promises";
 import path from "node:path";
 
 import { repoRoot } from "@/lib/paths";
+import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
@@ -24,6 +25,19 @@ export async function GET(_req: Request, ctx: { params: Promise<{ filename: stri
   const safe = safeBasename(filename);
   if (!safe) return new Response("not found", { status: 404 });
 
+  const jobId = safe.split(".")[0];
+  if (!/^[a-zA-Z0-9_-]+$/.test(jobId)) return new Response("not found", { status: 404 });
+  const sb = await createClient();
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) return new Response("Unauthorized", { status: 401 });
+  const { data: job } = await sb
+    .from("ai_jobs")
+    .select("id,user_id")
+    .eq("id", jobId)
+    .eq("user_id", user.id)
+    .single();
+  if (!job) return new Response("not found", { status: 404 });
+
   const filePath = path.join(repoRoot(), "storage", "uploads", safe);
   try {
     const s = await stat(filePath);
@@ -41,4 +55,3 @@ export async function GET(_req: Request, ctx: { params: Promise<{ filename: stri
     return new Response("not found", { status: 404 });
   }
 }
-

@@ -43,6 +43,7 @@ export async function middleware(request: NextRequest) {
     '/admin',
     '/api/jobs', 
     '/api/upload-url',
+    '/api/uploads',
     '/api/admin'
   ]
 
