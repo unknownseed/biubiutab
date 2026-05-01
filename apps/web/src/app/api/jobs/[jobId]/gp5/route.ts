@@ -1,5 +1,5 @@
 import { aiFetch } from "@/lib/ai";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
@@ -9,7 +9,16 @@ export async function GET(req: Request, ctx: { params: Promise<{ jobId: string }
   const level = url.searchParams.get("level") || "4";
 
   // 1. Check Supabase to see if this is an R2 job
-  const { data: dbJob } = await supabase.from("ai_jobs").select("*").eq("id", jobId).single();
+  const sb = await createClient();
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) return new Response("Unauthorized", { status: 401 });
+
+  const { data: dbJob } = await sb
+    .from("ai_jobs")
+    .select("id,user_id,audio_path,storage_provider,preview")
+    .eq("id", jobId)
+    .eq("user_id", user.id)
+    .single();
   
   if (dbJob?.preview?.storage_provider === "r2" || dbJob?.storage_provider === "r2" || dbJob?.audio_path?.startsWith("uploads/")) {
     let publicDomain = process.env.CLOUDFLARE_PUBLIC_DOMAIN;
@@ -39,7 +48,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ jobId: string }
   }
 
   // 2. Fallback to local python backend fetching
-  const res = await aiFetch(`/jobs/${encodeURIComponent(jobId)}/result.gp5?level=${level}`, { method: "GET" });
+  const res = await aiFetch(`/jobs/${encodeURIComponent(jobId)}/result.gp5?level=${level}`, { method: "GET", headers: { "x-user-id": user.id } });
   
   if (!res.ok) {
     return new Response(await res.text(), {

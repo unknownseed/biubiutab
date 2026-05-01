@@ -6,7 +6,10 @@ export function aiBaseUrl(): string {
 export async function aiFetch(pathname: string, init?: RequestInit): Promise<Response> {
   const url = `${aiBaseUrl()}${pathname.startsWith("/") ? "" : "/"}${pathname}`;
   try {
-    return await fetch(url, { ...init, cache: "no-store" });
+    const headers = new Headers(init?.headers);
+    const token = process.env.AI_SERVICE_TOKEN;
+    if (token) headers.set("x-ai-token", token);
+    return await fetch(url, { ...init, headers, cache: "no-store" });
   } catch (e) {
     const msg =
       e instanceof Error

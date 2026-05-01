@@ -2,7 +2,7 @@ import { createReadStream } from "node:fs";
 import { readdir, stat } from "node:fs/promises";
 import path from "node:path";
 import { repoRoot } from "@/lib/paths";
-import { supabase } from "@/lib/supabase";
+import { createClient } from "@/lib/supabase/server";
 
 export const runtime = "nodejs";
 
@@ -14,7 +14,16 @@ export async function GET(req: Request, ctx: { params: Promise<{ jobId: string }
   if (!/^[a-zA-Z0-9_-]+$/.test(jobId)) return new Response("not found", { status: 404 });
 
   // 1. 先去 Supabase 查一下这个 job，看它是不是用的 r2
-  const { data: dbJob } = await supabase.from("ai_jobs").select("*").eq("id", jobId).single();
+  const sb = await createClient();
+  const { data: { user } } = await sb.auth.getUser();
+  if (!user) return new Response("Unauthorized", { status: 401 });
+
+  const { data: dbJob } = await sb
+    .from("ai_jobs")
+    .select("id,user_id,audio_path,storage_provider,preview")
+    .eq("id", jobId)
+    .eq("user_id", user.id)
+    .single();
   
   if (dbJob?.preview?.storage_provider === "r2" || dbJob?.storage_provider === "r2" || dbJob?.audio_path?.startsWith("uploads/")) {
     let publicDomain = process.env.CLOUDFLARE_PUBLIC_DOMAIN;

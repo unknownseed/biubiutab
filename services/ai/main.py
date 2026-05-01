@@ -25,7 +25,7 @@ try:
 except ImportError:
     pass
 
-from fastapi import FastAPI, HTTPException
+from fastapi import Depends, FastAPI, Header, HTTPException, Request
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
@@ -265,6 +265,18 @@ def _upload_r2_artifact(local_path: Path, r2_key: str, content_type: str):
 
 app = FastAPI(title="Biubiutab - AI Service")
 _jobs: dict[str, JobState] = {}
+
+
+def _require_internal_auth(request: Request, x_ai_token: Optional[str] = Header(default=None, alias="x-ai-token")) -> None:
+    expected = (os.environ.get("AI_SERVICE_TOKEN") or "").strip()
+    if expected:
+        if (x_ai_token or "").strip() != expected:
+            raise HTTPException(status_code=401, detail="unauthorized")
+        return
+    host = request.client.host if request.client else ""
+    if host in {"127.0.0.1", "::1"}:
+        return
+    raise HTTPException(status_code=401, detail="AI_SERVICE_TOKEN not configured")
 
 def _jobstate_to_db_dict(job: JobState) -> dict:
     return {
@@ -935,8 +947,8 @@ async def _run_job(job_id: str) -> None:
         await _save_job_state(job)
 
 
-@app.post("/jobs", response_model=JobResponse)
-async def create_job(req: CreateJobRequest) -> JobResponse:
+@app.post("/jobs", response_model=JobResponse, dependencies=[Depends(_require_internal_auth)])
+async def create_job(req: CreateJobRequest, x_user_id: Optional[str] = Header(default=None, alias="x-user-id")) -> JobResponse:
     audio_path = req.audio_path if req.storage_provider == "url" else Path(req.audio_path)
     
     # 如果是云端存储或网络链接，跳过本地存在性检查
@@ -949,6 +961,8 @@ async def create_job(req: CreateJobRequest) -> JobResponse:
 
     job_id = uuid.uuid4().hex
     title = _clean_title((req.title or "").strip() or audio_path.name)
+    if not x_user_id:
+        raise HTTPException(status_code=400, detail="missing user")
     state = JobState(
         id=job_id,
         status="queued",
@@ -960,36 +974,47 @@ async def create_job(req: CreateJobRequest) -> JobResponse:
         result=None,
         preview={"step": "queued", "storage_provider": req.storage_provider},
         storage_provider=req.storage_provider,
-        user_id=req.user_id,
+        user_id=x_user_id,
     )
     await _save_job_state(state)
     asyncio.create_task(_run_job(job_id))
     return _job_to_response(state)
 
-
-@app.get("/jobs/{job_id}", response_model=JobResponse)
-async def get_job(job_id: str) -> JobResponse:
+async def _get_owned_job(job_id: str, x_user_id: str) -> JobState:
     job = await _get_job_state(job_id)
     if not job:
         raise HTTPException(status_code=404, detail="job not found")
+    if not job.user_id and x_user_id:
+        job.user_id = x_user_id
+        await _save_job_state(job)
+    if (job.user_id or "") != (x_user_id or ""):
+        raise HTTPException(status_code=404, detail="job not found")
+    return job
+
+
+@app.get("/jobs/{job_id}", response_model=JobResponse, dependencies=[Depends(_require_internal_auth)])
+async def get_job(job_id: str, x_user_id: Optional[str] = Header(default=None, alias="x-user-id")) -> JobResponse:
+    if not x_user_id:
+        raise HTTPException(status_code=400, detail="missing user")
+    job = await _get_owned_job(job_id, x_user_id)
     return _job_to_response(job)
 
 
-@app.get("/jobs/{job_id}/result", response_model=JobResult)
-async def get_job_result(job_id: str) -> JobResult:
-    job = await _get_job_state(job_id)
-    if not job:
-        raise HTTPException(status_code=404, detail="job not found")
+@app.get("/jobs/{job_id}/result", response_model=JobResult, dependencies=[Depends(_require_internal_auth)])
+async def get_job_result(job_id: str, x_user_id: Optional[str] = Header(default=None, alias="x-user-id")) -> JobResult:
+    if not x_user_id:
+        raise HTTPException(status_code=400, detail="missing user")
+    job = await _get_owned_job(job_id, x_user_id)
     if job.status != "succeeded" or not job.result:
         raise HTTPException(status_code=409, detail="job not ready")
     return job.result
 
 
-@app.get("/jobs/{job_id}/result.gp5")
-async def get_job_result_gp5(job_id: str, level: Optional[int] = 4):
-    job = await _get_job_state(job_id)
-    if not job:
-        raise HTTPException(status_code=404, detail="job not found")
+@app.get("/jobs/{job_id}/result.gp5", dependencies=[Depends(_require_internal_auth)])
+async def get_job_result_gp5(job_id: str, level: Optional[int] = 4, x_user_id: Optional[str] = Header(default=None, alias="x-user-id")):
+    if not x_user_id:
+        raise HTTPException(status_code=400, detail="missing user")
+    job = await _get_owned_job(job_id, x_user_id)
     if job.status != "succeeded":
         raise HTTPException(status_code=409, detail="job not ready")
         

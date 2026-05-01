@@ -64,12 +64,11 @@ export async function POST(req: Request) {
 
   const res = await aiFetch("/jobs", {
     method: "POST",
-    headers: { "content-type": "application/json" },
+    headers: { "content-type": "application/json", "x-user-id": user.id },
     body: JSON.stringify({ 
       audio_path: audioPath,
       storage_provider: storageProvider,
       title: body.title,
-      user_id: user?.id || null
     }),
   });
   const text = await res.text();
@@ -78,4 +77,3 @@ export async function POST(req: Request) {
     headers: { "content-type": res.headers.get("content-type") || "application/json" },
   });
 }
-

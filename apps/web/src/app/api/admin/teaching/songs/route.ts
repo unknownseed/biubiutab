@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { isAdminEmail } from '@/lib/admin'
 import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
@@ -7,6 +8,9 @@ export async function GET(request: Request) {
 
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  if (!isAdminEmail(user.email)) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
   const { searchParams } = new URL(request.url)
@@ -37,6 +41,9 @@ export async function POST(request: Request) {
 
   if (!user) {
     return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+  }
+  if (!isAdminEmail(user.email)) {
+    return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
   }
 
   try {

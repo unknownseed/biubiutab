@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
+import { isAdminEmail } from '@/lib/admin';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';
@@ -14,6 +15,9 @@ export async function POST(
   try {
     const supabase = await createClient();
     const { songId } = await params;
+    const { data: { user } } = await supabase.auth.getUser();
+    if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    if (!isAdminEmail(user.email)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
     // 1. Fetch current song manifest
     const { data: song, error: fetchError } = await supabase
