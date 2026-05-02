@@ -8,7 +8,18 @@ export async function GET() {
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
   if (!user) return new Response("Unauthorized", { status: 401 });
-  if (!isAdminEmail(user.email)) return new Response("Forbidden", { status: 403 });
+  if (!isAdminEmail(user.email)) {
+    const configured = (process.env.ADMIN_EMAILS || "").trim().length > 0;
+    return Response.json(
+      {
+        ok: false,
+        error: "Forbidden",
+        email: user.email || null,
+        adminEmailsConfigured: configured,
+      },
+      { status: 403, headers: { "cache-control": "no-store" } }
+    );
+  }
 
   const required = [
     "NEXT_PUBLIC_SUPABASE_URL",
@@ -37,4 +48,3 @@ export async function GET() {
 
   return Response.json({ ok: missing.length === 0, missing }, { status: 200, headers: { "cache-control": "no-store" } });
 }
-
