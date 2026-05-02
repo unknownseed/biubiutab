@@ -1,32 +1,38 @@
 'use client'
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { login, signup } from './actions'
 import Link from 'next/link'
 import { Suspense } from 'react'
+import { useToast } from '@/components/toast-provider'
 
 function LoginContent() {
   const searchParams = useSearchParams()
-  const [isLogin, setIsLogin] = useState(true)
+  const toast = useToast()
+  const [isLogin, setIsLogin] = useState(() => searchParams.get('mode') !== 'signup')
   const [error, setError] = useState<string | null>(null)
+  const [notice, setNotice] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
-
-  useEffect(() => {
-    if (searchParams.get('mode') === 'signup') {
-      setIsLogin(false)
-    }
-  }, [searchParams])
 
   async function handleSubmit(formData: FormData) {
     setLoading(true)
     setError(null)
+    setNotice(null)
     
     const action = isLogin ? login : signup
-    const result = await action(formData)
+    const result = (await action(formData)) as { error?: string; message?: string } | undefined
     
     if (result?.error) {
       setError(result.error)
+      toast.push({ title: isLogin ? '登录失败' : '注册失败', description: result.error, variant: 'error' })
+      setLoading(false)
+      return
+    }
+
+    if (result?.message) {
+      setNotice(result.message)
+      toast.push({ title: '请检查邮箱', description: result.message, variant: 'success', durationMs: 4200 })
       setLoading(false)
     }
   }
@@ -80,6 +86,11 @@ function LoginContent() {
               {error}
             </div>
           )}
+          {notice && (
+            <div className="p-3 text-sm text-emerald-700 bg-emerald-50 border border-emerald-100 rounded-lg">
+              {notice}
+            </div>
+          )}
 
           <button
             type="submit"
@@ -97,6 +108,7 @@ function LoginContent() {
             onClick={() => {
               setIsLogin(!isLogin)
               setError(null)
+              setNotice(null)
             }}
             className="ml-2 text-wood-600 hover:text-wood-400 font-medium transition-colors"
           >
