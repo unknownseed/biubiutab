@@ -7,7 +7,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ jobId: string }
   const { jobId } = await ctx.params;
   const supabase = await createClient();
   const { data: { user } } = await supabase.auth.getUser();
-  if (!user) return new Response("Unauthorized", { status: 401 });
+  if (!user) return Response.json({ detail: "unauthorized" }, { status: 401 });
   const res = await aiFetch(`/jobs/${encodeURIComponent(jobId)}`, { method: "GET", headers: { "x-user-id": user.id, "x-request-id": req.headers.get("x-request-id") || "" } });
   const text = await res.text();
   return new Response(text, {

@@ -11,12 +11,12 @@ export async function GET(req: Request, ctx: { params: Promise<{ jobId: string }
   const url = new URL(req.url);
   const type = url.searchParams.get("type") || "original";
 
-  if (!/^[a-zA-Z0-9_-]+$/.test(jobId)) return new Response("not found", { status: 404 });
+  if (!/^[a-zA-Z0-9_-]+$/.test(jobId)) return Response.json({ detail: "job not found" }, { status: 404 });
 
   // 1. 先去 Supabase 查一下这个 job，看它是不是用的 r2
   const sb = await createClient();
   const { data: { user } } = await sb.auth.getUser();
-  if (!user) return new Response("Unauthorized", { status: 401 });
+  if (!user) return Response.json({ detail: "unauthorized" }, { status: 401 });
 
   const { data: dbJob, error: dbError } = await sb
     .from("ai_jobs")
@@ -24,12 +24,12 @@ export async function GET(req: Request, ctx: { params: Promise<{ jobId: string }
     .eq("id", jobId)
     .eq("user_id", user.id)
     .single();
-  if (dbError || !dbJob) return new Response("not found", { status: 404 });
+  if (dbError || !dbJob) return Response.json({ detail: "job not found" }, { status: 404 });
   
   if (dbJob?.preview?.storage_provider === "r2" || dbJob?.storage_provider === "r2" || dbJob?.audio_path?.startsWith("uploads/")) {
     let publicDomain = process.env.CLOUDFLARE_PUBLIC_DOMAIN;
     if (!publicDomain) {
-      return new Response("CLOUDFLARE_PUBLIC_DOMAIN not configured", { status: 500 });
+      return Response.json({ detail: "CLOUDFLARE_PUBLIC_DOMAIN not configured" }, { status: 500 });
     }
     // Remove trailing slash if user added it
     publicDomain = publicDomain.replace(/\/$/, "");
@@ -44,7 +44,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ jobId: string }
       const stemPath = `stems/${jobId}/no_vocals.mp3`;
       return Response.redirect(`${publicDomain}/${stemPath}`);
     }
-    return new Response("invalid type", { status: 400 });
+    return Response.json({ detail: "invalid type" }, { status: 400 });
   }
 
   // 2. 如果不是 r2 (或者是以前的旧数据)，就 fallback 到本地磁盘读取逻辑
@@ -54,15 +54,15 @@ export async function GET(req: Request, ctx: { params: Promise<{ jobId: string }
     try {
       const files = await readdir(uploadsDir);
       const match = files.find(f => f.startsWith(jobId + "."));
-      if (!match) return new Response("not found", { status: 404 });
+      if (!match) return Response.json({ detail: "job not found" }, { status: 404 });
       filePath = path.join(uploadsDir, match);
     } catch {
-      return new Response("not found", { status: 404 });
+      return Response.json({ detail: "job not found" }, { status: 404 });
     }
   } else if (type === "no_vocals") {
     filePath = path.join(repoRoot(), "storage", "stems", jobId, "no_vocals.wav");
   } else {
-    return new Response("invalid type", { status: 400 });
+    return Response.json({ detail: "invalid type" }, { status: 400 });
   }
 
   try {
@@ -81,6 +81,6 @@ export async function GET(req: Request, ctx: { params: Promise<{ jobId: string }
       },
     });
   } catch {
-    return new Response("not found", { status: 404 });
+    return Response.json({ detail: "job not found" }, { status: 404 });
   }
 }

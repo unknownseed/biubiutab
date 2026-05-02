@@ -11,7 +11,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ jobId: string }
   // 1. Check Supabase to see if this is an R2 job
   const sb = await createClient();
   const { data: { user } } = await sb.auth.getUser();
-  if (!user) return new Response("Unauthorized", { status: 401 });
+  if (!user) return Response.json({ detail: "unauthorized" }, { status: 401 });
 
   const { data: dbJob } = await sb
     .from("ai_jobs")
@@ -23,7 +23,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ jobId: string }
   if (dbJob?.preview?.storage_provider === "r2" || dbJob?.storage_provider === "r2" || dbJob?.audio_path?.startsWith("uploads/")) {
     let publicDomain = process.env.CLOUDFLARE_PUBLIC_DOMAIN;
     if (!publicDomain) {
-      return new Response("CLOUDFLARE_PUBLIC_DOMAIN not configured", { status: 500 });
+      return Response.json({ detail: "CLOUDFLARE_PUBLIC_DOMAIN not configured" }, { status: 500 });
     }
     // Remove trailing slash if user added it
     publicDomain = publicDomain.replace(/\/$/, "");
@@ -35,7 +35,7 @@ export async function GET(req: Request, ctx: { params: Promise<{ jobId: string }
     // Fetch it on the server side to bypass browser CORS issues with .r2.dev domains
     const fileRes = await fetch(r2Url);
     if (!fileRes.ok) {
-      return new Response("GP5 file not found on R2", { status: 404 });
+      return Response.json({ detail: "gp5 file not found" }, { status: 404 });
     }
     
     return new Response(fileRes.body, {
@@ -51,10 +51,12 @@ export async function GET(req: Request, ctx: { params: Promise<{ jobId: string }
   const res = await aiFetch(`/jobs/${encodeURIComponent(jobId)}/result.gp5?level=${level}`, { method: "GET", headers: { "x-user-id": user.id, "x-request-id": req.headers.get("x-request-id") || "" } });
   
   if (!res.ok) {
-    return new Response(await res.text(), {
-      status: res.status,
-      headers: { "content-type": res.headers.get("content-type") || "text/plain" },
-    });
+    const raw = await res.text().catch(() => "");
+    const contentType = res.headers.get("content-type") || "";
+    if (contentType.includes("application/json")) {
+      return new Response(raw, { status: res.status, headers: { "content-type": contentType } });
+    }
+    return Response.json({ detail: raw || "upstream error" }, { status: res.status });
   }
 
   const arrayBuffer = await res.arrayBuffer();
