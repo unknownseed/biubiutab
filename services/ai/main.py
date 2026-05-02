@@ -363,7 +363,7 @@ async def _get_job_state(job_id: str) -> Optional[JobState]:
 
 
 
-@app.get("/health")
+@app.get("/health", dependencies=[Depends(_require_internal_auth)])
 def health() -> dict[str, str]:
     return {"status": "ok"}
 
