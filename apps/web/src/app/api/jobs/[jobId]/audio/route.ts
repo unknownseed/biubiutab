@@ -18,12 +18,13 @@ export async function GET(req: Request, ctx: { params: Promise<{ jobId: string }
   const { data: { user } } = await sb.auth.getUser();
   if (!user) return new Response("Unauthorized", { status: 401 });
 
-  const { data: dbJob } = await sb
+  const { data: dbJob, error: dbError } = await sb
     .from("ai_jobs")
     .select("id,user_id,audio_path,storage_provider,preview")
     .eq("id", jobId)
     .eq("user_id", user.id)
     .single();
+  if (dbError || !dbJob) return new Response("not found", { status: 404 });
   
   if (dbJob?.preview?.storage_provider === "r2" || dbJob?.storage_provider === "r2" || dbJob?.audio_path?.startsWith("uploads/")) {
     let publicDomain = process.env.CLOUDFLARE_PUBLIC_DOMAIN;
