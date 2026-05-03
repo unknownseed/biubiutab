@@ -171,6 +171,12 @@ def _storage_root() -> Path:
 def _truthy(v: str) -> bool:
     return (v or "").strip().lower() in {"1", "true", "yes", "y", "on"}
 
+def _low_mem_mode() -> bool:
+    return _truthy(os.environ.get("AI_LOW_MEM", "")) or _truthy(os.environ.get("AI_LITE", ""))
+
+def _disabled(flag: str) -> bool:
+    return _truthy(os.environ.get(flag, "")) or _low_mem_mode()
+
 
 def _cleanup_expired(storage_root: Path) -> None:
     """
@@ -579,12 +585,15 @@ async def _run_job(job_id: str) -> None:
         visualization: dict | None = None
 
         with tempfile.TemporaryDirectory(prefix=f"{job.id}_", dir=str(temp_base)) as tmp_dir:
-            try:
-                stems_tmp = await asyncio.to_thread(separate_stems, str(upload_copy), tmp_dir)
-            except Exception as e:
-                # Soft fallback: proceed with mix audio.
+            if _disabled("DISABLE_DEMUCS"):
                 stems_tmp = {}
-                job.message = f"人声剥离失败（退回混合原声）：{e}"
+                job.message = "已跳过人声剥离（低资源模式）"
+            else:
+                try:
+                    stems_tmp = await asyncio.to_thread(separate_stems, str(upload_copy), tmp_dir)
+                except Exception as e:
+                    stems_tmp = {}
+                    job.message = f"人声剥离失败（退回混合原声）：{e}"
 
             job.progress = 25
             job.message = "正在寻找和弦的色彩与心跳的节拍..."
@@ -665,19 +674,16 @@ async def _run_job(job_id: str) -> None:
             job.preview = {**(job.preview or {}), "step": "lyrics"}
             await _save_job_state(job)
 
-            vocals_path = stems_tmp.get("vocals")
-            if vocals_path:
-                # 针对在线音源 (URL)，由于通常包含不可预期的前奏/讲话，或属于翻唱/Live版本
-                # 强行搜索标准录音室歌词并强制对齐，会导致时间轴和歌词内容错乱。
-                # 此时我们将 search_title 设为 None，仅使用 Whisper 转写 + LLM 上下文错字纠错。
-                orig_provider = job.preview.get("storage_provider") if isinstance(job.preview, dict) else None
-                search_title = job.title if orig_provider != "url" else None
-                
-                # 如果是 url 且有 piped 提取到的官方字幕，我们可以直接使用，但目前还是走 Whisper 
-                # (Whisper 识别准确率在纯人声轨道上极高，且自带时间戳对齐，比网上的非对齐歌词更好)
-                lyrics = await asyncio.to_thread(transcribe_lyrics, vocals_path, "zh", search_title)
-            else:
+            if _disabled("DISABLE_LYRICS"):
                 lyrics = None
+            else:
+                vocals_path = stems_tmp.get("vocals")
+                if vocals_path:
+                    orig_provider = job.preview.get("storage_provider") if isinstance(job.preview, dict) else None
+                    search_title = job.title if orig_provider != "url" else None
+                    lyrics = await asyncio.to_thread(transcribe_lyrics, vocals_path, "zh", search_title)
+                else:
+                    lyrics = None
 
             # Add lyrics timeline to preview
             try:
@@ -694,13 +700,17 @@ async def _run_job(job_id: str) -> None:
             job.preview = {**(job.preview or {}), "step": "melody"}
             await _save_job_state(job)
 
-            if vocals_path:
-                try:
-                    vocal_melody = await asyncio.to_thread(extract_vocal_melody, vocals_path)
-                except Exception as e:
-                    vocal_melody = {"note_events": [], "midi_path": None, "error": str(e)}
-            else:
+            if _disabled("DISABLE_VOCAL_MELODY"):
                 vocal_melody = None
+            else:
+                vocals_path = stems_tmp.get("vocals")
+                if vocals_path:
+                    try:
+                        vocal_melody = await asyncio.to_thread(extract_vocal_melody, vocals_path)
+                    except Exception as e:
+                        vocal_melody = {"note_events": [], "midi_path": None, "error": str(e)}
+                else:
+                    vocal_melody = None
 
             # Step 6B/7B MVP: align melody to lyrics and generate a simple vocal melody TAB as alphaTex.
             # Keep it optional and non-blocking.
@@ -815,8 +825,9 @@ async def _run_job(job_id: str) -> None:
         job.message = "正在为前奏编写指尖的刻痕..."
         await _save_job_state(job)
 
-        # Keep existing melody extraction for intro/tab heuristics & as fallback.
-        melody_mix = await asyncio.to_thread(detect_melody, str(upload_copy))
+        melody_mix = []
+        if not _disabled("DISABLE_PITCH"):
+            melody_mix = await asyncio.to_thread(detect_melody, str(upload_copy))
         total_beats = max(1, len(analysis.bar_chords) * 4)
         beat_grid = make_beat_grid(analysis.tempo_bpm, analysis.duration_sec, total_beats)
 
