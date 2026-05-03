@@ -21,6 +21,16 @@ export async function middleware(request: NextRequest) {
     res.headers.set('x-request-id', requestId)
     return res
   }
+  try {
+    const u = new URL(supabaseUrl)
+    if (u.protocol !== 'https:' && u.protocol !== 'http:') throw new Error('invalid protocol')
+  } catch {
+    const res = pathname.startsWith('/api/')
+      ? NextResponse.json({ error: 'Server misconfigured', invalid: ['NEXT_PUBLIC_SUPABASE_URL'] }, { status: 500 })
+      : new NextResponse('Server misconfigured', { status: 500 })
+    res.headers.set('x-request-id', requestId)
+    return res
+  }
 
   let supabaseResponse = NextResponse.next({
     request: { headers: requestHeaders },
