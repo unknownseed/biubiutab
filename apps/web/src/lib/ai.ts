@@ -15,12 +15,24 @@ export async function aiFetch(pathname: string, init?: RequestInit): Promise<Res
       headers.set("x-request-id", rid);
     }
     const timeoutMs = Number(process.env.AI_FETCH_TIMEOUT_MS || "15000");
-    const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
-    const t = controller ? setTimeout(() => controller.abort(), timeoutMs) : null;
+    const doFetch = async (ms: number) => {
+      const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
+      const t = controller ? setTimeout(() => controller.abort(), ms) : null;
+      try {
+        return await fetch(url, { ...init, headers, cache: "no-store", signal: controller?.signal });
+      } finally {
+        if (t) clearTimeout(t);
+      }
+    };
     try {
-      return await fetch(url, { ...init, headers, cache: "no-store", signal: controller?.signal });
-    } finally {
-      if (t) clearTimeout(t);
+      return await doFetch(timeoutMs);
+    } catch (e) {
+      const name = e instanceof Error ? e.name : "";
+      if (name === "AbortError") {
+        const retryMs = Math.max(timeoutMs * 4, 60_000);
+        return await doFetch(retryMs);
+      }
+      throw e;
     }
   } catch (e) {
     const msg =
