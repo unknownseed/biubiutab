@@ -35,4 +35,6 @@ RUN mkdir -p /app/storage /app/storage/uploads /app/storage/stems /app/storage/r
 
 ENV PORT=8001
 
-CMD ["sh", "-c", "python -m uvicorn services.ai.main:app --host 0.0.0.0 --port ${PORT}"]
+WORKDIR /app/services/ai
+
+CMD ["sh", "-c", "python -m uvicorn main:app --host 0.0.0.0 --port ${PORT}"]
