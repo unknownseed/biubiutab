@@ -26,8 +26,6 @@ RUN python -m pip install --upgrade pip
 
 RUN mkdir -p /app/services/ai
 COPY requirements*.txt /app/services/ai/
-RUN python -m pip install --no-cache-dir "numpy==1.26.4" "Cython==0.29.37" "setuptools<70" "wheel"
-RUN python -m pip install --no-cache-dir --no-use-pep517 "madmom==0.16.1"
 RUN grep -vE '^madmom(==|>=|<=|~=)?' /app/services/ai/requirements.txt > /tmp/requirements.no_madmom.txt
 RUN python -m pip install --no-cache-dir -r /tmp/requirements.no_madmom.txt
 
