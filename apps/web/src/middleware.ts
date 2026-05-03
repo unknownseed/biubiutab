@@ -7,14 +7,28 @@ export async function middleware(request: NextRequest) {
   const requestHeaders = new Headers(request.headers)
   requestHeaders.set('x-request-id', requestId)
 
+  const pathname = request.nextUrl.pathname
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+  if (!supabaseUrl || !supabaseAnonKey) {
+    const missing = [
+      !supabaseUrl ? 'NEXT_PUBLIC_SUPABASE_URL' : null,
+      !supabaseAnonKey ? 'NEXT_PUBLIC_SUPABASE_ANON_KEY' : null,
+    ].filter(Boolean)
+    const res = pathname.startsWith('/api/')
+      ? NextResponse.json({ error: 'Server misconfigured', missing }, { status: 500 })
+      : new NextResponse('Server misconfigured', { status: 500 })
+    res.headers.set('x-request-id', requestId)
+    return res
+  }
+
   let supabaseResponse = NextResponse.next({
     request: { headers: requestHeaders },
   })
 
-  const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
+  let supabase: ReturnType<typeof createServerClient>
+  try {
+    supabase = createServerClient(supabaseUrl, supabaseAnonKey, {
       cookies: {
         getAll() {
           return request.cookies.getAll()
@@ -22,22 +36,26 @@ export async function middleware(request: NextRequest) {
         setAll(cookiesToSet) {
           cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value))
           supabaseResponse = NextResponse.next({
-            request,
+            request: { headers: requestHeaders },
           })
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
           )
         },
       },
-    }
-  )
+    })
+  } catch {
+    const res = pathname.startsWith('/api/')
+      ? NextResponse.json({ error: 'Server misconfigured' }, { status: 500 })
+      : new NextResponse('Server misconfigured', { status: 500 })
+    res.headers.set('x-request-id', requestId)
+    return res
+  }
 
   // 必须调用 getUser() 以防 token 伪造，它会主动向服务器验证
   const {
     data: { user },
   } = await supabase.auth.getUser()
-
-  const pathname = request.nextUrl.pathname
 
   // 需要保护的页面和 API 路由
   const protectedPrefixes = [
