@@ -3,10 +3,17 @@ import { getStripe } from '@/lib/stripe';
 import { createClient } from '@supabase/supabase-js';
 import { requireEnv } from '@/lib/env';
 
-const supabaseAdmin = createClient(requireEnv('NEXT_PUBLIC_SUPABASE_URL'), requireEnv('SUPABASE_SERVICE_ROLE_KEY'));
+let _supabaseAdmin: any | null = null;
+
+function supabaseAdmin() {
+  if (_supabaseAdmin) return _supabaseAdmin;
+  _supabaseAdmin = createClient(requireEnv('NEXT_PUBLIC_SUPABASE_URL'), requireEnv('SUPABASE_SERVICE_ROLE_KEY')) as any;
+  return _supabaseAdmin;
+}
 
 export async function POST(req: Request) {
   const stripe = getStripe();
+  const sb = supabaseAdmin();
   const body = await req.text();
   const signature = req.headers.get('stripe-signature') as string;
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
@@ -33,7 +40,7 @@ export async function POST(req: Request) {
 
       const planType = subscription.metadata?.plan_type || 'monthly';
 
-      const { error: updateError } = await supabaseAdmin
+      const { error: updateError } = await sb
         .from('subscriptions')
         .update({
           stripe_subscription_id: subscription.id,
@@ -53,7 +60,7 @@ export async function POST(req: Request) {
 
     case 'customer.subscription.deleted':
       const deletedSub = event.data.object as any;
-      const { error: deleteError } = await supabaseAdmin
+      const { error: deleteError } = await sb
         .from('subscriptions')
         .update({
           status: 'canceled',
@@ -75,7 +82,7 @@ export async function POST(req: Request) {
         const customer = session.customer;
 
         if (userId) {
-          const { data: existingSub } = await supabaseAdmin
+          const { data: existingSub } = await sb
             .from('subscriptions')
             .select('current_period_end')
             .eq('user_id', userId)
@@ -98,7 +105,7 @@ export async function POST(req: Request) {
 
           baseDate.setDate(baseDate.getDate() + daysToAdd);
 
-          const { error: checkoutError } = await supabaseAdmin
+          const { error: checkoutError } = await sb
             .from('subscriptions')
             .upsert({
               user_id: userId,
@@ -131,7 +138,7 @@ export async function POST(req: Request) {
             }
           } catch (e) {}
 
-          const { error: checkoutError } = await supabaseAdmin
+          const { error: checkoutError } = await sb
             .from('subscriptions')
             .upsert({
               user_id: userId,
