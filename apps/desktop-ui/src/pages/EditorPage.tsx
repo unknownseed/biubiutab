@@ -42,7 +42,7 @@ export default function EditorPage() {
     let cancelled = false;
     const poll = async () => {
       try {
-        const latest = await aiGetJson<JobResponse>(`/jobs/${jobId}`);
+        const latest = await aiGetJson<JobResponse>(`/jobs/${jobId}`, { "x-user-id": userId });
         if (cancelled) return;
         setJob(latest);
         if (latest.status === "failed") {

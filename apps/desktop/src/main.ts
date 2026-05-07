@@ -1,4 +1,4 @@
-import { app, BrowserWindow, dialog } from "electron";
+import { app, BrowserWindow, dialog, ipcMain } from "electron";
 import path from "node:path";
 import { startAiServer, type AiHandle } from "./ai";
 import { startStaticServer } from "./static";
@@ -8,12 +8,14 @@ let ai: AiHandle | null = null;
 let staticServer: { url: string; close: () => void } | null = null;
 
 async function createMainWindow(url: string) {
+  const preloadPath = path.resolve(process.cwd(), "dist/preload.cjs");
   win = new BrowserWindow({
     width: 1200,
     height: 820,
     webPreferences: {
       contextIsolation: true,
       sandbox: true,
+      preload: preloadPath,
     },
   });
 
@@ -21,6 +23,16 @@ async function createMainWindow(url: string) {
 }
 
 async function start() {
+  ipcMain.handle("pick-audio-file", async () => {
+    const result = await dialog.showOpenDialog({
+      properties: ["openFile"],
+      filters: [{ name: "Audio", extensions: ["mp3", "wav", "m4a", "aac", "flac", "ogg"] }],
+    });
+    const p = result.filePaths?.[0];
+    if (!p) return null;
+    return { path: p, name: path.basename(p) };
+  });
+
   try {
     ai = await startAiServer();
     ai.proc.on("exit", async () => {

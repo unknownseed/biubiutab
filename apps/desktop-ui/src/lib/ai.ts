@@ -4,8 +4,11 @@ export function aiBaseUrl() {
   return s.replace(/\/+$/, "");
 }
 
-export async function aiGetJson<T>(pathname: string): Promise<T> {
-  const res = await fetch(`${aiBaseUrl()}${pathname.startsWith("/") ? "" : "/"}${pathname}`, { cache: "no-store" });
+export async function aiGetJson<T>(pathname: string, headers?: Record<string, string>): Promise<T> {
+  const res = await fetch(`${aiBaseUrl()}${pathname.startsWith("/") ? "" : "/"}${pathname}`, {
+    cache: "no-store",
+    headers,
+  });
   if (!res.ok) {
     const text = await res.text().catch(() => "");
     throw new Error(text || `Request failed: ${res.status}`);
@@ -25,4 +28,3 @@ export async function aiPostJson<T>(pathname: string, body: unknown, headers?: R
   }
   return (await res.json()) as T;
 }
-

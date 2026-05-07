@@ -14,3 +14,12 @@ await build({
   outfile: path.join(outdir, "main.cjs"),
   external: ["electron"],
 });
+
+await build({
+  entryPoints: [path.resolve(process.cwd(), "src/preload.ts")],
+  bundle: true,
+  platform: "node",
+  format: "cjs",
+  outfile: path.join(outdir, "preload.cjs"),
+  external: ["electron"],
+});

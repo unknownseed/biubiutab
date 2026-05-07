@@ -23,7 +23,8 @@ export async function startStaticServer(distDir: string): Promise<{ url: string;
       const rel = u.pathname === "/" ? "/index.html" : u.pathname;
       const filePath = path.join(distDir, rel);
       const buf = await readFile(filePath).catch(async () => {
-        if (!rel.endsWith(".html")) throw new Error("not found");
+        const looksLikeAsset = /\.[a-zA-Z0-9]+$/.test(rel);
+        if (looksLikeAsset) throw new Error("not found");
         return await readFile(path.join(distDir, "index.html"));
       });
       res.statusCode = 200;
@@ -41,4 +42,3 @@ export async function startStaticServer(distDir: string): Promise<{ url: string;
   const url = `http://127.0.0.1:${port}`;
   return { url, close: () => server.close() };
 }
-
