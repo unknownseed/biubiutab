@@ -14,7 +14,9 @@ export async function aiFetch(pathname: string, init?: RequestInit): Promise<Res
       const rid = typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `${Date.now()}-${Math.random().toString(16).slice(2)}`;
       headers.set("x-request-id", rid);
     }
-    const timeoutMs = Number(process.env.AI_FETCH_TIMEOUT_MS || "15000");
+    const configuredTimeoutMs = Number(process.env.AI_FETCH_TIMEOUT_MS || "15000");
+    const isVercel = !!process.env.VERCEL;
+    const timeoutMs = isVercel ? Math.min(configuredTimeoutMs, 9000) : configuredTimeoutMs;
     const doFetch = async (ms: number) => {
       const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
       const t = controller ? setTimeout(() => controller.abort(), ms) : null;
@@ -29,6 +31,9 @@ export async function aiFetch(pathname: string, init?: RequestInit): Promise<Res
     } catch (e) {
       const name = e instanceof Error ? e.name : "";
       if (name === "AbortError") {
+        if (isVercel) {
+          return Response.json({ detail: "ai timeout (cold start). please retry shortly." }, { status: 503 });
+        }
         const retryMs = Math.max(timeoutMs * 4, 60_000);
         return await doFetch(retryMs);
       }
