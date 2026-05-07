@@ -42,7 +42,8 @@ async function start() {
 
   const isDev = !app.isPackaged;
   if (isDev) {
-    await createMainWindow("http://127.0.0.1:5173");
+    const port = Number(process.env.DESKTOP_UI_PORT || "5174");
+    await createMainWindow(`http://127.0.0.1:${port}`);
     return;
   }
 
@@ -66,4 +67,3 @@ app.on("before-quit", () => {
 });
 
 app.whenReady().then(() => void start());
-

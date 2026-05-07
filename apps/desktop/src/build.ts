@@ -10,7 +10,7 @@ await build({
   entryPoints: [path.resolve(process.cwd(), "src/main.ts")],
   bundle: true,
   platform: "node",
-  format: "esm",
-  outfile: path.join(outdir, "main.js"),
+  format: "cjs",
+  outfile: path.join(outdir, "main.cjs"),
   external: ["electron"],
 });
