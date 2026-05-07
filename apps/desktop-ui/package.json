@@ -4,11 +4,14 @@
   "version": "0.1.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "prepare:alphatab": "node scripts/prepare-alphatab-assets.mjs",
+    "postinstall": "npm run prepare:alphatab",
+    "dev": "npm run prepare:alphatab && vite",
+    "build": "npm run prepare:alphatab && vite build",
     "preview": "vite preview --strictPort"
   },
   "dependencies": {
+    "@coderline/alphatab": "^1.8.2",
     "@supabase/supabase-js": "^2.104.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",

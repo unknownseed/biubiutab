@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { aiBaseUrl, aiGetJson } from "../lib/ai";
+import AlphaTabViewer from "../components/AlphaTabViewer";
 
 type JobResponse = {
   id: string;
@@ -20,6 +21,7 @@ export default function EditorPage() {
   const [job, setJob] = useState<JobResponse | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [level, setLevel] = useState(4);
+  const [gp5, setGp5] = useState<Uint8Array | null>(null);
 
   useEffect(() => {
     let cancelled = false;
@@ -60,6 +62,30 @@ export default function EditorPage() {
       cancelled = true;
     };
   }, [jobId, userId]);
+
+  useEffect(() => {
+    if (!jobId || !userId) return;
+    if (job?.status !== "succeeded") return;
+    let cancelled = false;
+    const fetchGp5 = async () => {
+      try {
+        const url = `${aiBaseUrl()}/jobs/${jobId}/result.gp5?level=${level}`;
+        const res = await fetch(url, { headers: { "x-user-id": userId } });
+        if (!res.ok) throw new Error("GP5 下载失败");
+        const buf = await res.arrayBuffer();
+        if (cancelled) return;
+        setGp5(new Uint8Array(buf));
+      } catch (e) {
+        if (cancelled) return;
+        setGp5(null);
+        setError(e instanceof Error ? e.message : "GP5 下载失败");
+      }
+    };
+    void fetchGp5();
+    return () => {
+      cancelled = true;
+    };
+  }, [job?.status, jobId, level, userId]);
 
   const download = async () => {
     if (!jobId) return;
@@ -121,9 +147,14 @@ export default function EditorPage() {
               下载 GP5
             </button>
           </div>
+
+          {gp5 ? (
+            <div className="mt-8 rounded-xl border border-paper-300 bg-paper-50 p-4">
+              <AlphaTabViewer data={gp5} />
+            </div>
+          ) : null}
         </div>
       </div>
     </main>
   );
 }
-
