@@ -1,0 +1,23 @@
+{
+  "name": "desktop",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/main.js",
+  "scripts": {
+    "dev": "concurrently -n ui,main \"npm --prefix ../desktop-ui run dev\" \"wait-on tcp:5173 && npm run dev:electron\"",
+    "dev:electron": "tsx src/main.ts",
+    "build": "npm --prefix ../desktop-ui run build && tsx src/build.ts",
+    "start": "node dist/main.js"
+  },
+  "dependencies": {
+    "electron": "^38.1.2"
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.0",
+    "esbuild": "^0.25.9",
+    "tsx": "^4.20.5",
+    "typescript": "^5",
+    "wait-on": "^8.0.5"
+  }
+}

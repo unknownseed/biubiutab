@@ -1,0 +1,37 @@
+@import url("https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=Pacifico&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@300;400;500;600&display=swap");
+
+@import "tailwindcss";
+
+@theme {
+  --color-paper-50: #ffffff;
+  --color-paper-100: #ffffff;
+  --color-paper-200: #f9f9f9;
+  --color-paper-300: #eaeaea;
+  --color-ink-700: #3d3d3d;
+  --color-ink-800: #2a2a2a;
+  --color-ink-900: #1a1a1a;
+  --color-ink-950: #111111;
+  --color-retro-green: #2f4f4f;
+  --color-wood-400: #eab308;
+  --color-wood-500: #ca8a04;
+  --font-serif: "Noto Serif SC", "Playfair Display", Georgia, serif;
+  --font-sans: "Inter", "Noto Sans SC", system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", monospace;
+  --font-logo: "Caveat", "Pacifico", cursive;
+}
+
+:root {
+  --background: var(--color-paper-100);
+  --foreground: var(--color-ink-700);
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  font-family: var(--font-sans);
+}
+
