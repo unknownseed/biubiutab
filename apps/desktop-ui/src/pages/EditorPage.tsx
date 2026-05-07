@@ -13,12 +13,42 @@ type JobResponse = {
   error?: string | null;
 };
 
+type ChordAt = {
+  chord: string;
+  bar: number;
+  beat: number;
+};
+
+type Section = {
+  name: string;
+  start_bar: number;
+  end_bar: number;
+  chords: ChordAt[];
+};
+
+type JobResult = {
+  title: string;
+  key: string;
+  tempo: number;
+  time_signature: string;
+  arrangement: string;
+  sections: Section[];
+  alphatex: string;
+  metadata?: Record<string, unknown> | null;
+};
+
+function safeFilename(name: string): string {
+  const trimmed = (name || "").trim() || "score";
+  return trimmed.replaceAll(/[^a-zA-Z0-9._-]+/g, "_");
+}
+
 export default function EditorPage() {
   const { jobId } = useParams();
   const navigate = useNavigate();
   const sb = useMemo(() => supabase(), []);
   const [userId, setUserId] = useState<string | null>(null);
   const [job, setJob] = useState<JobResponse | null>(null);
+  const [result, setResult] = useState<JobResult | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [level, setLevel] = useState(4);
   const [gp5, setGp5] = useState<Uint8Array | null>(null);
@@ -87,6 +117,26 @@ export default function EditorPage() {
     };
   }, [job?.status, jobId, level, userId]);
 
+  useEffect(() => {
+    if (!jobId || !userId) return;
+    if (job?.status !== "succeeded") return;
+    let cancelled = false;
+    const fetchResult = async () => {
+      try {
+        const r = await aiGetJson<JobResult>(`/jobs/${jobId}/result`, { "x-user-id": userId });
+        if (cancelled) return;
+        setResult(r);
+      } catch (e) {
+        if (cancelled) return;
+        setResult(null);
+      }
+    };
+    void fetchResult();
+    return () => {
+      cancelled = true;
+    };
+  }, [job?.status, jobId, userId]);
+
   const download = async () => {
     if (!jobId) return;
     const url = `${aiBaseUrl()}/jobs/${jobId}/result.gp5?level=${level}`;
@@ -99,7 +149,8 @@ export default function EditorPage() {
     const blob = new Blob([buf], { type: "application/octet-stream" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob);
-    a.download = `result_l${level}.gp5`;
+    const base = safeFilename(result?.title || job?.title || "tab");
+    a.download = `${base}.gp5`;
     a.click();
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   };
@@ -125,6 +176,16 @@ export default function EditorPage() {
             <div className="text-sm text-ink-800">进度：{typeof job?.progress === "number" ? `${job.progress}%` : "-"}</div>
             <div className="text-sm text-ink-700/70">{job?.message || ""}</div>
           </div>
+
+          {result ? (
+            <div className="mt-4 grid grid-cols-2 gap-3 rounded-xl border border-paper-300 bg-paper-50 p-4 text-sm">
+              <div className="col-span-2 font-serif tracking-widest text-ink-900">{result.title}</div>
+              <div className="text-ink-800">调性：{result.key}</div>
+              <div className="text-ink-800">速度：{result.tempo} BPM</div>
+              <div className="text-ink-800">拍号：{result.time_signature}</div>
+              <div className="text-ink-800">编配：{result.arrangement}</div>
+            </div>
+          ) : null}
 
           <div className="mt-6 flex items-center gap-3">
             <select
