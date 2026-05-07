@@ -56,6 +56,8 @@ export async function startAiServer(): Promise<AiHandle> {
   const cmd = pythonCmd();
   const env: Record<string, string> = {
     ...process.env,
+    AI_SERVICE_TOKEN: "",
+    AI_STRICT_ENV: "",
     AI_MAX_CONCURRENCY: process.env.AI_MAX_CONCURRENCY || "1",
     PYTHONUNBUFFERED: "1",
   } as any;
