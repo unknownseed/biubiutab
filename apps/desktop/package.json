@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/main.cjs",
   "scripts": {
-    "dev": "concurrently -n ui,main,app \"npm --prefix ../desktop-ui run dev -- --port 5174\" \"npm run dev:main\" \"wait-on tcp:127.0.0.1:5174 && npm run dev:electron\"",
+    "dev": "DESKTOP_UI_PORT=${DESKTOP_UI_PORT:-5174} concurrently -n ui,main,app \"npm --prefix ../desktop-ui run dev -- --port $DESKTOP_UI_PORT\" \"npm run dev:main\" \"wait-on tcp:127.0.0.1:$DESKTOP_UI_PORT && npm run dev:electron\"",
     "dev:main": "concurrently -n main,preload \"esbuild src/main.ts --bundle --platform=node --format=cjs --outfile=dist/main.cjs --external:electron --watch\" \"esbuild src/preload.ts --bundle --platform=node --format=cjs --outfile=dist/preload.cjs --external:electron --watch\"",
     "dev:electron": "wait-on dist/main.cjs && electron dist/main.cjs",
     "build": "npm --prefix ../desktop-ui run build && tsx src/build.ts",
