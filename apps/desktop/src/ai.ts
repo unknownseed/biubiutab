@@ -26,13 +26,30 @@ export async function resolveAiCwd(): Promise<string> {
   for (const c of candidates) {
     if (await exists(path.join(c, "main.py"))) return c;
   }
-  return candidates[0];
+  throw new Error(`services/ai not found. Tried: ${candidates.join(", ")}`);
 }
 
 export type AiHandle = {
   proc: ChildProcessWithoutNullStreams;
   stop: () => void;
+  getLastLogs: () => string;
 };
+
+async function waitForHealth(timeoutMs: number) {
+  const deadline = Date.now() + timeoutMs;
+  const url = "http://127.0.0.1:8001/health";
+  while (Date.now() < deadline) {
+    try {
+      const res = await fetch(url, { cache: "no-store" as any });
+      if (res.ok) {
+        const text = await res.text().catch(() => "");
+        if ((text || "").includes('"ok"') || (text || "").includes("ok")) return;
+      }
+    } catch {}
+    await new Promise((r) => setTimeout(r, 300));
+  }
+  throw new Error("AI health check timeout");
+}
 
 export async function startAiServer(): Promise<AiHandle> {
   const cwd = await resolveAiCwd();
@@ -46,10 +63,39 @@ export async function startAiServer(): Promise<AiHandle> {
   const args = ["-m", "uvicorn", "main:app", "--host", "127.0.0.1", "--port", "8001"];
 
   const proc = spawn(cmd, args, { cwd, env, stdio: "pipe" });
+  let logBuf = "";
+  const append = (chunk: Buffer) => {
+    const s = chunk.toString("utf-8");
+    logBuf = (logBuf + s).slice(-6000);
+  };
+  proc.stdout.on("data", append);
+  proc.stderr.on("data", append);
   const stop = () => {
     if (proc.killed) return;
     proc.kill("SIGTERM");
   };
-  return { proc, stop };
-}
 
+  await new Promise<void>((resolve, reject) => {
+    proc.once("error", (e) => reject(e));
+    setTimeout(() => resolve(), 0);
+  });
+
+  try {
+    await waitForHealth(Number(process.env.AI_STARTUP_TIMEOUT_MS || "20000"));
+  } catch (e) {
+    stop();
+    const tail = logBuf.trim();
+    const hint = [
+      "AI 服务启动失败。",
+      `命令：${cmd} ${args.join(" ")}`,
+      `目录：${cwd}`,
+      "常见修复：进入 services/ai 后执行 python -m pip install -r requirements.txt",
+      tail ? `日志：\n${tail}` : "",
+    ]
+      .filter(Boolean)
+      .join("\n");
+    throw new Error(hint);
+  }
+
+  return { proc, stop, getLastLogs: () => logBuf };
+}
