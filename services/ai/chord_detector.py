@@ -404,9 +404,16 @@ def analyze_audio_multi(
     chord_path = chord_path or audio_path
     key_path = key_path or audio_path
 
+    low_mem = (os.environ.get("AI_LOW_MEM") or os.environ.get("AI_LITE") or "").strip().lower() in {"1", "true", "yes", "y", "on"}
+    max_sec = float(os.environ.get("AI_ANALYSIS_MAX_SEC", "90")) if low_mem else 0.0
+    load_kwargs = {"sr": 22050, "mono": True, "duration": max_sec} if low_mem and max_sec > 0 else {"sr": None, "mono": True}
+
     # Tempo / beat grid
-    y_tempo, sr_tempo = librosa.load(tempo_path, sr=None, mono=True)
-    duration_sec = float(librosa.get_duration(y=y_tempo, sr=sr_tempo))
+    y_tempo, sr_tempo = librosa.load(tempo_path, **load_kwargs)
+    try:
+        duration_sec = float(librosa.get_duration(path=tempo_path))
+    except Exception:
+        duration_sec = float(librosa.get_duration(y=y_tempo, sr=sr_tempo))
     tempo_bpm, beat_times = detect_tempo(y_tempo, sr_tempo)
     if beat_times.size < 2:
         beat_times = np.asarray([0.0, float(duration_sec)], dtype=np.float32)
@@ -432,7 +439,7 @@ def analyze_audio_multi(
         beat_times = np.concatenate([front_beats, beat_times, back_beats]).astype(np.float32)
 
     # Chords (prefer madmom via audio_path=chord_path)
-    y_chord, sr_chord = librosa.load(chord_path, sr=None, mono=True)
+    y_chord, sr_chord = librosa.load(chord_path, **load_kwargs)
 
     bar_chords_sub: list[list[str]] | None = None
     try:
@@ -479,7 +486,7 @@ def analyze_audio_multi(
             bar_chords_sub = [[c] for c in bar_chords]
 
     # Key (from chroma of key_path)
-    y_key, sr_key = librosa.load(key_path, sr=None, mono=True)
+    y_key, sr_key = librosa.load(key_path, **load_kwargs)
     chroma = librosa.feature.chroma_cqt(y=y_key, sr=sr_key)
     key = detect_key_from_chroma(np.mean(chroma, axis=1))
 

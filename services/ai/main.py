@@ -604,29 +604,34 @@ async def _run_job(job_id: str) -> None:
             # 6-stems mode provides 'accompaniment' (bass+guitar+piano+other)
             # which is perfect for chord detection as it excludes vocals and drums.
             acc_path = stems_tmp.get("accompaniment") or stems_tmp.get("no_vocals") or stems_tmp.get("other") or str(upload_copy)
-            try:
-                hpss_tmp = await asyncio.to_thread(extract_harmonic_percussive, acc_path)
-            except Exception as e:
+            harmonic_path = acc_path
+            percussive_path = str(upload_copy)
+            if _disabled("DISABLE_HPSS"):
                 hpss_tmp = {}
-                job.message = f"节奏与和弦分离失败（退回原伴奏）：{e}"
-
-            harmonic_path = hpss_tmp.get("harmonic_path") or acc_path
-            percussive_path = hpss_tmp.get("percussive_path") or str(upload_copy)
-            try:
-                rhythm_energy = await asyncio.to_thread(compute_percussive_energy, percussive_path)
-            except Exception:
                 rhythm_energy = None
+            else:
+                try:
+                    hpss_tmp = await asyncio.to_thread(extract_harmonic_percussive, acc_path)
+                except Exception as e:
+                    hpss_tmp = {}
+                    job.message = f"节奏与和弦分离失败（退回原伴奏）：{e}"
 
-            # Preview waveform as soon as we have an accompaniment track (other/no_vocals preferred)
-            try:
-                waveform_src = stems_tmp.get("other") or stems_tmp.get("no_vocals") or acc_path
-                job.preview = {
-                    "step": "hpss",
-                    "waveform": await asyncio.to_thread(compute_waveform_peaks, waveform_src),
-                    "rhythm_energy": rhythm_energy,
-                }
-            except Exception:
-                pass
+                harmonic_path = hpss_tmp.get("harmonic_path") or acc_path
+                percussive_path = hpss_tmp.get("percussive_path") or str(upload_copy)
+                try:
+                    rhythm_energy = await asyncio.to_thread(compute_percussive_energy, percussive_path)
+                except Exception:
+                    rhythm_energy = None
+
+                try:
+                    waveform_src = stems_tmp.get("other") or stems_tmp.get("no_vocals") or acc_path
+                    job.preview = {
+                        "step": "hpss",
+                        "waveform": await asyncio.to_thread(compute_waveform_peaks, waveform_src),
+                        "rhythm_energy": rhythm_energy,
+                    }
+                except Exception:
+                    pass
 
             job.progress = 35
             job.message = "正在丈量音符的间距与调性..."
