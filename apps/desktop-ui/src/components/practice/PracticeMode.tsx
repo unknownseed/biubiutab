@@ -31,6 +31,9 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
   const countdownTimerRef = useRef<number | null>(null);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const audioUrlRef = useRef<string | null>(null);
+  const audioSourceRef = useRef<"midi" | "original" | "no_vocals">("midi");
+  const playbackRateRef = useRef(1.0);
+  const bpmRef = useRef<number>(practiceData?.metadata?.tempo || 120);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
@@ -53,6 +56,18 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       isMountedRef.current = false;
     };
   }, []);
+
+  useEffect(() => {
+    audioSourceRef.current = audioSource;
+  }, [audioSource]);
+
+  useEffect(() => {
+    playbackRateRef.current = playbackRate;
+  }, [playbackRate]);
+
+  useEffect(() => {
+    bpmRef.current = bpm || practiceData?.metadata?.tempo || 120;
+  }, [bpm, practiceData?.metadata?.tempo]);
 
   const destroyEngine = () => {
     if (countdownTimerRef.current) {
@@ -145,8 +160,8 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
         if (!isMountedRef.current) return;
         const sec = api.timePosition / 1000;
         setCurrentTime(sec);
-        if (audioSource !== "midi" && audioRef.current && Number.isFinite(audioRef.current.duration)) {
-          const safeBpm = bpm || 120;
+        if (audioSourceRef.current !== "midi" && audioRef.current && Number.isFinite(audioRef.current.duration)) {
+          const safeBpm = bpmRef.current || 120;
           const b0 = practiceData?.chordBlocks?.[0];
           const real0 = typeof b0?.startTime === "number" ? b0.startTime : 0;
           const ideal0 = b0 ? (Number(b0.startBeat || 0) * 60) / safeBpm : 0;
@@ -278,12 +293,36 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       return;
     }
 
-    const baseBpm = practiceData?.metadata?.tempo || 120;
+    if (!isPlayerReady) {
+      setPlayerError("播放器尚未就绪，请稍候再试。");
+      return;
+    }
+
+    const baseBpm = bpmRef.current || 120;
     const safeBpm = Math.max(60, Math.min(240, baseBpm));
-    const intervalMs = (60000 / safeBpm) / playbackRate;
+    const intervalMs = (60000 / safeBpm) / (playbackRateRef.current || 1);
+
+    try {
+      if (audioSourceRef.current !== "midi" && audioRef.current) {
+        audioRef.current.volume = 0;
+        void audioRef.current.play().catch(() => {});
+      } else {
+        try {
+          api.masterVolume = 0;
+        } catch {}
+      }
+    } catch {}
+
+    try {
+      api.playPause();
+    } catch (e) {
+      setPlayerError(e instanceof Error ? e.message : "播放失败");
+      return;
+    }
+
     let count = 4;
     setCountdown(count);
-
+    if (countdownTimerRef.current) window.clearInterval(countdownTimerRef.current);
     countdownTimerRef.current = window.setInterval(() => {
       count -= 1;
       if (count > 0) {
@@ -294,7 +333,11 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       countdownTimerRef.current = null;
       setCountdown(null);
       try {
-        if (api.playerState === 0) api.playPause();
+        if (audioSourceRef.current !== "midi" && audioRef.current) {
+          audioRef.current.volume = 1;
+        } else {
+          api.masterVolume = 1;
+        }
       } catch {}
     }, intervalMs);
   };
@@ -316,8 +359,8 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
     const targetIdealTime = block?.startTime ?? timeSeconds;
     api.timePosition = targetIdealTime * 1000;
     setCurrentTime(targetIdealTime);
-    if (audioSource !== "midi" && audioRef.current) {
-      const safeBpm = bpm || 120;
+    if (audioSourceRef.current !== "midi" && audioRef.current) {
+      const safeBpm = bpmRef.current || 120;
       const b0 = practiceData?.chordBlocks?.[0];
       const real0 = typeof b0?.startTime === "number" ? b0.startTime : 0;
       const ideal0 = b0 ? (Number(b0.startBeat || 0) * 60) / safeBpm : 0;
