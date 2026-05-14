@@ -841,7 +841,13 @@ async def _run_job(job_id: str) -> None:
 
         melody_mix = []
         if not _disabled("DISABLE_PITCH"):
-            melody_mix = await asyncio.to_thread(detect_melody, str(upload_copy))
+            try:
+                melody_mix = await asyncio.wait_for(
+                    asyncio.to_thread(detect_melody, str(upload_copy)),
+                    timeout=max(30, int(os.environ.get("AI_PITCH_TIMEOUT_SEC", "180"))),
+                )
+            except Exception:
+                melody_mix = []
         total_beats = max(1, len(analysis.bar_chords) * 4)
         beat_grid = make_beat_grid(analysis.tempo_bpm, analysis.duration_sec, total_beats)
 
@@ -877,36 +883,54 @@ async def _run_job(job_id: str) -> None:
         # fallback to chord-based arpeggios if transcription is insufficient.
         intro_bars = {}
         try:
-            intro_bars = build_intro_bar_overrides(
-                melody=melody_mix,
-                tempo_bpm=analysis.tempo_bpm,
-                duration_sec=analysis.duration_sec,
-                time_signature=analysis.time_signature,
-                bar_chords=analysis.bar_chords,
-                bars=int(os.environ.get("INTRO_BARS", "8")),
-                min_notes_per_bar=int(os.environ.get("INTRO_MIN_NOTES_PER_BAR", "2")),
-                jianpu_beats=jianpu,
-                lyrics_beats=lyrics_beats,
+            intro_bars = await asyncio.wait_for(
+                asyncio.to_thread(
+                    build_intro_bar_overrides,
+                    melody=melody_mix,
+                    tempo_bpm=analysis.tempo_bpm,
+                    duration_sec=analysis.duration_sec,
+                    time_signature=analysis.time_signature,
+                    bar_chords=analysis.bar_chords,
+                    bars=int(os.environ.get("INTRO_BARS", "8")),
+                    min_notes_per_bar=int(os.environ.get("INTRO_MIN_NOTES_PER_BAR", "2")),
+                    jianpu_beats=jianpu,
+                    lyrics_beats=lyrics_beats,
+                ),
+                timeout=max(20, int(os.environ.get("AI_INTRO_TIMEOUT_SEC", "120"))),
             )
         except Exception:
             intro_bars = {}
 
-        # Generate all 4 levels of GP5 files for the user to choose from
-        for level in [1, 2, 3, 4]:
-            gp5_bytes = generate_gp5_binary(
-                title=_clean_title(analysis.title),
-                tempo=analysis.tempo_bpm,
-                time_signature=analysis.time_signature,
-                key=analysis.key,
-                sections=display_sections,
-                intro_bars=intro_bars,
-                lyrics_beats=lyrics_beats,
-                rhythm_energy=rhythm_energy,
-                accompaniment_path=str(upload_copy),
-                beat_times=[float(x) for x in getattr(analysis, "beat_times", [])] if analysis else [],
-                stems_paths=stems_tmp,
-                level=level,
-            )
+        levels = [1, 2, 3, 4] if _truthy(os.environ.get("AI_GENERATE_ALL_LEVELS", "")) else [4]
+        gp5_timeout = max(30, int(os.environ.get("AI_GP5_TIMEOUT_SEC", "240")))
+        created_any = False
+        for i, level in enumerate(levels):
+            job.progress = max(79, min(99, 80 + int((i / max(1, len(levels))) * 18)))
+            job.message = f"正在写入 GP5（Level {level}）..."
+            await _save_job_state(job)
+            try:
+                gp5_bytes = await asyncio.wait_for(
+                    asyncio.to_thread(
+                        generate_gp5_binary,
+                        title=_clean_title(analysis.title),
+                        tempo=analysis.tempo_bpm,
+                        time_signature=analysis.time_signature,
+                        key=analysis.key,
+                        sections=display_sections,
+                        intro_bars=intro_bars,
+                        lyrics_beats=lyrics_beats,
+                        rhythm_energy=rhythm_energy,
+                        accompaniment_path=str(upload_copy),
+                        beat_times=[float(x) for x in getattr(analysis, "beat_times", [])] if analysis else [],
+                        stems_paths=stems_tmp,
+                        level=level,
+                    ),
+                    timeout=gp5_timeout,
+                )
+            except Exception as e:
+                if level == 4:
+                    raise
+                continue
 
             # Write results artifacts under storage/results/{job_id}/
             try:
@@ -916,11 +940,15 @@ async def _run_job(job_id: str) -> None:
                 # We also save the default (level 4) as result.gp5 for backward compatibility
                 if level == 4:
                     (results_dir / "result.gp5").write_bytes(gp5_bytes)
+                created_any = True
                     
                 if isinstance(vocal_melody, dict) and isinstance(vocal_melody.get("alphatex"), str):
                     (results_dir / "melody.alphatex").write_text(vocal_melody["alphatex"], encoding="utf-8")
             except Exception:
                 pass
+
+        if not created_any:
+            raise RuntimeError("failed to generate gp5")
 
         job.result = JobResult(
             title=_clean_title(analysis.title),
