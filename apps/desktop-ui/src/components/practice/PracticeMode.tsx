@@ -3,7 +3,7 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { Chord, Interval, Note } from "@tonaljs/tonal";
 import ChordTimeline, { type ChordBlock, findActiveIndex } from "./ChordTimeline";
-import SyncedLyrics, { findActiveLyricIndex } from "./SyncedLyrics";
+import SyncedLyrics from "./SyncedLyrics";
 import LargeChordDiagram from "./LargeChordDiagram";
 import PlaybackControls from "./PlaybackControls";
 import { aiBaseUrl } from "../../lib/ai";
@@ -34,7 +34,6 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
   const audioSourceRef = useRef<"midi" | "original" | "no_vocals">("midi");
   const playbackRateRef = useRef(1.0);
   const bpmRef = useRef<number>(practiceData?.metadata?.tempo || 120);
-  const isPlayerReadyRef = useRef(false);
   const resolvedRef = useRef(false);
 
   const [isPlaying, setIsPlaying] = useState(false);
@@ -58,10 +57,6 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       isMountedRef.current = false;
     };
   }, []);
-
-  useEffect(() => {
-    isPlayerReadyRef.current = isPlayerReady;
-  }, [isPlayerReady]);
 
   useEffect(() => {
     audioSourceRef.current = audioSource;
@@ -155,13 +150,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
 
           api.playerReady?.on?.(() => {
             if (!isMountedRef.current) return;
-            setIsPlayerReady(true);
-            setIsInitializing(false);
             api.playbackSpeed = playbackRate;
-            if (!resolvedRef.current) {
-              resolvedRef.current = true;
-              resolve();
-            }
           });
 
           api.playerPositionChanged?.on?.(() => {
@@ -200,40 +189,48 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
           alphaTabApiRef.current = api;
 
           return fetch(ALPHATAB_SOUNDFONT_URL)
-            .then((res) => res.arrayBuffer())
+            .then((res) => {
+              if (!res.ok) throw new Error(`soundfont http ${res.status}`);
+              return res.arrayBuffer();
+            })
             .then((buf) => api.loadSoundFont(buf, false));
         })
         .then(() => {
           try {
             loadedGp5DataRef.current = gp5Data;
-            alphaTabApiRef.current.load(gp5Data);
+            api.load(gp5Data);
           } catch (e) {
             setPlayerError(e instanceof Error ? e.message : "gp5 load failed");
+            if (!resolvedRef.current) { resolvedRef.current = true; resolve(); }
+            return;
+          }
+
+          const pollId = window.setInterval(() => {
+            if (!isMountedRef.current) { window.clearInterval(pollId); return; }
+            if (alphaTabApiRef.current?.isReadyForPlayback) {
+              window.clearInterval(pollId);
+              setIsPlayerReady(true);
+              setIsInitializing(false);
+              if (!resolvedRef.current) { resolvedRef.current = true; resolve(); }
+            }
+          }, 200);
+
+          setTimeout(() => {
+            window.clearInterval(pollId);
+            if (!isMountedRef.current) return;
             if (!resolvedRef.current) {
+              setIsPlayerReady(true);
+              setIsInitializing(false);
+              setPlayerError("播放器初始化超时");
               resolvedRef.current = true;
               resolve();
             }
-          }
-
-          setTimeout(() => {
-            if (!isMountedRef.current) return;
-            if (!isPlayerReadyRef.current && alphaTabApiRef.current?.isReadyForPlayback) {
-              setIsPlayerReady(true);
-              setIsInitializing(false);
-              if (!resolvedRef.current) {
-                resolvedRef.current = true;
-                resolve();
-              }
-            }
-          }, 5000);
+          }, 12000);
         })
         .catch((e) => {
           setPlayerError(e instanceof Error ? e.message : "engine init failed");
           setIsInitializing(false);
-          if (!resolvedRef.current) {
-            resolvedRef.current = true;
-            resolve();
-          }
+          if (!resolvedRef.current) { resolvedRef.current = true; resolve(); }
         });
     });
 
@@ -314,9 +311,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
     if (!api) return;
 
     if (isPlaying) {
-      try {
-        api.playPause();
-      } catch {}
+      try { api.playPause(); } catch {}
       return;
     }
 
@@ -330,24 +325,6 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
     const baseBpm = bpmRef.current || 120;
     const safeBpm = Math.max(60, Math.min(240, baseBpm));
     const intervalMs = (60000 / safeBpm) / (playbackRateRef.current || 1);
-
-    try {
-      if (audioSourceRef.current !== "midi" && audioRef.current) {
-        audioRef.current.volume = 0;
-        void audioRef.current.play().catch(() => {});
-      } else {
-        try {
-          api.masterVolume = 0;
-        } catch {}
-      }
-    } catch {}
-
-    try {
-      api.playPause();
-    } catch (e) {
-      setPlayerError(e instanceof Error ? e.message : "播放失败");
-      return;
-    }
 
     let count = 4;
     setCountdown(count);
@@ -363,10 +340,9 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       setCountdown(null);
       try {
         if (audioSourceRef.current !== "midi" && audioRef.current) {
-          audioRef.current.volume = 1;
-        } else {
-          api.masterVolume = 1;
+          void audioRef.current.play().catch(() => {});
         }
+        if (api.playerState === 0) api.playPause();
       } catch {}
     }, intervalMs);
   };
@@ -489,11 +465,6 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
     }));
   }, [chordBlocks, practiceData?.lyrics]);
 
-  const activeLyricIndex = useMemo(() => {
-    if (!chordLyrics.length) return -1;
-    return findActiveLyricIndex(chordLyrics, currentTime);
-  }, [chordLyrics, currentTime]);
-
   const displayTitle = songTitle || practiceData?.metadata?.title || practiceData?.title || "未知曲目";
   const currentChordBlock: any = chordBlocks[activeChordIndex] || chordBlocks[0];
   const lastChordEndTime = chordBlocks.length ? chordBlocks[chordBlocks.length - 1].endTime : duration;
@@ -560,7 +531,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
         </div>
 
         <div className="h-[100px] w-full">
-          <SyncedLyrics lyrics={chordLyrics} activeIndex={activeLyricIndex} countdown={countdown} />
+          <SyncedLyrics lyrics={chordLyrics} activeIndex={activeChordIndex} countdown={countdown} />
         </div>
       </div>
 
