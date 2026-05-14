@@ -6,6 +6,8 @@ import { startStaticServer } from "./static";
 let win: BrowserWindow | null = null;
 let ai: AiHandle | null = null;
 let staticServer: { url: string; close: () => void } | null = null;
+let aiEnsureTimer: NodeJS.Timeout | null = null;
+let aiStarting = false;
 
 async function isAiRunning(): Promise<boolean> {
   try {
@@ -13,6 +15,37 @@ async function isAiRunning(): Promise<boolean> {
     return res.ok;
   } catch {
     return false;
+  }
+}
+
+async function ensureAiRunning() {
+  if (aiStarting) return;
+  const online = await isAiRunning();
+  if (online) return;
+  if (ai?.proc && !ai.proc.killed) return;
+  aiStarting = true;
+  try {
+    ai = await startAiServer();
+    ai.proc.on("exit", async () => {
+      if (!app.isQuitting) {
+        await dialog.showMessageBox({
+          type: "error",
+          message: "本地 AI 服务已退出",
+          detail: "请重启应用或检查本地依赖是否可用。",
+        });
+      }
+    });
+  } catch (e) {
+    await dialog.showMessageBox({
+      type: "error",
+      message: "无法启动本地 AI 服务",
+      detail: e instanceof Error ? e.message : "unknown error",
+    });
+    try {
+      console.error(e instanceof Error ? e.message : e);
+    } catch {}
+  } finally {
+    aiStarting = false;
   }
 }
 
@@ -42,30 +75,9 @@ async function start() {
     return { path: p, name: path.basename(p) };
   });
 
-  try {
-    const already = await isAiRunning();
-    if (!already) {
-      ai = await startAiServer();
-      ai.proc.on("exit", async () => {
-        if (!app.isQuitting) {
-          await dialog.showMessageBox({
-            type: "error",
-            message: "本地 AI 服务已退出",
-            detail: "请重启应用或检查本地依赖是否可用。",
-          });
-        }
-      });
-    }
-  } catch (e) {
-    await dialog.showMessageBox({
-      type: "error",
-      message: "无法启动本地 AI 服务",
-      detail: e instanceof Error ? e.message : "unknown error",
-    });
-    try {
-      console.error(e instanceof Error ? e.message : e);
-    } catch {}
-  }
+  await ensureAiRunning();
+  if (aiEnsureTimer) clearInterval(aiEnsureTimer);
+  aiEnsureTimer = setInterval(() => void ensureAiRunning(), 5000);
 
   const isDev = !app.isPackaged;
   if (isDev) {
@@ -85,6 +97,9 @@ app.on("window-all-closed", () => {
 
 app.on("before-quit", () => {
   (app as any).isQuitting = true;
+  try {
+    if (aiEnsureTimer) clearInterval(aiEnsureTimer);
+  } catch {}
   try {
     staticServer?.close();
   } catch {}
