@@ -101,6 +101,7 @@ export default function PracticePage() {
               gp5Data={gp5}
               songTitle={result.title}
               jobId={jobId}
+              userId={userId}
               level={level}
               onLevelChange={setLevel}
             />
@@ -114,4 +115,3 @@ export default function PracticePage() {
     </main>
   );
 }
-

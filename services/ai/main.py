@@ -1133,3 +1133,55 @@ async def get_job_result_gp5(job_id: str, level: Optional[int] = 4, x_user_id: O
         media_type="application/octet-stream",
         filename=f"{job_id}_l{level}.gp5"
     )
+
+
+@app.get("/jobs/{job_id}/audio", dependencies=[Depends(_require_internal_auth)])
+async def get_job_audio(job_id: str, type: Optional[str] = "original", x_user_id: Optional[str] = Header(default=None, alias="x-user-id")):
+    if not x_user_id:
+        raise HTTPException(status_code=400, detail="missing user")
+    job = await _get_owned_job(job_id, x_user_id)
+
+    def _guess_media_type(p: Path) -> str:
+        ext = p.suffix.lower()
+        if ext == ".wav":
+            return "audio/wav"
+        if ext == ".mp3":
+            return "audio/mpeg"
+        if ext == ".m4a":
+            return "audio/mp4"
+        if ext == ".aac":
+            return "audio/aac"
+        if ext == ".ogg":
+            return "audio/ogg"
+        if ext == ".flac":
+            return "audio/flac"
+        return "application/octet-stream"
+
+    root = _storage_root()
+    stems_dir = root / "stems" / job_id
+    uploads_dir = root / "uploads"
+
+    selected: Path | None = None
+    kind = (type or "original").strip().lower()
+
+    if kind == "no_vocals":
+        for cand in (stems_dir / "no_vocals.mp3", stems_dir / "no_vocals.wav", stems_dir / "other.wav"):
+            if cand.exists():
+                selected = cand
+                break
+    elif kind == "original":
+        if isinstance(job.audio_path, Path) and job.audio_path.exists():
+            selected = job.audio_path
+        else:
+            for ext in (".mp3", ".wav", ".m4a", ".aac", ".flac", ".ogg"):
+                cand = uploads_dir / f"{job_id}{ext}"
+                if cand.exists():
+                    selected = cand
+                    break
+    else:
+        raise HTTPException(status_code=400, detail="unknown type")
+
+    if not selected or not selected.exists():
+        raise HTTPException(status_code=404, detail="audio not found")
+
+    return FileResponse(path=selected, media_type=_guess_media_type(selected), filename=selected.name)

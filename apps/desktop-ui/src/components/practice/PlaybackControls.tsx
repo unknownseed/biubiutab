@@ -10,6 +10,8 @@ export type PlaybackControlsProps = {
   duration: number;
   onPlayPause: () => void;
   onSeek: (timeSeconds: number) => void;
+  audioSource?: "midi" | "original" | "no_vocals";
+  onAudioSourceChange?: (source: "midi" | "original" | "no_vocals") => void;
   playbackRate?: number;
   onPlaybackRateChange?: (rate: number) => void;
   transpose?: number;
@@ -38,6 +40,8 @@ export const PlaybackControls = React.memo(function PlaybackControls({
   duration,
   onPlayPause,
   onSeek,
+  audioSource = "midi",
+  onAudioSourceChange,
   playbackRate = 1.0,
   onPlaybackRateChange,
   transpose = 0,
@@ -78,6 +82,37 @@ export const PlaybackControls = React.memo(function PlaybackControls({
           {bpm ? <div className="mt-0.5 text-xs text-ink-700/60">{Math.round(bpm * playbackRate)} BPM</div> : null}
         </div>
         <div className="flex items-center gap-2">
+          {onAudioSourceChange ? (
+            <div className="flex items-center gap-1 rounded-lg border border-paper-300 bg-paper-50 p-1">
+              <button
+                type="button"
+                onClick={() => onAudioSourceChange("midi")}
+                className={`px-3 py-1 text-xs font-semibold rounded-md ${
+                  audioSource === "midi" ? "bg-wood-400 text-ink-950" : "text-ink-700/70 hover:bg-paper-200"
+                }`}
+              >
+                伴奏
+              </button>
+              <button
+                type="button"
+                onClick={() => onAudioSourceChange("original")}
+                className={`px-3 py-1 text-xs font-semibold rounded-md ${
+                  audioSource === "original" ? "bg-wood-400 text-ink-950" : "text-ink-700/70 hover:bg-paper-200"
+                }`}
+              >
+                原曲
+              </button>
+              <button
+                type="button"
+                onClick={() => onAudioSourceChange("no_vocals")}
+                className={`px-3 py-1 text-xs font-semibold rounded-md ${
+                  audioSource === "no_vocals" ? "bg-wood-400 text-ink-950" : "text-ink-700/70 hover:bg-paper-200"
+                }`}
+              >
+                卡拉OK
+              </button>
+            </div>
+          ) : null}
           {onPlaybackRateChange ? (
             <div className="flex items-center gap-1 rounded-lg border border-paper-300 bg-paper-50 p-1">
               {[0.5, 0.75, 1.0, 1.25].map((rate) => (
@@ -170,4 +205,3 @@ export const PlaybackControls = React.memo(function PlaybackControls({
 });
 
 export default PlaybackControls;
-

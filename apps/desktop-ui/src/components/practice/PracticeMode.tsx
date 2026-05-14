@@ -6,63 +6,31 @@ import ChordTimeline, { type ChordBlock, findActiveIndex } from "./ChordTimeline
 import SyncedLyrics, { findActiveLyricIndex } from "./SyncedLyrics";
 import LargeChordDiagram from "./LargeChordDiagram";
 import PlaybackControls from "./PlaybackControls";
+import { aiBaseUrl } from "../../lib/ai";
 
-declare global {
-  interface Window {
-    alphaTab?: any;
-  }
-}
-
-const ALPHATAB_SCRIPT_URL = "/alphatab/alphaTab.js";
 const ALPHATAB_FONT_DIR = "/alphatab/font/";
 const ALPHATAB_SOUNDFONT_URL = "/alphatab/soundfont/sonivox.sf2";
-
-let alphaTabScriptPromise: Promise<void> | null = null;
-
-function ensureAlphaTabScript(): Promise<void> {
-  if (typeof window === "undefined") return Promise.reject(new Error("not in browser"));
-  if (window.alphaTab) return Promise.resolve();
-  if (alphaTabScriptPromise) return alphaTabScriptPromise;
-
-  alphaTabScriptPromise = new Promise<void>((resolve, reject) => {
-    const existing = document.querySelector(`script[src="${ALPHATAB_SCRIPT_URL}"]`) as HTMLScriptElement | null;
-    if (existing) {
-      if (window.alphaTab) {
-        resolve();
-        return;
-      }
-      existing.addEventListener("load", () => resolve());
-      existing.addEventListener("error", () => reject(new Error("alphatab script load failed")));
-      return;
-    }
-
-    const s = document.createElement("script");
-    s.src = ALPHATAB_SCRIPT_URL;
-    s.async = true;
-    s.onload = () => resolve();
-    s.onerror = () => reject(new Error("alphatab script load failed"));
-    document.head.appendChild(s);
-  });
-
-  return alphaTabScriptPromise;
-}
 
 export type PracticeModeProps = {
   practiceData: any;
   gp5Data: Uint8Array;
   songTitle?: string;
   jobId?: string;
+  userId?: string | null;
   level?: number;
   onLevelChange?: (level: number) => void;
 };
 
-export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, level = 4, onLevelChange }: PracticeModeProps) {
+export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, userId, level = 4, onLevelChange }: PracticeModeProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const alphaTabApiRef = useRef<any>(null);
+  const alphaTabModRef = useRef<any>(null);
   const initPromiseRef = useRef<Promise<void> | null>(null);
   const isMountedRef = useRef(true);
   const loadedGp5DataRef = useRef<Uint8Array | null>(null);
   const countdownTimerRef = useRef<number | null>(null);
+  const audioRef = useRef<HTMLAudioElement | null>(null);
+  const audioUrlRef = useRef<string | null>(null);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
@@ -71,6 +39,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
   const [isInitializing, setIsInitializing] = useState(false);
   const duration = practiceData?.metadata?.durationSec || 0;
 
+  const [audioSource, setAudioSource] = useState<"midi" | "original" | "no_vocals">("midi");
   const [playbackRate, setPlaybackRate] = useState(1.0);
   const [transpose, setTranspose] = useState(0);
   const [loopA, setLoopA] = useState<number | null>(null);
@@ -90,6 +59,14 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       window.clearInterval(countdownTimerRef.current);
       countdownTimerRef.current = null;
     }
+    try {
+      if (audioRef.current) audioRef.current.pause();
+    } catch {}
+    try {
+      const u = audioUrlRef.current;
+      if (u) URL.revokeObjectURL(u);
+    } catch {}
+    audioUrlRef.current = null;
     const api = alphaTabApiRef.current;
     alphaTabApiRef.current = null;
     if (api) {
@@ -110,21 +87,18 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       setIsPlayerReady(false);
       setIsInitializing(true);
 
-      await ensureAlphaTabScript();
+      const mod = alphaTabModRef.current || (await import("@coderline/alphatab"));
+      alphaTabModRef.current = mod;
       if (!isMountedRef.current) return;
-
-      const mod = window.alphaTab;
       if (!containerRef.current) return;
       containerRef.current.innerHTML = "";
 
       mod.Logger.logLevel = mod.LogLevel.Info;
-      const scriptFile = new URL(ALPHATAB_SCRIPT_URL, window.location.href).toString();
 
       const api = new mod.AlphaTabApi(containerRef.current, {
         core: {
           engine: "svg",
           fontDirectory: ALPHATAB_FONT_DIR,
-          scriptFile,
           useWorkers: false,
           logLevel: mod.LogLevel.Info,
         },
@@ -146,6 +120,13 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       api.playerStateChanged?.on?.(() => {
         if (!isMountedRef.current) return;
         setIsPlaying(api.playerState === 1);
+        if (audioRef.current) {
+          if (api.playerState === 1) {
+            void audioRef.current.play().catch(() => {});
+          } else {
+            audioRef.current.pause();
+          }
+        }
       });
 
       api.playerReady?.on?.(() => {
@@ -164,6 +145,17 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
         if (!isMountedRef.current) return;
         const sec = api.timePosition / 1000;
         setCurrentTime(sec);
+        if (audioSource !== "midi" && audioRef.current && Number.isFinite(audioRef.current.duration)) {
+          const safeBpm = bpm || 120;
+          const b0 = practiceData?.chordBlocks?.[0];
+          const real0 = typeof b0?.startTime === "number" ? b0.startTime : 0;
+          const ideal0 = b0 ? (Number(b0.startBeat || 0) * 60) / safeBpm : 0;
+          const offset = Number.isFinite(real0 - ideal0) ? real0 - ideal0 : 0;
+          const target = sec + offset;
+          if (Math.abs((audioRef.current.currentTime || 0) - target) > 0.25) {
+            audioRef.current.currentTime = Math.max(0, target);
+          }
+        }
         const lA = loopARef.current;
         const lB = loopBRef.current;
         if (lB !== null && lA !== null && sec >= lB && api.playerState === 1) {
@@ -214,6 +206,52 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
     } catch {}
   }, [gp5Data]);
 
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.playbackRate = playbackRate;
+    }
+    const api = alphaTabApiRef.current;
+    if (api) api.playbackSpeed = playbackRate;
+  }, [playbackRate]);
+
+  useEffect(() => {
+    const api = alphaTabApiRef.current;
+    if (!api) return;
+    try {
+      api.masterVolume = audioSource === "midi" ? 1 : 0;
+    } catch {}
+    if (!audioRef.current) return;
+    if (audioSource === "midi") {
+      audioRef.current.pause();
+      return;
+    }
+    if (!jobId || !userId) return;
+    let cancelled = false;
+    const loadAudio = async () => {
+      try {
+        const res = await fetch(`${aiBaseUrl()}/jobs/${jobId}/audio?type=${audioSource}`, { headers: { "x-user-id": userId } });
+        if (!res.ok) throw new Error("音频加载失败");
+        const buf = await res.arrayBuffer();
+        if (cancelled) return;
+        const blob = new Blob([buf], { type: res.headers.get("content-type") || "audio/mpeg" });
+        const url = URL.createObjectURL(blob);
+        const prev = audioUrlRef.current;
+        audioUrlRef.current = url;
+        if (prev) URL.revokeObjectURL(prev);
+        audioRef.current!.src = url;
+        audioRef.current!.load();
+        audioRef.current!.playbackRate = playbackRate;
+      } catch (e) {
+        if (cancelled) return;
+        setPlayerError(e instanceof Error ? e.message : "音频加载失败");
+      }
+    };
+    void loadAudio();
+    return () => {
+      cancelled = true;
+    };
+  }, [audioSource, jobId, userId]);
+
   const loopARef = useRef<number | null>(null);
   const loopBRef = useRef<number | null>(null);
   useEffect(() => {
@@ -263,8 +301,6 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
 
   const handlePlaybackRateChange = (rate: number) => {
     setPlaybackRate(rate);
-    const api = alphaTabApiRef.current;
-    if (api) api.playbackSpeed = rate;
   };
 
   const handleTransposeChange = (semitones: number) => {
@@ -280,6 +316,17 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
     const targetIdealTime = block?.startTime ?? timeSeconds;
     api.timePosition = targetIdealTime * 1000;
     setCurrentTime(targetIdealTime);
+    if (audioSource !== "midi" && audioRef.current) {
+      const safeBpm = bpm || 120;
+      const b0 = practiceData?.chordBlocks?.[0];
+      const real0 = typeof b0?.startTime === "number" ? b0.startTime : 0;
+      const ideal0 = b0 ? (Number(b0.startBeat || 0) * 60) / safeBpm : 0;
+      const offset = Number.isFinite(real0 - ideal0) ? real0 - ideal0 : 0;
+      audioRef.current.currentTime = Math.max(0, targetIdealTime + offset);
+      if (isPlaying) {
+        void audioRef.current.play().catch(() => {});
+      }
+    }
   };
 
   const chordBlocks = useMemo(() => {
@@ -455,6 +502,8 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
         duration={lastChordEndTime}
         onPlayPause={handlePlayPause}
         onSeek={(t) => handleSeek(t)}
+        audioSource={audioSource}
+        onAudioSourceChange={setAudioSource}
         playbackRate={playbackRate}
         onPlaybackRateChange={handlePlaybackRateChange}
         transpose={transpose}
@@ -466,6 +515,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
         onLoopSet={handleLoopSet}
         bpm={bpm}
       />
+      <audio ref={audioRef} className="hidden" crossOrigin="anonymous" />
     </div>
   );
 }
