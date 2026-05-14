@@ -34,6 +34,8 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
   const audioSourceRef = useRef<"midi" | "original" | "no_vocals">("midi");
   const playbackRateRef = useRef(1.0);
   const bpmRef = useRef<number>(practiceData?.metadata?.tempo || 120);
+  const isPlayerReadyRef = useRef(false);
+  const resolvedRef = useRef(false);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
@@ -56,6 +58,10 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       isMountedRef.current = false;
     };
   }, []);
+
+  useEffect(() => {
+    isPlayerReadyRef.current = isPlayerReady;
+  }, [isPlayerReady]);
 
   useEffect(() => {
     audioSourceRef.current = audioSource;
@@ -91,123 +97,151 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
     }
     if (containerRef.current) containerRef.current.innerHTML = "";
     initPromiseRef.current = null;
+    resolvedRef.current = false;
   };
 
-  const ensureEngine = (autoPlay: boolean): Promise<void> => {
+  const ensureEngine = (): Promise<void> => {
     if (alphaTabApiRef.current) return Promise.resolve();
     if (initPromiseRef.current) return initPromiseRef.current;
 
-    initPromiseRef.current = (async () => {
+    initPromiseRef.current = new Promise<void>((resolve, _reject) => {
+      resolvedRef.current = false;
       setPlayerError(null);
       setIsPlayerReady(false);
       setIsInitializing(true);
 
-      const mod = alphaTabModRef.current || (await import("@coderline/alphatab"));
-      alphaTabModRef.current = mod;
-      if (!isMountedRef.current) return;
-      if (!containerRef.current) return;
-      containerRef.current.innerHTML = "";
+      import("@coderline/alphatab")
+        .then((mod) => {
+          alphaTabModRef.current = mod;
+          if (!isMountedRef.current) { resolve(); return; }
+          if (!containerRef.current) { resolve(); return; }
+          containerRef.current.innerHTML = "";
 
-      mod.Logger.logLevel = mod.LogLevel.Info;
+          mod.Logger.logLevel = mod.LogLevel.Info;
 
-      const api = new mod.AlphaTabApi(containerRef.current, {
-        core: {
-          engine: "svg",
-          fontDirectory: ALPHATAB_FONT_DIR,
-          useWorkers: false,
-          logLevel: mod.LogLevel.Info,
-        },
-        player: {
-          enablePlayer: true,
-          soundFont: null,
-          scrollElement: containerRef.current,
-        },
-        display: {
-          layoutMode: mod.LayoutMode.Page,
-          staveProfile: mod.StaveProfile.Tab,
-          scale: 1.0,
-          barsPerRow: 4,
-          padding: [20, 0, 0, 0],
-        },
-        importer: { beatTextAsLyrics: true },
-      } as any);
+          const api = new mod.AlphaTabApi(containerRef.current, {
+            core: {
+              engine: "svg",
+              fontDirectory: ALPHATAB_FONT_DIR,
+              useWorkers: false,
+              logLevel: mod.LogLevel.Info,
+            },
+            player: {
+              enablePlayer: true,
+              soundFont: null,
+              scrollElement: containerRef.current,
+            },
+            display: {
+              layoutMode: mod.LayoutMode.Page,
+              staveProfile: mod.StaveProfile.Tab,
+              scale: 1.0,
+              barsPerRow: 4,
+              padding: [20, 0, 0, 0],
+            },
+            importer: { beatTextAsLyrics: true },
+          } as any);
 
-      api.playerStateChanged?.on?.(() => {
-        if (!isMountedRef.current) return;
-        setIsPlaying(api.playerState === 1);
-        if (audioRef.current) {
-          if (api.playerState === 1) {
-            void audioRef.current.play().catch(() => {});
-          } else {
-            audioRef.current.pause();
-          }
-        }
-      });
+          api.playerStateChanged?.on?.(() => {
+            if (!isMountedRef.current) return;
+            setIsPlaying(api.playerState === 1);
+            if (audioRef.current) {
+              if (api.playerState === 1) {
+                void audioRef.current.play().catch(() => {});
+              } else {
+                audioRef.current.pause();
+              }
+            }
+          });
 
-      api.playerReady?.on?.(() => {
-        if (!isMountedRef.current) return;
-        setIsPlayerReady(true);
-        setIsInitializing(false);
-        api.playbackSpeed = playbackRate;
-        if (autoPlay && api.playerState === 0) {
+          api.playerReady?.on?.(() => {
+            if (!isMountedRef.current) return;
+            setIsPlayerReady(true);
+            setIsInitializing(false);
+            api.playbackSpeed = playbackRate;
+            if (!resolvedRef.current) {
+              resolvedRef.current = true;
+              resolve();
+            }
+          });
+
+          api.playerPositionChanged?.on?.(() => {
+            if (!isMountedRef.current) return;
+            const sec = api.timePosition / 1000;
+            setCurrentTime(sec);
+            if (audioSourceRef.current !== "midi" && audioRef.current && Number.isFinite(audioRef.current.duration)) {
+              const safeBpm = bpmRef.current || 120;
+              const b0 = practiceData?.chordBlocks?.[0];
+              const real0 = typeof b0?.startTime === "number" ? b0.startTime : 0;
+              const ideal0 = b0 ? (Number(b0.startBeat || 0) * 60) / safeBpm : 0;
+              const offset = Number.isFinite(real0 - ideal0) ? real0 - ideal0 : 0;
+              const target = sec + offset;
+              if (Math.abs((audioRef.current.currentTime || 0) - target) > 0.25) {
+                audioRef.current.currentTime = Math.max(0, target);
+              }
+            }
+            const lA = loopARef.current;
+            const lB = loopBRef.current;
+            if (lB !== null && lA !== null && sec >= lB && api.playerState === 1) {
+              api.timePosition = lA * 1000;
+            }
+          });
+
+          api.error?.on?.((e: any) => {
+            if (!isMountedRef.current) return;
+            const msg = e?.message || String(e);
+            setPlayerError(msg);
+            setIsInitializing(false);
+            if (!resolvedRef.current) {
+              resolvedRef.current = true;
+              resolve();
+            }
+          });
+
+          alphaTabApiRef.current = api;
+
+          return fetch(ALPHATAB_SOUNDFONT_URL)
+            .then((res) => res.arrayBuffer())
+            .then((buf) => api.loadSoundFont(buf, false));
+        })
+        .then(() => {
           try {
-            api.playPause();
-          } catch {}
-        }
-      });
-
-      api.playerPositionChanged?.on?.(() => {
-        if (!isMountedRef.current) return;
-        const sec = api.timePosition / 1000;
-        setCurrentTime(sec);
-        if (audioSourceRef.current !== "midi" && audioRef.current && Number.isFinite(audioRef.current.duration)) {
-          const safeBpm = bpmRef.current || 120;
-          const b0 = practiceData?.chordBlocks?.[0];
-          const real0 = typeof b0?.startTime === "number" ? b0.startTime : 0;
-          const ideal0 = b0 ? (Number(b0.startBeat || 0) * 60) / safeBpm : 0;
-          const offset = Number.isFinite(real0 - ideal0) ? real0 - ideal0 : 0;
-          const target = sec + offset;
-          if (Math.abs((audioRef.current.currentTime || 0) - target) > 0.25) {
-            audioRef.current.currentTime = Math.max(0, target);
+            loadedGp5DataRef.current = gp5Data;
+            alphaTabApiRef.current.load(gp5Data);
+          } catch (e) {
+            setPlayerError(e instanceof Error ? e.message : "gp5 load failed");
+            if (!resolvedRef.current) {
+              resolvedRef.current = true;
+              resolve();
+            }
           }
-        }
-        const lA = loopARef.current;
-        const lB = loopBRef.current;
-        if (lB !== null && lA !== null && sec >= lB && api.playerState === 1) {
-          api.timePosition = lA * 1000;
-        }
-      });
 
-      api.error?.on?.((e: any) => {
-        if (!isMountedRef.current) return;
-        const msg = e?.message || String(e);
-        setPlayerError(msg);
-        setIsInitializing(false);
-      });
+          setTimeout(() => {
+            if (!isMountedRef.current) return;
+            if (!isPlayerReadyRef.current && alphaTabApiRef.current?.isReadyForPlayback) {
+              setIsPlayerReady(true);
+              setIsInitializing(false);
+              if (!resolvedRef.current) {
+                resolvedRef.current = true;
+                resolve();
+              }
+            }
+          }, 5000);
+        })
+        .catch((e) => {
+          setPlayerError(e instanceof Error ? e.message : "engine init failed");
+          setIsInitializing(false);
+          if (!resolvedRef.current) {
+            resolvedRef.current = true;
+            resolve();
+          }
+        });
+    });
 
-      alphaTabApiRef.current = api;
-
-      try {
-        const res = await fetch(ALPHATAB_SOUNDFONT_URL);
-        const buf = await res.arrayBuffer();
-        api.loadSoundFont(buf, false);
-      } catch (e) {
-        setPlayerError(e instanceof Error ? e.message : "soundfont load failed");
-      }
-
-      try {
-        loadedGp5DataRef.current = gp5Data;
-        api.load(gp5Data);
-      } catch (e) {
-        setPlayerError(e instanceof Error ? e.message : "gp5 load failed");
-      }
-
-      setIsInitializing(false);
-    })();
+    return initPromiseRef.current;
   };
 
   useEffect(() => {
-    ensureEngine(false);
+    ensureEngine();
     return () => destroyEngine();
   }, []);
 
@@ -275,7 +309,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
   }, [loopA, loopB]);
 
   const handlePlayPause = async () => {
-    await ensureEngine(true);
+    await ensureEngine();
     const api = alphaTabApiRef.current;
     if (!api) return;
 
@@ -290,11 +324,6 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       if (countdownTimerRef.current) window.clearInterval(countdownTimerRef.current);
       countdownTimerRef.current = null;
       setCountdown(null);
-      return;
-    }
-
-    if (!isPlayerReady) {
-      setPlayerError("播放器尚未就绪，请稍候再试。");
       return;
     }
 
