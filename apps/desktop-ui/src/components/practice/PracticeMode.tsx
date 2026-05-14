@@ -93,9 +93,9 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
     initPromiseRef.current = null;
   };
 
-  const ensureEngine = (autoPlay: boolean) => {
-    if (alphaTabApiRef.current) return;
-    if (initPromiseRef.current) return;
+  const ensureEngine = (autoPlay: boolean): Promise<void> => {
+    if (alphaTabApiRef.current) return Promise.resolve();
+    if (initPromiseRef.current) return initPromiseRef.current;
 
     initPromiseRef.current = (async () => {
       setPlayerError(null);
@@ -274,8 +274,8 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
     loopBRef.current = loopB;
   }, [loopA, loopB]);
 
-  const handlePlayPause = () => {
-    ensureEngine(true);
+  const handlePlayPause = async () => {
+    await ensureEngine(true);
     const api = alphaTabApiRef.current;
     if (!api) return;
 
@@ -543,7 +543,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
         isLoading={isInitializing}
         currentTime={currentTime}
         duration={lastChordEndTime}
-        onPlayPause={handlePlayPause}
+        onPlayPause={() => void handlePlayPause()}
         onSeek={(t) => handleSeek(t)}
         audioSource={audioSource}
         onAudioSourceChange={setAudioSource}
