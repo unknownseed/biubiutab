@@ -53,7 +53,11 @@ async function waitForHealth(timeoutMs: number) {
 
 export async function startAiServer(): Promise<AiHandle> {
   const cwd = await resolveAiCwd();
-  const cmd = pythonCmd();
+  let cmd = pythonCmd();
+  if (!(process.env.AI_PYTHON || "").trim()) {
+    const venvPy = path.join(cwd, ".venv", "bin", "python");
+    if (await exists(venvPy)) cmd = venvPy;
+  }
   const env: Record<string, string> = {
     ...process.env,
     AI_SERVICE_TOKEN: "",
