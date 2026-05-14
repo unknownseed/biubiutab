@@ -7,6 +7,15 @@ let win: BrowserWindow | null = null;
 let ai: AiHandle | null = null;
 let staticServer: { url: string; close: () => void } | null = null;
 
+async function isAiRunning(): Promise<boolean> {
+  try {
+    const res = await fetch("http://127.0.0.1:8001/health", { cache: "no-store" as any });
+    return res.ok;
+  } catch {
+    return false;
+  }
+}
+
 async function createMainWindow(url: string) {
   const preloadPath = path.resolve(process.cwd(), "dist/preload.cjs");
   win = new BrowserWindow({
@@ -34,16 +43,19 @@ async function start() {
   });
 
   try {
-    ai = await startAiServer();
-    ai.proc.on("exit", async () => {
-      if (!app.isQuitting) {
-        await dialog.showMessageBox({
-          type: "error",
-          message: "本地 AI 服务已退出",
-          detail: "请重启应用或检查本地依赖是否可用。",
-        });
-      }
-    });
+    const already = await isAiRunning();
+    if (!already) {
+      ai = await startAiServer();
+      ai.proc.on("exit", async () => {
+        if (!app.isQuitting) {
+          await dialog.showMessageBox({
+            type: "error",
+            message: "本地 AI 服务已退出",
+            detail: "请重启应用或检查本地依赖是否可用。",
+          });
+        }
+      });
+    }
   } catch (e) {
     await dialog.showMessageBox({
       type: "error",
