@@ -1,1 +1,3 @@
 yt-dlp
+.venv
+requirements.local.txt
