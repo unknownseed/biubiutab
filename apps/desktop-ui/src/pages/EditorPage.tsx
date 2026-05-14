@@ -207,6 +207,14 @@ export default function EditorPage() {
             >
               下载 GP5
             </button>
+            <button
+              type="button"
+              className="rounded-lg border border-paper-300 bg-white px-5 py-2 text-sm tracking-widest text-ink-900 disabled:opacity-50"
+              disabled={job?.status !== "succeeded" || !jobId}
+              onClick={() => navigate(`/practice/${jobId}`)}
+            >
+              进入跟练
+            </button>
           </div>
 
           {gp5 ? (

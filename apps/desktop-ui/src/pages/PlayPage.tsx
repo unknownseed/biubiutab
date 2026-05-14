@@ -66,6 +66,13 @@ export default function PlayPage() {
   const toast = useToast();
   const audioElRef = useRef<HTMLAudioElement | null>(null);
   const pollTimerRef = useRef<number | null>(null);
+  const canPickLocal = useMemo(() => {
+    try {
+      return typeof window !== "undefined" && typeof window.desktop?.pickAudioFile === "function";
+    } catch {
+      return false;
+    }
+  }, []);
   const [uploadMode, setUploadMode] = useState<"file" | "url">("file");
   const [picked, setPicked] = useState<{ path: string; name: string } | null>(null);
   const [title, setTitle] = useState<string>("");
@@ -108,6 +115,10 @@ export default function PlayPage() {
   }, []);
 
   const pickFile = useCallback(async () => {
+    if (!canPickLocal) {
+      toast.push({ title: "无法选择本地文件", description: "请在桌面端应用窗口中操作（Electron）。浏览器无法获取本地文件路径。", variant: "warning" });
+      return;
+    }
     reset();
     setAudioSrc(null);
     setAudioTime(0);
@@ -118,7 +129,7 @@ export default function PlayPage() {
     setTitle(r.name);
     const src = `file://${encodeURI(r.path)}`;
     setAudioSrc(src);
-  }, [reset]);
+  }, [canPickLocal, reset, toast]);
 
   const viz = useMemo(() => {
     if (!preview || typeof preview !== "object") return null;
@@ -281,6 +292,11 @@ export default function PlayPage() {
                     选择文件
                   </button>
                 </div>
+                {!canPickLocal ? (
+                  <div className="mt-3 text-xs text-ink-700/60">
+                    提示：此页面若在浏览器中打开，将无法选择本地文件。请使用桌面端应用窗口。
+                  </div>
+                ) : null}
                 {audioSrc ? (
                   <audio ref={audioElRef} className="mt-4 w-full" src={audioSrc} controls preload="metadata" />
                 ) : null}
