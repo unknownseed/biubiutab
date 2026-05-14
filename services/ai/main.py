@@ -26,6 +26,7 @@ except ImportError:
     pass
 
 from fastapi import Depends, FastAPI, Header, HTTPException, Request
+from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse
 from pydantic import BaseModel, Field
 
@@ -270,6 +271,14 @@ def _upload_r2_artifact(local_path: Path, r2_key: str, content_type: str):
     )
 
 app = FastAPI(title="Biubiutab - AI Service")
+app.add_middleware(
+    CORSMiddleware,
+    allow_origin_regex=r"^https?://(127\.0\.0\.1|localhost)(:\d+)?$",
+    allow_origins=["null"],
+    allow_credentials=False,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 _jobs: dict[str, JobState] = {}
 _MAX_CONCURRENCY = max(1, int(os.environ.get("AI_MAX_CONCURRENCY", "2")))
 _JOB_TIMEOUT_SEC = max(60, int(os.environ.get("AI_JOB_TIMEOUT_SEC", "1200")))

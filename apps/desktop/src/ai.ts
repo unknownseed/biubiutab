@@ -83,7 +83,13 @@ export async function startAiServer(): Promise<AiHandle> {
   });
 
   try {
-    await waitForHealth(Number(process.env.AI_STARTUP_TIMEOUT_MS || "20000"));
+    const timeoutMs = Number(process.env.AI_STARTUP_TIMEOUT_MS || "20000");
+    const exitPromise = new Promise<never>((_, reject) => {
+      proc.once("exit", (code, signal) => {
+        reject(new Error(`AI process exited (code=${code ?? "null"}, signal=${signal ?? "null"})`));
+      });
+    });
+    await Promise.race([waitForHealth(timeoutMs), exitPromise]);
   } catch (e) {
     stop();
     const tail = logBuf.trim();
@@ -91,6 +97,7 @@ export async function startAiServer(): Promise<AiHandle> {
       "AI 服务启动失败。",
       `命令：${cmd} ${args.join(" ")}`,
       `目录：${cwd}`,
+      e instanceof Error ? `原因：${e.message}` : "",
       "常见修复：进入 services/ai 后执行 python -m pip install -r requirements.txt",
       tail ? `日志：\n${tail}` : "",
     ]

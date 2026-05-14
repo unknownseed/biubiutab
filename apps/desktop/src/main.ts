@@ -50,6 +50,9 @@ async function start() {
       message: "无法启动本地 AI 服务",
       detail: e instanceof Error ? e.message : "unknown error",
     });
+    try {
+      console.error(e instanceof Error ? e.message : e);
+    } catch {}
   }
 
   const isDev = !app.isPackaged;
