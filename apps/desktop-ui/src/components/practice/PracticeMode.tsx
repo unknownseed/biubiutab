@@ -198,7 +198,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
         .then(() => {
           try {
             loadedGp5DataRef.current = gp5Data;
-            api.load(gp5Data);
+            alphaTabApiRef.current!.load(gp5Data);
           } catch (e) {
             setPlayerError(e instanceof Error ? e.message : "gp5 load failed");
             if (!resolvedRef.current) { resolvedRef.current = true; resolve(); }
