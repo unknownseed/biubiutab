@@ -8,6 +8,9 @@ export default defineConfig({
     port: Number(process.env.DESKTOP_UI_PORT || "5174"),
     strictPort: true,
   },
+  optimizeDeps: {
+    exclude: ["@coderline/alphatab"],
+  },
   build: {
     outDir: "dist",
     sourcemap: true,
