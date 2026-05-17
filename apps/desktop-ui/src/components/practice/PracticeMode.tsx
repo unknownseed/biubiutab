@@ -488,12 +488,16 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
   };
 
   return (
-    <div className="flex flex-col gap-4 rounded-2xl bg-paper-100 p-4 sm:p-6 text-ink-900 shadow-sm border border-paper-300">
-      {playerError ? <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{playerError}</div> : null}
+    <div className="flex flex-col gap-4 rounded-none bg-zinc-950 p-4 sm:p-6 text-zinc-50 shadow-xl">
+      {playerError ? (
+        <div className="rounded-none border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm font-sans tracking-wide text-red-100">
+          {playerError}
+        </div>
+      ) : null}
 
       {onLevelChange ? (
-        <div className="flex flex-col gap-2">
-          <div className="text-xs font-serif tracking-widest text-ink-700/60">选择练习难度：</div>
+        <div className="flex flex-col gap-2 mb-2">
+          <div className="text-xs font-serif tracking-widest text-zinc-400">选择练习难度：</div>
           <div className="flex flex-wrap gap-2">
             {[
               { id: 1, icon: "🌱", label: "启蒙", desc: "只练左手换和弦" },
@@ -505,14 +509,16 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
                 key={l.id}
                 type="button"
                 onClick={() => onLevelChange(l.id)}
-                className={`group flex items-center gap-3 px-4 py-2 border rounded-xl transition-all ${
-                  level === l.id ? "bg-white text-ink-900 border-paper-300 shadow-sm" : "bg-paper-50 text-ink-700/70 border-paper-300 hover:bg-white"
+                className={`group flex items-center gap-3 px-4 py-2 border rounded-none transition-all duration-300 ${
+                  level === l.id
+                    ? "bg-zinc-100 text-zinc-900 border-zinc-100 shadow-sm"
+                    : "bg-zinc-900/50 text-zinc-400 border-zinc-800 hover:border-zinc-600 hover:bg-zinc-800"
                 }`}
               >
                 <span className="text-base">{l.icon}</span>
                 <div className="flex flex-col items-start">
-                  <span className={`text-sm font-medium ${level === l.id ? "text-ink-900" : "text-ink-800"}`}>{l.label}</span>
-                  <span className={`text-[10px] ${level === l.id ? "text-ink-700/60" : "text-ink-700/50"}`}>{l.desc}</span>
+                  <span className={`text-sm font-medium ${level === l.id ? "text-zinc-900" : "text-zinc-200"}`}>{l.label}</span>
+                  <span className={`text-[10px] ${level === l.id ? "text-zinc-600" : "text-zinc-500 group-hover:text-zinc-400"}`}>{l.desc}</span>
                 </div>
               </button>
             ))}
@@ -520,22 +526,37 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
         </div>
       ) : null}
 
-      <div className="flex flex-col gap-4">
-        <div className="flex flex-col md:flex-row gap-4 items-stretch min-h-[160px]">
-          <div className="flex-shrink-0 flex items-center justify-center p-4 md:w-[180px] rounded-xl border border-paper-300 bg-white">
+      <div className="flex flex-col gap-6">
+        <div className="flex flex-col md:flex-row gap-4 items-stretch h-auto min-h-[160px]">
+          <div className="flex-shrink-0 flex items-center justify-center bg-zinc-900 border border-zinc-800 p-4 md:w-[160px] rounded-none">
             <LargeChordDiagram chord={currentChordBlock?.chord || "N"} />
           </div>
-          <div className="flex-1 w-full rounded-xl bg-white overflow-hidden border border-paper-300 relative min-h-[160px]">
-            <div ref={containerRef} className="absolute inset-0 overflow-x-auto overflow-y-hidden" />
+          <div
+            className="flex-1 w-full rounded-none bg-zinc-50 overflow-hidden border border-zinc-800 relative min-h-[160px]"
+          >
+            <div
+              ref={containerRef}
+              className="absolute inset-0 overflow-x-auto overflow-y-hidden"
+              style={{
+                transform: "translateY(-8px)",
+                height: "calc(100% + 16px)"
+              }}
+            />
           </div>
         </div>
-
         <div className="h-[100px] w-full">
           <SyncedLyrics lyrics={chordLyrics} activeIndex={activeChordIndex} countdown={countdown} />
         </div>
       </div>
 
-      <ChordTimeline blocks={chordBlocks} activeIndex={activeChordIndex} onSeek={(time, block) => handleSeek(time, block)} loopA={loopA} loopB={loopB} duration={lastChordEndTime} />
+      <ChordTimeline
+        blocks={chordBlocks}
+        activeIndex={activeChordIndex}
+        onSeek={(time, block) => handleSeek(time, block)}
+        loopA={loopA}
+        loopB={loopB}
+        duration={lastChordEndTime}
+      />
 
       <PlaybackControls
         isPlaying={isPlaying || countdown !== null}

@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 export type ChordPosition = {
   frets: number[];
@@ -15,10 +15,15 @@ export type ChordDiagramProps = {
   color?: string;
 };
 
-export default function ChordDiagram({ position, width = 120, height = 150, color = "currentColor" }: ChordDiagramProps) {
+export default function ChordDiagram({
+  position,
+  width = 120,
+  height = 150,
+  color = 'currentColor'
+}: ChordDiagramProps) {
   const numStrings = 6;
   const numFrets = 4;
-  const { frets, baseFret, barres } = position;
+  const { frets, fingers, baseFret, barres } = position;
 
   const paddingX = 20;
   const paddingY = 30;
@@ -32,14 +37,16 @@ export default function ChordDiagram({ position, width = 120, height = 150, colo
 
   return (
     <svg viewBox="0 0 120 160" width={width} height={height} stroke={color} fill="none">
-      {baseFret > 1 ? (
+      {baseFret > 1 && (
         <text x="5" y={paddingY + fretSpacing / 2 + 5} fontSize="12" fill={color} stroke="none" fontWeight="bold">
           {baseFret}fr
         </text>
-      ) : null}
+      )}
 
       <g strokeWidth="1.5">
-        {baseFret === 1 ? <line x1={paddingX} y1={paddingY} x2={paddingX + gridWidth} y2={paddingY} strokeWidth="5" /> : null}
+        {baseFret === 1 && (
+          <line x1={paddingX} y1={paddingY} x2={paddingX + gridWidth} y2={paddingY} strokeWidth="5" />
+        )}
 
         {Array.from({ length: numFrets + 1 }).map((_, i) => (
           <line
@@ -69,51 +76,52 @@ export default function ChordDiagram({ position, width = 120, height = 150, colo
           const cy = paddingY - 10;
           if (fret === -1) {
             return (
-              <text key={`mut-${i}`} x={cx} y={cy + 4} fill={color} stroke="none" fontWeight="bold">
-                X
-              </text>
+              <text key={`mut-${i}`} x={cx} y={cy + 4} fill={color} stroke="none" fontWeight="bold">X</text>
             );
           }
           if (fret === 0) {
-            return <circle key={`opn-${i}`} cx={cx} cy={cy - 1} r="3" />;
+            return (
+              <circle key={`opn-${i}`} cx={cx} cy={cy - 1} r="3" />
+            );
           }
           return null;
         })}
       </g>
 
-      {barres && barres.length > 0
-        ? barres.map((barreFret, i) => {
-            let minStr = 5;
-            let maxStr = 0;
-            frets.forEach((f, strIdx) => {
-              if (f >= barreFret) {
-                if (strIdx < minStr) minStr = strIdx;
-                if (strIdx > maxStr) maxStr = strIdx;
-              }
-            });
-            if (minStr > maxStr) return null;
-            const y = paddingY + (barreFret - minFret + 0.5) * fretSpacing;
-            return (
-              <line
-                key={`barre-${i}`}
-                x1={paddingX + minStr * stringSpacing}
-                y1={y}
-                x2={paddingX + maxStr * stringSpacing}
-                y2={y}
-                strokeWidth="12"
-                strokeLinecap="round"
-                stroke={color}
-              />
-            );
-          })
-        : null}
+      {barres && barres.length > 0 && barres.map((barreFret, i) => {
+        let minStr = 5;
+        let maxStr = 0;
+        frets.forEach((f, strIdx) => {
+          if (f >= barreFret) {
+            if (strIdx < minStr) minStr = strIdx;
+            if (strIdx > maxStr) maxStr = strIdx;
+          }
+        });
+        if (minStr > maxStr) return null;
+
+        const y = paddingY + (barreFret - minFret + 0.5) * fretSpacing;
+        return (
+          <line
+            key={`barre-${i}`}
+            x1={paddingX + minStr * stringSpacing}
+            y1={y}
+            x2={paddingX + maxStr * stringSpacing}
+            y2={y}
+            strokeWidth="12"
+            strokeLinecap="round"
+            stroke={color}
+          />
+        );
+      })}
 
       <g>
         {frets.map((fret, i) => {
           if (fret > 0) {
             const cx = paddingX + i * stringSpacing;
             const cy = paddingY + (fret - minFret + 0.5) * fretSpacing;
-            return <circle key={`fin-${i}`} cx={cx} cy={cy} r="6" fill={color} stroke="none" />;
+            return (
+              <circle key={`fin-${i}`} cx={cx} cy={cy} r="6" fill={color} stroke="none" />
+            );
           }
           return null;
         })}
@@ -121,4 +129,3 @@ export default function ChordDiagram({ position, width = 120, height = 150, colo
     </svg>
   );
 }
-

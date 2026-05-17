@@ -79,20 +79,20 @@ export default function PracticePage() {
   }, [jobId, userId, level]);
 
   return (
-    <main className="min-h-screen bg-paper-100 pt-10">
+    <main className="min-h-screen bg-zinc-950 pt-10">
       <div className="mx-auto w-full max-w-5xl px-6">
         <div className="flex items-center justify-between gap-4">
-          <h1 className="text-2xl font-serif tracking-widest text-ink-900">跟练</h1>
+          <h1 className="text-2xl font-serif tracking-widest text-zinc-100">跟练</h1>
           <button
             type="button"
-            className="rounded-lg border border-paper-300 bg-white px-4 py-2 text-sm tracking-widest text-ink-900"
+            className="rounded-none border border-zinc-800 bg-zinc-900 px-4 py-2 text-sm tracking-widest text-zinc-300 hover:bg-zinc-800"
             onClick={() => navigate(jobId ? `/editor/${jobId}` : "/play")}
           >
             返回
           </button>
         </div>
 
-        {error ? <div className="mt-6 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-700">{error}</div> : null}
+        {error ? <div className="mt-6 rounded-none border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-200">{error}</div> : null}
 
         {result?.practiceData && gp5 ? (
           <div className="mt-8">
@@ -107,8 +107,8 @@ export default function PracticePage() {
             />
           </div>
         ) : (
-          <div className="mt-8 rounded-2xl border border-paper-300 bg-white p-6 shadow-sm">
-            <div className="text-sm text-ink-800">正在准备练习模式…</div>
+          <div className="mt-8 rounded-none border border-zinc-800 bg-zinc-900 p-6 shadow-sm">
+            <div className="text-sm text-zinc-400">正在准备练习模式…</div>
           </div>
         )}
       </div>

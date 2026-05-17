@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useMemo } from "react";
 import guitarChords from "@tombatossals/chords-db/lib/guitar.json";
 import ChordDiagram, { type ChordPosition } from "./ChordDiagram";
@@ -15,16 +17,11 @@ function parseChordName(name: string): { key: string; suffix: string } | null {
   if (suffix === "maj") suffix = "major";
 
   const rootMap: Record<string, string> = {
-    "C#": "Csharp",
-    Db: "Csharp",
-    "D#": "Eb",
-    Eb: "Eb",
-    "F#": "Fsharp",
-    Gb: "Fsharp",
-    "G#": "Ab",
-    Ab: "Ab",
-    "A#": "Bb",
-    Bb: "Bb",
+    "C#": "Csharp", Db: "Csharp",
+    "D#": "Eb", Eb: "Eb",
+    "F#": "Fsharp", Gb: "Fsharp",
+    "G#": "Ab", Ab: "Ab",
+    "A#": "Bb", Bb: "Bb"
   };
   root = rootMap[root] || root;
 
@@ -35,7 +32,7 @@ function getChordPosition(name: string): ChordPosition | null {
   const parsed = parseChordName(name);
   if (!parsed) return null;
 
-  const chordsForKey = (guitarChords as any).chords?.[parsed.key];
+  const chordsForKey = (guitarChords as any).chords[parsed.key];
   if (!chordsForKey) return null;
 
   const chordDef = chordsForKey.find((c: any) => c.suffix === parsed.suffix);
@@ -53,18 +50,18 @@ export const LargeChordDiagram = React.memo(function LargeChordDiagram({ chord }
   }, [chord, isNoChord]);
 
   return (
-    <div className="flex flex-1 flex-col items-center justify-center rounded-xl border border-paper-300 bg-white p-3 shadow-inner min-h-[140px]">
+    <div className="flex flex-1 flex-col items-center justify-center rounded-2xl border border-white/10 bg-zinc-900/50 p-3 shadow-inner min-h-[140px]">
       <div
-        className={`relative flex flex-col items-center justify-center rounded-lg bg-paper-50 p-2 shadow border border-paper-300 transition-all duration-300 ${
-          !isNoChord ? "scale-[1.02] border-wood-400/50 shadow-[0_0_24px_rgba(234,179,8,0.15)]" : ""
+        className={`relative flex flex-col items-center justify-center rounded-xl bg-zinc-950/80 p-2 shadow-2xl border border-zinc-800 transition-all duration-300 ${
+          !isNoChord ? "scale-105 border-yellow-500/30 shadow-[0_0_40px_rgba(234,179,8,0.15)]" : ""
         }`}
-        style={{ width: "110px", height: "130px" }}
+        style={{ width: "100px", height: "120px" }}
       >
-        <div className="mb-0.5 text-base font-bold text-wood-500">{isNoChord ? "-" : chord}</div>
+        <div className="mb-0.5 text-base font-bold text-yellow-400">{isNoChord ? "-" : chord}</div>
         {!isNoChord && position ? (
-          <ChordDiagram position={position} width={74} height={92} color="#ca8a04" />
+          <ChordDiagram position={position} width={70} height={85} color="#fef08a" />
         ) : (
-          <div className="flex flex-1 items-center justify-center text-sm text-ink-700/40">无</div>
+          <div className="flex flex-1 items-center justify-center text-sm text-zinc-600">无</div>
         )}
       </div>
     </div>
@@ -72,4 +69,3 @@ export const LargeChordDiagram = React.memo(function LargeChordDiagram({ chord }
 });
 
 export default LargeChordDiagram;
-
