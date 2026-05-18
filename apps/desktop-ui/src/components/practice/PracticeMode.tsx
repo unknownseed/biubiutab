@@ -148,8 +148,16 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
             const targetLeft = Math.min(scrollWidth, ratio * scrollWidth - scrollContainer.clientWidth * 0.15);
             const diff = Math.abs(scrollContainer.scrollLeft - targetLeft);
             if (diff > 5) {
-              scrollContainer.scrollTo({ left: targetLeft, behavior: 'smooth' });
+              scrollContainer.scrollLeft = targetLeft;
             }
+          };
+
+          let lastTickTime = 0;
+          const throttledSyncScroll = () => {
+            const now = Date.now();
+            if (now - lastTickTime < 100) return;
+            lastTickTime = now;
+            requestAnimationFrame(syncScrollToCursor);
           };
 
           (api as any)._syncScrollToCursor = syncScrollToCursor;
@@ -175,7 +183,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
             if (!isMountedRef.current) return;
             const sec = api.timePosition / 1000;
             setCurrentTime(sec);
-            syncScrollToCursor();
+            throttledSyncScroll();
             if (audioSourceRef.current !== "midi" && audioRef.current && Number.isFinite(audioRef.current.duration)) {
               const safeBpm = bpmRef.current || 120;
               const b0 = practiceData?.chordBlocks?.[0];
