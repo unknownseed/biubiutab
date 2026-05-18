@@ -540,13 +540,13 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
         ) : null}
 
         <div
-          className="w-full rounded-none bg-zinc-50 overflow-hidden border border-zinc-800 relative"
-          style={{ height: "130px" }}
-        >
-          <div
-            ref={containerRef}
-            className="absolute inset-0 overflow-hidden"
-          />
+           className="w-full rounded-none bg-zinc-50 overflow-x-auto overflow-y-hidden border border-zinc-800 relative"
+           style={{ height: "130px" }}
+         >
+           <div
+             ref={containerRef}
+             className="absolute inset-0"
+           />
         </div>
 
         <div className="mt-2">
