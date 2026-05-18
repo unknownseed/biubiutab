@@ -23,6 +23,7 @@ export type PracticeModeProps = {
 
 export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, userId, level = 4, onLevelChange }: PracticeModeProps) {
   const containerRef = useRef<HTMLDivElement | null>(null);
+  const scrollContainerRef = useRef<HTMLDivElement | null>(null);
   const alphaTabApiRef = useRef<any>(null);
   const alphaTabModRef = useRef<any>(null);
   const initPromiseRef = useRef<Promise<void> | null>(null);
@@ -159,6 +160,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
             if (!isMountedRef.current) return;
             const sec = api.timePosition / 1000;
             setCurrentTime(sec);
+            syncScrollToCursor();
             if (audioSourceRef.current !== "midi" && audioRef.current && Number.isFinite(audioRef.current.duration)) {
               const safeBpm = bpmRef.current || 120;
               const b0 = practiceData?.chordBlocks?.[0];
@@ -189,6 +191,27 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
           });
 
           alphaTabApiRef.current = api;
+
+          const syncScrollToCursor = () => {
+            const scrollContainer = scrollContainerRef.current;
+            const container = containerRef.current;
+            if (!scrollContainer || !container) return;
+            requestAnimationFrame(() => {
+              if (!containerRef.current || !scrollContainerRef.current) return;
+              const cursor = containerRef.current.querySelector('.at-cursor-beat')
+                || containerRef.current.querySelector('.at-cursor-bar');
+              if (cursor) {
+                const cursorRect = cursor.getBoundingClientRect();
+                const containerRect = scrollContainerRef.current.getBoundingClientRect();
+                const offsetToCenter = (cursorRect.left - containerRect.left) - (containerRect.width * 0.25) + (cursorRect.width / 2);
+                if (Math.abs(offsetToCenter) > 10) {
+                  scrollContainerRef.current.scrollTo({ left: scrollContainerRef.current.scrollLeft + offsetToCenter, behavior: 'smooth' });
+                }
+              }
+            });
+          };
+
+          (api as any)._syncScrollToCursor = syncScrollToCursor;
 
           return fetch(ALPHATAB_SOUNDFONT_URL)
             .then((res) => {
@@ -492,16 +515,11 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
   return (
     <div className="rounded-none border border-zinc-800 bg-zinc-950">
       <div className="flex items-center justify-between gap-3 border-b border-zinc-800 px-4 py-3">
-        <div className="flex items-center gap-3 min-w-0">
-          <div className="flex-shrink-0 w-[60px]">
-            <LargeChordDiagram chord={currentChordBlock?.chord || "N"} />
-          </div>
-          <div className="min-w-0 flex-1">
-            <div className="text-sm font-serif tracking-widest text-zinc-100 truncate">{displayTitle}</div>
-            <div className="flex items-center gap-2 mt-1">
-              {bpm ? <span className="text-[10px] font-mono text-zinc-400">{Math.round(bpm * playbackRate)} BPM</span> : null}
-              <span className="text-[10px] font-serif text-zinc-500">调性 {currentKeyDisplay}</span>
-            </div>
+        <div className="min-w-0 flex-1">
+          <div className="text-sm font-serif tracking-widest text-zinc-100 truncate">{displayTitle}</div>
+          <div className="flex items-center gap-2 mt-1">
+            {bpm ? <span className="text-[10px] font-mono text-zinc-400">{Math.round(bpm * playbackRate)} BPM</span> : null}
+            <span className="text-[10px] font-serif text-zinc-500">调性 {currentKeyDisplay}</span>
           </div>
         </div>
         <div className="flex-shrink-0 flex items-center gap-2">
@@ -540,6 +558,7 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
         ) : null}
 
         <div
+           ref={scrollContainerRef}
            className="w-full rounded-none bg-zinc-50 overflow-x-auto overflow-y-hidden border border-zinc-800 relative"
            style={{ height: "130px" }}
          >
@@ -549,7 +568,11 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
            />
         </div>
 
-        <div className="mt-2">
+        <div className="flex justify-center mt-1">
+          <LargeChordDiagram chord={currentChordBlock?.chord || "N"} />
+        </div>
+
+        <div className="mt-1">
           <SyncedLyrics lyrics={chordLyrics} activeIndex={activeChordIndex} countdown={countdown} />
         </div>
 
