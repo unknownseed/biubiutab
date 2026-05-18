@@ -139,6 +139,27 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
             importer: { beatTextAsLyrics: true },
           } as any);
 
+          const syncScrollToCursor = () => {
+            const scrollContainer = scrollContainerRef.current;
+            const container = containerRef.current;
+            if (!scrollContainer || !container) return;
+            requestAnimationFrame(() => {
+              if (!containerRef.current || !scrollContainerRef.current) return;
+              const cursor = containerRef.current.querySelector('.at-cursor-beat')
+                || containerRef.current.querySelector('.at-cursor-bar');
+              if (cursor) {
+                const cursorRect = cursor.getBoundingClientRect();
+                const containerRect = scrollContainerRef.current.getBoundingClientRect();
+                const offsetToCenter = (cursorRect.left - containerRect.left) - (containerRect.width * 0.25) + (cursorRect.width / 2);
+                if (Math.abs(offsetToCenter) > 10) {
+                  scrollContainerRef.current.scrollTo({ left: scrollContainerRef.current.scrollLeft + offsetToCenter, behavior: 'smooth' });
+                }
+              }
+            });
+          };
+
+          (api as any)._syncScrollToCursor = syncScrollToCursor;
+
           api.playerStateChanged?.on?.(() => {
             if (!isMountedRef.current) return;
             setIsPlaying(api.playerState === 1);
@@ -191,27 +212,6 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
           });
 
           alphaTabApiRef.current = api;
-
-          const syncScrollToCursor = () => {
-            const scrollContainer = scrollContainerRef.current;
-            const container = containerRef.current;
-            if (!scrollContainer || !container) return;
-            requestAnimationFrame(() => {
-              if (!containerRef.current || !scrollContainerRef.current) return;
-              const cursor = containerRef.current.querySelector('.at-cursor-beat')
-                || containerRef.current.querySelector('.at-cursor-bar');
-              if (cursor) {
-                const cursorRect = cursor.getBoundingClientRect();
-                const containerRect = scrollContainerRef.current.getBoundingClientRect();
-                const offsetToCenter = (cursorRect.left - containerRect.left) - (containerRect.width * 0.25) + (cursorRect.width / 2);
-                if (Math.abs(offsetToCenter) > 10) {
-                  scrollContainerRef.current.scrollTo({ left: scrollContainerRef.current.scrollLeft + offsetToCenter, behavior: 'smooth' });
-                }
-              }
-            });
-          };
-
-          (api as any)._syncScrollToCursor = syncScrollToCursor;
 
           return fetch(ALPHATAB_SOUNDFONT_URL)
             .then((res) => {
