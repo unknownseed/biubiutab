@@ -127,11 +127,13 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
               scrollElement: containerRef.current,
             },
             display: {
-              layoutMode: mod.LayoutMode.Page,
+              layoutMode: mod.LayoutMode.Horizontal,
               staveProfile: mod.StaveProfile.Tab,
               scale: 1.0,
-              barsPerRow: 4,
+              barsPerRow: 2,
               padding: [20, 0, 0, 0],
+              startBar: 0,
+              barCount: 2,
             },
             importer: { beatTextAsLyrics: true },
           } as any);
@@ -488,97 +490,133 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
   };
 
   return (
-    <div className="flex flex-col gap-4 rounded-none bg-zinc-950 p-4 sm:p-6 text-zinc-50 shadow-xl">
-      {playerError ? (
-        <div className="rounded-none border border-red-500/30 bg-red-500/10 px-4 py-3 text-sm font-sans tracking-wide text-red-100">
-          {playerError}
+    <div className="rounded-none border border-zinc-800 bg-zinc-950">
+      <div className="flex items-center justify-between gap-3 border-b border-zinc-800 px-4 py-3">
+        <div className="flex items-center gap-3 min-w-0">
+          <div className="flex-shrink-0 w-[60px]">
+            <LargeChordDiagram chord={currentChordBlock?.chord || "N"} />
+          </div>
+          <div className="min-w-0 flex-1">
+            <div className="text-sm font-serif tracking-widest text-zinc-100 truncate">{displayTitle}</div>
+            <div className="flex items-center gap-2 mt-1">
+              {bpm ? <span className="text-[10px] font-mono text-zinc-400">{Math.round(bpm * playbackRate)} BPM</span> : null}
+              <span className="text-[10px] font-serif text-zinc-500">调性 {currentKeyDisplay}</span>
+            </div>
+          </div>
         </div>
-      ) : null}
+        <div className="flex-shrink-0 flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => void handlePlayPause()}
+            className={`flex h-8 w-8 items-center justify-center rounded-full text-zinc-950 shadow-sm transition active:scale-95 ${
+              isPlayerReady && !isInitializing
+                ? "bg-gradient-to-tr from-yellow-500 to-yellow-300 shadow-yellow-500/20 hover:scale-105"
+                : "bg-zinc-800 text-zinc-500"
+            }`}
+            aria-label={isPlaying ? "Pause" : "Play"}
+          >
+            {isInitializing ? (
+              <svg className="h-4 w-4 animate-spin text-zinc-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+              </svg>
+            ) : isPlaying ? (
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1">
+                <rect x="6" y="4" width="4" height="16" />
+                <rect x="14" y="4" width="4" height="16" />
+              </svg>
+            ) : (
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1" className="ml-0.5">
+                <polygon points="5 3 19 12 5 21 5 3" />
+              </svg>
+            )}
+          </button>
+        </div>
+      </div>
+
+      <div className="px-4 py-3">
+        {playerError ? (
+          <div className="mb-3 rounded-none border border-red-500/30 bg-red-500/10 px-3 py-2 text-xs text-red-200">{playerError}</div>
+        ) : null}
+
+        <div
+          className="w-full rounded-none bg-zinc-50 overflow-hidden border border-zinc-800 relative"
+          style={{ height: "130px" }}
+        >
+          <div
+            ref={containerRef}
+            className="absolute inset-0 overflow-hidden"
+          />
+        </div>
+
+        <div className="mt-2">
+          <SyncedLyrics lyrics={chordLyrics} activeIndex={activeChordIndex} countdown={countdown} />
+        </div>
+
+        <div className="mt-3">
+          <ChordTimeline
+            blocks={chordBlocks}
+            activeIndex={activeChordIndex}
+            onSeek={(time, block) => handleSeek(time, block)}
+            loopA={loopA}
+            loopB={loopB}
+            duration={lastChordEndTime}
+            baseBlockWidth={44}
+          />
+        </div>
+
+        <div className="mt-3">
+          <PlaybackControls
+            isPlaying={isPlaying || countdown !== null}
+            isPlayerReady={isPlayerReady}
+            isLoading={isInitializing}
+            currentTime={currentTime}
+            duration={lastChordEndTime}
+            onPlayPause={() => void handlePlayPause()}
+            onSeek={(t) => handleSeek(t)}
+            audioSource={audioSource}
+            onAudioSourceChange={setAudioSource}
+            playbackRate={playbackRate}
+            onPlaybackRateChange={handlePlaybackRateChange}
+            transpose={transpose}
+            onTransposeChange={handleTransposeChange}
+            currentKeyDisplay={currentKeyDisplay}
+            songTitle={displayTitle}
+            loopA={loopA}
+            loopB={loopB}
+            onLoopSet={handleLoopSet}
+            bpm={bpm}
+          />
+        </div>
+      </div>
 
       {onLevelChange ? (
-        <div className="flex flex-col gap-2 mb-2">
-          <div className="text-xs font-serif tracking-widest text-zinc-400">选择练习难度：</div>
-          <div className="flex flex-wrap gap-2">
+        <div className="border-t border-zinc-800 px-4 py-2">
+          <div className="flex flex-wrap gap-1.5">
             {[
-              { id: 1, icon: "🌱", label: "启蒙", desc: "只练左手换和弦" },
-              { id: 2, icon: "🌿", label: "小白", desc: "基础四分音符" },
-              { id: 3, icon: "🌳", label: "初级", desc: "流行万能节奏" },
-              { id: 4, icon: "🔥", label: "中级", desc: "智能原版编配" },
+              { id: 1, icon: "🌱", label: "启蒙" },
+              { id: 2, icon: "🌿", label: "小白" },
+              { id: 3, icon: "🌳", label: "初级" },
+              { id: 4, icon: "🔥", label: "中级" },
             ].map((l) => (
               <button
                 key={l.id}
                 type="button"
                 onClick={() => onLevelChange(l.id)}
-                className={`group flex items-center gap-3 px-4 py-2 border rounded-none transition-all duration-300 ${
+                className={`flex items-center gap-1 px-2.5 py-1 text-[11px] rounded-none transition-all ${
                   level === l.id
-                    ? "bg-zinc-100 text-zinc-900 border-zinc-100 shadow-sm"
-                    : "bg-zinc-900/50 text-zinc-400 border-zinc-800 hover:border-zinc-600 hover:bg-zinc-800"
+                    ? "bg-zinc-100 text-zinc-900"
+                    : "bg-zinc-900 text-zinc-400 border border-zinc-800 hover:bg-zinc-800"
                 }`}
               >
-                <span className="text-base">{l.icon}</span>
-                <div className="flex flex-col items-start">
-                  <span className={`text-sm font-medium ${level === l.id ? "text-zinc-900" : "text-zinc-200"}`}>{l.label}</span>
-                  <span className={`text-[10px] ${level === l.id ? "text-zinc-600" : "text-zinc-500 group-hover:text-zinc-400"}`}>{l.desc}</span>
-                </div>
+                <span>{l.icon}</span>
+                <span>{l.label}</span>
               </button>
             ))}
           </div>
         </div>
       ) : null}
 
-      <div className="flex flex-col gap-6">
-        <div className="flex flex-col md:flex-row gap-4 items-stretch h-auto min-h-[160px]">
-          <div className="flex-shrink-0 flex items-center justify-center bg-zinc-900 border border-zinc-800 p-4 md:w-[160px] rounded-none">
-            <LargeChordDiagram chord={currentChordBlock?.chord || "N"} />
-          </div>
-          <div
-            className="flex-1 w-full rounded-none bg-zinc-50 overflow-hidden border border-zinc-800 relative min-h-[160px]"
-          >
-            <div
-              ref={containerRef}
-              className="absolute inset-0 overflow-x-auto overflow-y-hidden"
-              style={{
-                transform: "translateY(-8px)",
-                height: "calc(100% + 16px)"
-              }}
-            />
-          </div>
-        </div>
-        <div className="h-[100px] w-full">
-          <SyncedLyrics lyrics={chordLyrics} activeIndex={activeChordIndex} countdown={countdown} />
-        </div>
-      </div>
-
-      <ChordTimeline
-        blocks={chordBlocks}
-        activeIndex={activeChordIndex}
-        onSeek={(time, block) => handleSeek(time, block)}
-        loopA={loopA}
-        loopB={loopB}
-        duration={lastChordEndTime}
-      />
-
-      <PlaybackControls
-        isPlaying={isPlaying || countdown !== null}
-        isPlayerReady={isPlayerReady}
-        isLoading={isInitializing}
-        currentTime={currentTime}
-        duration={lastChordEndTime}
-        onPlayPause={() => void handlePlayPause()}
-        onSeek={(t) => handleSeek(t)}
-        audioSource={audioSource}
-        onAudioSourceChange={setAudioSource}
-        playbackRate={playbackRate}
-        onPlaybackRateChange={handlePlaybackRateChange}
-        transpose={transpose}
-        onTransposeChange={handleTransposeChange}
-        currentKeyDisplay={currentKeyDisplay}
-        songTitle={displayTitle}
-        loopA={loopA}
-        loopB={loopB}
-        onLoopSet={handleLoopSet}
-        bpm={bpm}
-      />
       <audio ref={audioRef} className="hidden" crossOrigin="anonymous" />
     </div>
   );
