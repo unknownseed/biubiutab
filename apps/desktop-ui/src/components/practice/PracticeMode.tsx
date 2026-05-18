@@ -133,8 +133,6 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
               scale: 1.0,
               barsPerRow: 2,
               padding: [20, 0, 0, 0],
-              startBar: 0,
-              barCount: 2,
             },
             importer: { beatTextAsLyrics: true },
           } as any);
@@ -143,19 +141,15 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
             const scrollContainer = scrollContainerRef.current;
             const container = containerRef.current;
             if (!scrollContainer || !container) return;
-            requestAnimationFrame(() => {
-              if (!containerRef.current || !scrollContainerRef.current) return;
-              const cursor = containerRef.current.querySelector('.at-cursor-beat')
-                || containerRef.current.querySelector('.at-cursor-bar');
-              if (cursor) {
-                const cursorRect = cursor.getBoundingClientRect();
-                const containerRect = scrollContainerRef.current.getBoundingClientRect();
-                const offsetToCenter = (cursorRect.left - containerRect.left) - (containerRect.width * 0.25) + (cursorRect.width / 2);
-                if (Math.abs(offsetToCenter) > 10) {
-                  scrollContainerRef.current.scrollTo({ left: scrollContainerRef.current.scrollLeft + offsetToCenter, behavior: 'smooth' });
-                }
-              }
-            });
+            const scrollWidth = scrollContainer.scrollWidth - scrollContainer.clientWidth;
+            if (scrollWidth <= 0) return;
+            const totalTicks = api.tickCount || 1;
+            const ratio = Math.min(1, Math.max(0, api.tickPosition / totalTicks));
+            const targetLeft = Math.min(scrollWidth, ratio * scrollWidth - scrollContainer.clientWidth * 0.15);
+            const diff = Math.abs(scrollContainer.scrollLeft - targetLeft);
+            if (diff > 5) {
+              scrollContainer.scrollTo({ left: targetLeft, behavior: 'smooth' });
+            }
           };
 
           (api as any)._syncScrollToCursor = syncScrollToCursor;
