@@ -54,18 +54,19 @@ LYRIC_VERIFY_PROMPT = """你是一位专业的歌词校对编辑，精通普通�
 如有修改，仅输出最终结果。
 """
 
-def fetch_lyrics_from_lrclib(song_title: str) -> Optional[str]:
-    """尝试从 LRCLIB 获取准确的非幻觉歌词"""
+def fetch_lyrics_from_lrclib(song_title: str, raw_lyrics: Optional[str] = None) -> tuple[Optional[str], Optional[str]]:
+    """
+    尝试从 LRCLIB 获取准确的非幻觉歌词。
+    返回 (lyrics, source_description)。
+    raw_lyrics: 如果传入，只返回与 Whisper 转录匹配度最高的那条歌词。
+    """
     print(f"[lyric_verifier] 尝试向 LRCLIB 搜索: {song_title}")
     
     url = "https://lrclib.net/api/search"
-    # 清理文件名，提取可能有用的搜索词
-    # 如果文件名包含扩展名，去掉扩展名
     import re
     clean_title = re.sub(r'\.[a-zA-Z0-9]+$', '', song_title)
     
     params = {"q": clean_title}
-    # LRCLIB 官方要求携带清晰的 User-Agent
     headers = {"User-Agent": "BiubiuTab/1.0 (Integration)"} 
     
     try:
@@ -74,17 +75,35 @@ def fetch_lyrics_from_lrclib(song_title: str) -> Optional[str]:
             if response.status_code == 200:
                 results = response.json()
                 if results and len(results) > 0:
-                    # 获取第一条结果的纯文本歌词
-                    lyrics = results[0].get("plainLyrics")
-                    if lyrics:
-                        print(f"[lyric_verifier] 成功从 LRCLIB 获取到《{song_title}》的歌词！")
-                        return lyrics
+                    # 如果提供 raw_lyrics，從多條結果中選擇與 Whisper 最匹配的
+                    if raw_lyrics:
+                        best_lyrics = None
+                        best_overlap = 0.0
+                        for idx, r in enumerate(results[:5]):  # 嘗試前 5 條
+                            candidate = r.get("plainLyrics")
+                            if not candidate:
+                                continue
+                            ov = _chinese_char_overlap(raw_lyrics, candidate)
+                            artist = r.get("artistName", "")
+                            track = r.get("name", "")
+                            print(f"[lyric_verifier]   LRCLIB[{idx}] \"{artist} - {track}\": 重疊度={ov:.2%}")
+                            if ov > best_overlap:
+                                best_overlap = ov
+                                best_lyrics = candidate
+                        if best_lyrics and best_overlap >= _OVERLAP_MIN_THRESHOLD:
+                            print(f"[lyric_verifier] 成功从 LRCLIB 获取到《{song_title}》的歌词！(重叠度: {best_overlap:.2%})")
+                            return best_lyrics, f"lrclib (top-{min(len(results), 5)})"
+                    else:
+                        lyrics = results[0].get("plainLyrics")
+                        if lyrics:
+                            print(f"[lyric_verifier] 成功从 LRCLIB 获取到《{song_title}》的歌词！")
+                            return lyrics, "lrclib"
             else:
                 print(f"[lyric_verifier] LRCLIB 返回异常状态码: {response.status_code}")
     except Exception as e:
         print(f"[lyric_verifier] LRCLIB 请求失败: {e}")
         
-    return None
+    return None, None
 
 def fetch_lyrics_from_kugou(song_title: str) -> Optional[str]:
     """尝试从 酷狗音乐 获取准确的歌词 (对中文/粤语老歌覆盖率极高)"""
@@ -208,9 +227,36 @@ def _chinese_char_overlap(text_a: str, text_b: str) -> float:
 
 _OVERLAP_MIN_THRESHOLD = float(os.environ.get("LYRIC_OVERLAP_THRESHOLD", "0.15"))
 
+_SONG_GUIDED_CORRECTION_PROMPT = """你是一位专业的歌词校对编辑，精通普通话、粤语、闽南语等中文方言歌词。
+你的任务是对语音识别系统转写的歌词进行校验与修正。
+
+【重要】这首歌的标题是：《{song_title}》
+请先在记忆中回忆这首歌的原版歌词，再对照下面的 AI 转写结果进行修正。
+
+【校验规则】
+1. 以你对这首歌的记忆为准，大幅修正同音字、近音字错误
+2. 你可以将错乱的句子完整替换为你记忆中这首歌正确的歌词行
+3. 修正粤语特有字词错误（如"系"不应改为"是"，"佢"不应改为"他"）
+4. 补全因背景音乐干扰导致的漏字
+5. 保持原有的分行结构，不要合并或拆分歌词行
+6. 不要更改歌词的语言（粤语歌词保持粤语，不要翻译成普通话）
+7. 如果原文本与你记忆中的歌词基本一致，直接原样返回，不要过度修改
+
+【AI 转写结果】
+{lyrics}
+
+【输出格式】
+仅输出修正后的歌词文本，不要包含任何解释、标注或说明。
+如有修改，仅输出最终结果。"""
+
+def _build_song_guided_correction_prompt(raw_lyrics: str, song_title: str) -> str:
+    return _SONG_GUIDED_CORRECTION_PROMPT.format(
+        song_title=song_title,
+        lyrics=raw_lyrics
+    )
+
 def verify_lyrics(raw_lyrics: str, song_title: Optional[str] = None) -> dict:
     """使用 DeepSeek API 校验和修正歌词"""
-    # Dynamic check in case env was loaded late
     api_key = os.environ.get("DEEPSEEK_API_KEY")
     if not api_key:
         print("[lyric_verifier] DEEPSEEK_API_KEY 未设置，跳过校验")
@@ -218,54 +264,44 @@ def verify_lyrics(raw_lyrics: str, song_title: Optional[str] = None) -> dict:
 
     print(f"[lyric_verifier] 开始处理歌曲: {song_title}")
     
-    # 如果有歌名，先尝试直接获取标准歌词
     if song_title:
-        standard_lyrics = None
+        standard_lyrics: Optional[str] = None
         source_name = "unknown"
         
-        # 1. 首选：从免费、高精度且绝对无幻觉的公开 API (LRCLIB) 获取歌词
-        standard_lyrics = fetch_lyrics_from_lrclib(song_title)
+        # 1. 首选：LRCLIB 多條結果 + 中文重疊度匹配
+        standard_lyrics, lrclib_source = fetch_lyrics_from_lrclib(song_title, raw_lyrics=raw_lyrics)
         if standard_lyrics:
-            source_name = "lrclib"
+            source_name = lrclib_source
         
-        # 2. 次选：对于 LRCLIB 没有覆盖的中文/粤语老歌，尝试酷狗音乐 API
+        # 2. 次选：酷狗音乐 API
         if not standard_lyrics:
-            print("[lyric_verifier] LRCLIB 未命中，降级使用 Kugou API...")
+            print("[lyric_verifier] LRCLIB 未命中匹配結果，降级使用 Kugou API...")
             standard_lyrics = fetch_lyrics_from_kugou(song_title)
             if standard_lyrics:
-                source_name = "kugou"
+                # Kugou 也需要做重疊度校驗
+                overlap = _chinese_char_overlap(raw_lyrics, standard_lyrics)
+                print(f"[lyric_verifier] Kugou 中文字重疊度: {overlap:.2%}")
+                if overlap < _OVERLAP_MIN_THRESHOLD:
+                    print(f"[lyric_verifier] Kugou 歌词重叠度过低，拒绝替换")
+                    standard_lyrics = None
+                else:
+                    source_name = "kugou"
         
-        # 3. 兜底：如果 API 全军覆没，再让 DeepSeek 凭记忆尝试回忆
+        # 3. 兜底：DeepSeek 知識庫
         if not standard_lyrics:
             print("[lyric_verifier] API 均未命中，降级使用 DeepSeek 知识库...")
             standard_lyrics = fetch_standard_lyrics(song_title)
             if standard_lyrics:
-                source_name = "deepseek_knowledge_base"
-            
-        if standard_lyrics:
-            # 相似度校驗：防止 LRCLIB/Kugou 回傳完全錯誤的歌詞
-            overlap = _chinese_char_overlap(raw_lyrics, standard_lyrics)
-            print(f"[lyric_verifier] 中文字重叠度: {overlap:.2%} (閾值: {_OVERLAP_MIN_THRESHOLD:.0%})")
-            if overlap < _OVERLAP_MIN_THRESHOLD:
-                print(f"[lyric_verifier] 警告：标准歌词与Whisper转录重合度过低({overlap:.2%})，拒绝替换！可能是不同歌曲。")
-                standard_lyrics = None
-                source_name = "unknown"
+                overlap = _chinese_char_overlap(raw_lyrics, standard_lyrics)
+                print(f"[lyric_verifier] DeepSeek 知识库 中文字重疊度: {overlap:.2%}")
+                if overlap < _OVERLAP_MIN_THRESHOLD:
+                    print(f"[lyric_verifier] DeepSeek 知识库歌词重叠度过低，拒绝替换")
+                    standard_lyrics = None
+                else:
+                    source_name = "deepseek_knowledge_base"
 
         if standard_lyrics:
             print(f"[lyric_verifier] 成功使用外部标准歌词替换转写歌词 (来源: {source_name})")
-            
-            # [临时 Debug] 将知识库歌词写入本地文件供对比
-            try:
-                debug_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "debug_deepseek_lyrics.txt")
-                with open(debug_path, "w", encoding="utf-8") as f:
-                    f.write("=== ORIGINAL (Whisper) ===\n")
-                    f.write(raw_lyrics + "\n\n")
-                    f.write(f"=== VERIFIED ({source_name.upper()}) ===\n")
-                    f.write(standard_lyrics + "\n")
-                print(f"[lyric_verifier] 临时DEBUG: 已将标准歌词保存至 {debug_path}")
-            except Exception as debug_e:
-                print(f"[lyric_verifier] 保存debug文件失败: {debug_e}")
-
             return {
                 "verified_lyrics": standard_lyrics,
                 "original_lyrics": raw_lyrics,
@@ -273,13 +309,14 @@ def verify_lyrics(raw_lyrics: str, song_title: Optional[str] = None) -> dict:
                 "source": source_name
             }
 
-    print(f"[lyric_verifier] 知识库未命中，开始基于上下文纠错...")
-    # 获取不到标准歌词，进行转写结果的纠错
-    title_context = f"\n【歌曲信息】用户提供的音频文件名为《{song_title}》（这可能是歌手-歌名，也可能是其他格式，仅供你作为校对歌词时的上下文参考，请以原歌词为基础进行纠错，不要被歌手名误导）" if song_title else ""
-    prompt = LYRIC_VERIFY_PROMPT.format(lyrics=raw_lyrics) + title_context
-    
-    # 获取环境变量中的模型名称
+    # Pass 3: 外部來源全失敗 → 用歌名+Whisper 一起讓 DeepSeek 纠错
     model_name = os.environ.get("DEEPSEEK_MODEL_NAME", "deepseek-v4-flash")
+    if song_title:
+        prompt = _build_song_guided_correction_prompt(raw_lyrics, song_title)
+        print(f"[lyric_verifier] 使用歌名引導糾錯: 《{song_title}》")
+    else:
+        prompt = LYRIC_VERIFY_PROMPT.format(lyrics=raw_lyrics)
+        print(f"[lyric_verifier] 無歌名，使用通用糾錯")
 
     try:
         print(f"[lyric_verifier] 发送纠错请求到 DeepSeek (使用模型: {model_name})...")
@@ -290,7 +327,7 @@ def verify_lyrics(raw_lyrics: str, song_title: Optional[str] = None) -> dict:
                 {"role": "user", "content": prompt}
             ],
             stream=False,
-            temperature=0.0
+            temperature=0.1
         )
             
         verified_lyrics = response.choices[0].message.content.strip()
@@ -303,7 +340,6 @@ def verify_lyrics(raw_lyrics: str, song_title: Optional[str] = None) -> dict:
         else:
             print(f"[lyric_verifier] DeepSeek 认为转写结果已完美，无需修正")
             
-        # [临时 Debug] 将修正后的纯文本写入本地文件供对比
         try:
             debug_path = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(__file__))), "debug_deepseek_lyrics.txt")
             with open(debug_path, "w", encoding="utf-8") as f:
@@ -311,9 +347,8 @@ def verify_lyrics(raw_lyrics: str, song_title: Optional[str] = None) -> dict:
                 f.write(raw_lyrics + "\n\n")
                 f.write("=== VERIFIED (DeepSeek) ===\n")
                 f.write(verified_lyrics + "\n")
-            print(f"[lyric_verifier] 临时DEBUG: 已将DeepSeek返回的纯文本歌词保存至 {debug_path}")
-        except Exception as debug_e:
-            print(f"[lyric_verifier] 保存debug文件失败: {debug_e}")
+        except Exception:
+            pass
             
         return {
             "verified_lyrics": verified_lyrics,
