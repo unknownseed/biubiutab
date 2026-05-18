@@ -189,6 +189,25 @@ def fetch_standard_lyrics(song_title: str) -> Optional[str]:
         print(f"[lyric_verifier] fetch_standard_lyrics OpenAI SDK failed: {e}")
         return None
 
+def _extract_chinese_chars(text: str) -> set[str]:
+    """Extract unique Chinese characters from text for similarity comparison."""
+    import re
+    return set(re.findall(r'[\u4e00-\u9fff]', text))
+
+def _chinese_char_overlap(text_a: str, text_b: str) -> float:
+    """
+    Compute overlap ratio of Chinese characters between two texts.
+    Returns 0.0 to 1.0. Higher = more similar.
+    """
+    chars_a = _extract_chinese_chars(text_a)
+    chars_b = _extract_chinese_chars(text_b)
+    if not chars_a or not chars_b:
+        return 0.0
+    intersection = chars_a & chars_b
+    return len(intersection) / min(len(chars_a), len(chars_b))
+
+_OVERLAP_MIN_THRESHOLD = float(os.environ.get("LYRIC_OVERLAP_THRESHOLD", "0.15"))
+
 def verify_lyrics(raw_lyrics: str, song_title: Optional[str] = None) -> dict:
     """使用 DeepSeek API 校验和修正歌词"""
     # Dynamic check in case env was loaded late
@@ -223,6 +242,15 @@ def verify_lyrics(raw_lyrics: str, song_title: Optional[str] = None) -> dict:
             if standard_lyrics:
                 source_name = "deepseek_knowledge_base"
             
+        if standard_lyrics:
+            # 相似度校驗：防止 LRCLIB/Kugou 回傳完全錯誤的歌詞
+            overlap = _chinese_char_overlap(raw_lyrics, standard_lyrics)
+            print(f"[lyric_verifier] 中文字重叠度: {overlap:.2%} (閾值: {_OVERLAP_MIN_THRESHOLD:.0%})")
+            if overlap < _OVERLAP_MIN_THRESHOLD:
+                print(f"[lyric_verifier] 警告：标准歌词与Whisper转录重合度过低({overlap:.2%})，拒绝替换！可能是不同歌曲。")
+                standard_lyrics = None
+                source_name = "unknown"
+
         if standard_lyrics:
             print(f"[lyric_verifier] 成功使用外部标准歌词替换转写歌词 (来源: {source_name})")
             
