@@ -37,7 +37,6 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
 
   const pollRef = useRef<ReturnType<typeof setInterval> | null>(null);
   const timeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const pendingPlayRef = useRef(false);
 
   const [isPlaying, setIsPlaying] = useState(false);
   const [isPlayerReady, setIsPlayerReady] = useState(false);
@@ -190,13 +189,11 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
     }
     if (containerRef.current) containerRef.current.innerHTML = "";
     initPromiseRef.current = null;
-    pendingPlayRef.current = false;
   };
 
-  const ensureEngine = (autoPlay: boolean) => {
-    if (autoPlay) pendingPlayRef.current = true;
-    if (alphaTabApiRef.current) return;
-    if (initPromiseRef.current) return;
+  const ensureEngine = (): Promise<void> => {
+    if (alphaTabApiRef.current?.isReadyForPlayback) return Promise.resolve();
+    if (initPromiseRef.current) return initPromiseRef.current;
 
     initPromiseRef.current = (async () => {
       setPlayerError(null);
@@ -301,14 +298,6 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       api.playerReady?.on?.(() => {
         setIsPlayerReady(true);
         setIsInitializing(false);
-        if (pendingPlayRef.current) {
-          pendingPlayRef.current = false;
-          try {
-            if (api.playerState === 0) {
-              api.playPause();
-            }
-          } catch {}
-        }
       });
 
       api.postRenderFinished?.on?.(() => {
@@ -418,14 +407,6 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
             clearInterval(pollRef.current);
             pollRef.current = null;
           }
-          if (pendingPlayRef.current) {
-            pendingPlayRef.current = false;
-            try {
-              if (api.playerState === 0) {
-                api.playPause();
-              }
-            } catch {}
-          }
         }
       }, 300);
 
@@ -467,10 +448,12 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
         setIsInitializing(false);
       }
     })();
+
+    return initPromiseRef.current;
   };
 
   useEffect(() => {
-    ensureEngine(false);
+    void ensureEngine();
     return destroyEngine;
   }, []);
 
@@ -514,15 +497,9 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
     } catch {}
   };
 
-  const handlePlayPause = () => {
-    if (!alphaTabApiRef.current) {
-      ensureEngine(true);
-      return;
-    }
-    if (!alphaTabApiRef.current.isReadyForPlayback) {
-      ensureEngine(true);
-      return;
-    }
+  const handlePlayPause = async () => {
+    await ensureEngine();
+    if (!alphaTabApiRef.current?.isReadyForPlayback) return;
 
     if (isPlaying) {
       try {
