@@ -1,9 +1,10 @@
-import { useMemo, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 
 export default function LoginPage() {
   const navigate = useNavigate();
+  const [params] = useSearchParams();
   const sb = useMemo(() => supabase(), []);
   const [mode, setMode] = useState<"login" | "signup">("login");
   const [email, setEmail] = useState("");
@@ -11,6 +12,12 @@ export default function LoginPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [notice, setNotice] = useState<string | null>(null);
+
+  useEffect(() => {
+    const m = params.get("mode");
+    if (m === "signup") setMode("signup");
+    if (m === "login") setMode("login");
+  }, [params]);
 
   const submit = async () => {
     setLoading(true);
@@ -20,7 +27,7 @@ export default function LoginPage() {
       if (mode === "login") {
         const { error } = await sb.auth.signInWithPassword({ email, password });
         if (error) throw error;
-        navigate("/play", { replace: true });
+        navigate("/", { replace: true });
       } else {
         const { data, error } = await sb.auth.signUp({ email, password });
         if (error) throw error;
@@ -28,7 +35,7 @@ export default function LoginPage() {
           setNotice("已发送验证邮件，请去邮箱完成验证后再登录。");
           return;
         }
-        navigate("/play", { replace: true });
+        navigate("/", { replace: true });
       }
     } catch (e) {
       setError(e instanceof Error ? e.message : "登录失败");
@@ -105,4 +112,3 @@ export default function LoginPage() {
     </main>
   );
 }
-

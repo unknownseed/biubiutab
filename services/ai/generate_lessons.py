@@ -5,14 +5,37 @@ import sys
 from pathlib import Path
 import guitarpro
 
+def _songs_root():
+    v = os.environ.get("BIUBIU_TEACHING_SONGS_DIR", "").strip()
+    return Path(v) if v else None
+
+def _public_root():
+    v = os.environ.get("BIUBIU_TEACHING_PUBLIC_DIR", "").strip()
+    return Path(v) if v else None
+
+def _resolve_song_dir(song_slug: str) -> Path:
+    root = _songs_root()
+    if root:
+        return root / song_slug
+    base_dir = Path(f"apps/web/songs/{song_slug}")
+    if base_dir.exists():
+        return base_dir
+    return Path(f"../../apps/web/songs/{song_slug}")
+
+def _resolve_gp5_dir(song_slug: str) -> Path:
+    root = _public_root()
+    if root:
+        return root / "gp5" / song_slug
+    gp5_dir = Path(f"apps/web/public/gp5/{song_slug}")
+    if gp5_dir.exists() or str(gp5_dir.parent.parent).endswith("public"):
+        return gp5_dir
+    return Path(f"../../apps/web/public/gp5/{song_slug}")
+
 def load_manifest(song_slug: str):
     """
     Load the manifest.json for a given song.
     """
-    base_dir = Path(f"apps/web/songs/{song_slug}")
-    if not base_dir.exists():
-        # Try finding it relative to the script if running from services/ai
-        base_dir = Path(f"../../apps/web/songs/{song_slug}")
+    base_dir = _resolve_song_dir(song_slug)
     
     manifest_path = base_dir / "manifest.json"
     if not manifest_path.exists():
@@ -207,13 +230,8 @@ def generate_lessons(song_slug: str):
     bpm = manifest.get("bpm", 80)
     
     # Setup directories
-    base_dir = Path(f"apps/web/songs/{song_slug}")
-    if not base_dir.exists():
-        base_dir = Path(f"../../apps/web/songs/{song_slug}")
-        
-    gp5_dir = Path(f"apps/web/public/gp5/{song_slug}")
-    if not str(gp5_dir.parent.parent).endswith("public"):
-        gp5_dir = Path(f"../../apps/web/public/gp5/{song_slug}")
+    base_dir = _resolve_song_dir(song_slug)
+    gp5_dir = _resolve_gp5_dir(song_slug)
     gp5_dir.mkdir(parents=True, exist_ok=True)
     
     base_gp5 = base_dir / manifest.get("source_files", {}).get("base_gp5", "base.gp5")

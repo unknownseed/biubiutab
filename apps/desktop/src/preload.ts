@@ -4,5 +4,28 @@ contextBridge.exposeInMainWorld("desktop", {
   pickAudioFile: async () => {
     return (await ipcRenderer.invoke("pick-audio-file")) as { path: string; name: string } | null;
   },
+  pickTeachingFile: async (kind: "gp5" | "audio" | "video") => {
+    return (await ipcRenderer.invoke("pick-teaching-file", { kind })) as { path: string; name: string } | null;
+  },
+  teachingGetPaths: async () => {
+    return (await ipcRenderer.invoke("teaching-get-paths")) as { root: string; songsDir: string; publicDir: string };
+  },
+  teachingWriteManifest: async (slug: string, text: string) => {
+    return (await ipcRenderer.invoke("teaching-write-manifest", { slug, text })) as { manifestPath: string };
+  },
+  teachingSaveAsset: async (slug: string, kind: "base_gp5" | "demo_audio" | "demo_video", sourcePath: string) => {
+    return (await ipcRenderer.invoke("teaching-save-asset", { slug, kind, sourcePath })) as { savedPath: string; publicUrl?: string; baseGp5Name?: string };
+  },
+  teachingReadText: async (relPath: string) => {
+    return (await ipcRenderer.invoke("teaching-read-text", { relPath })) as string;
+  },
+  teachingReadPublicBytes: async (urlPath: string) => {
+    return (await ipcRenderer.invoke("teaching-read-public-bytes", { urlPath })) as Uint8Array;
+  },
+  teachingGenerateLessons: async (slug: string) => {
+    return (await ipcRenderer.invoke("teaching-generate-lessons", { slug })) as { ok: boolean; output: string };
+  },
+  teachingDeleteSong: async (slug: string) => {
+    return (await ipcRenderer.invoke("teaching-delete-song", { slug })) as { ok: boolean };
+  },
 });
-

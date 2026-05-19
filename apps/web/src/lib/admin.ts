@@ -7,4 +7,3 @@ export function isAdminEmail(email: string | null | undefined): boolean {
   if (list.length === 0) return false;
   return list.includes(email.trim().toLowerCase());
 }
-

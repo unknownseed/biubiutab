@@ -23,6 +23,8 @@ venv/
 storage/
 apps/web/public/gp5/
 apps/web/apps/web/public/gp5/
+apps/desktop-ui/public/gp5/
+apps/desktop-ui/src/teaching/
 
 # Local env
 .env
