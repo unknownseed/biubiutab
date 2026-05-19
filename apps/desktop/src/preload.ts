@@ -28,4 +28,30 @@ contextBridge.exposeInMainWorld("desktop", {
   teachingDeleteSong: async (slug: string) => {
     return (await ipcRenderer.invoke("teaching-delete-song", { slug })) as { ok: boolean };
   },
+  cloudGetText: async (urlPath: string) => {
+    return (await ipcRenderer.invoke("cloud-get-text", { urlPath })) as string;
+  },
+  cloudGetBytes: async (urlPath: string) => {
+    return (await ipcRenderer.invoke("cloud-get-bytes", { urlPath })) as Uint8Array;
+  },
+  cloudPostJson: async (urlPath: string, body: unknown, headers?: Record<string, string>) => {
+    return (await ipcRenderer.invoke("cloud-post-json", { urlPath, body, headers })) as { ok: boolean; status: number; text: string };
+  },
+  cloudTeachingSave: async (args: {
+    songId: string;
+    accessToken: string;
+    title: string;
+    artist: string;
+    slug: string;
+    status: string;
+    manifest: string;
+    baseGp5Path?: string | null;
+    demoAudioPath?: string | null;
+    demoVideoPath?: string | null;
+  }) => {
+    return (await ipcRenderer.invoke("cloud-teaching-save", args)) as { ok: boolean; status: number; text: string };
+  },
+  cloudTeachingGenerate: async (songId: string, accessToken: string) => {
+    return (await ipcRenderer.invoke("cloud-teaching-generate", { songId, accessToken })) as { ok: boolean; status: number; text: string };
+  },
 });

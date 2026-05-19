@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import PracticeMode from "../practice/PracticeMode";
+import { cloudGetBytes } from "../../lib/cloud";
 
 export type PracticeBlockData = {
   title: string;
@@ -50,15 +51,8 @@ export default function PracticeBlock({ data, coreChords }: PracticeBlockProps) 
     setIsLoading(true);
     try {
       const urlPath = data.gp5Url.startsWith("/") ? data.gp5Url : `/${data.gp5Url}`;
-      if (window.desktop?.teachingReadPublicBytes) {
-        const bytes = await window.desktop.teachingReadPublicBytes(urlPath);
-        setGp5Data(bytes);
-        return;
-      }
-      const res = await fetch(urlPath);
-      if (!res.ok) throw new Error(`GP5 下载失败: ${res.status}`);
-      const buf = await res.arrayBuffer();
-      setGp5Data(new Uint8Array(buf));
+      const bytes = await cloudGetBytes(urlPath);
+      setGp5Data(bytes);
     } catch {
     } finally {
       setIsLoading(false);

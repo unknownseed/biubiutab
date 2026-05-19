@@ -16,6 +16,22 @@ declare global {
       teachingReadPublicBytes: (urlPath: string) => Promise<Uint8Array>;
       teachingGenerateLessons: (slug: string) => Promise<{ ok: boolean; output: string }>;
       teachingDeleteSong: (slug: string) => Promise<{ ok: boolean }>;
+      cloudGetText: (urlPath: string) => Promise<string>;
+      cloudGetBytes: (urlPath: string) => Promise<Uint8Array>;
+      cloudPostJson: (urlPath: string, body: unknown, headers?: Record<string, string>) => Promise<{ ok: boolean; status: number; text: string }>;
+      cloudTeachingSave: (args: {
+        songId: string;
+        accessToken: string;
+        title: string;
+        artist: string;
+        slug: string;
+        status: string;
+        manifest: string;
+        baseGp5Path?: string | null;
+        demoAudioPath?: string | null;
+        demoVideoPath?: string | null;
+      }) => Promise<{ ok: boolean; status: number; text: string }>;
+      cloudTeachingGenerate: (songId: string, accessToken: string) => Promise<{ ok: boolean; status: number; text: string }>;
     };
   }
 }

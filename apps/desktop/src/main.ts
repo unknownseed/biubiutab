@@ -48,6 +48,22 @@ function safeJoin(root: string, relPath: string) {
   return out;
 }
 
+function webBaseUrl() {
+  return String(process.env.WEB_BASE_URL || process.env.NEXT_PUBLIC_SITE_URL || "").trim().replace(/\/$/, "");
+}
+
+function ensureWebBaseUrl() {
+  const base = webBaseUrl();
+  if (!base) throw new Error("Missing env: WEB_BASE_URL");
+  return base;
+}
+
+function toAbsoluteUrl(urlPath: string) {
+  const base = ensureWebBaseUrl();
+  if (!urlPath.startsWith("/")) throw new Error("invalid urlPath");
+  return base + urlPath;
+}
+
 async function resolvePythonForAi(aiCwd: string) {
   const forced = (process.env.AI_PYTHON || "").trim();
   if (forced) return forced;
@@ -220,6 +236,100 @@ async function start() {
     const p = safeJoin(teachingRoot(), rel);
     const buf = await readFile(p);
     return new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);
+  });
+
+  ipcMain.handle("cloud-get-text", async (_e, args: { urlPath: string }) => {
+    const urlPath = String(args?.urlPath || "");
+    const url = toAbsoluteUrl(urlPath);
+    const res = await fetch(url, { cache: "no-store" as any });
+    if (!res.ok) {
+      const t = await res.text().catch(() => "");
+      throw new Error(t || `http ${res.status}`);
+    }
+    return await res.text();
+  });
+
+  ipcMain.handle("cloud-get-bytes", async (_e, args: { urlPath: string }) => {
+    const urlPath = String(args?.urlPath || "");
+    const url = toAbsoluteUrl(urlPath);
+    const res = await fetch(url, { cache: "no-store" as any });
+    if (!res.ok) {
+      const t = await res.text().catch(() => "");
+      throw new Error(t || `http ${res.status}`);
+    }
+    const buf = await res.arrayBuffer();
+    return new Uint8Array(buf);
+  });
+
+  ipcMain.handle("cloud-post-json", async (_e, args: { urlPath: string; body: unknown; headers?: Record<string, string> }) => {
+    const urlPath = String(args?.urlPath || "");
+    const url = toAbsoluteUrl(urlPath);
+    const headers: Record<string, string> = {
+      "content-type": "application/json",
+      ...(args.headers || {}),
+    };
+    const res = await fetch(url, { method: "POST", headers, body: JSON.stringify(args.body ?? {}) });
+    const text = await res.text().catch(() => "");
+    return { ok: res.ok, status: res.status, text };
+  });
+
+  ipcMain.handle(
+    "cloud-teaching-save",
+    async (
+      _e,
+      args: {
+        songId: string;
+        accessToken: string;
+        title: string;
+        artist: string;
+        slug: string;
+        status: string;
+        manifest: string;
+        baseGp5Path?: string | null;
+        demoAudioPath?: string | null;
+        demoVideoPath?: string | null;
+      }
+    ) => {
+      const songId = String(args?.songId || "new");
+      const token = String(args?.accessToken || "").trim();
+      if (!token) throw new Error("missing accessToken");
+      const urlPath = `/api/desktop/admin/teaching/songs/${encodeURIComponent(songId)}/save`;
+      const url = toAbsoluteUrl(urlPath);
+      const fd = new FormData();
+      fd.set("title", String(args?.title || ""));
+      fd.set("artist", String(args?.artist || ""));
+      fd.set("slug", String(args?.slug || ""));
+      fd.set("status", String(args?.status || "draft"));
+      fd.set("manifest", String(args?.manifest || "{}"));
+
+      const addFile = async (field: string, p: string | null | undefined) => {
+        const fp = String(p || "").trim();
+        if (!fp) return;
+        const buf = await readFile(fp);
+        const name = path.basename(fp);
+        const blob = new Blob([buf]);
+        (fd as any).set(field, blob, name);
+      };
+
+      await addFile("base_gp5", args?.baseGp5Path || null);
+      await addFile("demo_audio", args?.demoAudioPath || null);
+      await addFile("demo_video", args?.demoVideoPath || null);
+
+      const res = await fetch(url, { method: "POST", headers: { Authorization: `Bearer ${token}` }, body: fd as any });
+      const text = await res.text().catch(() => "");
+      return { ok: res.ok, status: res.status, text };
+    }
+  );
+
+  ipcMain.handle("cloud-teaching-generate", async (_e, args: { songId: string; accessToken: string }) => {
+    const songId = String(args?.songId || "").trim();
+    const token = String(args?.accessToken || "").trim();
+    if (!songId) throw new Error("missing songId");
+    if (!token) throw new Error("missing accessToken");
+    const url = toAbsoluteUrl(`/api/desktop/admin/teaching/generate/${encodeURIComponent(songId)}`);
+    const res = await fetch(url, { method: "POST", headers: { Authorization: `Bearer ${token}` } });
+    const text = await res.text().catch(() => "");
+    return { ok: res.ok, status: res.status, text };
   });
 
   ipcMain.handle("teaching-generate-lessons", async (_e, args: { slug: string }) => {

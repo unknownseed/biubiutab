@@ -124,8 +124,8 @@ export default function AdminTeachingEditPage() {
       setError("slug 不能为空");
       return;
     }
-    if (!window.desktop?.teachingWriteManifest || !window.desktop?.teachingSaveAsset) {
-      setError("当前环境不支持本地教学文件操作，请在 Electron 桌面端运行。");
+    if (!window.desktop?.cloudTeachingSave) {
+      setError("当前环境不支持云端发布，请在 Electron 桌面端运行。");
       return;
     }
     setBusy(true);
@@ -146,46 +146,33 @@ export default function AdminTeachingEditPage() {
       if (artist.trim()) manifestObj.artist = artist.trim();
       if (!manifestObj.source_files || typeof manifestObj.source_files !== "object") manifestObj.source_files = {};
 
-      if (baseGp5Path) {
-        const r = await window.desktop.teachingSaveAsset(slug.trim(), "base_gp5", baseGp5Path);
-        manifestObj.source_files.base_gp5 = r.baseGp5Name || "base.gp5";
-      } else if (!manifestObj.source_files.base_gp5) {
-        manifestObj.source_files.base_gp5 = "base.gp5";
-      }
-
-      if (demoAudioPath) {
-        const r = await window.desktop.teachingSaveAsset(slug.trim(), "demo_audio", demoAudioPath);
-        if (r.publicUrl) manifestObj.source_files.full_audio = r.publicUrl;
-      }
-
-      if (demoVideoPath) {
-        const r = await window.desktop.teachingSaveAsset(slug.trim(), "demo_video", demoVideoPath);
-        if (r.publicUrl) manifestObj.source_files.full_video = r.publicUrl;
-      }
-
       const finalManifestText = safeJsonStringify(manifestObj);
-      await window.desktop.teachingWriteManifest(slug.trim(), finalManifestText);
       setManifestText(finalManifestText);
 
-      if (isNew) {
-        const { data, error } = await sb
-          .from("teaching_songs")
-          .insert({ user_id: userId, slug: slug.trim(), title: title.trim(), artist: artist.trim() || null, status, manifest: manifestObj })
-          .select("id")
-          .single();
-        if (error) throw error;
-        setNotice("已保存");
-        navigate(`/admin/teaching/${data.id}`, { replace: true });
-        return;
-      }
+      const { data: sess } = await sb.auth.getSession();
+      const token = sess.session?.access_token || "";
+      if (!token) throw new Error("请先登录");
 
-      const { error } = await sb
-        .from("teaching_songs")
-        .update({ slug: slug.trim(), title: title.trim(), artist: artist.trim() || null, status, manifest: manifestObj })
-        .eq("id", songId)
-        ;
-      if (error) throw error;
+      const resp = await window.desktop.cloudTeachingSave({
+        songId,
+        accessToken: token,
+        title: title.trim(),
+        artist: artist.trim(),
+        slug: slug.trim(),
+        status,
+        manifest: finalManifestText,
+        baseGp5Path,
+        demoAudioPath,
+        demoVideoPath,
+      });
+
+      if (!resp.ok) throw new Error(resp.text || `http ${resp.status}`);
+      const obj = JSON.parse(resp.text || "{}") as any;
+      const newId = String(obj.id || "");
       setNotice("已保存");
+      if (isNew && newId) {
+        navigate(`/admin/teaching/${newId}`, { replace: true });
+      }
     } catch (e) {
       setError(e instanceof Error ? e.message : "保存失败");
     } finally {
@@ -207,12 +194,8 @@ export default function AdminTeachingEditPage() {
       setError("slug 不能为空");
       return;
     }
-    if (!window.desktop?.teachingGenerateLessons) {
-      setError("当前环境不支持生成教學模組，请在 Electron 桌面端运行。");
-      return;
-    }
-    if (!window.desktop?.teachingWriteManifest || !window.desktop?.teachingSaveAsset) {
-      setError("当前环境不支持本地教学文件操作，请在 Electron 桌面端运行。");
+    if (!window.desktop?.cloudTeachingGenerate) {
+      setError("当前环境不支持云端生成，请在 Electron 桌面端运行。");
       return;
     }
     setBusy(true);
@@ -220,50 +203,13 @@ export default function AdminTeachingEditPage() {
     setNotice(null);
     setGenOutput(null);
     try {
-      let manifestObj: any;
-      try {
-        manifestObj = JSON.parse(manifestText || "{}");
-      } catch {
-        throw new Error("manifest 不是合法 JSON");
-      }
-      if (!manifestObj || typeof manifestObj !== "object") throw new Error("manifest 必须是 JSON 对象");
+      const { data: sess } = await sb.auth.getSession();
+      const token = sess.session?.access_token || "";
+      if (!token) throw new Error("请先登录");
 
-      manifestObj.slug = slug.trim();
-      manifestObj.title = title.trim();
-      if (artist.trim()) manifestObj.artist = artist.trim();
-      if (!manifestObj.source_files || typeof manifestObj.source_files !== "object") manifestObj.source_files = {};
-
-      if (baseGp5Path) {
-        const rr = await window.desktop.teachingSaveAsset(slug.trim(), "base_gp5", baseGp5Path);
-        manifestObj.source_files.base_gp5 = rr.baseGp5Name || "base.gp5";
-      } else if (!manifestObj.source_files.base_gp5) {
-        manifestObj.source_files.base_gp5 = "base.gp5";
-      }
-
-      if (demoAudioPath) {
-        const rr = await window.desktop.teachingSaveAsset(slug.trim(), "demo_audio", demoAudioPath);
-        if (rr.publicUrl) manifestObj.source_files.full_audio = rr.publicUrl;
-      }
-
-      if (demoVideoPath) {
-        const rr = await window.desktop.teachingSaveAsset(slug.trim(), "demo_video", demoVideoPath);
-        if (rr.publicUrl) manifestObj.source_files.full_video = rr.publicUrl;
-      }
-
-      const finalManifestText = safeJsonStringify(manifestObj);
-      await window.desktop.teachingWriteManifest(slug.trim(), finalManifestText);
-      setManifestText(finalManifestText);
-      const { error: upErr } = await sb
-        .from("teaching_songs")
-        .update({ slug: slug.trim(), title: title.trim(), artist: artist.trim() || null, manifest: manifestObj })
-        .eq("id", songId);
-      if (upErr) throw upErr;
-
-      const r = await window.desktop.teachingGenerateLessons(slug.trim());
-      setGenOutput(r.output || "");
-      if (!r.ok) throw new Error("生成失败（请查看输出）");
-      const { error } = await sb.from("teaching_songs").update({ status: "published" }).eq("id", songId);
-      if (error) throw error;
+      const resp = await window.desktop.cloudTeachingGenerate(songId, token);
+      if (!resp.ok) throw new Error(resp.text || `http ${resp.status}`);
+      setGenOutput(resp.text || "");
       setStatus("published");
       setNotice("已生成并发布");
     } catch (e) {

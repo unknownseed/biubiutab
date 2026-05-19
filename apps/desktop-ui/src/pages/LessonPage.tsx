@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { Navigate, useParams } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { isAdminEmail } from "../lib/admin";
+import { cloudGetText } from "../lib/cloud";
 import LessonNav from "../components/teaching/LessonNav";
 import PracticeBlock, { type PracticeBlockData } from "../components/teaching/PracticeBlock";
 
@@ -123,21 +124,15 @@ export default function LessonPage() {
     const loadModule = async () => {
       setError(null);
       try {
-        if (window.desktop?.teachingReadText) {
-          const text = await window.desktop.teachingReadText(`songs/${slug}/${module}.json`);
-          if (!text.trim()) throw new Error("module empty");
-          const obj = JSON.parse(text);
-          if (!cancelled) setModuleData(obj);
-          return;
-        }
-        const k = keyForModule(slug, module);
-        if (!cancelled) setModuleData(k ? moduleModules[k] : null);
+        const text = await cloudGetText(`/api/teaching/songs/${encodeURIComponent(slug)}/${encodeURIComponent(module)}`);
+        const obj = JSON.parse(text || "{}");
+        if (!cancelled) setModuleData(obj);
       } catch (e) {
         if (!cancelled) {
           const msg = e instanceof Error ? e.message : "加载失败";
-          if (String(msg).includes("ENOENT") || String(msg).includes("no such file") || String(msg).includes("module empty")) {
+          if (String(msg).includes("ENOENT") || String(msg).includes("no such file") || String(msg).includes("module empty") || String(msg).includes("404")) {
             setModuleData(null);
-            setError(`教學內容尚未在本機生成：${slug}/${module}。請用管理員帳號到「教學管理」進入該歌曲並點「生成模組」。`);
+            setError(`教學內容尚未發布：${slug}/${module}。請用管理員帳號到「教學管理」對該歌曲點「生成模組」並發布。`);
             return;
           }
           const k = keyForModule(slug, module);
