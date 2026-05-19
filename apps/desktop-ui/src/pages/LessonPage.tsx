@@ -125,6 +125,7 @@ export default function LessonPage() {
       try {
         if (window.desktop?.teachingReadText) {
           const text = await window.desktop.teachingReadText(`songs/${slug}/${module}.json`);
+          if (!text.trim()) throw new Error("module empty");
           const obj = JSON.parse(text);
           if (!cancelled) setModuleData(obj);
           return;
@@ -133,9 +134,15 @@ export default function LessonPage() {
         if (!cancelled) setModuleData(k ? moduleModules[k] : null);
       } catch (e) {
         if (!cancelled) {
+          const msg = e instanceof Error ? e.message : "加载失败";
+          if (String(msg).includes("ENOENT") || String(msg).includes("no such file") || String(msg).includes("module empty")) {
+            setModuleData(null);
+            setError(`教學內容尚未在本機生成：${slug}/${module}。請用管理員帳號到「教學管理」進入該歌曲並點「生成模組」。`);
+            return;
+          }
           const k = keyForModule(slug, module);
           setModuleData(k ? moduleModules[k] : null);
-          setError(e instanceof Error ? e.message : "加载失败");
+          setError(msg);
         }
       }
     };

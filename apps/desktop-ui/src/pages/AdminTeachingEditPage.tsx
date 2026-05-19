@@ -195,12 +195,24 @@ export default function AdminTeachingEditPage() {
 
   const generate = async () => {
     if (!userId) return;
+    if (isNew) {
+      setError("请先保存创建记录后再生成");
+      return;
+    }
+    if (!title.trim()) {
+      setError("标题不能为空");
+      return;
+    }
     if (!slug.trim()) {
-      setError("请先填写 slug 并保存");
+      setError("slug 不能为空");
       return;
     }
     if (!window.desktop?.teachingGenerateLessons) {
       setError("当前环境不支持生成教學模組，请在 Electron 桌面端运行。");
+      return;
+    }
+    if (!window.desktop?.teachingWriteManifest || !window.desktop?.teachingSaveAsset) {
+      setError("当前环境不支持本地教学文件操作，请在 Electron 桌面端运行。");
       return;
     }
     setBusy(true);
@@ -208,11 +220,49 @@ export default function AdminTeachingEditPage() {
     setNotice(null);
     setGenOutput(null);
     try {
+      let manifestObj: any;
+      try {
+        manifestObj = JSON.parse(manifestText || "{}");
+      } catch {
+        throw new Error("manifest 不是合法 JSON");
+      }
+      if (!manifestObj || typeof manifestObj !== "object") throw new Error("manifest 必须是 JSON 对象");
+
+      manifestObj.slug = slug.trim();
+      manifestObj.title = title.trim();
+      if (artist.trim()) manifestObj.artist = artist.trim();
+      if (!manifestObj.source_files || typeof manifestObj.source_files !== "object") manifestObj.source_files = {};
+
+      if (baseGp5Path) {
+        const rr = await window.desktop.teachingSaveAsset(slug.trim(), "base_gp5", baseGp5Path);
+        manifestObj.source_files.base_gp5 = rr.baseGp5Name || "base.gp5";
+      } else if (!manifestObj.source_files.base_gp5) {
+        manifestObj.source_files.base_gp5 = "base.gp5";
+      }
+
+      if (demoAudioPath) {
+        const rr = await window.desktop.teachingSaveAsset(slug.trim(), "demo_audio", demoAudioPath);
+        if (rr.publicUrl) manifestObj.source_files.full_audio = rr.publicUrl;
+      }
+
+      if (demoVideoPath) {
+        const rr = await window.desktop.teachingSaveAsset(slug.trim(), "demo_video", demoVideoPath);
+        if (rr.publicUrl) manifestObj.source_files.full_video = rr.publicUrl;
+      }
+
+      const finalManifestText = safeJsonStringify(manifestObj);
+      await window.desktop.teachingWriteManifest(slug.trim(), finalManifestText);
+      setManifestText(finalManifestText);
+      const { error: upErr } = await sb
+        .from("teaching_songs")
+        .update({ slug: slug.trim(), title: title.trim(), artist: artist.trim() || null, manifest: manifestObj })
+        .eq("id", songId);
+      if (upErr) throw upErr;
+
       const r = await window.desktop.teachingGenerateLessons(slug.trim());
       setGenOutput(r.output || "");
       if (!r.ok) throw new Error("生成失败（请查看输出）");
-      const targetId = row?.id || songId;
-      const { error } = await sb.from("teaching_songs").update({ status: "published" }).eq("id", targetId);
+      const { error } = await sb.from("teaching_songs").update({ status: "published" }).eq("id", songId);
       if (error) throw error;
       setStatus("published");
       setNotice("已生成并发布");

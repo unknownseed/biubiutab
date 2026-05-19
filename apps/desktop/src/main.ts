@@ -204,7 +204,12 @@ async function start() {
   ipcMain.handle("teaching-read-text", async (_e, args: { relPath: string }) => {
     await ensureTeachingDirs();
     const p = safeJoin(teachingRoot(), String(args?.relPath || ""));
-    return await readFile(p, "utf-8");
+    try {
+      return await readFile(p, "utf-8");
+    } catch (e: any) {
+      if (e && (e.code === "ENOENT" || String(e.message || "").includes("ENOENT"))) return "";
+      throw e;
+    }
   });
 
   ipcMain.handle("teaching-read-public-bytes", async (_e, args: { urlPath: string }) => {
