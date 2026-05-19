@@ -195,257 +195,279 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
     if (alphaTabApiRef.current?.isReadyForPlayback) return Promise.resolve();
     if (initPromiseRef.current) return initPromiseRef.current;
 
-    initPromiseRef.current = (async () => {
+    let engineReadyResolver: (() => void) | null = null;
+    initPromiseRef.current = new Promise<void>((resolve) => {
+      engineReadyResolver = resolve;
+    });
+
+    (async () => {
       setPlayerError(null);
       setIsPlayerReady(false);
       setIsInitializing(true);
 
-      const mod = await import("@coderline/alphatab");
-      if (!isMountedRef.current) return;
-      if (!containerRef.current) return;
+      try {
+        const mod = await import("@coderline/alphatab");
+        if (!isMountedRef.current) { engineReadyResolver!(); return; }
+        if (!containerRef.current) { engineReadyResolver!(); return; }
 
-      containerRef.current.innerHTML = "";
+        containerRef.current.innerHTML = "";
 
-      mod.Logger.logLevel = mod.LogLevel.Info;
+        mod.Logger.logLevel = mod.LogLevel.Info;
 
-      const api = new mod.AlphaTabApi(containerRef.current, {
-        core: {
-          engine: "svg",
-          fontDirectory: ALPHATAB_FONT_DIR,
-          useWorkers: false,
-          logLevel: mod.LogLevel.Info,
-        },
-        player: {
-          enablePlayer: true,
-          soundFont: null,
-          scrollElement: containerRef.current,
-        },
-        display: {
-          scale: 1.0,
-          layoutMode: mod.LayoutMode.Horizontal,
-          staveProfile: mod.StaveProfile.Tab,
-        },
-        importer: {
-          beatTextAsLyrics: false,
-        },
-        stylesheet: {
-          globalDisplayChordDiagramsOnTop: false,
-          globalDisplayChordDiagramsInScore: false,
-        },
-        notation: {
-          rhythmMode: mod.TabRhythmMode.ShowWithBars,
-        },
-      } as any);
+        const api = new mod.AlphaTabApi(containerRef.current, {
+          core: {
+            engine: "svg",
+            fontDirectory: ALPHATAB_FONT_DIR,
+            useWorkers: false,
+            logLevel: mod.LogLevel.Info,
+          },
+          player: {
+            enablePlayer: true,
+            soundFont: null,
+            scrollElement: containerRef.current,
+          },
+          display: {
+            scale: 1.0,
+            layoutMode: mod.LayoutMode.Horizontal,
+            staveProfile: mod.StaveProfile.Tab,
+          },
+          importer: {
+            beatTextAsLyrics: false,
+          },
+          stylesheet: {
+            globalDisplayChordDiagramsOnTop: false,
+            globalDisplayChordDiagramsInScore: false,
+          },
+          notation: {
+            rhythmMode: mod.TabRhythmMode.ShowWithBars,
+          },
+        } as any);
 
-      api.settings.display.resources.titleFont.size = 0;
-      api.settings.display.resources.subTitleFont.size = 0;
-      api.settings.display.resources.wordsFont.size = 0;
-      api.settings.notation.elements.set(mod.NotationElement.GuitarTuning, false);
-      api.settings.notation.elements.set(mod.NotationElement.EffectChordNames, false);
-      api.settings.notation.elements.set(mod.NotationElement.ChordDiagrams, false);
-      api.settings.notation.elements.set((mod.NotationElement as any).EffectTempo, false);
-      api.settings.notation.elements.set((mod.NotationElement as any).EffectDynamics, false);
+        api.settings.display.resources.titleFont.size = 0;
+        api.settings.display.resources.subTitleFont.size = 0;
+        api.settings.display.resources.wordsFont.size = 0;
+        api.settings.notation.elements.set(mod.NotationElement.GuitarTuning, false);
+        api.settings.notation.elements.set(mod.NotationElement.EffectChordNames, false);
+        api.settings.notation.elements.set(mod.NotationElement.ChordDiagrams, false);
+        api.settings.notation.elements.set((mod.NotationElement as any).EffectTempo, false);
+        api.settings.notation.elements.set((mod.NotationElement as any).EffectDynamics, false);
 
-      alphaTabApiRef.current = api;
+        alphaTabApiRef.current = api;
 
-      api.scoreLoaded?.on?.((score: any) => {
-        if (activeTrackIndexRef.current !== 0) {
-          setActiveTrackIndex(0);
-        }
-        if (score.tracks && score.tracks.length > 0) {
-          try {
-            const t0 = score.tracks[0];
-            const hasBeats = !!t0?.staves?.[0]?.bars?.[0]?.voices?.[0]?.beats;
-            if (hasBeats) {
-              api.renderTracks([t0]);
-              try {
-                api.changeTrackSolo(score.tracks, false);
-                api.changeTrackSolo([t0], true);
-              } catch {}
+        api.scoreLoaded?.on?.((score: any) => {
+          if (activeTrackIndexRef.current !== 0) {
+            setActiveTrackIndex(0);
+          }
+          if (score.tracks && score.tracks.length > 0) {
+            try {
+              const t0 = score.tracks[0];
+              const hasBeats = !!t0?.staves?.[0]?.bars?.[0]?.voices?.[0]?.beats;
+              if (hasBeats) {
+                api.renderTracks([t0]);
+                try {
+                  api.changeTrackSolo(score.tracks, false);
+                  api.changeTrackSolo([t0], true);
+                } catch {}
+              }
+            } catch {}
+          }
+          score.tracks.forEach((t: any) => {
+            if (t.playbackInfo) {
+              t.playbackInfo.program = 25;
             }
-          } catch {}
-        }
-        score.tracks.forEach((t: any) => {
-          if (t.playbackInfo) {
-            t.playbackInfo.program = 25;
-          }
+          });
+          const scoreTracks = score.tracks.map((t: any, i: number) => ({
+            name: t.name || `Track ${i + 1}`,
+            index: i,
+            isSolo: !!t.playbackInfo?.isSolo,
+          }));
+          setTracks(scoreTracks);
         });
-        const scoreTracks = score.tracks.map((t: any, i: number) => ({
-          name: t.name || `Track ${i + 1}`,
-          index: i,
-          isSolo: !!t.playbackInfo?.isSolo,
-        }));
-        setTracks(scoreTracks);
-      });
 
-      api.playerStateChanged?.on?.((args: any) => {
-        setIsPlaying(args.state === 1);
-        if (audioRef.current && audioSourceRef.current !== "midi") {
-          if (args.state === 1) {
-            const safeBpm = bpm || 120;
-            const b0 = practiceData?.chordBlocks?.[0];
-            const real0 = typeof b0?.startTime === "number" ? b0.startTime : 0;
-            const ideal0 = b0 ? (Number(b0.startBeat || 0) * 60) / safeBpm : 0;
-            const offset = Number.isFinite(real0 - ideal0) ? (real0 - ideal0) : 0;
-            audioRef.current.currentTime = api.timePosition / 1000 + offset;
-            audioRef.current.play().catch(() => {});
-          } else {
-            audioRef.current.pause();
-          }
-        }
-      });
-
-      api.playerReady?.on?.(() => {
-        setIsPlayerReady(true);
-        setIsInitializing(false);
-      });
-
-      api.postRenderFinished?.on?.(() => {
-        if (api.playerState !== 1) {
-          if ((api as any)._forceUpdateCursor) {
-            (api as any)._forceUpdateCursor();
-          }
-          if ((api as any)._syncScrollToCursor) {
-            (api as any)._syncScrollToCursor();
-          }
-        }
-      });
-
-      let isUserScrolling = false;
-      let scrollTimeout: ReturnType<typeof setTimeout>;
-      const scrollContainer = containerRef.current;
-      if (scrollContainer) {
-        scrollContainer.addEventListener('wheel', () => {
-          isUserScrolling = true;
-          clearTimeout(scrollTimeout);
-          scrollTimeout = setTimeout(() => { isUserScrolling = false; }, 2000);
-        }, { passive: true });
-        scrollContainer.addEventListener('touchstart', () => {
-          isUserScrolling = true;
-          clearTimeout(scrollTimeout);
-        }, { passive: true });
-        scrollContainer.addEventListener('touchend', () => {
-          scrollTimeout = setTimeout(() => { isUserScrolling = false; }, 2000);
-        }, { passive: true });
-      }
-
-      const syncScrollToCursor = () => {
-        if (isUserScrolling || !containerRef.current || !scrollContainer) return;
-        requestAnimationFrame(() => {
-          if (!containerRef.current || !scrollContainer) return;
-          const cursor = containerRef.current.querySelector('.at-cursor-beat')
-            || containerRef.current.querySelector('.at-cursor-bar')
-            || containerRef.current.querySelector('rect[fill="rgba(255, 255, 255, 0.2)"]');
-          if (cursor) {
-            const cursorRect = cursor.getBoundingClientRect();
-            const containerRect = scrollContainer.getBoundingClientRect();
-            const offsetToCenter = (cursorRect.left - containerRect.left) - (containerRect.width * 0.25) + (cursorRect.width / 2);
-            const targetX = scrollContainer.scrollLeft + offsetToCenter;
-            if (Math.abs(offsetToCenter) > 10) {
-              scrollContainer.scrollTo({ left: targetX, behavior: 'smooth' });
+        api.playerStateChanged?.on?.((args: any) => {
+          setIsPlaying(args.state === 1);
+          if (audioRef.current && audioSourceRef.current !== "midi") {
+            if (args.state === 1) {
+              const safeBpm = bpm || 120;
+              const b0 = practiceData?.chordBlocks?.[0];
+              const real0 = typeof b0?.startTime === "number" ? b0.startTime : 0;
+              const ideal0 = b0 ? (Number(b0.startBeat || 0) * 60) / safeBpm : 0;
+              const offset = Number.isFinite(real0 - ideal0) ? (real0 - ideal0) : 0;
+              audioRef.current.currentTime = api.timePosition / 1000 + offset;
+              audioRef.current.play().catch(() => {});
+            } else {
+              audioRef.current.pause();
             }
           }
         });
-      };
 
-      (api as any)._syncScrollToCursor = syncScrollToCursor;
-
-      (api as any)._forceUpdateCursor = () => {
-        if (!api) return;
-        try {
-          const tick = api.tickPosition;
-          if (api.renderer) api.renderer.updateCursor(tick);
-        } catch {}
-      };
-
-      api.playerPositionChanged?.on?.((args: any) => {
-        const sec = args.currentTime / 1000;
-        setCurrentTime(sec);
-
-        const lB = loopBRef.current;
-        const lA = loopARef.current;
-        if (lB !== null && lA !== null && sec >= lB && api.playerState === 1) {
-          api.timePosition = lA * 1000;
-          return;
-        }
-
-        const dur = lastChordEndTimeRef.current;
-        if (dur > 0 && sec >= dur && api.playerState === 1) {
-          try {
-            if (api.playerState === 1) {
-              api.playPause();
-            }
-            api.timePosition = 0;
-          } catch {}
-          return;
-        }
-
-        if (!alphaTabApiRef.current?.isReadyForPlayback) return;
-        const isCurrentlyPlaying = api.playerState === 1;
-        if (!isCurrentlyPlaying) {
-          requestAnimationFrame(() => syncScrollToCursor());
-        }
-      });
-
-      api.playedBeatChanged?.on?.((beat: any) => {
-        if (!beat) return;
-        syncScrollToCursor();
-      });
-
-      api.error?.on?.((e: any) => {
-        const msg = e instanceof Error ? e.message : String(e);
-        setPlayerError(msg || "播放器初始化失败");
-        setIsInitializing(false);
-      });
-
-      pollRef.current = setInterval(() => {
-        if (!alphaTabApiRef.current) return;
-        if (api.isReadyForPlayback) {
+        api.playerReady?.on?.(() => {
           setIsPlayerReady(true);
-          setIsInitializing(false);
-          if (pollRef.current) {
-            clearInterval(pollRef.current);
-            pollRef.current = null;
+        });
+
+        api.postRenderFinished?.on?.(() => {
+          if (api.playerState !== 1) {
+            if ((api as any)._forceUpdateCursor) {
+              (api as any)._forceUpdateCursor();
+            }
+            if ((api as any)._syncScrollToCursor) {
+              (api as any)._syncScrollToCursor();
+            }
           }
-        }
-      }, 300);
+        });
 
-      timeoutRef.current = setTimeout(() => {
-        if (!alphaTabApiRef.current) return;
-        if (!api.isReadyForPlayback) {
-          setPlayerError("播放器初始化超时：请检查音源/Worker/浏览器音频策略");
+        let isUserScrolling = false;
+        let scrollTimeout: ReturnType<typeof setTimeout>;
+        const scrollContainer = containerRef.current;
+        if (scrollContainer) {
+          scrollContainer.addEventListener('wheel', () => {
+            isUserScrolling = true;
+            clearTimeout(scrollTimeout);
+            scrollTimeout = setTimeout(() => { isUserScrolling = false; }, 2000);
+          }, { passive: true });
+          scrollContainer.addEventListener('touchstart', () => {
+            isUserScrolling = true;
+            clearTimeout(scrollTimeout);
+          }, { passive: true });
+          scrollContainer.addEventListener('touchend', () => {
+            scrollTimeout = setTimeout(() => { isUserScrolling = false; }, 2000);
+          }, { passive: true });
+        }
+
+        const syncScrollToCursor = () => {
+          if (isUserScrolling || !containerRef.current || !scrollContainer) return;
+          requestAnimationFrame(() => {
+            if (!containerRef.current || !scrollContainer) return;
+            const cursor = containerRef.current.querySelector('.at-cursor-beat')
+              || containerRef.current.querySelector('.at-cursor-bar')
+              || containerRef.current.querySelector('rect[fill="rgba(255, 255, 255, 0.2)"]');
+            if (cursor) {
+              const cursorRect = cursor.getBoundingClientRect();
+              const containerRect = scrollContainer.getBoundingClientRect();
+              const offsetToCenter = (cursorRect.left - containerRect.left) - (containerRect.width * 0.25) + (cursorRect.width / 2);
+              const targetX = scrollContainer.scrollLeft + offsetToCenter;
+              if (Math.abs(offsetToCenter) > 10) {
+                scrollContainer.scrollTo({ left: targetX, behavior: 'smooth' });
+              }
+            }
+          });
+        };
+
+        (api as any)._syncScrollToCursor = syncScrollToCursor;
+
+        (api as any)._forceUpdateCursor = () => {
+          if (!api) return;
+          try {
+            const tick = api.tickPosition;
+            if (api.renderer) api.renderer.updateCursor(tick);
+          } catch {}
+        };
+
+        api.playerPositionChanged?.on?.((args: any) => {
+          const sec = args.currentTime / 1000;
+          setCurrentTime(sec);
+
+          const lB = loopBRef.current;
+          const lA = loopARef.current;
+          if (lB !== null && lA !== null && sec >= lB && api.playerState === 1) {
+            api.timePosition = lA * 1000;
+            return;
+          }
+
+          const dur = lastChordEndTimeRef.current;
+          if (dur > 0 && sec >= dur && api.playerState === 1) {
+            try {
+              if (api.playerState === 1) {
+                api.playPause();
+              }
+              api.timePosition = 0;
+            } catch {}
+            return;
+          }
+
+          if (!alphaTabApiRef.current?.isReadyForPlayback) return;
+          const isCurrentlyPlaying = api.playerState === 1;
+          if (!isCurrentlyPlaying) {
+            requestAnimationFrame(() => syncScrollToCursor());
+          }
+        });
+
+        api.playedBeatChanged?.on?.((beat: any) => {
+          if (!beat) return;
+          syncScrollToCursor();
+        });
+
+        api.error?.on?.((e: any) => {
+          const msg = e instanceof Error ? e.message : String(e);
+          setPlayerError(msg || "播放器初始化失败");
+        });
+
+        pollRef.current = setInterval(() => {
+          if (!alphaTabApiRef.current) return;
+          if (api.isReadyForPlayback) {
+            setIsPlayerReady(true);
+            setIsInitializing(false);
+            if (pollRef.current) {
+              clearInterval(pollRef.current);
+              pollRef.current = null;
+            }
+            if (engineReadyResolver) {
+              engineReadyResolver();
+              engineReadyResolver = null;
+            }
+          }
+        }, 200);
+
+        timeoutRef.current = setTimeout(() => {
+          if (!alphaTabApiRef.current) return;
+          if (!api.isReadyForPlayback) {
+            setPlayerError("播放器初始化超时：请检查音源/Worker/浏览器音频策略");
+            setIsInitializing(false);
+            if (engineReadyResolver) {
+              engineReadyResolver();
+              engineReadyResolver = null;
+            }
+          }
+        }, 30000);
+
+        try {
+          setPlayerError("正在加载高质量 GM 吉他音源 (约5.8MB)...");
+          const res = await fetch(ALPHATAB_SOUNDFONT_URL, { cache: "force-cache" });
+          if (!isMountedRef.current) {
+            api.destroy();
+            engineReadyResolver!();
+            return;
+          }
+          if (!res.ok) throw new Error(`soundfont http ${res.status}`);
+          const buf = await res.arrayBuffer();
+          api.loadSoundFont(buf, false);
+          setPlayerError(null);
+        } catch (e) {
+          const msg = e instanceof Error ? e.message : String(e);
+          setPlayerError("音源加载失败，将使用无声模式：" + msg);
           setIsInitializing(false);
-        }
-      }, 30000);
-
-      try {
-        setPlayerError("正在加载高质量 GM 吉他音源 (约5.8MB)...");
-        const res = await fetch(ALPHATAB_SOUNDFONT_URL, { cache: "force-cache" });
-        if (!isMountedRef.current) {
-          api.destroy();
+          engineReadyResolver!();
           return;
         }
-        if (!res.ok) throw new Error(`soundfont http ${res.status}`);
-        const buf = await res.arrayBuffer();
-        api.loadSoundFont(buf, false);
-        setPlayerError(null);
-      } catch (e) {
-        const msg = e instanceof Error ? e.message : String(e);
-        setPlayerError("音源加载失败，将使用无声模式：" + msg);
-        setIsInitializing(false);
-      }
 
-      try {
-        let ok = false;
-        loadedGp5DataRef.current = gp5Data;
-        try { ok = api.load(gp5Data); } catch { ok = false; }
-        if (!ok) {
-          throw new Error("谱例加载失败");
+        try {
+          let ok = false;
+          loadedGp5DataRef.current = gp5Data;
+          try { ok = api.load(gp5Data); } catch { ok = false; }
+          if (!ok) {
+            throw new Error("谱例加载失败");
+          }
+        } catch (e) {
+          const msg = e instanceof Error ? e.message : String(e);
+          setPlayerError(msg || "谱例加载失败");
+          setIsInitializing(false);
+          engineReadyResolver!();
         }
       } catch (e) {
         const msg = e instanceof Error ? e.message : String(e);
-        setPlayerError(msg || "谱例加载失败");
+        setPlayerError(msg || "engine init failed");
         setIsInitializing(false);
+        engineReadyResolver!();
       }
     })();
 
