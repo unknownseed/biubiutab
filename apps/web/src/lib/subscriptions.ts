@@ -3,21 +3,23 @@ import { createClient } from '@/lib/supabase/server';
 export interface UserSubscriptionInfo {
   isPro: boolean;
   planType: 'free' | 'monthly' | 'quarterly' | 'yearly';
+  status: string | null;
+  currentPeriodEnd: string | null;
   usedQuota: number;
   totalQuota: number;
 }
 
-export async function getUserSubscriptionInfo(userId?: string): Promise<UserSubscriptionInfo> {
+export async function getUserSubscriptionInfoForClient(supabase: any, userId?: string): Promise<UserSubscriptionInfo> {
   const defaultFree: UserSubscriptionInfo = {
     isPro: false,
     planType: 'free',
+    status: null,
+    currentPeriodEnd: null,
     usedQuota: 0,
     totalQuota: 3,
   };
 
   if (!userId) return defaultFree;
-
-  const supabase = await createClient();
 
   // 1. 获取用户的订阅状态
   const { data: sub } = await supabase
@@ -47,7 +49,14 @@ export async function getUserSubscriptionInfo(userId?: string): Promise<UserSubs
   return {
     isPro: !!isPro,
     planType,
+    status: sub?.status ?? null,
+    currentPeriodEnd: sub?.current_period_end ?? null,
     usedQuota: count || 0,
     totalQuota,
   };
+}
+
+export async function getUserSubscriptionInfo(userId?: string): Promise<UserSubscriptionInfo> {
+  const supabase = await createClient();
+  return getUserSubscriptionInfoForClient(supabase as any, userId);
 }
