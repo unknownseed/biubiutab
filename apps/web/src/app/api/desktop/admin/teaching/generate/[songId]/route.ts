@@ -8,6 +8,7 @@ import { createClient } from "@supabase/supabase-js";
 import { repoRoot } from "@/lib/paths";
 import { r2Enabled, r2GetObjectBuffer, r2PutObject } from "@/lib/r2";
 import { TeachingModuleName, putTeachingModuleJson, teachingR2KeyGp5, teachingR2KeyPrefix, teachingR2KeySourceBaseGp5 } from "@/lib/teaching-r2";
+import { isAdmin as checkIsAdmin } from "@/lib/admin-rpc";
 
 const execFileAsync = promisify(execFile);
 
@@ -25,8 +26,7 @@ async function getAuthedSupabase(req: Request) {
   const sb = createClient(url, anon, { global: { headers: { Authorization: `Bearer ${token}` } } });
   const { data, error } = await sb.auth.getUser(token);
   if (error || !data.user) return { error: "Unauthorized", status: 401 as const };
-  const { data: isAdmin, error: adminErr } = await sb.rpc("is_admin");
-  if (adminErr || !isAdmin) return { error: "Forbidden", status: 403 as const };
+  if (!(await checkIsAdmin(sb, data.user.id, data.user.email))) return { error: "Forbidden", status: 403 as const };
   return { sb } as const;
 }
 

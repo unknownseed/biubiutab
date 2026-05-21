@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@supabase/supabase-js";
 import { r2Enabled, r2PutObject } from "@/lib/r2";
 import { teachingR2KeyMedia, teachingR2KeySourceBaseGp5 } from "@/lib/teaching-r2";
+import { isAdmin as checkIsAdmin } from "@/lib/admin-rpc";
 
 function getBearerToken(req: Request) {
   const h = req.headers.get("authorization") || "";
@@ -17,8 +18,7 @@ async function getAuthedSupabase(req: Request) {
   const sb = createClient(url, anon, { global: { headers: { Authorization: `Bearer ${token}` } } });
   const { data, error } = await sb.auth.getUser(token);
   if (error || !data.user) return { error: "Unauthorized", status: 401 as const };
-  const { data: isAdmin, error: adminErr } = await sb.rpc("is_admin");
-  if (adminErr || !isAdmin) return { error: "Forbidden", status: 403 as const };
+  if (!(await checkIsAdmin(sb, data.user.id, data.user.email))) return { error: "Forbidden", status: 403 as const };
   return { sb, user: data.user, token } as const;
 }
 
