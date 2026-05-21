@@ -210,6 +210,30 @@
     - Advanced/Solo：未 Pro 直接鎖定頁（UI）
     - Warmup/Basic：demo video 隱藏（仍可練）
 
+### 9.4 訂閱狀態查詢 API（/api/me/subscription）
+
+用途：把「Pro 判定 + 本月用量 + 配額」這組邏輯變成一個統一的 HTTP API，讓 Web/ Desktop 都能顯示一致的會員狀態與剩餘次數，並避免 Desktop 端重複實作 `subscriptions + ai_jobs count` 的計算。
+
+- Endpoint：`GET /api/me/subscription`：[route.ts](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/api/me/subscription/route.ts)
+- 鑑權方式（兩種二選一）
+  - Cookie session（Web 同源）
+  - `Authorization: Bearer <supabase_access_token>`（Desktop 推薦）
+- 回傳（示例）
+
+```json
+{
+  "userId": "uuid",
+  "isPro": true,
+  "planType": "monthly",
+  "status": "active",
+  "currentPeriodEnd": "2026-06-20T00:00:00.000Z",
+  "usedQuota": 12,
+  "totalQuota": 100
+}
+```
+
+Dashboard 使用方式：Dashboard 頁可以直接 server-side 呼叫 `getUserSubscriptionInfo(userId)` 或透過 `GET /api/me/subscription` 取得同樣的資料，用於渲染「会员状态 / 本月额度」區塊。
+
 ## 10. 關鍵環境變數（以代碼實際引用為準）
 
 ### 10.1 Supabase（Web）

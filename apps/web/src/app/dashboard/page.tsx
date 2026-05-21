@@ -1,4 +1,5 @@
 import { createClient } from '@/lib/supabase/server'
+import { getUserSubscriptionInfo } from '@/lib/subscriptions'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { DeleteButton } from './DeleteButton'
@@ -12,6 +13,15 @@ export default async function DashboardPage() {
   if (!user) {
     redirect('/login')
   }
+
+  const subInfo = await getUserSubscriptionInfo(user.id)
+  const remainingQuota = Math.max(0, subInfo.totalQuota - subInfo.usedQuota)
+  const quotaPercent = subInfo.totalQuota > 0 ? Math.min(100, Math.round((subInfo.usedQuota / subInfo.totalQuota) * 100)) : 0
+  const periodEndText = subInfo.currentPeriodEnd
+    ? new Date(subInfo.currentPeriodEnd).toLocaleDateString()
+    : subInfo.isPro
+      ? '长期有效'
+      : '—'
 
   // 获取用户已完成的曲目，按创建时间降序
   const { data: jobs, error } = await supabase
@@ -29,6 +39,42 @@ export default async function DashboardPage() {
           <p className="text-ink-700/60 mt-2 font-light tracking-widest">
             这里存放着您所有生成过的吉他谱
           </p>
+        </div>
+
+        <div className="mb-10 bg-paper-50 border border-wood-400/20 p-6 lg:p-8">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-6">
+            <div className="space-y-2">
+              <div className="text-xs tracking-widest text-ink-700/50">会员状态</div>
+              <div className="text-2xl font-serif font-bold text-ink-900">
+                {subInfo.isPro ? 'BiuBiu Pro' : '体验版'}
+              </div>
+              <div className="text-sm tracking-widest text-ink-700/60">
+                {subInfo.isPro ? `到期时间：${periodEndText}` : '升级 Pro 解锁更多次数与高级教学内容'}
+              </div>
+            </div>
+
+            <div className="w-full md:max-w-sm">
+              <div className="flex items-center justify-between text-xs tracking-widest text-ink-700/60">
+                <span>本月制谱额度</span>
+                <span className="text-ink-900">
+                  {subInfo.usedQuota}/{subInfo.totalQuota}（剩余 {remainingQuota}）
+                </span>
+              </div>
+              <div className="mt-3 h-2 bg-paper-200/60 border border-wood-400/10">
+                <div className="h-full bg-retro-green" style={{ width: `${quotaPercent}%` }} />
+              </div>
+              {!subInfo.isPro && (
+                <div className="mt-4">
+                  <Link
+                    href="/pricing"
+                    className="inline-flex items-center justify-center bg-retro-green text-paper-50 px-6 py-2.5 text-sm tracking-widest hover:bg-wood-400 transition-colors"
+                  >
+                    升级 Pro
+                  </Link>
+                </div>
+              )}
+            </div>
+          </div>
         </div>
 
         {error ? (

@@ -111,11 +111,16 @@
 
 - 使用者可查看自己歷史生成的 jobs 列表。
 - 支持刪除條目（不一定刪除 R2 物理檔案，但至少從 DB 清單移除）。
+- 顯示會員狀態與本月制譜配額（用於讓使用者理解剩餘次數與升級入口）。
 
 ### 驗收標準
 
 - 未登入不可訪問 Dashboard。
 - 列表只顯示自己 user_id 的資料。
+- Dashboard 頁面需顯示：
+  - `isPro / planType / currentPeriodEnd`（若有）
+  - `usedQuota / totalQuota`（本月已用/總配額）
+  - Free 用戶需有明确的「升级 Pro」入口（指向 `/pricing`）。
 
 ## 4.5 教學內容庫（Learn）
 
@@ -184,6 +189,17 @@
   - 單次充值（payment，含支付寶）
 - 支付完成後，系統必須在 Supabase `subscriptions` 中更新用戶狀態，讓 gate 即刻生效。
 
+### 訂閱狀態查詢（供 Web/Desktop UI 顯示）
+
+- 為了讓不同端（Web、Desktop）能顯示一致的會員狀態與本月剩餘制譜次數，需要一個統一查詢端點：
+  - `GET /api/me/subscription`：[route.ts](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/api/me/subscription/route.ts)
+- 回傳至少包含：
+  - `isPro / planType / status / currentPeriodEnd`
+  - `usedQuota / totalQuota`（本月已用/總配額）
+- 鑑權需同時覆蓋：
+  - Web：cookie session
+  - Desktop：`Authorization: Bearer <supabase_access_token>`
+
 ### 驗收標準
 
 - 未登入點擊購買必須被引導到 `/login?next=/pricing`。
@@ -192,6 +208,7 @@
   - 實作：[/stripe/webhook/route.ts](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/api/stripe/webhook/route.ts#L33-L167)
 - 單次充值的有效期延長規則：在既有有效期基礎上追加（若尚未到期）。
   - 實作：[/stripe/webhook/route.ts](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/api/stripe/webhook/route.ts#L91-L107)
+- 支付完成後（stripe webhook 已處理），呼叫 `GET /api/me/subscription` 必須能反映最新 `isPro` 與 `currentPeriodEnd`，且 quota 計算可用。
 
 ## 5. 非功能需求（NFR）
 
@@ -217,4 +234,3 @@
 
 - Admin 權限目前用 email 白名單判斷，且部分管理 API 仍限制只能看/管自己的 `user_id`；若產品目標是「平台內容供所有人」，建議改為 DB 層 admin（RPC + RLS），或至少後端 API 以 admin 身份讀全量教學歌曲。
 - 教學內容以 `apps/web/songs/` 檔案形式隨部署分發，適合 Cloudflare/CDN 靜態發佈，但需要對生成/更新的發布節奏有一致策略（例如：生成後如何進入部署流程）。
-

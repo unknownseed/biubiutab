@@ -40,9 +40,10 @@
 
 - Checkout：`POST /api/stripe/checkout`（需要登入）
 - Webhook：僅 Stripe 服務端調用（Desktop 不需要）
-- 訂閱資訊：Web 端目前沒有單獨的 `/api/subscription`，而是 server-side 在：
-  - `getUserSubscriptionInfo(userId)`：[/subscriptions.ts](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/lib/subscriptions.ts#L10-L53)
-  - Desktop 若要在 UI 顯示配額/Pro 狀態，建議新增一個 Web API（例如 `GET /api/me/subscription`）由 server 端讀 `subscriptions + ai_jobs count` 後回傳。
+- 訂閱資訊（Pro 狀態與本月配額）：`GET /api/me/subscription`
+  - Web：cookie session
+  - Desktop：`Authorization: Bearer <supabase_access_token>`
+  - 回傳：`{ isPro, planType, status, currentPeriodEnd, usedQuota, totalQuota }`：[route.ts](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/api/me/subscription/route.ts)
 
 ## 3. 鑑權差異：Cookie Session vs Bearer Token
 
@@ -93,4 +94,3 @@
   - Advanced/Solo：Free 顯示鎖定與升級 CTA
 - Pricing/訂閱：
   - Desktop 若提供內嵌購買，最簡路徑是呼叫 Web checkout route 取得 `session.url` 後用系統瀏覽器打開
-
