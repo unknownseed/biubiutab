@@ -78,12 +78,16 @@
   - R2 job 直接 `Response.redirect()` 到 `CLOUDFLARE_PUBLIC_DOMAIN/<path>`：[/audio route.ts](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/api/jobs/%5BjobId%5D/audio/route.ts#L29-L47)
   - 非 R2 fallback 到 repo `storage/` 讀檔串流（兼容舊資料）：同檔案 L50-L85
 
-### 4.3 教學內容的分發（隨 Web 部署）
+### 4.3 教學內容的分發（Cloudflare R2）
 
-- 教學的「內容本體」並不在 DB，而是在 `apps/web/songs/<slug>/` 的檔案：
-  - `warmup.json/basic.json/advanced.json/solo.json`
-  - `base.gp5` 等 GP5 檔案（以及可能的片段 gp5）
-- API 會先驗證 `teaching_songs.status === 'published'`，再讀 disk JSON 回傳：[/api/teaching/songs/[slug]/[module]/route.ts](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/api/teaching/songs/%5Bslug%5D/%5Bmodule%5D/route.ts#L15-L42)
+- 教學內容的「本體」存放在 Cloudflare R2（而非隨 Web 部署的檔案），key 規則：
+  - `teaching/<slug>/modules/<module>.json`
+  - `teaching/<slug>/gp5/<module>.gp5`
+  - `teaching/<slug>/media/<filename>`（demo video/audio）
+  - `teaching/<slug>/source/base.gp5`（生成用來源）
+- module JSON 讀取：`GET /api/teaching/songs/<slug>/<module>`（會先驗證 published，再從 R2 取 JSON；本地磁碟僅作為 dev fallback）：[/route.ts](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/api/teaching/songs/%5Bslug%5D/%5Bmodule%5D/route.ts)
+- GP5 讀取：`GET /api/teaching/gp5/<slug>/<filename>`（server-side 讀 R2 回 bytes，用於繞過瀏覽器對 R2 domain 的 CORS）：[/route.ts](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/api/teaching/gp5/%5Bslug%5D/%5Bfilename%5D/route.ts)
+- Media 讀取：`GET /api/teaching/media/<slug>/<filename>`（在有 public domain 時直接 redirect 到 R2 public URL）：[/route.ts](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/api/teaching/media/%5Bslug%5D/%5Bfilename%5D/route.ts)
 
 ## 5. 生成（Jobs）端到端流程
 

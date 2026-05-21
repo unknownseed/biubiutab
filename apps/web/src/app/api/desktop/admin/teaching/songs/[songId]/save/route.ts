@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import path from "path";
-import fs from "fs";
 import { createClient } from "@supabase/supabase-js";
+import { r2Enabled, r2PutObject } from "@/lib/r2";
+import { teachingR2KeyMedia, teachingR2KeySourceBaseGp5 } from "@/lib/teaching-r2";
 
 function getBearerToken(req: Request) {
   const h = req.headers.get("authorization") || "";
@@ -22,14 +22,8 @@ async function getAuthedSupabase(req: Request) {
   return { sb, user: data.user, token } as const;
 }
 
-function ensureDir(p: string) {
-  if (!fs.existsSync(p)) fs.mkdirSync(p, { recursive: true });
-}
-
-async function writeUploadedFile(file: File, destPath: string) {
-  const buf = Buffer.from(await file.arrayBuffer());
-  ensureDir(path.dirname(destPath));
-  fs.writeFileSync(destPath, buf);
+async function fileToBuffer(file: File): Promise<Buffer> {
+  return Buffer.from(await file.arrayBuffer());
 }
 
 export async function POST(req: Request, { params }: { params: Promise<{ songId: string }> }) {
@@ -49,6 +43,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ songId:
   const videoFile = form.get("demo_video") as File | null;
 
   if (!title || !slug) return NextResponse.json({ error: "标题和 Slug 不能为空" }, { status: 400 });
+  if (!/^[a-zA-Z0-9_-]+$/.test(slug)) return NextResponse.json({ error: "Slug 只能包含字母、数字、下划线或短横线" }, { status: 400 });
 
   let manifest: any;
   try {
@@ -62,33 +57,31 @@ export async function POST(req: Request, { params }: { params: Promise<{ songId:
   manifest.title = title;
   if (artist) manifest.artist = artist;
   if (!manifest.source_files || typeof manifest.source_files !== "object") manifest.source_files = {};
-
-  const songsDir = path.resolve(process.cwd(), "songs", slug);
-  ensureDir(songsDir);
+  const enabled = r2Enabled();
 
   if (baseGp5File && baseGp5File.size > 0) {
-    await writeUploadedFile(baseGp5File, path.join(songsDir, "base.gp5"));
+    if (!enabled) return NextResponse.json({ error: "R2 is not configured" }, { status: 500 });
+    await r2PutObject(teachingR2KeySourceBaseGp5(slug), await fileToBuffer(baseGp5File), baseGp5File.type || "application/octet-stream");
     manifest.source_files.base_gp5 = "base.gp5";
   } else if (!manifest.source_files.base_gp5) {
     manifest.source_files.base_gp5 = "base.gp5";
   }
 
-  const publicMediaDir = path.resolve(process.cwd(), "public", "media", slug);
   if (videoFile && videoFile.size > 0) {
+    if (!enabled) return NextResponse.json({ error: "R2 is not configured" }, { status: 500 });
     const ext = (videoFile.name.split(".").pop() || "mp4").trim() || "mp4";
     const fileName = `demo_video.${ext}`;
-    await writeUploadedFile(videoFile, path.join(publicMediaDir, fileName));
-    manifest.source_files.full_video = `/media/${slug}/${fileName}`;
+    await r2PutObject(teachingR2KeyMedia(slug, fileName), await fileToBuffer(videoFile), videoFile.type || "video/mp4");
+    manifest.source_files.full_video = `/api/teaching/media/${slug}/${fileName}`;
   }
 
   if (audioFile && audioFile.size > 0) {
+    if (!enabled) return NextResponse.json({ error: "R2 is not configured" }, { status: 500 });
     const ext = (audioFile.name.split(".").pop() || "mp3").trim() || "mp3";
     const fileName = `demo_audio.${ext}`;
-    await writeUploadedFile(audioFile, path.join(publicMediaDir, fileName));
-    manifest.source_files.full_audio = `/media/${slug}/${fileName}`;
+    await r2PutObject(teachingR2KeyMedia(slug, fileName), await fileToBuffer(audioFile), audioFile.type || "audio/mpeg");
+    manifest.source_files.full_audio = `/api/teaching/media/${slug}/${fileName}`;
   }
-
-  fs.writeFileSync(path.join(songsDir, "manifest.json"), JSON.stringify(manifest, null, 2));
 
   const payload = { title, slug, artist: artist || null, status, manifest, user_id: user.id };
   if (songId === "new") {
@@ -101,4 +94,3 @@ export async function POST(req: Request, { params }: { params: Promise<{ songId:
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ id: songId, slug, status, message: "saved" });
 }
-

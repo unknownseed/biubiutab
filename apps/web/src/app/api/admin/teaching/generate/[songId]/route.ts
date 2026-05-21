@@ -4,10 +4,20 @@ import { isAdminEmail } from '@/lib/admin';
 import { execFile } from 'child_process';
 import { promisify } from 'util';
 import path from 'path';
+import os from 'node:os';
+import fs from 'node:fs';
+import { repoRoot } from '@/lib/paths';
+import { r2Enabled, r2GetObjectBuffer, r2PutObject } from '@/lib/r2';
+import {
+  TeachingModuleName,
+  putTeachingModuleJson,
+  teachingR2KeyGp5,
+  teachingR2KeyPrefix,
+  teachingR2KeySourceBaseGp5,
+} from '@/lib/teaching-r2';
 
 const execFileAsync = promisify(execFile);
 
-// In Phase 4, this spawns a Python process to parse the GP5 file
 export async function POST(
   request: Request,
   { params }: { params: Promise<{ songId: string }> }
@@ -19,7 +29,6 @@ export async function POST(
     if (!user) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
     if (!isAdminEmail(user.email)) return NextResponse.json({ error: 'Forbidden' }, { status: 403 });
 
-    // 1. Fetch current song manifest
     const { data: song, error: fetchError } = await supabase
       .from('teaching_songs')
       .select('manifest, status, slug')
@@ -35,43 +44,75 @@ export async function POST(
       return NextResponse.json({ error: 'Song has no slug' }, { status: 400 });
     }
 
-    // 2. Call Python generator script
-    console.log(`[Generator] Spawning python process for slug: ${slug}`);
-    
-    // Construct path to the Python script (assuming it's in services/ai)
-    const pythonScriptPath = path.resolve(process.cwd(), '../../services/ai/generate_lessons.py');
-    const songsDir = path.resolve(process.cwd(), 'songs', slug);
-    
-    // We need to ensure the songs directory exists and manifest is written there
-    // before calling Python, as Python expects it to be there.
-    const fs = require('fs');
-    if (!fs.existsSync(songsDir)) {
-      fs.mkdirSync(songsDir, { recursive: true });
-    }
-    
-    // 把 manifest 写入文件时，确保把最新的 slug 也合并进去
-    const manifestToWrite = { ...song.manifest, slug };
-    fs.writeFileSync(
-      path.join(songsDir, 'manifest.json'), 
-      JSON.stringify(manifestToWrite, null, 2)
-    );
+    const root = repoRoot();
+    const pythonScriptPath = path.resolve(root, 'services/ai/generate_lessons.py');
+    const enabled = r2Enabled();
+    const tmpRoot = path.join(os.tmpdir(), 'biubiutab-teaching', `${slug}-${Date.now()}`);
+    const songsRoot = path.join(tmpRoot, 'songs');
+    const publicRoot = path.join(tmpRoot, 'public');
+    const songDir = path.join(songsRoot, slug);
 
-    // Execute Python script
+    if (enabled) {
+      fs.mkdirSync(songDir, { recursive: true });
+      fs.mkdirSync(publicRoot, { recursive: true });
+      const baseBuf = await r2GetObjectBuffer(teachingR2KeySourceBaseGp5(slug)).catch(() => null);
+      if (!baseBuf) return NextResponse.json({ error: 'Missing base.gp5 in R2, please upload it first.' }, { status: 400 });
+      fs.writeFileSync(path.join(songDir, 'base.gp5'), baseBuf);
+      const manifestToWrite = { ...(song.manifest || {}), slug };
+      fs.writeFileSync(path.join(songDir, 'manifest.json'), JSON.stringify(manifestToWrite, null, 2));
+    } else {
+      const legacySongsDir = path.resolve(process.cwd(), 'songs', slug);
+      if (!fs.existsSync(legacySongsDir)) fs.mkdirSync(legacySongsDir, { recursive: true });
+      const manifestToWrite = { ...(song.manifest || {}), slug };
+      fs.writeFileSync(path.join(legacySongsDir, 'manifest.json'), JSON.stringify(manifestToWrite, null, 2));
+    }
+
+    let stdout = '';
+    let stderr = '';
     try {
-      const repoRoot = path.resolve(process.cwd(), '../..');
-      const { stdout, stderr } = await execFileAsync(
-        'python3',
-        [pythonScriptPath, slug],
-        { cwd: repoRoot }
-      );
-      console.log('Python Output:', stdout);
-      if (stderr) console.error('Python Error:', stderr);
+      const r = await execFileAsync('python3', [pythonScriptPath, slug], {
+        cwd: root,
+        env: enabled
+          ? { ...process.env, BIUBIU_TEACHING_SONGS_DIR: songsRoot, BIUBIU_TEACHING_PUBLIC_DIR: publicRoot }
+          : process.env,
+      });
+      stdout = String(r.stdout || '');
+      stderr = String(r.stderr || '');
     } catch (pyError: any) {
-      console.error('Failed to execute python script:', pyError);
-      return NextResponse.json({ error: `Python execution failed: ${pyError.message}` }, { status: 500 });
+      const msg = pyError instanceof Error ? pyError.message : String(pyError);
+      return NextResponse.json({ error: `Python execution failed: ${msg}` }, { status: 500 });
+    }
+
+    try {
+      if (enabled) {
+        const mods: TeachingModuleName[] = ['warmup', 'basic', 'advanced', 'solo'];
+        for (const mod of mods) {
+          const jsonPath = path.join(songDir, `${mod}.json`);
+          if (!fs.existsSync(jsonPath)) return NextResponse.json({ error: `Generated module missing: ${mod}.json` }, { status: 500 });
+          const parsed = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+          await putTeachingModuleJson(slug, mod, parsed);
+        }
+
+        for (const mod of ['warmup', 'basic', 'advanced', 'solo'] as const) {
+          const filename = `${mod}.gp5`;
+          const gp5Path = path.join(publicRoot, 'gp5', slug, filename);
+          if (!fs.existsSync(gp5Path)) return NextResponse.json({ error: `Generated gp5 missing: ${filename}` }, { status: 500 });
+          const bytes = fs.readFileSync(gp5Path);
+          await r2PutObject(teachingR2KeyGp5(slug, filename), bytes, 'application/octet-stream');
+        }
+
+        const manifestKey = `${teachingR2KeyPrefix(slug)}/manifest.json`;
+        const manifestToWrite = { ...(song.manifest || {}), slug };
+        await r2PutObject(manifestKey, Buffer.from(JSON.stringify(manifestToWrite), 'utf8'), 'application/json; charset=utf-8');
+      }
+    } finally {
+      if (enabled) {
+        try {
+          fs.rmSync(tmpRoot, { recursive: true, force: true });
+        } catch {}
+      }
     }
     
-    // 3. Update the status to published
     const { error: updateError } = await supabase
       .from('teaching_songs')
       .update({ status: 'published' })
@@ -81,10 +122,7 @@ export async function POST(
       throw updateError;
     }
 
-    return NextResponse.json({ 
-      message: '教学模块生成成功',
-      status: 'published' 
-    });
+    return NextResponse.json({ message: '教学模块生成成功', status: 'published', stdout, stderr });
 
   } catch (error: any) {
     console.error('Error in generator:', error);

@@ -2,8 +2,8 @@ import { NextResponse } from 'next/server';
 import { createClient } from '@/lib/supabase/server';
 import fs from 'fs';
 import path from 'path';
+import { getTeachingModuleJson } from '@/lib/teaching-r2';
 
-// Phase 4: Read actual generated JSON modules from the disk
 export async function GET(
   request: Request,
   { params }: { params: Promise<{ slug: string; module: string }> }
@@ -27,18 +27,14 @@ export async function GET(
       );
     }
 
-    // 2. Read the generated JSON file from disk
+    const r2Data = await getTeachingModuleJson(slug, module as any);
+    if (r2Data) return NextResponse.json(r2Data);
+
     const modulePath = path.resolve(process.cwd(), 'songs', slug, `${module}.json`);
-    
     if (!fs.existsSync(modulePath)) {
-      return NextResponse.json(
-        { error: `Generated module file not found: ${module}.json` },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: `Generated module file not found: ${module}.json` }, { status: 404 });
     }
-
     const moduleData = JSON.parse(fs.readFileSync(modulePath, 'utf8'));
-
     return NextResponse.json(moduleData);
   } catch (err) {
     console.error(`Error fetching module data:`, err);

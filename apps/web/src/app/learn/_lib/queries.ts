@@ -1,6 +1,7 @@
 import { createClient } from '@/lib/supabase/server';
 import fs from 'fs';
 import path from 'path';
+import { getTeachingModuleJson } from '@/lib/teaching-r2';
 
 export async function getSongManifest(slug: string) {
   const supabase = await createClient();
@@ -20,11 +21,11 @@ export async function getModuleData(slug: string, module: string) {
   const manifest = await getSongManifest(slug);
   if (!manifest) return null;
 
-  const modulePath = path.resolve(process.cwd(), 'songs', slug, `${module}.json`);
-  if (!fs.existsSync(modulePath)) {
-    return null;
-  }
+  const r2Data = await getTeachingModuleJson(slug, module as any);
+  if (r2Data) return r2Data;
 
+  const modulePath = path.resolve(process.cwd(), 'songs', slug, `${module}.json`);
+  if (!fs.existsSync(modulePath)) return null;
   try {
     const data = JSON.parse(fs.readFileSync(modulePath, 'utf8'));
     return data;

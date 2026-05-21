@@ -35,6 +35,8 @@
 
 - 列表：`GET /api/teaching/songs`（只回 published）
 - 讀 module：`GET /api/teaching/songs/<slug>/<module>`（回 JSON）
+- 讀譜例（GP5 bytes）：`GET /api/teaching/gp5/<slug>/<filename>`（建議 Desktop 直接抓這個，避免 R2 CORS）
+- 讀演示媒體：`GET /api/teaching/media/<slug>/<filename>`（通常會 redirect 到 R2 public domain）
 
 ### 2.4 付費（Stripe）
 
