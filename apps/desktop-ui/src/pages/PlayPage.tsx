@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { aiGetJson, aiPostJson } from "../lib/ai";
 import { useToast } from "../components/ToastProvider";
+import { useSubscription } from "../hooks/useSubscription";
 import TimelineViewer, { type VisualizationPayload } from "../components/TimelineViewer";
 
 type JobResponse = {
@@ -63,6 +64,7 @@ export default function PlayPage() {
   const navigate = useNavigate();
   const sb = useMemo(() => supabase(), []);
   const [userId, setUserId] = useState<string | null>(null);
+  const { info: sub } = useSubscription();
   const toast = useToast();
   const audioElRef = useRef<HTMLAudioElement | null>(null);
   const pollTimerRef = useRef<number | null>(null);
@@ -255,6 +257,40 @@ export default function PlayPage() {
             选择一段音频，本地 AI 会把流动的声音凝固成谱面。
           </div>
         </div>
+
+        {userId ? (
+          <div className="mb-6 rounded-2xl border border-paper-300 bg-white p-4">
+            <div className="flex items-center justify-between gap-4">
+              <div className="flex items-center gap-3">
+                {sub.isPro ? (
+                  <span className="rounded-md bg-retro-green/10 border border-retro-green/20 px-3 py-1 text-sm font-serif tracking-wider text-retro-green">Pro</span>
+                ) : (
+                  <span className="rounded-md bg-paper-200 border border-paper-300 px-3 py-1 text-sm font-serif tracking-wider text-ink-700/60">Free</span>
+                )}
+                <div className="text-sm text-ink-700/70">
+                  本月已用 <span className="font-semibold text-ink-900">{sub.usedQuota}</span> / <span className="font-semibold text-ink-900">{sub.totalQuota}</span> 次
+                </div>
+              </div>
+              <div className="flex items-center gap-2 text-xs text-ink-700/50">
+                <div className="h-2 w-32 overflow-hidden rounded-full bg-paper-200">
+                  <div
+                    className="h-full bg-wood-400 transition-all"
+                    style={{ width: `${Math.min(100, (sub.usedQuota / Math.max(1, sub.totalQuota)) * 100)}%` }}
+                  />
+                </div>
+                {sub.usedQuota >= sub.totalQuota && !sub.isPro ? (
+                  <button
+                    type="button"
+                    className="text-retro-green hover:underline"
+                    onClick={() => window.open("http://localhost:3000/pricing", "_blank")}
+                  >
+                    升级 Pro
+                  </button>
+                ) : null}
+              </div>
+            </div>
+          </div>
+        ) : null}
         <div className="mt-8 rounded-2xl border border-paper-300 bg-white p-6 shadow-sm">
           <div className="space-y-4">
             <div className="flex items-center gap-4 border-b border-paper-300 pb-2">

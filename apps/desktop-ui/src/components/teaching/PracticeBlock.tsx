@@ -7,6 +7,7 @@ export type PracticeBlockData = {
   gp5Url?: string;
   tempo?: number;
   tips?: string;
+  demoVideo?: string;
 };
 
 type PracticeBlockProps = {
@@ -72,7 +73,13 @@ export default function PracticeBlock({ data, coreChords }: PracticeBlockProps) 
         </div>
       </div>
 
-      <div className="p-5">
+      <div className="p-5 space-y-5">
+        {data.demoVideo ? (
+          <div className="rounded-xl overflow-hidden border border-paper-300">
+            <video src={data.demoVideo} controls className="w-full aspect-video bg-black" preload="metadata" />
+          </div>
+        ) : null}
+
         {!gp5Data ? (
           <button
             type="button"

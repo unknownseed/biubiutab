@@ -239,10 +239,11 @@ async function start() {
     return new Uint8Array(buf.buffer, buf.byteOffset, buf.byteLength);
   });
 
-  ipcMain.handle("cloud-get-text", async (_e, args: { urlPath: string }) => {
+  ipcMain.handle("cloud-get-text", async (_e, args: { urlPath: string; headers?: Record<string, string> }) => {
     const urlPath = String(args?.urlPath || "");
     const url = toAbsoluteUrl(urlPath);
-    const res = await fetch(url, { cache: "no-store" as any });
+    const headers: Record<string, string> = { ...(args?.headers || {}) };
+    const res = await fetch(url, { cache: "no-store" as any, headers });
     if (!res.ok) {
       const t = await res.text().catch(() => "");
       throw new Error(t || `http ${res.status}`);

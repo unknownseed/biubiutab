@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from "react";
 import { NavLink, useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import { isAdminEmail } from "../lib/admin";
+import { useSubscription } from "../hooks/useSubscription";
 
 type UserInfo = {
   id: string;
@@ -16,6 +17,7 @@ export default function NavBar() {
   const navigate = useNavigate();
   const sb = useMemo(() => supabase(), []);
   const [user, setUser] = useState<UserInfo | null>(null);
+  const { info: sub } = useSubscription();
 
   useEffect(() => {
     let cancelled = false;
@@ -41,6 +43,10 @@ export default function NavBar() {
     navigate("/login", { replace: true });
   };
 
+  const openPricing = () => {
+    window.open("http://localhost:3000/pricing", "_blank", "noopener,noreferrer");
+  };
+
   return (
     <header className="sticky top-0 z-50 border-b border-paper-300 bg-paper-50/90 backdrop-blur">
       <div className="mx-auto flex h-14 w-full max-w-5xl items-center justify-between px-6">
@@ -60,6 +66,19 @@ export default function NavBar() {
         <div className="flex items-center gap-3">
           {user ? (
             <>
+              {sub.isPro ? (
+                <span className="rounded-md bg-retro-green/10 border border-retro-green/20 px-2 py-0.5 text-xs tracking-wider text-retro-green">
+                  Pro
+                </span>
+              ) : (
+                <span
+                  className="rounded-md bg-paper-200 border border-paper-300 px-2 py-0.5 text-xs tracking-wider text-ink-700/60 cursor-pointer hover:text-retro-green hover:border-retro-green/40 transition-colors"
+                  onClick={openPricing}
+                  title={user ? `${sub.usedQuota}/${sub.totalQuota} 次本月` : "升级 Pro"}
+                >
+                  Free · {sub.usedQuota}/{sub.totalQuota}
+                </span>
+              )}
               <div className="max-w-[220px] truncate text-xs tracking-widest text-ink-700/70">{user.email || user.id}</div>
               <NavLink to="/dashboard" className={navClassName}>
                 我的曲譜

@@ -16,7 +16,7 @@ declare global {
       teachingReadPublicBytes: (urlPath: string) => Promise<Uint8Array>;
       teachingGenerateLessons: (slug: string) => Promise<{ ok: boolean; output: string }>;
       teachingDeleteSong: (slug: string) => Promise<{ ok: boolean }>;
-      cloudGetText: (urlPath: string) => Promise<string>;
+      cloudGetText: (urlPath: string, headers?: Record<string, string>) => Promise<string>;
       cloudGetBytes: (urlPath: string) => Promise<Uint8Array>;
       cloudPostJson: (urlPath: string, body: unknown, headers?: Record<string, string>) => Promise<{ ok: boolean; status: number; text: string }>;
       cloudTeachingSave: (args: {

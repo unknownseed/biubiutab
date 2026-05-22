@@ -28,8 +28,8 @@ contextBridge.exposeInMainWorld("desktop", {
   teachingDeleteSong: async (slug: string) => {
     return (await ipcRenderer.invoke("teaching-delete-song", { slug })) as { ok: boolean };
   },
-  cloudGetText: async (urlPath: string) => {
-    return (await ipcRenderer.invoke("cloud-get-text", { urlPath })) as string;
+  cloudGetText: async (urlPath: string, headers?: Record<string, string>) => {
+    return (await ipcRenderer.invoke("cloud-get-text", { urlPath, headers })) as string;
   },
   cloudGetBytes: async (urlPath: string) => {
     return (await ipcRenderer.invoke("cloud-get-bytes", { urlPath })) as Uint8Array;

@@ -1,6 +1,6 @@
-export async function cloudGetText(urlPath: string): Promise<string> {
-  if (window.desktop?.cloudGetText) return await window.desktop.cloudGetText(urlPath);
-  const res = await fetch(urlPath);
+export async function cloudGetText(urlPath: string, headers?: Record<string, string>): Promise<string> {
+  if (window.desktop?.cloudGetText) return await window.desktop.cloudGetText(urlPath, headers);
+  const res = await fetch(urlPath, { headers: { ...(headers || {}) } });
   if (!res.ok) throw new Error(`http ${res.status}`);
   return await res.text();
 }
