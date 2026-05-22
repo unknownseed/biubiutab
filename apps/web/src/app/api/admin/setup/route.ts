@@ -4,6 +4,17 @@ import { isAdminEmail } from "@/lib/admin";
 
 export const runtime = "nodejs";
 
+export async function GET() {
+  return new Response(
+    `<!DOCTYPE html><html lang="zh-Hant"><head><meta charset="utf-8"><title>Admin Setup</title></head><body style="font-family:monospace;padding:2rem;max-width:720px;margin:0 auto;line-height:1.7">
+<h2>Admin Setup</h2>
+<p>請點擊下方按鈕執行初始化：</p>
+<form method="post"><button type="submit" style="padding:0.6rem 2rem;font-size:1rem;cursor:pointer">執行 Setup</button></form>
+</body></html>`,
+    { status: 200, headers: { "content-type": "text/html; charset=utf-8" } }
+  );
+}
+
 export async function POST() {
   const sb = await createClient();
   const { data: { user } } = await sb.auth.getUser();
