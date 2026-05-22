@@ -106,7 +106,7 @@ def generate_gp5_variant(base_gp5_path: str, output_path: str, tempo: float = No
         return
         
     try:
-        song = guitarpro.parse(base_gp5_path)
+        song = guitarpro.parse(base_gp5_path, encoding='latin1')
 
         song = _filter_tracks_by_name_keywords(song, ["guitar", "吉他", "gtr"])
         
@@ -125,7 +125,7 @@ def generate_gp5_variant(base_gp5_path: str, output_path: str, tempo: float = No
                 track.measures = new_measures
                 
         # Write the output
-        guitarpro.write(song, output_path)
+        guitarpro.write(song, output_path, encoding='latin1')
         print(f"Generated {output_path}")
     except Exception as e:
         print(f"Failed to generate {output_path}: {e}")

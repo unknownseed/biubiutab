@@ -83,7 +83,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ songId:
       const mods: TeachingModuleName[] = ["warmup", "basic", "advanced", "solo"];
       for (const mod of mods) {
         const jsonPath = path.join(songDir, `${mod}.json`);
-        if (!fs.existsSync(jsonPath)) return NextResponse.json({ error: `Generated module missing: ${mod}.json` }, { status: 500 });
+        if (!fs.existsSync(jsonPath)) return NextResponse.json({ error: `Generated module missing: ${mod}.json`, stderr, stdout }, { status: 500 });
         const parsed = JSON.parse(fs.readFileSync(jsonPath, "utf8"));
         await putTeachingModuleJson(slug, mod, parsed);
       }
@@ -91,7 +91,7 @@ export async function POST(req: Request, { params }: { params: Promise<{ songId:
       for (const mod of ["warmup", "basic", "advanced", "solo"] as const) {
         const filename = `${mod}.gp5`;
         const gp5Path = path.join(publicRoot, "gp5", slug, filename);
-        if (!fs.existsSync(gp5Path)) return NextResponse.json({ error: `Generated gp5 missing: ${filename}` }, { status: 500 });
+        if (!fs.existsSync(gp5Path)) return NextResponse.json({ error: `Generated gp5 missing: ${filename}`, stderr, stdout }, { status: 500 });
         const bytes = fs.readFileSync(gp5Path);
         await r2PutObject(teachingR2KeyGp5(slug, filename), bytes, "application/octet-stream");
       }
