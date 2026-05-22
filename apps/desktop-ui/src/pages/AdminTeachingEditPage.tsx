@@ -211,16 +211,16 @@ export default function AdminTeachingEditPage() {
       if (!token) throw new Error("请先登录");
 
       const resp = await window.desktop.cloudTeachingGenerate(songId, token);
+      const respText = String(resp.text || "");
+      setGenOutput(respText);
       let apiError = "";
-      try { const parsed = JSON.parse(resp.text || "{}"); apiError = parsed?.error || ""; } catch {}
+      try { const parsed = JSON.parse(respText); apiError = parsed?.error || ""; } catch {}
       if (resp.status === 403) throw new Error(`權限不足(403)。請確認：\n1. 已在 Supabase 執行 supabase_teaching_admin_users.sql\n2. 你的 email 在 ADMIN_EMAILS 中\n\n${apiError}`);
-      if (!resp.ok) throw new Error(apiError || resp.text?.slice(0, 200) || `http ${resp.status}`);
-      setGenOutput(resp.text || "");
+      if (!resp.ok) throw new Error(apiError || respText.slice(0, 200) || `http ${resp.status}`);
       setStatus("published");
       setNotice("已生成并发布");
     } catch (e) {
       setError(e instanceof Error ? e.message : "生成失败");
-      setGenOutput(e instanceof Error ? e.message : "生成失败");
     } finally {
       setBusy(false);
     }

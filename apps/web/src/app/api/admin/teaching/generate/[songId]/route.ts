@@ -78,8 +78,11 @@ export async function POST(
       });
       stdout = String(r.stdout || '');
       stderr = String(r.stderr || '');
+      console.log('[teaching:generate:stdout]', stdout);
+      if (stderr) console.error('[teaching:generate:stderr]', stderr);
     } catch (pyError: any) {
       const msg = pyError instanceof Error ? pyError.message : String(pyError);
+      console.error('[teaching:generate:exception]', msg);
       return NextResponse.json({ error: `Python execution failed: ${msg}` }, { status: 500 });
     }
 
@@ -88,6 +91,7 @@ export async function POST(
         const mods: TeachingModuleName[] = ['warmup', 'basic', 'advanced', 'solo'];
         for (const mod of mods) {
           const jsonPath = path.join(songDir, `${mod}.json`);
+          console.log('[teaching:generate:check]', jsonPath, fs.existsSync(jsonPath) ? 'exists' : 'missing');
           if (!fs.existsSync(jsonPath)) return NextResponse.json({ error: `Generated module missing: ${mod}.json`, stderr, stdout }, { status: 500 });
           const parsed = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
           await putTeachingModuleJson(slug, mod, parsed);
