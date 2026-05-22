@@ -52,6 +52,9 @@ export async function saveTeachingSongAction(songId: string, formData: FormData)
 
   if (gp5File && gp5File.size > 0) {
     const fileBuffer = Buffer.from(await gp5File.arrayBuffer())
+    if (fileBuffer.length >= 4 && fileBuffer[0] === 0x50 && fileBuffer[1] === 0x4b && fileBuffer[2] === 0x03 && fileBuffer[3] === 0x04) {
+      throw new Error('不支持 GPX 格式，请在 Guitar Pro 中用「文件 → 导出 → Guitar Pro 5 (.gp5)」重新导出后上传。')
+    }
     if (enabled) {
       await r2PutObject(teachingR2KeySourceBaseGp5(slug), fileBuffer, gp5File.type || 'application/octet-stream')
     } else {

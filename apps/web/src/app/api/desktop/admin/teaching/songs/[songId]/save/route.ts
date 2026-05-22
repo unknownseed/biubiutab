@@ -61,7 +61,11 @@ export async function POST(req: Request, { params }: { params: Promise<{ songId:
 
   if (baseGp5File && baseGp5File.size > 0) {
     if (!enabled) return NextResponse.json({ error: "R2 is not configured" }, { status: 500 });
-    await r2PutObject(teachingR2KeySourceBaseGp5(slug), await fileToBuffer(baseGp5File), baseGp5File.type || "application/octet-stream");
+    const buf = await fileToBuffer(baseGp5File);
+    if (buf.length >= 4 && buf[0] === 0x50 && buf[1] === 0x4b && buf[2] === 0x03 && buf[3] === 0x04) {
+      return NextResponse.json({ error: "不支持 GPX 格式，请在 Guitar Pro 中用「文件 → 导出 → Guitar Pro 5 (.gp5)」重新导出后上传。" }, { status: 400 });
+    }
+    await r2PutObject(teachingR2KeySourceBaseGp5(slug), buf, baseGp5File.type || "application/octet-stream");
     manifest.source_files.base_gp5 = "base.gp5";
   } else if (!manifest.source_files.base_gp5) {
     manifest.source_files.base_gp5 = "base.gp5";
