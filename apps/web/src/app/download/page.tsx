@@ -89,7 +89,7 @@ export default function DownloadPage() {
 
         <section className="text-center py-8">
           <p className="text-sm text-ink-700/60 leading-relaxed">
-            想先在线试用？<Link href="/play" className="text-retro-green hover:underline">直接在浏览器开始</Link>
+            已有账号？<Link href="/login" className="text-retro-green hover:underline">登录管理订阅</Link>
           </p>
         </section>
 

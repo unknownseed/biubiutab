@@ -27,7 +27,7 @@ export default function FeaturesPage() {
               "人声分离 —— 提取干净的伴奏",
               "生成 GP5 / PDF 格式乐谱",
             ],
-            cta: { text: "立即尝试 →", href: "/play" },
+            cta: { text: "下载桌面版 →", href: "/download" },
             accent: "bg-retro-green",
           },
           {
@@ -51,7 +51,7 @@ export default function FeaturesPage() {
               "难点专项突破",
               "高清演奏示范视频（Pro）",
             ],
-            cta: { text: "浏览曲库 →", href: "/learn" },
+            cta: { text: "下载桌面版 →", href: "/download" },
             accent: "bg-amber-600",
           },
           {

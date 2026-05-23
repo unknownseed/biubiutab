@@ -35,21 +35,13 @@ export default function MarketingPage() {
             </div>
           </div>
 
-          <div className="z-10 mt-[3rem] flex flex-col sm:flex-row items-center gap-4 animate-fade-in-up" style={{ animationDelay: "600ms" }}>
-            <Link 
-              href="/play" 
+          <div className="z-10 mt-[3rem] animate-fade-in-up" style={{ animationDelay: "600ms" }}>
+            <Link
+              href="/download"
               className="inline-flex items-center justify-center px-12 py-5 text-lg tracking-[0.3em] text-paper-50 font-serif bg-retro-green border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-retro-green rounded-none animate-breathe group"
             >
               <span className="transition-transform duration-500 group-hover:translate-x-2">
-                [ BiuBiu弹唱 ]
-              </span>
-            </Link>
-            <Link
-              href="/download"
-              className="inline-flex items-center justify-center px-12 py-5 text-lg tracking-[0.3em] text-ink-800 font-serif border border-ink-800 transition-colors duration-500 hover:bg-ink-800 hover:text-paper-50 rounded-none group"
-            >
-              <span className="transition-transform duration-500 group-hover:translate-x-1">
-                [ 下载客户端 ]
+                [ 下载桌面版 ]
               </span>
             </Link>
           </div>
@@ -85,11 +77,11 @@ export default function MarketingPage() {
             </div>
             <div className="mt-8">
               <Link 
-                href="/login?mode=signup" 
-                className="inline-flex items-center justify-center px-12 py-5 text-sm tracking-[0.2em] text-paper-50 font-serif bg-wood-500 border border-wood-500 transition-colors duration-500 hover:bg-paper-100 hover:text-wood-500 hover:border-wood-500 rounded-none group"
+                href="/login" 
+                className="inline-flex items-center justify-center px-12 py-5 text-sm tracking-[0.2em] text-ink-800 font-serif border border-ink-800 transition-colors duration-500 hover:bg-ink-800 hover:text-paper-50 rounded-none group"
               >
                 <span className="transition-transform duration-500 group-hover:translate-x-1">
-                  [ 注册会员 ]
+                  [ 管理订阅 ]
                 </span>
               </Link>
             </div>
@@ -137,11 +129,11 @@ export default function MarketingPage() {
                 
                 <div className="mt-4">
                   <Link 
-                    href="/play" 
+                    href="/download" 
                     className="inline-flex items-center justify-center px-10 py-4 text-sm tracking-[0.2em] text-paper-50 font-serif bg-retro-green border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-retro-green rounded-none group"
                   >
                     <span className="transition-transform duration-500 group-hover:translate-x-1">
-                      [ BiuBiu编配 ]
+                      [ 下载桌面版 ]
                     </span>
                   </Link>
                 </div>
@@ -204,11 +196,11 @@ export default function MarketingPage() {
 
                 <div className="mt-4">
                   <Link 
-                    href="/play" 
+                    href="/download" 
                     className="inline-flex items-center justify-center px-10 py-4 text-sm tracking-[0.2em] text-paper-50 font-serif bg-retro-green border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-retro-green rounded-none group"
                   >
                     <span className="transition-transform duration-500 group-hover:translate-x-1">
-                      [ BiuBiu跟练 ]
+                      [ 下载桌面版 ]
                     </span>
                   </Link>
                 </div>
@@ -282,11 +274,11 @@ export default function MarketingPage() {
 
             <div className="mt-8 flex justify-center">
               <Link 
-                href="#" 
+                href="/download" 
                 className="inline-flex items-center justify-center px-12 py-5 text-sm tracking-[0.2em] text-paper-50 font-serif bg-retro-green border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-retro-green rounded-none group"
               >
                 <span className="transition-transform duration-500 group-hover:translate-x-1">
-                  [ BiuBiu教学 ]
+                  [ 下载桌面版 ]
                 </span>
               </Link>
             </div>
