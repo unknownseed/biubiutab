@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BiuBiu Tab — 技術與功能文檔</title>
+<style>
+:root {
+  --ink: #2c2c2c;
+  --paper: #faf8f5;
+  --green: #4a7c59;
+  --green-light: #e8f0e8;
+  --wood: #8b7355;
+  --wood-light: #f0ebe3;
+  --gold: #c9a84c;
+  --gold-light: #fdf3d1;
+  --border: #e8dfd5;
+  --code-bg: #f5f0ea;
+  --radius: 12px;
+  --nav-width: 280px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background: var(--paper); color: var(--ink); line-height: 1.75; }
+a { color: var(--green); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+nav { position: fixed; left: 0; top: 0; bottom: 0; width: var(--nav-width); background: #fff; border-right: 1px solid var(--border); padding: 24px 20px; overflow-y: auto; z-index: 10; }
+nav h2 { font-size: 14px; font-weight: 700; color: var(--green); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 16px; }
+nav ol { list-style: none; }
+nav li { margin-bottom: 2px; }
+nav li a { display: block; padding: 6px 12px; border-radius: 8px; font-size: 13px; color: var(--ink); opacity: 0.65; transition: all 0.2s; }
+nav li a:hover, nav li a.active { opacity: 1; background: var(--green-light); text-decoration: none; }
+nav .section-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.12em; color: var(--wood); margin-top: 20px; margin-bottom: 6px; padding-left: 12px; }
+
+main { margin-left: var(--nav-width); padding: 48px 60px; max-width: 960px; }
+h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; color: var(--green); margin-bottom: 8px; }
+h1 + p { color: var(--wood); font-size: 15px; margin-bottom: 40px; }
+h2 { font-size: 24px; font-weight: 700; margin-top: 48px; margin-bottom: 16px; padding-bottom: 8px; border-bottom: 2px solid var(--green-light); letter-spacing: -0.01em; }
+h3 { font-size: 18px; font-weight: 700; margin-top: 32px; margin-bottom: 12px; color: var(--wood); }
+h4 { font-size: 15px; font-weight: 600; margin-top: 20px; margin-bottom: 8px; }
+
+.architecture { background: #1a1a2e; color: #e0e0e0; padding: 28px 32px; border-radius: var(--radius); font-family: "SF Mono", "Fira Code", "Cascadia Code", monospace; font-size: 13px; line-height: 1.6; margin: 24px 0; overflow-x: auto; white-space: pre; }
+.architecture .c1 { color: #7ec699; } .architecture .c2 { color: #f8c555; } .architecture .c3 { color: #67b7dc; }
+
+table { width: 100%; border-collapse: collapse; margin: 16px 0 24px; font-size: 14px; }
+th { background: var(--wood-light); text-align: left; padding: 10px 14px; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--wood); border-bottom: 2px solid var(--border); }
+td { padding: 10px 14px; border-bottom: 1px solid var(--border); vertical-align: top; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(74,124,89,0.03); }
+
+.tag { display: inline-block; padding: 2px 10px; border-radius: 20px; font-size: 11px; font-weight: 600; letter-spacing: 0.05em; }
+.tag-green { background: var(--green-light); color: var(--green); }
+.tag-gold { background: var(--gold-light); color: #8a6d14; }
+.tag-wood { background: var(--wood-light); color: var(--wood); }
+.tag-red { background: #fdecec; color: #a33; }
+
+code { background: var(--code-bg); padding: 2px 6px; border-radius: 4px; font-family: "SF Mono", "Fira Code", monospace; font-size: 13px; }
+pre { background: var(--code-bg); padding: 16px 20px; border-radius: var(--radius); overflow-x: auto; margin: 16px 0; font-family: "SF Mono", "Fira Code", monospace; font-size: 13px; line-height: 1.6; }
+pre .kw { color: #a626a4; } pre .fn { color: #4078f2; } pre .str { color: #50a14f; } pre .cm { color: #a0a1a7; font-style: italic; }
+
+.checklist { list-style: none; }
+.checklist li { padding: 8px 16px; margin: 4px 0; border-radius: 8px; background: #fff; border: 1px solid var(--border); display: flex; align-items: flex-start; gap: 10px; cursor: pointer; transition: all 0.2s; }
+.checklist li:hover { border-color: var(--green); background: var(--green-light); }
+.checklist li input { margin-top: 3px; accent-color: var(--green); }
+.checklist li.checked { opacity: 0.5; text-decoration: line-through; }
+
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 16px; margin: 16px 0 24px; }
+.card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; transition: all 0.2s; }
+.card:hover { border-color: var(--green); box-shadow: 0 4px 12px rgba(0,0,0,0.06); }
+.card h4 { margin-top: 0; font-size: 15px; color: var(--green); }
+.card p { font-size: 13px; color: #666; margin-top: 6px; }
+
+.cost-comparison { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin: 24px 0; }
+.cost-card { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 24px; }
+.cost-card h4 { color: var(--green); font-size: 16px; margin-bottom: 12px; }
+.cost-card .amount { font-size: 36px; font-weight: 800; color: var(--gold); }
+.cost-card .sub { font-size: 13px; color: #888; }
+
+details { margin: 12px 0; background: #fff; border: 1px solid var(--border); border-radius: var(--radius); }
+details summary { padding: 14px 20px; font-weight: 600; cursor: pointer; user-select: none; list-style: none; display: flex; align-items: center; gap: 8px; }
+details summary::before { content: "▸"; font-size: 12px; color: var(--green); transition: transform 0.2s; display: inline-block; min-width: 16px; }
+details[open] summary::before { transform: rotate(90deg); }
+details .content { padding: 0 20px 20px; }
+
+.roadmap { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 16px; margin: 16px 0; }
+.roadmap .item { background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 20px; }
+.roadmap .item .prio { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; margin-bottom: 8px; }
+.roadmap .item p { font-size: 13px; color: #555; }
+
+.print-only { display: none; }
+@media print {
+  nav { display: none; }
+  main { margin-left: 0; padding: 20px; }
+  .print-only { display: block; }
+}
+
+@media (max-width: 900px) {
+  nav { display: none; }
+  main { margin-left: 0; padding: 24px 20px; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <h2>📖 BiuBiu Tab</h2>
+  <ol>
+    <li><a href="#overview">產品架構</a></li>
+    <li class="section-title">Marketing 官網</li>
+    <li><a href="#web-pages">頁面路由</a></li>
+    <li><a href="#web-api">API 路由</a></li>
+    <li><a href="#web-components">共用元件</a></li>
+    <li class="section-title">Desktop 應用</li>
+    <li><a href="#desktop-pages">頁面路由</a></li>
+    <li><a href="#desktop-ipc">IPC Handler</a></li>
+    <li><a href="#desktop-offline">離線模式</a></li>
+    <li class="section-title">AI 服務</li>
+    <li><a href="#ai-endpoints">API 端點</a></li>
+    <li><a href="#ai-pipeline">處理 Pipeline</a></li>
+    <li><a href="#ai-models">AI 模型清單</a></li>
+    <li class="section-title">資料庫</li>
+    <li><a href="#db-tables">資料表</a></li>
+    <li><a href="#db-rls">RLS Policy</a></li>
+    <li><a href="#r2-storage">R2 存儲</a></li>
+    <li class="section-title">參考</li>
+    <li><a href="#env-vars">環境變數</a></li>
+    <li><a href="#deployment">部署</a></li>
+    <li><a href="#costs">成本結構</a></li>
+    <li><a href="#roadmap">後續可做事項</a></li>
+  </ol>
+</nav>
+
+<main>
+
+<h1 id="overview">BiuBiu Tab — 技術與功能文檔</h1>
+<p>版本 v1.3 · 2026-05-23 · <a href="https://github.com/unknownseed/biubiutab">github.com/unknownseed/biubiutab</a></p>
+
+<p>BiuBiu Tab 是一款 <strong>AI 吉他製譜與教學桌面應用</strong>，搭配官方介紹網站。使用者可上傳音頻或 YouTube 連結，經由本地 AI 自動生成 Guitar Pro 5 (.gp5) 吉他譜，並在桌面端進行跟彈練習與模組化教學。</p>
+
+<h2>產品架構</h2>
+
+<div class="architecture">
+┌──────────────────────────────────────────────────────────┐
+│                    <span class="c1">BiuBiu Tab</span>                             │
+│                                                          │
+│  ┌───────────────┐   ┌──────────────────┐                │
+│  │  <span class="c2">Marketing</span>     │   │  <span class="c2">Desktop App</span>     │                │
+│  │  <span class="c3">Website</span>       │   │  <span class="c3">(Electron)</span>      │                │
+│  │  (Next.js)     │   │                  │                │
+│  │                │   │  ┌────────────┐  │                │
+│  │  /             │   │  │ UI (React) │  │                │
+│  │  /features     │   │  └─────┬──────┘  │                │
+│  │  /pricing      │   │        │         │                │
+│  │  /download     │   │  ┌─────▼──────┐  │                │
+│  │  /support      │   │  │ IPC Proxy  │  │                │
+│  │  /learn        │   │  └─────┬──────┘  │                │
+│  │  /dashboard    │   │        │         │                │
+│  │  /login        │   │  ┌─────▼──────┐  │                │
+│  └───────┬───────┘   │  │ <span class="c1">AI Service</span> │  │                │
+│          │            │  │ <span class="c1">(Python)</span>   │  │                │
+│    ┌─────▼─────┐      │  └───────────┘  │                │
+│    │ <span class="c2">Supabase</span> │◄─────┤                 │                │
+│    │ (DB+Auth) │      └─────────────────┘                │
+│    └─────┬─────┘                                         │
+│    ┌─────▼─────┐                                         │
+│    │ <span class="c3">R2 Store</span> │                                         │
+│    │ (Assets)  │                                         │
+│    └───────────┘                                         │
+└──────────────────────────────────────────────────────────┘
+</div>
+
+<div class="cards">
+  <div class="card"><h4>Marketing 官網</h4><p>Next.js 16 + Tailwind CSS 4<br>產品介紹、定價、訂閱、教學試用</p></div>
+  <div class="card"><h4>Desktop 應用</h4><p>Electron 38 + React 19 + Vite<br>本地 AI 製譜、跟彈練習、離線可用</p></div>
+  <div class="card"><h4>AI 服務</h4><p>Python FastAPI + 7 ML 模型<br>音源分離、和弦辨識、GP5 生成</p></div>
+</div>
+
+<!-- ======== WEB ======== -->
+<h2 id="web-pages">Marketing 官網：頁面路由</h2>
+
+<table>
+<tr><th>路由</th><th>說明</th><th>認證</th></tr>
+<tr><td><code>/</code></td><td>官網首頁（Hero + AI 編配 / 跟練 / 教學區 + CTA）</td><td><span class="tag tag-wood">公開</span></td></tr>
+<tr><td><code>/features</code></td><td>功能介紹頁（四大核心功能模組卡片）</td><td><span class="tag tag-wood">公開</span></td></tr>
+<tr><td><code>/pricing</code></td><td>定價頁（月繳 ¥29 / 季繳 ¥69 / 年繳 ¥199）</td><td><span class="tag tag-wood">公開</span></td></tr>
+<tr><td><code>/download</code></td><td>桌面版下載頁（macOS / Windows）</td><td><span class="tag tag-wood">公開</span></td></tr>
+<tr><td><code>/support</code></td><td>幫助支援頁（9 題 FAQ）</td><td><span class="tag tag-wood">公開</span></td></tr>
+<tr><td><code>/learn</code></td><td>教學曲目列表</td><td><span class="tag tag-wood">公開</span></td></tr>
+<tr><td><code>/learn/[slug]/[module]</code></td><td>模組課程（warmup/basic/advanced/solo）</td><td><span class="tag tag-gold">Pro 部分</span></td></tr>
+<tr><td><code>/play</code></td><td>網頁試用 AI 製譜（每月 3 次）</td><td><span class="tag tag-green">登入</span></td></tr>
+<tr><td><code>/editor/[jobId]</code></td><td>吉他譜編輯器 / 跟練</td><td><span class="tag tag-green">登入</span></td></tr>
+<tr><td><code>/dashboard</code></td><td>曲譜儀表板（搜尋、排序、分頁）</td><td><span class="tag tag-green">登入</span></td></tr>
+<tr><td><code>/admin/teaching</code></td><td>教學管理列表</td><td><span class="tag tag-red">Admin</span></td></tr>
+</table>
+
+<h2 id="web-api">API 路由</h2>
+
+<details>
+<summary>生成（Jobs）— 6 個端點</summary>
+<div class="content">
+<table>
+<tr><th>方法</th><th>端點</th><th>說明</th></tr>
+<tr><td><code>POST</code></td><td><code>/api/upload-url</code></td><td>取得 R2 presigned PUT URL</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/jobs</code></td><td>建立 AI 任務（含 rate limit + quota gate）</td></tr>
+<tr><td><code>GET</code></td><td><code>/api/jobs/[jobId]</code></td><td>輪詢 job 狀態</td></tr>
+<tr><td><code>GET</code></td><td><code>/api/jobs/[jobId]/result</code></td><td>取得 JSON 結果</td></tr>
+<tr><td><code>GET</code></td><td><code>/api/jobs/[jobId]/gp5</code></td><td>下載 GP5（R2 或 AI 後端）</td></tr>
+<tr><td><code>GET</code></td><td><code>/api/jobs/[jobId]/audio</code></td><td>取得音訊</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>用戶與付費 — 4 個端點</summary>
+<div class="content">
+<table>
+<tr><th>方法</th><th>端點</th><th>說明</th></tr>
+<tr><td><code>GET</code></td><td><code>/api/dashboard/jobs</code></td><td>分頁查詢曲譜（page/limit/search/sort）</td></tr>
+<tr><td><code>GET</code></td><td><code>/api/me/subscription</code></td><td>查詢訂閱狀態與配額</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/stripe/checkout</code></td><td>建立 Stripe checkout session</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/stripe/webhook</code></td><td>Stripe webhook 接收器</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>教學內容 — 4 個端點（公開）</summary>
+<div class="content">
+<table>
+<tr><th>方法</th><th>端點</th><th>說明</th></tr>
+<tr><td><code>GET</code></td><td><code>/api/teaching/songs</code></td><td>教學曲目列表</td></tr>
+<tr><td><code>GET</code></td><td><code>/api/teaching/songs/[slug]/[module]</code></td><td>讀取模組 JSON</td></tr>
+<tr><td><code>GET</code></td><td><code>/api/teaching/gp5/[slug]/[filename]</code></td><td>下載教學 GP5</td></tr>
+<tr><td><code>GET</code></td><td><code>/api/teaching/media/[slug]/[filename]</code></td><td>取得教學媒體</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>Admin — 5 個端點</summary>
+<div class="content">
+<table>
+<tr><th>方法</th><th>端點</th><th>說明</th></tr>
+<tr><td><code>GET/POST</code></td><td><code>/api/admin/setup</code></td><td>一鍵初始化 admin</td></tr>
+<tr><td><code>GET/POST</code></td><td><code>/api/admin/teaching/songs</code></td><td>CRUD 教學歌曲</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/admin/teaching/generate/[songId]</code></td><td>觸發生成教學模組</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/desktop/admin/teaching/songs/[songId]/save</code></td><td>Desktop 端保存</td></tr>
+<tr><td><code>POST</code></td><td><code>/api/desktop/admin/teaching/generate/[songId]</code></td><td>Desktop 端生成</td></tr>
+</table>
+</div>
+</details>
+
+<h2 id="web-components">共用元件</h2>
+
+<div class="cards">
+<div class="card"><h4>upload-client.tsx</h4><p>音頻上傳 + job 輪詢（Web 專用 R2 流程）</p></div>
+<div class="card"><h4>PracticeMode.tsx</h4><p>AlphaTab 播放核心（音源切換、和弦、難度）</p></div>
+<div class="card"><h4>ChordTimeline.tsx</h4><p>和弦時間軸（scroll snap 自動居中）</p></div>
+<div class="card"><h4>PlaybackControls.tsx</h4><p>播放控制（速度/移調/Loop/音源切換）</p></div>
+<div class="card"><h4>SyncedLyrics.tsx</h4><p>同步歌詞（React.memo + deep compare）</p></div>
+<div class="card"><h4>TimelineViewer.tsx</h4><p>Canvas 時間軸視覺化（節流 RAF 優化）</p></div>
+</div>
+
+<!-- ======== DESKTOP ======== -->
+<h2 id="desktop-pages">Desktop 應用：頁面路由</h2>
+<table>
+<tr><th>路由</th><th>說明</th><th>需登入?</th></tr>
+<tr><td><code>/</code></td><td>產品首頁（未登入有 CTA banner）</td><td><span class="tag tag-wood">否</span></td></tr>
+<tr><td><code>/play</code></td><td>AI 製譜入口（本機音頻 / URL）</td><td><span class="tag tag-gold">是（製譜）</span></td></tr>
+<tr><td><code>/editor/:jobId</code></td><td>吉他譜編輯器（AlphaTab + GP5 下載）</td><td><span class="tag tag-green">登入</span></td></tr>
+<tr><td><code>/practice/:jobId</code></td><td>獨立練習頁（全螢幕深色模式）</td><td><span class="tag tag-gold">是（練習）</span></td></tr>
+<tr><td><code>/dashboard</code></td><td>曲譜管理（搜尋、排序、分頁）</td><td><span class="tag tag-green">登入</span></td></tr>
+<tr><td><code>/learn</code></td><td>教學曲目列表</td><td><span class="tag tag-wood">否</span></td></tr>
+<tr><td><code>/learn/:slug/:module</code></td><td>教學模組（Pro 鎖 advanced/solo）</td><td><span class="tag tag-wood">否</span></td></tr>
+<tr><td><code>/admin/teaching</code></td><td>教學管理列表</td><td><span class="tag tag-red">Admin</span></td></tr>
+</table>
+
+<h2 id="desktop-ipc">IPC Handler（14 個）</h2>
+
+<details>
+<summary>本地檔案操作 — 8 個 handler</summary>
+<div class="content">
+<table>
+<tr><th>Channel</th><th>說明</th></tr>
+<tr><td><code>pick-audio-file</code></td><td>系統對話框選音頻（mp3/wav/m4a/aac/flac/ogg）</td></tr>
+<tr><td><code>pick-teaching-file</code></td><td>選教學素材（gp5 / audio / video）</td></tr>
+<tr><td><code>teaching-get-paths</code></td><td>取得教學目錄路徑</td></tr>
+<tr><td><code>teaching-write-manifest</code></td><td>寫入 manifest.json</td></tr>
+<tr><td><code>teaching-save-asset</code></td><td>保存教學素材</td></tr>
+<tr><td><code>teaching-read-text</code></td><td>讀取教學文字檔案</td></tr>
+<tr><td><code>teaching-read-public-bytes</code></td><td>讀取公開目錄二進位檔</td></tr>
+<tr><td><code>teaching-generate-lessons</code></td><td>本機執行 generate_lessons.py</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>雲端代理 — 5 個 handler</summary>
+<div class="content">
+<table>
+<tr><th>Channel</th><th>說明</th></tr>
+<tr><td><code>cloud-get-text</code></td><td>GET Web API（回文字）</td></tr>
+<tr><td><code>cloud-get-bytes</code></td><td>GET Web API（回二進位）</td></tr>
+<tr><td><code>cloud-post-json</code></td><td>POST JSON 到 Web API</td></tr>
+<tr><td><code>cloud-teaching-save</code></td><td>上傳教學素材 multipart/form-data</td></tr>
+<tr><td><code>cloud-teaching-generate</code></td><td>觸發雲端生成</td></tr>
+</table>
+</div>
+</details>
+
+<h2 id="desktop-offline">離線 / 未登入模式</h2>
+
+<table>
+<tr><th>頁面</th><th>未登入行為</th></tr>
+<tr><td>首頁</td><td>產品介紹 + 登入 CTA banner</td></tr>
+<tr><td>教學</td><td>瀏覽 + 練習（open 模組），Pro 模組鎖定</td></tr>
+<tr><td>彈唱</td><td>入口可見，AI 製譜需登入</td></tr>
+<tr><td>跟練</td><td>入口可見，練習模式需登入</td></tr>
+<tr><td>Dashboard / Admin</td><td>強制導向登入頁</td></tr>
+</table>
+
+<!-- ======== AI ======== -->
+<h2 id="ai-endpoints">AI 服務：API 端點</h2>
+<p>路徑：<code>services/ai</code> ｜ 技術棧：Python 3.9+ / FastAPI / Uvicorn</p>
+
+<table>
+<tr><th>方法</th><th>端點</th><th>說明</th></tr>
+<tr><td><code>GET</code></td><td><code>/health</code></td><td>健康檢查</td></tr>
+<tr><td><code>POST</code></td><td><code>/jobs</code></td><td>建立任務（local file / R2 / URL）</td></tr>
+<tr><td><code>GET</code></td><td><code>/jobs/{id}</code></td><td>查詢任務狀態</td></tr>
+<tr><td><code>GET</code></td><td><code>/jobs/{id}/result</code></td><td>取得 JSON 結果</td></tr>
+<tr><td><code>GET</code></td><td><code>/jobs/{id}/result.gp5</code></td><td>下載 GP5</td></tr>
+<tr><td><code>GET</code></td><td><code>/jobs/{id}/audio</code></td><td>取得音訊</td></tr>
+</table>
+
+<h2 id="ai-pipeline">處理 Pipeline</h2>
+
+<pre>
+音頻輸入（本地 / R2 / URL）
+  │
+  ├── 1. yt-dlp 下載（URL 模式）
+  ├── 2. Demucs 音源分離 (vocals/drums/bass/other/no_vocals)
+  ├── 3. Faster-Whisper → 歌詞
+  │     └── DeepSeek API 歌詞驗證（可選）
+  ├── 4. Basic Pitch → MIDI 旋律
+  ├── 5. Madmom / Librosa → 和弦
+  ├── 6. 節奏動機 + 段落識別
+  ├── 7. 風格融合 + 聲部優化
+  ├── 8. PyGuitarPro → .gp5
+  └── 9. 儲存（本地或 R2）</pre>
+
+<h2 id="ai-models">AI 模型清單</h2>
+
+<table>
+<tr><th>模型</th><th>用途</th><th>費用</th></tr>
+<tr><td>Demucs (htdemucs_6s)</td><td>6 軌音源分離</td><td><span class="tag tag-green">免費</span></td></tr>
+<tr><td>Faster-Whisper (small)</td><td>語音轉歌詞</td><td><span class="tag tag-green">免費</span></td></tr>
+<tr><td>Basic Pitch (Spotify)</td><td>旋律音符檢測</td><td><span class="tag tag-green">免費</span></td></tr>
+<tr><td>Madmom (DeepChroma+CRF)</td><td>和弦識別</td><td><span class="tag tag-green">免費</span></td></tr>
+<tr><td>Librosa</td><td>音訊分析</td><td><span class="tag tag-green">免費</span></td></tr>
+<tr><td>PyGuitarPro</td><td>GP5 格式寫入</td><td><span class="tag tag-green">免費</span></td></tr>
+<tr><td>DeepSeek API</td><td>歌詞驗證（可選）</td><td><span class="tag tag-gold">~¥0.01/首</span></td></tr>
+</table>
+
+<!-- ======== DB ======== -->
+<h2 id="db-tables">資料庫：Supabase 資料表（4 張）</h2>
+
+<details open>
+<summary><strong>ai_jobs</strong> — AI 生成任務</summary>
+<div class="content">
+<table>
+<tr><th>欄位</th><th>類型</th><th>說明</th></tr>
+<tr><td><code>id</code></td><td>text PK</td><td>Job ID</td></tr>
+<tr><td><code>user_id</code></td><td>uuid</td><td>RLS key</td></tr>
+<tr><td><code>status</code></td><td>text</td><td>queued/processing/succeeded/failed</td></tr>
+<tr><td><code>progress</code></td><td>number</td><td>0-100</td></tr>
+<tr><td><code>title</code></td><td>text</td><td>曲目標題</td></tr>
+<tr><td><code>audio_path</code></td><td>text</td><td>R2 key 或 URL</td></tr>
+<tr><td><code>result</code></td><td>json</td><td>生成結果</td></tr>
+<tr><td><code>preview</code></td><td>json</td><td>前端顯示 step</td></tr>
+<tr><td><code>created_at</code></td><td>timestamptz</td><td>建立時間</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary><strong>subscriptions</strong> — 訂閱狀態</summary>
+<div class="content">
+<table>
+<tr><th>欄位</th><th>類型</th><th>說明</th></tr>
+<tr><td><code>user_id</code></td><td>uuid UNIQUE</td><td>FK → auth.users</td></tr>
+<tr><td><code>plan_type</code></td><td>text</td><td>free/monthly/quarterly/yearly</td></tr>
+<tr><td><code>status</code></td><td>text</td><td>inactive/active/canceled</td></tr>
+<tr><td><code>current_period_end</code></td><td>timestamptz</td><td>有效期截止</td></tr>
+<tr><td><code>stripe_customer_id</code></td><td>text</td><td>Stripe 客戶 ID</td></tr>
+<tr><td><code>stripe_subscription_id</code></td><td>text UNIQUE</td><td>Stripe 訂閱 ID</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary><strong>teaching_songs</strong> — 教學曲目</summary>
+<div class="content">
+<table>
+<tr><th>欄位</th><th>類型</th><th>說明</th></tr>
+<tr><td><code>slug</code></td><td>text</td><td>URL / R2 key 前綴</td></tr>
+<tr><td><code>title</code></td><td>text</td><td>曲目標題</td></tr>
+<tr><td><code>artist</code></td><td>text</td><td>藝術家</td></tr>
+<tr><td><code>status</code></td><td>text</td><td>draft/published</td></tr>
+<tr><td><code>manifest</code></td><td>json</td><td>完整教學配置</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary><strong>admin_users</strong> — 管理員表</summary>
+<div class="content">
+<table>
+<tr><th>欄位</th><th>類型</th><th>說明</th></tr>
+<tr><td><code>user_id</code></td><td>uuid PK</td><td>FK → auth.users</td></tr>
+</table>
+<p>搭配 <code>is_admin()</code> RPC function 判斷權限。</p>
+</div>
+</details>
+
+<h2 id="db-rls">RLS Policy 總表</h2>
+
+<table>
+<tr><th>表</th><th>Policy</th><th>操作</th><th>對象</th></tr>
+<tr><td><code>ai_jobs</code></td><td>select_own / insert_own / update_own / delete_own</td><td>CRUD</td><td>authenticated (own)</td></tr>
+<tr><td><code>ai_jobs</code></td><td>service_role_all</td><td>ALL</td><td>service_role</td></tr>
+<tr><td><code>subscriptions</code></td><td>Users can view own</td><td>SELECT</td><td>authenticated (own)</td></tr>
+<tr><td><code>subscriptions</code></td><td>Service role full access</td><td>ALL</td><td>service_role</td></tr>
+<tr><td><code>teaching_songs</code></td><td>Admins can manage</td><td>ALL</td><td>authenticated + is_admin()</td></tr>
+<tr><td><code>teaching_songs</code></td><td>Anyone can read published</td><td>SELECT</td><td>anon + authenticated</td></tr>
+</table>
+
+<h2 id="r2-storage">R2 存儲 Key 規則</h2>
+
+<table>
+<tr><th>內容</th><th>Key 格式</th></tr>
+<tr><td>用戶上傳</td><td><code>uploads/{userId}/{filename}</code></td></tr>
+<tr><td>AI 結果 GP5</td><td><code>results/{jobId}/result.gp5</code></td></tr>
+<tr><td>AI 結果 JSON</td><td><code>results/{jobId}/output.json</code></td></tr>
+<tr><td>去人聲</td><td><code>stems/{jobId}/no_vocals.mp3</code></td></tr>
+<tr><td>教學 source</td><td><code>teaching/{slug}/source/base.gp5</code></td></tr>
+<tr><td>教學模組</td><td><code>teaching/{slug}/modules/{module}.json</code></td></tr>
+<tr><td>教學 GP5</td><td><code>teaching/{slug}/gp5/{module}.gp5</code></td></tr>
+<tr><td>教學媒體</td><td><code>teaching/{slug}/media/demo_video.mp4</code></td></tr>
+</table>
+
+<!-- ======== ENV ======== -->
+<h2 id="env-vars">環境變數總表</h2>
+
+<details>
+<summary>Web (Next.js) — 點擊展開</summary>
+<div class="content">
+<table>
+<tr><th>變數</th><th>用途</th></tr>
+<tr><td><code>NEXT_PUBLIC_SUPABASE_URL</code></td><td>Supabase URL</td></tr>
+<tr><td><code>NEXT_PUBLIC_SUPABASE_ANON_KEY</code></td><td>Supabase anon key</td></tr>
+<tr><td><code>SUPABASE_SERVICE_ROLE_KEY</code></td><td>Stripe webhook 寫入</td></tr>
+<tr><td><code>AI_BASE_URL</code></td><td>AI 服務位址</td></tr>
+<tr><td><code>AI_SERVICE_TOKEN</code></td><td>AI 內部認證</td></tr>
+<tr><td><code>CLOUDFLARE_*</code></td><td>R2 憑證（5 個變數）</td></tr>
+<tr><td><code>STRIPE_SECRET_KEY</code></td><td>Stripe secret</td></tr>
+<tr><td><code>STRIPE_WEBHOOK_SECRET</code></td><td>Stripe webhook 簽名</td></tr>
+<tr><td><code>STRIPE_PRICE_SUB_{MONTHLY|QUARTERLY|YEARLY}</code></td><td>訂閱價格 ID</td></tr>
+<tr><td><code>ADMIN_EMAILS</code></td><td>管理員 email 白名單</td></tr>
+</table>
+</div>
+</details>
+
+<details>
+<summary>Desktop — 點擊展開</summary>
+<div class="content">
+<table>
+<tr><th>變數</th><th>用途</th></tr>
+<tr><td><code>WEB_BASE_URL</code></td><td>Web API 基礎 URL</td></tr>
+<tr><td><code>DESKTOP_UI_PORT</code></td><td>Vite dev 埠號（預設 5174）</td></tr>
+<tr><td><code>AI_PYTHON</code></td><td>強制 Python 路徑</td></tr>
+<tr><td><code>VITE_SUPABASE_URL</code></td><td>Supabase URL</td></tr>
+<tr><td><code>VITE_SUPABASE_ANON_KEY</code></td><td>Supabase anon key</td></tr>
+<tr><td><code>VITE_AI_BASE_URL</code></td><td>AI 位址（預設 localhost:8001）</td></tr>
+</table>
+</div>
+</details>
+
+<!-- ======== DEPLOY ======== -->
+<h2 id="deployment">部署</h2>
+
+<div class="cards">
+<div class="card">
+  <h4>🖥 開發環境</h4>
+  <pre style="font-size:12px;margin-top:8px"># Web 官網
+cd apps/web && npm run dev
+
+# Desktop（Vite + Electron + AI）
+cd apps/desktop && npm run dev</pre>
+</div>
+<div class="card">
+  <h4>📦 Mac 打包</h4>
+  <pre style="font-size:12px;margin-top:8px">cd apps/desktop
+npm run dist:mac</pre>
+  <p>輸出 .dmg</p>
+</div>
+<div class="card">
+  <h4>🪟 Windows 打包</h4>
+  <pre style="font-size:12px;margin-top:8px">cd apps/desktop
+npm run dist:win</pre>
+  <p>輸出 .exe</p>
+</div>
+<div class="card">
+  <h4>🌐 官網部署</h4>
+  <p style="font-size:13px;margin-top:8px">部署 <code>apps/web</code> 到 Vercel，設定環境變數</p>
+</div>
+</div>
+
+<!-- ======== COSTS ======== -->
+<h2 id="costs">成本結構</h2>
+
+<div class="cost-comparison">
+  <div class="cost-card">
+    <h4>🖥 桌面版</h4>
+    <div class="amount">~¥0.01</div>
+    <div class="sub">每首邊際成本</div>
+    <p style="margin-top: 12px; font-size: 13px;">所有 AI 模型在用戶本機執行，唯一外部費用是可選的 DeepSeek API 歌詞驗證。</p>
+  </div>
+  <div class="cost-card">
+    <h4>🌐 Web 版（未來）</h4>
+    <div class="amount">~¥0.3-1.5</div>
+    <div class="sub">每首伺服器成本</div>
+    <p style="margin-top: 12px; font-size: 13px;">需部署 GPU 伺服器，R2 儲存 / 頻寬，Supabase 資料庫。Web 版尚未部署。</p>
+  </div>
+</div>
+
+<table>
+<tr><th>項目</th><th>目前</th><th>用戶增長後</th></tr>
+<tr><td>Supabase</td><td>免費層</td><td>$25/月（超過 500MB）</td></tr>
+<tr><td>R2 存儲</td><td>免費層 10GB</td><td>$0.015/GB</td></tr>
+<tr><td>官網部署</td><td>Vercel 免費層</td><td>100GB 頻寬/月</td></tr>
+<tr><td>DeepSeek API</td><td>¥0.01/首</td><td>1000 首 = ¥10</td></tr>
+</table>
+
+<!-- ======== ROADMAP ======== -->
+<h2 id="roadmap">後續可做事項</h2>
+
+<h3>🔴 高優先級</h3>
+<div class="roadmap">
+<div class="item">
+  <div class="prio" style="color:#a33">🔴 高優先級</div>
+  <h4>實際打包測試</h4>
+  <p>用 electron-builder 打出 .dmg / .exe，在目標系統測試安裝 → 啟動 → 功能完整</p>
+</div>
+<div class="item">
+  <div class="prio" style="color:#a33">🔴 高優先級</div>
+  <h4>Stripe 閉環測試</h4>
+  <p>完整跑一次：Web 定價頁付款 → webhook → DB → Desktop 自動同步 Pro</p>
+</div>
+<div class="item">
+  <div class="prio" style="color:#a33">🔴 高優先級</div>
+  <h4>GPX 教學相容</h4>
+  <p>教學生成目前依賴 .gp5 格式，需支援 .gpx 確保兼容各平台</p>
+</div>
+<div class="item">
+  <div class="prio" style="color:#a33">🔴 高優先級</div>
+  <h4>錯誤日誌系統</h4>
+  <p>桌面崩潰日誌收集（Electron crashReporter + Sentry）</p>
+</div>
+</div>
+
+<h3>🟡 中優先級</h3>
+<div class="roadmap">
+<div class="item">
+  <div class="prio" style="color:#b8860b">🟡 中優先級</div>
+  <h4>Desktop 自動更新</h4>
+  <p>electron-updater，GitHub Release 有新版本時推送</p>
+</div>
+<div class="item">
+  <div class="prio" style="color:#b8860b">🟡 中優先級</div>
+  <h4>官網部署公開</h4>
+  <p>apps/web 推到 Vercel，官網有公開域名</p>
+</div>
+<div class="item">
+  <div class="prio" style="color:#b8860b">🟡 中優先級</div>
+  <h4>教學內容線上編輯</h4>
+  <p>Admin 可在 Web 端直接編輯教學模組內容</p>
+</div>
+<div class="item">
+  <div class="prio" style="color:#b8860b">🟡 中優先級</div>
+  <h4>多語言支援</h4>
+  <p>i18n（繁中 / 簡中 / 英文 / 日文）</p>
+</div>
+<div class="item">
+  <div class="prio" style="color:#b8860b">🟡 中優先級</div>
+  <h4>音頻錄製</h4>
+  <p>Desktop 內建錄音功能，直接生成譜</p>
+</div>
+</div>
+
+<h3>🟢 低優先級</h3>
+<div class="roadmap">
+<div class="item">
+  <div class="prio" style="color:#2e7d32">🟢 低優先級</div>
+  <h4>Linux 支援</h4>
+  <p>打包 .AppImage / .deb</p>
+</div>
+<div class="item">
+  <div class="prio" style="color:#2e7d32">🟢 低優先級</div>
+  <h4>社群曲譜庫</h4>
+  <p>用戶公開發布譜例</p>
+</div>
+<div class="item">
+  <div class="prio" style="color:#2e7d32">🟢 低優先級</div>
+  <h4>行動端 App</h4>
+  <p>React Native / Flutter 手機版</p>
+</div>
+<div class="item">
+  <div class="prio" style="color:#2e7d32">🟢 低優先級</div>
+  <h4>協作功能</h4>
+  <p>多人實時編輯同一份吉他譜</p>
+</div>
+<div class="item">
+  <div class="prio" style="color:#2e7d32">🟢 低優先級</div>
+  <h4>AI 擴充</h4>
+  <p>更多風格（Fingerstyle、古典）、自動編曲</p>
+</div>
+<div class="item">
+  <div class="prio" style="color:#2e7d32">🟢 低優先級</div>
+  <h4>效能優化</h4>
+  <p>GPU 加速、模型量化、冷啟動加速</p>
+</div>
+<div class="item">
+  <div class="prio" style="color:#2e7d32">🟢 低優先級</div>
+  <h4>測試覆蓋</h4>
+  <p>單元測試 + E2E（Playwright for Electron）</p>
+</div>
+<div class="item">
+  <div class="prio" style="color:#2e7d32">🟢 低優先級</div>
+  <h4>CI/CD</h4>
+  <p>GitHub Actions 自動建構 + 發布</p>
+</div>
+</div>
+
+<div class="print-only" style="margin-top:60px;border-top:1px solid var(--border);padding-top:20px;">
+  <p style="font-size:12px;color:#888;">BiuBiu Tab 技術文檔 v1.3 · 2026-05-23 · github.com/unknownseed/biubiutab</p>
+</div>
+
+</main>
+
+<script>
+// Interactive features
+document.addEventListener('DOMContentLoaded', () => {
+  // Active nav highlight on scroll
+  const sections = document.querySelectorAll('h2[id], h3[id]');
+  const navLinks = document.querySelectorAll('nav a');
+  
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        navLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('href') === '#' + entry.target.id);
+        });
+      }
+    });
+  }, { rootMargin: '-80px 0px -60% 0px' });
+
+  sections.forEach(s => observer.observe(s));
+
+  // Table row click to expand nested info
+  document.querySelectorAll('details').forEach(detail => {
+    const summary = detail.querySelector('summary');
+    if (summary) {
+      summary.addEventListener('click', (e) => {
+        // Track which sections are open
+        if (detail.open) {
+          sessionStorage.setItem('doc_' + summary.textContent.trim(), 'open');
+        } else {
+          sessionStorage.removeItem('doc_' + summary.textContent.trim());
+        }
+      });
+    }
+  });
+});
+</script>
+
+</body>
+</html>
