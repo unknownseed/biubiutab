@@ -1,6 +1,6 @@
 # Biubiutab Web 版完整文檔
 
-> 版本：`v1.2`｜最後更新：2026-05-22｜維護分支：`apps/web`
+> 版本：`v1.3`｜最後更新：2026-05-22｜維護分支：`apps/web`
 
 本文檔是 Web 版的**唯一權威文檔**，涵蓋產品需求、技術架構、端到端流程、API 契約、資料庫 Schema、環境配置與部署策略。後續任何 Web 功能變更應同步更新此文件。
 
@@ -10,6 +10,7 @@
 
 | 版本 | 日期 | 變更摘要 |
 |------|------|---------|
+| v1.3 | 2026-05-22 | Desktop 離線/未登入模式：移除 Play/Practice 強制登入跳轉，teaching_songs 公開讀取 RLS policy |
 | v1.2 | 2026-05-22 | 新增下載頁、官網下載 CTA、定價頁桌面版引導、electron-builder 打包配置 |
 | v1.1 | 2026-05-21 | 新增 `/api/me/subscription`、Dashboard 會員狀態、Admin Setup API、Admin RPC fallback、教學 R2 分發方案、Desktop API 清單 |
 | v1.0 | 2026-05-21 | 初始版本，合併 WEB_TECH_DOC + WEB_PRD + WEB_DESKTOP_REFERENCE 為統一文檔 |
@@ -378,9 +379,9 @@ Web 是整個產品的 BFF（Backend-for-Frontend）：同時提供 UI（Next.js
 | `created_at` | timestamptz | |
 | `updated_at` | timestamptz | |
 
-**RLS Policy**：[supabase_teaching_admin_users.sql](file:///Users/unknownseed/Developer/biubiutab/supabase_teaching_admin_users.sql#L21-L28)
+**RLS Policy**：[supabase_teaching_admin_users.sql](file:///Users/unknownseed/Developer/biubiutab/supabase_teaching_admin_users.sql#L21-L35)
 - Admins（`is_admin() = true`）可管理所有 teaching_songs
-- 前台只可讀 `status = 'published'`
+- 任何人（anon + authenticated）可讀取 `status = 'published'` 的歌曲
 
 ### 6.4 admin_users（管理員表）
 
