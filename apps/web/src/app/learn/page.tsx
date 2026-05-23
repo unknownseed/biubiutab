@@ -27,6 +27,16 @@ export default async function TeachingLibraryPage() {
 
   return (
     <div className="max-w-7xl mx-auto p-4 md:p-8 pt-24 md:pt-32">
+      {/* Download CTA Banner */}
+      <div className="mb-6 flex flex-col sm:flex-row items-center justify-between gap-3 rounded-xl border border-retro-green/20 bg-retro-green/5 px-5 py-3 text-sm">
+        <span className="text-ink-700/70 font-light tracking-wider">
+          这是网页预览版。下载桌面客户端获得<span className="font-semibold text-retro-green">完整教学体验</span>：进阶模块 + 演示视频 + 离线练习。
+        </span>
+        <Link href="/download" className="shrink-0 rounded-lg bg-retro-green px-4 py-1.5 text-xs tracking-widest text-paper-50 hover:bg-retro-green/90 transition-colors">
+          免费下载
+        </Link>
+      </div>
+
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-gray-900 tracking-tight">教学库</h1>
         <p className="text-gray-500 mt-2 text-lg">从零基础到自由创作，完整的吉他学习路径。</p>

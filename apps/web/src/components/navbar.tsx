@@ -55,21 +55,21 @@ export default function Navbar({ initialUser }: { initialUser: User | null }) {
               首页
               <span className={`absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 ${mounted && pathname === "/" ? "bg-wood-400" : "bg-transparent group-hover:bg-wood-400"}`} />
             </Link>
-            <Link href="/play" className={`relative group transition-colors duration-300 ${mounted && (pathname.startsWith("/play") || pathname.startsWith("/editor")) ? "text-paper-50" : "hover:text-paper-50"}`}>
-              BiuBIU弹唱
-              <span className={`absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 ${mounted && (pathname.startsWith("/play") || pathname.startsWith("/editor")) ? "bg-wood-400" : "bg-transparent group-hover:bg-wood-400"}`} />
+            <Link href="/features" className={`relative group transition-colors duration-300 ${mounted && pathname.startsWith("/features") ? "text-paper-50" : "hover:text-paper-50"}`}>
+              功能
+              <span className={`absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 ${mounted && pathname.startsWith("/features") ? "bg-wood-400" : "bg-transparent group-hover:bg-wood-400"}`} />
             </Link>
-            <Link href="/learn" className={`relative group transition-colors duration-300 ${mounted && pathname.startsWith("/learn") ? "text-paper-50" : "hover:text-paper-50"}`}>
-              BiuBiu教学
-              <span className={`absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 ${mounted && pathname.startsWith("/learn") ? "bg-wood-400" : "bg-transparent group-hover:bg-wood-400"}`} />
+            <Link href="/download" className={`relative group transition-colors duration-300 ${mounted && pathname.startsWith("/download") ? "text-paper-50" : "hover:text-paper-50"}`}>
+              下载
+              <span className={`absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 ${mounted && pathname.startsWith("/download") ? "bg-wood-400" : "bg-transparent group-hover:bg-wood-400"}`} />
             </Link>
             <Link href="/pricing" className={`relative group transition-colors duration-300 ${mounted && pathname.startsWith("/pricing") ? "text-paper-50" : "hover:text-paper-50"}`}>
               价格
               <span className={`absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 ${mounted && pathname.startsWith("/pricing") ? "bg-wood-400" : "bg-transparent group-hover:bg-wood-400"}`} />
             </Link>
-            <Link href="#" className="relative group transition-colors duration-300 hover:text-paper-50">
+            <Link href="/support" className={`relative group transition-colors duration-300 ${mounted && pathname.startsWith("/support") ? "text-paper-50" : "hover:text-paper-50"}`}>
               支持
-              <span className="absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 bg-transparent group-hover:bg-wood-400" />
+              <span className={`absolute -bottom-1 left-0 w-full h-[1px] transition-all duration-500 ${mounted && pathname.startsWith("/support") ? "bg-wood-400" : "bg-transparent group-hover:bg-wood-400"}`} />
             </Link>
           </nav>
         </div>
