@@ -274,11 +274,11 @@ export default function MarketingPage() {
 
             <div className="mt-8 flex justify-center">
               <Link 
-                href="/download" 
+                href="/learn" 
                 className="inline-flex items-center justify-center px-12 py-5 text-sm tracking-[0.2em] text-paper-50 font-serif bg-retro-green border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-retro-green rounded-none group"
               >
                 <span className="transition-transform duration-500 group-hover:translate-x-1">
-                  [ 下载桌面版 ]
+                  [ 在线体验 ]
                 </span>
               </Link>
             </div>

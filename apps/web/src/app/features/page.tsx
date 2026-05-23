@@ -51,7 +51,7 @@ export default function FeaturesPage() {
               "难点专项突破",
               "高清演奏示范视频（Pro）",
             ],
-            cta: { text: "下载桌面版 →", href: "/download" },
+            cta: { text: "在线体验曲库 →", href: "/learn" },
             accent: "bg-amber-600",
           },
           {
