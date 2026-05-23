@@ -1,6 +1,6 @@
 # Biubiutab Web 版完整文檔
 
-> 版本：`v1.1`｜最後更新：2026-05-21｜維護分支：`apps/web`
+> 版本：`v1.2`｜最後更新：2026-05-22｜維護分支：`apps/web`
 
 本文檔是 Web 版的**唯一權威文檔**，涵蓋產品需求、技術架構、端到端流程、API 契約、資料庫 Schema、環境配置與部署策略。後續任何 Web 功能變更應同步更新此文件。
 
@@ -10,6 +10,7 @@
 
 | 版本 | 日期 | 變更摘要 |
 |------|------|---------|
+| v1.2 | 2026-05-22 | 新增下載頁、官網下載 CTA、定價頁桌面版引導、electron-builder 打包配置 |
 | v1.1 | 2026-05-21 | 新增 `/api/me/subscription`、Dashboard 會員狀態、Admin Setup API、Admin RPC fallback、教學 R2 分發方案、Desktop API 清單 |
 | v1.0 | 2026-05-21 | 初始版本，合併 WEB_TECH_DOC + WEB_PRD + WEB_DESKTOP_REFERENCE 為統一文檔 |
 
@@ -780,7 +781,60 @@ Desktop admin 依賴 `is_admin()` RPC。若 RPC 不存在：
 
 ---
 
-## 13. 已知風險與缺口
+## 13. Desktop 打包與分發
+
+### 13.1 打包流程
+
+Desktop 使用 `electron-builder` 打包，配置在 [apps/desktop/package.json](file:///Users/unknownseed/Developer/biubiutab/apps/desktop/package.json) 的 `build` 區塊。
+
+```bash
+# 在 apps/desktop 目錄下執行
+
+# 打包 macOS dmg（arm64 + x64）
+npm run dist:mac
+
+# 打包 Windows exe（x64）
+npm run dist:win
+
+# 列出所有平台
+npm run dist
+```
+
+### 13.2 打包前必要步驟
+
+1. `apps/desktop-ui` 先構建：`npm run build`（產生 `desktop-ui/dist/`）
+2. `apps/desktop` 構建主進程：`npm run build`（或 `npm run dist` 會自動串接）
+3. 確認 `.env` 中 `WEB_BASE_URL` 指向正式部署的 Web API domain（非 localhost）
+
+### 13.3 產物
+
+| 平台 | 格式 | 檔案路徑 |
+|------|------|---------|
+| macOS (arm64) | DMG | `apps/desktop/release/BiuBiuTab-0.2.0-arm64.dmg` |
+| macOS (x64) | DMG | `apps/desktop/release/BiuBiuTab-0.2.0-x64.dmg` |
+| Windows (x64) | NSIS Installer | `apps/desktop/release/BiuBiuTab-0.2.0-x64.exe` |
+
+### 13.4 分發策略
+
+- **R2 Public Bucket**：將安裝檔上傳到 R2 public domain，下載頁直接連結（CORS 已覆蓋）
+- **GitHub Releases**：每次發佈 tag 時 CI 可自動上傳到 GitHub Releases
+- **下載頁**：[`/download`](file:///Users/unknownseed/Developer/biubiutab/apps/web/src/app/download/page.tsx) 連結指向 `/downloads/BiuBiuTab-latest-*.dmg|exe`
+
+### 13.5 官網下載 CTA 位置
+
+| 位置 | 說明 |
+|------|------|
+| 首頁 Hero | Hero CTA 區域，和「BiuBiu弹唱」並排，連結指向 `/download` |
+| 首頁頁尾 | 「准备开始」區塊，含「下载桌面版」+「升级 Pro」雙按鈕 |
+| 定價頁底部 | 「还有桌面版？」引導區塊，含「免费下载桌面版」按鈕 |
+
+### 13.6 更新 Desktop 端 `WEB_BASE_URL`
+
+打包前，`apps/desktop/.env` 中的 `WEB_BASE_URL` 需改為正式部署域名（如 `https://your-domain.com`）。
+
+---
+
+## 14. 已知風險與缺口
 
 | 風險 | 說明 | 狀態 |
 |------|------|------|

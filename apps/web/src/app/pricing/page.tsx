@@ -247,6 +247,20 @@ export default function PricingPage() {
           <p className="text-sm text-ink-800 tracking-widest font-medium mb-6">如有任何支付问题，请随时联系我们获得支持</p>
         </div>
 
+        <div className="mt-12 p-8 rounded-2xl border border-retro-green/20 bg-retro-green/5 max-w-2xl mx-auto text-center animate-in fade-in slide-in-from-bottom-8 duration-700 delay-400">
+          <h3 className="font-serif text-xl text-ink-900 tracking-wide mb-3">还有桌面版？</h3>
+          <p className="text-sm text-ink-700/70 leading-relaxed mb-5">
+            BiuBiu Tab 桌面客户端提供原生体验：本地 AI 处理更快、离线练习不受网络限制、海量教学随时触达。
+            <br />Pro 会员在桌面端可直接解锁全部功能。
+          </p>
+          <Link
+            href="/download"
+            className="inline-flex items-center justify-center rounded-lg bg-retro-green px-8 py-3 text-sm tracking-widest text-paper-50 font-serif hover:bg-retro-green/90 transition-colors"
+          >
+            免费下载桌面版
+          </Link>
+        </div>
+
       </div>
     </main>
   );

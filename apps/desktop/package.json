@@ -1,7 +1,9 @@
 {
-  "name": "desktop",
+  "name": "biubiutab",
   "private": true,
-  "version": "0.1.0",
+  "version": "0.2.0",
+  "description": "BiuBiu Tab - AI Guitar Tab Generator",
+  "author": "BiuBiu Tab",
   "type": "module",
   "main": "dist/main.cjs",
   "scripts": {
@@ -9,7 +11,47 @@
     "dev:main": "concurrently -n main,preload \"esbuild src/main.ts --bundle --platform=node --format=cjs --outfile=dist/main.cjs --external:electron --watch\" \"esbuild src/preload.ts --bundle --platform=node --format=cjs --outfile=dist/preload.cjs --external:electron --watch\"",
     "dev:electron": "wait-on dist/main.cjs && electron dist/main.cjs",
     "build": "npm --prefix ../desktop-ui run build && tsx src/build.ts",
+    "build:ui": "npm --prefix ../desktop-ui run build",
+    "build:main": "tsx src/build.ts",
+    "dist": "npm run build && electron-builder",
+    "dist:mac": "npm run build && electron-builder --mac",
+    "dist:win": "npm run build && electron-builder --win",
     "start": "electron dist/main.cjs"
+  },
+  "build": {
+    "appId": "com.biubiutab.app",
+    "productName": "BiuBiu Tab",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "../desktop-ui/dist/**/*"
+    ],
+    "asarUnpack": [
+      "node_modules/**/*.node"
+    ],
+    "mac": {
+      "category": "public.app-category.music",
+      "target": [
+        { "target": "dmg", "arch": ["arm64", "x64"] }
+      ],
+      "artifactName": "BiuBiuTab-${version}-${arch}.${ext}"
+    },
+    "win": {
+      "target": [
+        { "target": "nsis", "arch": ["x64"] }
+      ],
+      "artifactName": "BiuBiuTab-${version}-x64.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "linux": {
+      "target": ["AppImage"],
+      "category": "Audio"
+    }
   },
   "dependencies": {
     "electron": "^38.1.2"
@@ -17,6 +59,7 @@
   "devDependencies": {
     "concurrently": "^9.2.0",
     "dotenv": "^17.4.2",
+    "electron-builder": "^26.0.12",
     "esbuild": "^0.25.9",
     "tsx": "^4.20.5",
     "typescript": "^5",

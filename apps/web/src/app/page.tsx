@@ -35,13 +35,21 @@ export default function MarketingPage() {
             </div>
           </div>
 
-          <div className="z-10 mt-[3rem] animate-fade-in-up" style={{ animationDelay: "600ms" }}>
+          <div className="z-10 mt-[3rem] flex flex-col sm:flex-row items-center gap-4 animate-fade-in-up" style={{ animationDelay: "600ms" }}>
             <Link 
               href="/play" 
               className="inline-flex items-center justify-center px-12 py-5 text-lg tracking-[0.3em] text-paper-50 font-serif bg-retro-green border border-retro-green transition-colors duration-500 hover:bg-paper-100 hover:text-retro-green hover:border-retro-green rounded-none animate-breathe group"
             >
               <span className="transition-transform duration-500 group-hover:translate-x-2">
                 [ BiuBiu弹唱 ]
+              </span>
+            </Link>
+            <Link
+              href="/download"
+              className="inline-flex items-center justify-center px-12 py-5 text-lg tracking-[0.3em] text-ink-800 font-serif border border-ink-800 transition-colors duration-500 hover:bg-ink-800 hover:text-paper-50 rounded-none group"
+            >
+              <span className="transition-transform duration-500 group-hover:translate-x-1">
+                [ 下载客户端 ]
               </span>
             </Link>
           </div>
@@ -319,6 +327,36 @@ export default function MarketingPage() {
                 </span>
               </Link>
             </div>
+          </div>
+        </section>
+
+        <div className="w-full max-w-5xl h-px bg-wood-300/30 mx-auto my-8" />
+
+        {/* Bottom Download CTA */}
+        <section className="flex flex-col items-center justify-center text-center py-[4rem] gap-8">
+          <div className="text-center flex flex-col gap-4">
+            <h2 className="text-3xl font-serif text-ink-900 tracking-wide">准备好开始了吗？</h2>
+            <p className="text-lg text-ink-700 font-light tracking-wider leading-loose">
+              免费下载桌面客户端，离线也能练琴。<br />AI 制谱 + 海量教学，随时待命。
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row items-center gap-4">
+            <Link
+              href="/download"
+              className="inline-flex items-center justify-center px-12 py-5 text-lg tracking-[0.3em] text-paper-50 font-serif bg-retro-green border border-retro-green rounded-none hover:bg-paper-100 hover:text-retro-green transition-colors duration-500 group"
+            >
+              <span className="transition-transform duration-500 group-hover:translate-x-1">
+                [ 下载桌面版 ]
+              </span>
+            </Link>
+            <Link
+              href="/pricing"
+              className="inline-flex items-center justify-center px-12 py-5 text-lg tracking-[0.3em] text-ink-800 font-serif border border-ink-800 rounded-none hover:bg-ink-800 hover:text-paper-50 transition-colors duration-500 group"
+            >
+              <span className="transition-transform duration-500 group-hover:translate-x-1">
+                [ 升级 Pro ]
+              </span>
+            </Link>
           </div>
         </section>
 
