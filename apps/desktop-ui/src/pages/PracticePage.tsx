@@ -61,8 +61,19 @@ export default function PracticePage() {
     const fetchGp5 = async () => {
       try {
         const url = `${aiBaseUrl()}/jobs/${jobId}/result.gp5?level=${level}`;
-        const res = await fetch(url, { headers: { "x-user-id": userId } });
-        if (!res.ok) throw new Error("GP5 下载失败");
+        let res = await fetch(url, { headers: { "x-user-id": userId } });
+        if (!res.ok) {
+          const { data: sess } = await sb.auth.getSession();
+          const token = sess.session?.access_token;
+          if (token) {
+            const fallbackUrl = `${(import.meta as any).env?.VITE_WEB_BASE_URL?.replace(/\/+$/, "") || "http://localhost:3000"}/api/jobs/${jobId}/gp5?level=${level}`;
+            const fbRes = await fetch(fallbackUrl, { headers: { Authorization: `Bearer ${token}` } });
+            if (!fbRes.ok) throw new Error("GP5 下载失败");
+            res = fbRes;
+          } else {
+            throw new Error("GP5 下载失败");
+          }
+        }
         const buf = await res.arrayBuffer();
         if (cancelled) return;
         setGp5(new Uint8Array(buf));
@@ -75,7 +86,7 @@ export default function PracticePage() {
     return () => {
       cancelled = true;
     };
-  }, [jobId, userId, level]);
+  }, [jobId, userId, level, sb]);
 
   return (
     <main className="min-h-screen bg-zinc-950 pt-10">

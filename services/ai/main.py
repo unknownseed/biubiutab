@@ -182,8 +182,8 @@ def _disabled(flag: str) -> bool:
 def _cleanup_expired(storage_root: Path) -> None:
     """
     Best-effort cleanup (non-blocking).
-    - uploads/ + stems/: 24h
-    - results/: 7d
+    - uploads/ + stems/: 24h  (intermediate processing files)
+    - results/: NEVER cleaned  (user artifacts, preserved forever)
     - temp/: immediate delete handled by TemporaryDirectory
     """
     if not _truthy(os.environ.get("ENABLE_STORAGE_CLEANUP", "1")):
@@ -191,7 +191,6 @@ def _cleanup_expired(storage_root: Path) -> None:
     now = time.time()
     ttl_uploads = 24 * 3600
     ttl_stems = 24 * 3600
-    ttl_results = 7 * 24 * 3600
 
     def _rm_path(p: Path) -> None:
         try:
@@ -222,14 +221,7 @@ def _cleanup_expired(storage_root: Path) -> None:
             except Exception:
                 continue
 
-    rs = storage_root / "results"
-    if rs.exists():
-        for p in rs.iterdir():
-            try:
-                if now - p.stat().st_mtime > ttl_results:
-                    _rm_path(p)
-            except Exception:
-                continue
+    # results are never cleaned — they are user artifacts
 
 
 from supabase import create_client, Client

@@ -100,8 +100,19 @@ export default function EditorPage() {
     const fetchGp5 = async () => {
       try {
         const url = `${aiBaseUrl()}/jobs/${jobId}/result.gp5?level=${level}`;
-        const res = await fetch(url, { headers: { "x-user-id": userId } });
-        if (!res.ok) throw new Error("GP5 下载失败");
+        let res = await fetch(url, { headers: { "x-user-id": userId } });
+        if (!res.ok) {
+          const { data: sess } = await sb.auth.getSession();
+          const token = sess.session?.access_token;
+          if (token) {
+            const fallbackUrl = `${(import.meta as any).env?.VITE_WEB_BASE_URL?.replace(/\/+$/, "") || "http://localhost:3000"}/api/jobs/${jobId}/gp5?level=${level}`;
+            const fbRes = await fetch(fallbackUrl, { headers: { Authorization: `Bearer ${token}` } });
+            if (!fbRes.ok) throw new Error("GP5 下载失败");
+            res = fbRes;
+          } else {
+            throw new Error("GP5 下载失败");
+          }
+        }
         const buf = await res.arrayBuffer();
         if (cancelled) return;
         setGp5(new Uint8Array(buf));
@@ -140,10 +151,22 @@ export default function EditorPage() {
   const download = async () => {
     if (!jobId) return;
     const url = `${aiBaseUrl()}/jobs/${jobId}/result.gp5?level=${level}`;
-    const res = await fetch(url, { headers: userId ? { "x-user-id": userId } : undefined });
+    let res = await fetch(url, { headers: userId ? { "x-user-id": userId } : undefined });
     if (!res.ok) {
-      const t = await res.text().catch(() => "");
-      throw new Error(t || "下载失败");
+      const { data: sess } = await sb.auth.getSession();
+      const token = sess.session?.access_token;
+      if (token) {
+        const fallbackUrl = `${(import.meta as any).env?.VITE_WEB_BASE_URL?.replace(/\/+$/, "") || "http://localhost:3000"}/api/jobs/${jobId}/gp5?level=${level}`;
+        const fbRes = await fetch(fallbackUrl, { headers: { Authorization: `Bearer ${token}` } });
+        if (!fbRes.ok) {
+          const t = await fbRes.text().catch(() => "");
+          throw new Error(t || "下载失败");
+        }
+        res = fbRes;
+      } else {
+        const t = await res.text().catch(() => "");
+        throw new Error(t || "下载失败");
+      }
     }
     const buf = await res.arrayBuffer();
     const blob = new Blob([buf], { type: "application/octet-stream" });
