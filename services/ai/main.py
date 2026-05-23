@@ -562,15 +562,17 @@ async def _run_job(job_id: str) -> None:
             # The postprocessor changes the extension to .mp3
             upload_copy = uploads_dir / f"{job.id}.mp3"
             
-            # 将下载好的音频传到 R2，并把记录修改为 r2，让前端以后直接从 R2 播放原声
-            r2_key = f"uploads/{job.id}.mp3"
-            def _upload_url_audio():
-                _upload_r2_artifact(upload_copy, r2_key, "audio/mpeg")
-            await asyncio.to_thread(_upload_url_audio)
-            
-            job.audio_path = Path(r2_key)
-            job.storage_provider = "r2"
-            await _save_job_state(job)
+            # 如果 R2 已配置，将下载好的音频传到 R2
+            s3 = _get_s3_client()
+            if s3:
+                r2_key = f"uploads/{job.id}.mp3"
+                def _upload_url_audio():
+                    _upload_r2_artifact(upload_copy, r2_key, "audio/mpeg")
+                await asyncio.to_thread(_upload_url_audio)
+                
+                job.audio_path = Path(r2_key)
+                job.storage_provider = "r2"
+                await _save_job_state(job)
 
         else:
             # Copy original local audio to storage/uploads/{job_id}.ext
