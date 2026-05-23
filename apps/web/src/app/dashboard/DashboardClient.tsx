@@ -228,7 +228,7 @@ export default function DashboardClient({ user, subInfo: initialSubInfo }: { use
                       {job.title || '未命名曲目'}
                     </h3>
                     <div className="mt-4 flex items-center justify-between text-xs tracking-widest font-light">
-                      <span className="text-wood-600">已完成</span>
+                      <span className="text-wood-600">{job.status}</span>
                       <span className="text-ink-700/40">
                         {new Date(job.created_at).toLocaleDateString()}
                       </span>
