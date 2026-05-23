@@ -30,7 +30,7 @@ export default async function TeachingLibraryPage() {
       {/* Download CTA Banner */}
       <div className="mb-6 flex flex-col sm:flex-row items-center justify-between gap-3 rounded-xl border border-retro-green/20 bg-retro-green/5 px-5 py-3 text-sm">
         <span className="text-ink-700/70 font-light tracking-wider">
-          这是网页预览版。下载桌面客户端获得<span className="font-semibold text-retro-green">完整教学体验</span>：进阶模块 + 演示视频 + 离线练习。
+          在线体验教学曲库。下载桌面客户端解锁<span className="font-semibold text-retro-green">完整功能</span>：AI 制谱 + 进阶模块 + 演示视频 + 离线练习。
         </span>
         <Link href="/download" className="shrink-0 rounded-lg bg-retro-green px-4 py-1.5 text-xs tracking-widest text-paper-50 hover:bg-retro-green/90 transition-colors">
           免费下载

@@ -26,3 +26,9 @@ for all
 to authenticated
 using (public.is_admin())
 with check (public.is_admin());
+
+create policy "Anyone can read published teaching songs"
+on public.teaching_songs
+for select
+to anon, authenticated
+using (status = 'published');

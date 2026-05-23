@@ -55,6 +55,8 @@ export async function POST() {
             "create or replace function public.is_admin() returns boolean language sql stable security definer set search_path = public as $$ select exists (select 1 from public.admin_users au where au.user_id = auth.uid()); $$;",
             "grant execute on function public.is_admin() to anon, authenticated;",
             `insert into public.admin_users(user_id) values('${user.id}') on conflict do nothing;`,
+            "drop policy if exists \"Anyone can read published teaching songs\" on public.teaching_songs;",
+            "create policy \"Anyone can read published teaching songs\" on public.teaching_songs for select to anon, authenticated using (status = 'published');",
           ],
           steps: results,
         }, { status: 200 });
@@ -72,6 +74,8 @@ export async function POST() {
           "create or replace function public.is_admin() returns boolean language sql stable security definer set search_path = public as $$ select exists (select 1 from public.admin_users au where au.user_id = auth.uid()); $$;",
           "grant execute on function public.is_admin() to anon, authenticated;",
           `insert into public.admin_users(user_id) values('${user.id}') on conflict do nothing;`,
+          "drop policy if exists \"Anyone can read published teaching songs\" on public.teaching_songs;",
+          "create policy \"Anyone can read published teaching songs\" on public.teaching_songs for select to anon, authenticated using (status = 'published');",
         ],
         steps: results,
       }, { status: 200 });
