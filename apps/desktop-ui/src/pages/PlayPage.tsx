@@ -93,13 +93,12 @@ export default function PlayPage() {
       const { data } = await sb.auth.getUser();
       if (cancelled) return;
       setUserId(data.user?.id ?? null);
-      if (!data.user) navigate("/login", { replace: true });
     };
     void init();
     return () => {
       cancelled = true;
     };
-  }, [sb, navigate]);
+  }, [sb]);
 
   useEffect(() => {
     return () => {
@@ -291,8 +290,24 @@ export default function PlayPage() {
             </div>
           </div>
         ) : null}
-        <div className="mt-8 rounded-2xl border border-paper-300 bg-white p-6 shadow-sm">
-          <div className="space-y-4">
+        {!userId ? (
+          <div className="mt-8 rounded-2xl border border-retro-green/20 bg-retro-green/5 p-10 text-center">
+            <div className="text-3xl mb-4">🎸</div>
+            <h2 className="text-xl font-serif tracking-widest text-ink-900 mb-3">登入后解锁 AI 制谱</h2>
+            <p className="text-sm text-ink-700/70 mb-6 leading-relaxed max-w-sm mx-auto">
+              登录后可使用本地 AI 自动生成吉他谱 —— 每月免费 3 次，Pro 会员 100 次。
+            </p>
+            <button
+              type="button"
+              className="rounded-lg bg-retro-green px-8 py-3 text-sm tracking-widest text-paper-50"
+              onClick={() => navigate("/login")}
+            >
+              登入 / 注册
+            </button>
+          </div>
+        ) : (
+          <div className="mt-8 rounded-2xl border border-paper-300 bg-white p-6 shadow-sm">
+            <div className="space-y-4">
             <div className="flex items-center gap-4 border-b border-paper-300 pb-2">
               <button
                 type="button"
@@ -406,6 +421,7 @@ export default function PlayPage() {
             ) : null}
           </div>
         </div>
+        )}
       </div>
     </main>
   );

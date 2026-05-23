@@ -29,13 +29,12 @@ export default function PracticePage() {
       const { data } = await sb.auth.getUser();
       if (cancelled) return;
       setUserId(data.user?.id ?? null);
-      if (!data.user) navigate("/login", { replace: true });
     };
     void init();
     return () => {
       cancelled = true;
     };
-  }, [sb, navigate]);
+  }, [sb]);
 
   useEffect(() => {
     if (!jobId || !userId) return;
@@ -94,7 +93,22 @@ export default function PracticePage() {
 
         {error ? <div className="mt-6 rounded-none border border-red-500/30 bg-red-500/10 px-3 py-2 text-sm text-red-200">{error}</div> : null}
 
-        {result?.practiceData && gp5 ? (
+        {!userId ? (
+          <div className="mt-8 flex flex-col items-center rounded-none border border-zinc-800 bg-zinc-900 p-10 text-center">
+            <div className="text-3xl mb-4 text-zinc-400">🎸</div>
+            <h2 className="text-xl font-serif tracking-widest text-zinc-100 mb-3">登入后解锁跟练</h2>
+            <p className="text-sm text-zinc-400 mb-6 leading-relaxed max-w-sm">
+              登入后可使用完整的跟练模式 —— 变速练习、和弦提示、歌词同步等。
+            </p>
+            <button
+              type="button"
+              className="rounded-lg bg-retro-green px-8 py-3 text-sm tracking-widest text-paper-50"
+              onClick={() => navigate("/login")}
+            >
+              登入 / 注册
+            </button>
+          </div>
+        ) : result?.practiceData && gp5 ? (
           <div className="mt-8">
             <PracticeMode
               practiceData={result.practiceData}
