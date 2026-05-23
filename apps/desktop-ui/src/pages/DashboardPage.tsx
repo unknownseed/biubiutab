@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
+import { useSubscription } from "../hooks/useSubscription";
 
 type JobRow = {
   id: string;
@@ -10,6 +11,27 @@ type JobRow = {
   created_at: string;
 };
 
+type DashboardResponse = {
+  jobs: JobRow[];
+  total: number;
+  page: number;
+  limit: number;
+  totalPages: number;
+};
+
+const PAGE_SIZE = 12;
+
+type SortType = "created_at_desc" | "created_at_asc" | "title_asc" | "title_desc";
+
+function sortLabel(s: SortType) {
+  switch (s) {
+    case "created_at_desc": return "最新";
+    case "created_at_asc": return "最早";
+    case "title_asc": return "A-Z";
+    case "title_desc": return "Z-A";
+  }
+}
+
 export default function DashboardPage() {
   const navigate = useNavigate();
   const sb = useMemo(() => supabase(), []);
@@ -18,6 +40,14 @@ export default function DashboardPage() {
   const [jobs, setJobs] = useState<JobRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [total, setTotal] = useState(0);
+  const [searchInput, setSearchInput] = useState("");
+  const [search, setSearch] = useState("");
+  const [sort, setSort] = useState<SortType>("created_at_desc");
+  const searchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const { info: sub } = useSubscription();
 
   useEffect(() => {
     let cancelled = false;
@@ -34,19 +64,21 @@ export default function DashboardPage() {
     };
   }, [sb, navigate]);
 
-  const load = useCallback(async () => {
+  const load = useCallback(async (p: number, s: string, so: SortType) => {
     if (!userId) return;
     setLoading(true);
     setError(null);
     try {
-      const { data, error } = await sb
-        .from("ai_jobs")
-        .select("id,title,status,progress,created_at")
-        .eq("user_id", userId)
-        .order("created_at", { ascending: false })
-        .limit(200);
-      if (error) throw error;
-      setJobs((data || []) as JobRow[]);
+      const params = new URLSearchParams({ page: String(p), limit: String(PAGE_SIZE), sort: so });
+      if (s) params.set("search", s);
+      const text = await (window.desktop?.cloudGetText
+        ? window.desktop.cloudGetText("/api/dashboard/jobs?" + params.toString())
+        : fetch("/api/dashboard/jobs?" + params.toString()).then(r => { if (!r.ok) throw new Error("http " + r.status); return r.text(); }));
+      const data: DashboardResponse = JSON.parse(text);
+      setJobs(data.jobs);
+      setTotalPages(data.totalPages);
+      setTotal(data.total);
+      setPage(data.page);
     } catch (e) {
       setError(e instanceof Error ? e.message : "加载失败");
     } finally {
@@ -55,8 +87,22 @@ export default function DashboardPage() {
   }, [sb, userId]);
 
   useEffect(() => {
-    void load();
-  }, [load]);
+    if (userId) void load(page, search, sort);
+  }, [userId, page, search, sort, load]);
+
+  const handleSearchChange = (value: string) => {
+    setSearchInput(value);
+    if (searchTimerRef.current) clearTimeout(searchTimerRef.current);
+    searchTimerRef.current = setTimeout(() => {
+      setSearch(value.trim());
+      setPage(1);
+    }, 400);
+  };
+
+  const handleSortChange = (newSort: SortType) => {
+    setSort(newSort);
+    setPage(1);
+  };
 
   const remove = async (jobId: string) => {
     if (!userId) return;
@@ -74,30 +120,68 @@ export default function DashboardPage() {
   return (
     <main className="bg-paper-100 py-10">
       <div className="mx-auto w-full max-w-5xl px-6">
-        <div className="flex items-end justify-between gap-4">
+        <div className="flex items-end justify-between gap-4 mb-6">
           <div>
             <h1 className="text-2xl font-serif tracking-widest text-ink-900">我的曲譜</h1>
-            <div className="mt-2 text-sm font-light tracking-wider text-ink-700/60">{email ? `帳號：${email}` : ""}</div>
+            <div className="mt-2 text-sm font-light tracking-wider text-ink-700/60">
+              {email ? `帳號：${email}` : ""}
+              {sub.isPro && <span className="ml-2 rounded-md bg-retro-green/10 border border-retro-green/20 px-2 py-0.5 text-xs tracking-wider text-retro-green">Pro</span>}
+            </div>
           </div>
           <button
             type="button"
             className="rounded-lg border border-paper-300 bg-white px-4 py-2 text-sm tracking-widest text-ink-900"
-            onClick={() => void load()}
+            onClick={() => { setPage(1); void load(1, search, sort); }}
             disabled={loading}
           >
             {loading ? "刷新中..." : "刷新"}
           </button>
         </div>
 
-        {error ? <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
+        <div className="mb-6 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div className="relative w-full sm:w-72">
+            <input
+              type="text"
+              value={searchInput}
+              onChange={(e) => handleSearchChange(e.target.value)}
+              placeholder="搜索曲谱标题..."
+              className="w-full rounded-lg border border-paper-300 bg-white px-4 py-2.5 pl-10 text-sm text-ink-900 tracking-wider placeholder:text-ink-700/40 focus:outline-none focus:border-retro-green/50"
+            />
+            <svg className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-700/40" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+            </svg>
+          </div>
 
-        <div className="mt-6 overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm">
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-ink-700/50 tracking-widest mr-1">排序：</span>
+            {(["created_at_desc", "created_at_asc", "title_asc", "title_desc"] as const).map((s) => (
+              <button
+                key={s}
+                type="button"
+                onClick={() => handleSortChange(s)}
+                className={`px-3 py-1.5 text-xs tracking-widest rounded-lg border transition-colors ${
+                  sort === s
+                    ? "bg-retro-green text-paper-50 border-retro-green"
+                    : "border-paper-300 bg-white text-ink-700 hover:border-retro-green/30"
+                }`}
+              >
+                {sortLabel(s)}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {error ? <div className="mb-6 rounded-2xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-700">{error}</div> : null}
+
+        <div className="overflow-hidden rounded-2xl border border-paper-300 bg-white shadow-sm">
           <div className="grid grid-cols-[1fr_140px_220px] gap-0 border-b border-paper-300 bg-paper-50 px-5 py-3 text-xs tracking-widest text-ink-700/60">
             <div>標題</div>
             <div>狀態</div>
             <div className="text-right">操作</div>
           </div>
-          {jobs.length ? (
+          {loading && jobs.length === 0 ? (
+            <div className="px-5 py-10 text-sm text-ink-700/70">加载中…</div>
+          ) : jobs.length ? (
             jobs.map((j) => (
               <div key={j.id} className="grid grid-cols-[1fr_140px_220px] items-center gap-0 border-b border-paper-300 px-5 py-4 last:border-b-0">
                 <div className="min-w-0">
@@ -134,11 +218,53 @@ export default function DashboardPage() {
               </div>
             ))
           ) : (
-            <div className="px-5 py-10 text-sm text-ink-700/70">{loading ? "加载中…" : "暂无曲谱记录。先去「彈唱」生成一个吧。"}</div>
+            <div className="px-5 py-10 text-sm text-ink-700/70">
+              {search ? "未找到匹配曲谱，试试其他关键词？" : "暂无曲谱记录。先去「彈唱」生成一个吧。"}
+            </div>
           )}
         </div>
+
+        {totalPages > 1 && (
+          <div className="mt-8 flex items-center justify-center gap-2">
+            <button
+              type="button"
+              disabled={page <= 1}
+              onClick={() => setPage(page - 1)}
+              className="px-4 py-2 text-sm tracking-widest rounded-lg border border-paper-300 bg-white text-ink-700 disabled:opacity-30 hover:border-retro-green/30 transition-colors"
+            >
+              上一页
+            </button>
+            {Array.from({ length: totalPages }, (_, i) => i + 1).map((p) => (
+              <button
+                key={p}
+                type="button"
+                onClick={() => setPage(p)}
+                className={`w-10 h-10 text-sm tracking-widest rounded-lg border transition-colors ${
+                  p === page
+                    ? "bg-retro-green text-paper-50 border-retro-green"
+                    : "border-paper-300 bg-white text-ink-700 hover:border-retro-green/30"
+                }`}
+              >
+                {p}
+              </button>
+            ))}
+            <button
+              type="button"
+              disabled={page >= totalPages}
+              onClick={() => setPage(page + 1)}
+              className="px-4 py-2 text-sm tracking-widest rounded-lg border border-paper-300 bg-white text-ink-700 disabled:opacity-30 hover:border-retro-green/30 transition-colors"
+            >
+              下一页
+            </button>
+          </div>
+        )}
+
+        {total > 0 && (
+          <div className="mt-4 text-center text-xs text-ink-700/40 tracking-wider">
+            共 {total} 首曲谱，第 {page}/{totalPages} 页
+          </div>
+        )}
       </div>
     </main>
   );
 }
-
