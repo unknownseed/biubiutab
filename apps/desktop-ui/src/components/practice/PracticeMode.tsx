@@ -152,8 +152,16 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
     loopBRef.current = loopB;
   }, [loopA, loopB]);
 
+  const scrollListenersRef = useRef<Array<{ target: HTMLElement; type: string; fn: () => void }>>([]);
+  const lastCurrentTimeRef = useRef(0);
+  const currentTimeThrottleRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+
   const destroyEngine = () => {
     isMountedRef.current = false;
+    if (currentTimeThrottleRef.current) {
+      clearTimeout(currentTimeThrottleRef.current);
+      currentTimeThrottleRef.current = null;
+    }
     if (countdownTimerRef.current) {
       clearInterval(countdownTimerRef.current);
       countdownTimerRef.current = null;
@@ -166,6 +174,10 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
       clearTimeout(timeoutRef.current);
       timeoutRef.current = null;
     }
+    for (const l of scrollListenersRef.current) {
+      try { l.target.removeEventListener(l.type, l.fn); } catch {}
+    }
+    scrollListenersRef.current = [];
     try {
       if (audioRef.current) audioRef.current.pause();
     } catch {}
@@ -292,6 +304,13 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
 
           api.playerStateChanged?.on?.((args: any) => {
             setIsPlaying(args.state === 1);
+            if (args.state !== 1) {
+              if (currentTimeThrottleRef.current) {
+                clearTimeout(currentTimeThrottleRef.current);
+                currentTimeThrottleRef.current = null;
+              }
+              setCurrentTime(lastCurrentTimeRef.current);
+            }
             if (audioRef.current && audioSourceRef.current !== "midi") {
               if (args.state === 1) {
                 const safeBpm = bpm || 120;
@@ -318,18 +337,26 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
           let scrollTimeout: ReturnType<typeof setTimeout>;
           const scrollContainer = containerRef.current;
           if (scrollContainer) {
-            scrollContainer.addEventListener('wheel', () => {
+            const onWheel = () => {
               isUserScrolling = true;
               clearTimeout(scrollTimeout);
               scrollTimeout = setTimeout(() => { isUserScrolling = false; }, 2000);
-            }, { passive: true });
-            scrollContainer.addEventListener('touchstart', () => {
+            };
+            const onTouchStart = () => {
               isUserScrolling = true;
               clearTimeout(scrollTimeout);
-            }, { passive: true });
-            scrollContainer.addEventListener('touchend', () => {
+            };
+            const onTouchEnd = () => {
               scrollTimeout = setTimeout(() => { isUserScrolling = false; }, 2000);
-            }, { passive: true });
+            };
+            scrollContainer.addEventListener('wheel', onWheel, { passive: true });
+            scrollContainer.addEventListener('touchstart', onTouchStart, { passive: true });
+            scrollContainer.addEventListener('touchend', onTouchEnd, { passive: true });
+            scrollListenersRef.current = [
+              { target: scrollContainer, type: 'wheel', fn: onWheel },
+              { target: scrollContainer, type: 'touchstart', fn: onTouchStart },
+              { target: scrollContainer, type: 'touchend', fn: onTouchEnd },
+            ];
           }
 
           const syncScrollToCursor = () => {
@@ -359,7 +386,13 @@ export default function PracticeMode({ practiceData, gp5Data, songTitle, jobId, 
 
           api.playerPositionChanged?.on?.((args: any) => {
             const sec = args.currentTime / 1000;
-            setCurrentTime(sec);
+            if (!currentTimeThrottleRef.current) {
+              currentTimeThrottleRef.current = setTimeout(() => {
+                currentTimeThrottleRef.current = null;
+                setCurrentTime(lastCurrentTimeRef.current);
+              }, 150);
+            }
+            lastCurrentTimeRef.current = sec;
             const lB = loopBRef.current;
             const lA = loopARef.current;
             if (lB !== null && lA !== null && sec >= lB && api.playerState === 1) {

@@ -31,6 +31,8 @@ export default function TimelineViewer({
   onSeek: (t: number) => void;
 }) {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const currentTimeRef = useRef(currentTime);
+  currentTimeRef.current = currentTime;
 
   const duration = useMemo(() => {
     return viz.waveform?.duration_sec || durationSec || 0;
@@ -139,7 +141,7 @@ export default function TimelineViewer({
         }
       }
 
-      const t = currentTime ?? 0;
+      const t = currentTimeRef.current ?? 0;
       if (duration > 0) {
         const x = (t / duration) * w;
         ctx.strokeStyle = "#EAB308";
@@ -152,19 +154,28 @@ export default function TimelineViewer({
     };
 
     let raf = 0;
+    let lastRenderTime = -1;
+    const TIME_THRESHOLD = 0.05;
     const loop = () => {
-      render();
+      const t = currentTimeRef.current ?? 0;
+      if (Math.abs(t - lastRenderTime) > TIME_THRESHOLD) {
+        lastRenderTime = t;
+        render();
+      }
       raf = window.requestAnimationFrame(loop);
     };
     loop();
 
-    const ro = new ResizeObserver(() => resize());
+    const ro = new ResizeObserver(() => {
+      resize();
+      lastRenderTime = -1;
+    });
     ro.observe(canvas);
     return () => {
       window.cancelAnimationFrame(raf);
       ro.disconnect();
     };
-  }, [viz, duration, currentTime]);
+  }, [viz, duration]);
 
   return (
     <div className="border border-retro-green bg-retro-green/5 p-4 mt-6">
