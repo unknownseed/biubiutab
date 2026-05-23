@@ -71,9 +71,18 @@ export default function DashboardPage() {
     try {
       const params = new URLSearchParams({ page: String(p), limit: String(PAGE_SIZE), sort: so });
       if (s) params.set("search", s);
+      const { data: sess } = await sb.auth.getSession();
+      const token = sess.session?.access_token;
+      const headers: Record<string, string> = {};
+      if (token) headers["Authorization"] = `Bearer ${token}`;
+      const urlPath = "/api/dashboard/jobs?" + params.toString();
       const text = await (window.desktop?.cloudGetText
-        ? window.desktop.cloudGetText("/api/dashboard/jobs?" + params.toString())
-        : fetch("/api/dashboard/jobs?" + params.toString()).then(r => { if (!r.ok) throw new Error("http " + r.status); return r.text(); }));
+        ? window.desktop.cloudGetText(urlPath, headers)
+        : (async () => {
+            const res = await fetch(urlPath, { headers });
+            if (!res.ok) throw new Error("http " + res.status);
+            return res.text();
+          })());
       const data: DashboardResponse = JSON.parse(text);
       setJobs(data.jobs);
       setTotalPages(data.totalPages);
