@@ -48,6 +48,7 @@ export async function GET(req: NextRequest) {
     .from("ai_jobs")
     .select("id,title,status,progress,created_at", { count: "exact" })
     .eq("user_id", user.id)
+    .eq("status", "succeeded")
     .order(col, { ascending })
     .range((page - 1) * limit, page * limit - 1);
 
