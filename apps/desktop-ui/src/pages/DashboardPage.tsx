@@ -11,14 +11,6 @@ type JobRow = {
   created_at: string;
 };
 
-type DashboardResponse = {
-  jobs: JobRow[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-};
-
 const PAGE_SIZE = 12;
 
 type SortType = "created_at_desc" | "created_at_asc" | "title_asc" | "title_desc";
@@ -69,25 +61,32 @@ export default function DashboardPage() {
     setLoading(true);
     setError(null);
     try {
-      const params = new URLSearchParams({ page: String(p), limit: String(PAGE_SIZE), sort: so });
-      if (s) params.set("search", s);
-      const { data: sess } = await sb.auth.getSession();
-      const token = sess.session?.access_token;
-      const headers: Record<string, string> = {};
-      if (token) headers["Authorization"] = `Bearer ${token}`;
-      const urlPath = "/api/dashboard/jobs?" + params.toString();
-      const text = await (window.desktop?.cloudGetText
-        ? window.desktop.cloudGetText(urlPath, headers)
-        : (async () => {
-            const res = await fetch(urlPath, { headers });
-            if (!res.ok) throw new Error("http " + res.status);
-            return res.text();
-          })());
-      const data: DashboardResponse = JSON.parse(text);
-      setJobs(data.jobs);
-      setTotalPages(data.totalPages);
-      setTotal(data.total);
-      setPage(data.page);
+      let col = "created_at";
+      let ascending = false;
+      if (so === "created_at_asc") { ascending = true; }
+      else if (so === "title_asc") { col = "title"; ascending = true; }
+      else if (so === "title_desc") { col = "title"; ascending = false; }
+
+      let query = sb
+        .from("ai_jobs")
+        .select("id,title,status,progress,created_at", { count: "exact" })
+        .eq("user_id", userId)
+        .eq("status", "succeeded")
+        .order(col, { ascending })
+        .range((p - 1) * PAGE_SIZE, p * PAGE_SIZE - 1);
+
+      if (s) {
+        query = query.ilike("title", `%${s}%`);
+      }
+
+      const { data, error, count } = await query;
+
+      if (error) throw error;
+
+      setJobs((data || []) as JobRow[]);
+      setTotal(count || 0);
+      setTotalPages(Math.max(1, Math.ceil((count || 0) / PAGE_SIZE)));
+      setPage(p);
     } catch (e) {
       setError(e instanceof Error ? e.message : "加载失败");
     } finally {
@@ -121,6 +120,7 @@ export default function DashboardPage() {
       const { error } = await sb.from("ai_jobs").delete().eq("id", jobId).eq("user_id", userId);
       if (error) throw error;
       setJobs((prev) => prev.filter((j) => j.id !== jobId));
+      setTotal((t) => t - 1);
     } catch (e) {
       setError(e instanceof Error ? e.message : "删除失败");
     }
