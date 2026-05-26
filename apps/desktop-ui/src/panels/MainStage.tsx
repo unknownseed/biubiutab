@@ -32,7 +32,7 @@ type SongManifest = {
   core_chords?: string[];
 };
 
-type MainStageMode = "view" | "practice";
+type MainStageMode = "practice" | "view";
 
 type MainStageProps = {
   jobId: string | null;
@@ -256,7 +256,7 @@ function TabViewPreview({
           </div>
           <button type="button" onClick={onModeChange}
             className="px-3 py-1.5 text-[10px] tracking-wider rounded bg-emerald-600 text-white hover:bg-emerald-500">
-            ▶ 跟练模式
+            ▶ 切到跟练
           </button>
           {sections.map((s, i) => (
             <span key={i} className="text-[9px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-500 tracking-wider border border-zinc-700/50">
@@ -310,11 +310,11 @@ function TabPracticeInline({
       <div className="flex flex-col flex-1 h-full gap-0">
         <div className="h-[80px] bg-zinc-900 border-b border-zinc-800 flex items-center px-4 shrink-0">
           <button type="button" onClick={onBack} className="px-3 py-1 text-[10px] tracking-wider rounded border border-zinc-700 text-zinc-400 hover:text-zinc-200">
-            ← 回预览
+            切到谱例
           </button>
         </div>
         <div className="flex-1 flex items-center justify-center">
-          <p className="text-zinc-500 text-xs">此曲谱缺少练习数据</p>
+          <p className="text-zinc-500 text-xs">此曲谱缺少练习数据，切换到谱例查看</p>
         </div>
       </div>
     );
@@ -324,7 +324,7 @@ function TabPracticeInline({
     <div className="flex flex-col flex-1 h-full gap-0 overflow-hidden">
       <div className="h-[48px] bg-zinc-900 border-b border-zinc-800 flex items-center px-4 shrink-0 gap-4">
         <button type="button" onClick={onBack} className="px-3 py-1 text-[10px] tracking-wider rounded border border-zinc-700 text-zinc-400 hover:text-zinc-200 hover:border-zinc-500">
-          ← 回预览
+          切到谱例
         </button>
         <span className="text-xs text-zinc-400 tracking-wider truncate">{result.title || "跟练"}</span>
       </div>
@@ -346,13 +346,13 @@ function TabPracticeInline({
 }
 
 export default function MainStage({ jobId, lessonSlug }: MainStageProps) {
-  const [mode, setMode] = useState<MainStageMode>("view");
+  const [mode, setMode] = useState<MainStageMode>("practice");
   const [level, setLevel] = useState(4);
 
   const { job, result, gp5, error, loading, userId } = useJobLoader(jobId, level);
 
   useEffect(() => {
-    setMode("view");
+    setMode("practice");
     setLevel(4);
   }, [jobId, lessonSlug]);
 
