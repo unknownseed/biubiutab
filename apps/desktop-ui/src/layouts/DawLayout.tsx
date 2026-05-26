@@ -1,5 +1,6 @@
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../lib/supabase";
 import type { PanelId } from "../panels/Sidebar";
 import Sidebar from "../panels/Sidebar";
 import MainStage from "../panels/MainStage";
@@ -8,15 +9,38 @@ import TabsPanel from "../panels/TabsPanel";
 import LearnPanel from "../panels/LearnPanel";
 import AiPanel from "../panels/AiPanel";
 import { PracticeProvider, usePractice } from "../hooks/usePractice";
+import { useAudioPlayer } from "../hooks/useAudioPlayer";
 
 function DawLayoutInner() {
   const navigate = useNavigate();
+  const sb = useMemo(() => supabase(), []);
+  const [userId, setUserId] = useState<string | null>(null);
   const [activePanel, setActivePanel] = useState<PanelId>("tabs");
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<string | null>(null);
   const [tabsKey, setTabsKey] = useState(0);
 
   const practice = usePractice();
+  const audio = useAudioPlayer(selectedJobId, userId);
+
+  useEffect(() => {
+    let cancelled = false;
+    const init = async () => {
+      const { data } = await sb.auth.getUser();
+      if (cancelled) return;
+      setUserId(data.user?.id ?? null);
+    };
+    void init();
+    return () => { cancelled = true; };
+  }, [sb]);
+
+  useEffect(() => {
+    practice.setCurrentTime(audio.currentTime);
+  }, [audio.currentTime, practice]);
+
+  useEffect(() => {
+    practice.setDuration(audio.duration);
+  }, [audio.duration, practice]);
 
   const handleSelectTab = useCallback((jobId: string) => {
     setSelectedJobId(jobId);
@@ -57,6 +81,8 @@ function DawLayoutInner() {
     );
   };
 
+  const audioSourceLabel = audio.source === "original" ? "original" : "no_vocals";
+
   return (
     <div className="h-screen w-screen flex flex-col bg-zinc-950 text-zinc-100 overflow-hidden select-none">
       <div className="flex flex-1 overflow-hidden">
@@ -90,21 +116,24 @@ function DawLayoutInner() {
           </div>
 
           <TransportBar
-            isPlaying={practice.isPlaying}
-            currentTime={practice.currentTime}
-            duration={practice.duration}
-            playbackRate={practice.playbackRate}
-            audioSource={practice.audioSource}
+            isPlaying={audio.isPlaying}
+            currentTime={audio.currentTime}
+            duration={audio.duration}
+            playbackRate={audio.playbackRate}
+            audioSource={audioSourceLabel as "midi" | "original" | "no_vocals"}
             transpose={practice.transpose}
             currentKey={practice.currentKey}
             bpm={practice.bpm}
             loopA={practice.loopA}
             loopB={practice.loopB}
-            onPlay={() => practice.setPlaying(true)}
-            onPause={() => practice.setPlaying(false)}
-            onSeek={practice.seekTo}
-            onRateChange={practice.setPlaybackRate}
-            onSourceChange={practice.setAudioSource}
+            onPlay={audio.play}
+            onPause={audio.pause}
+            onSeek={audio.seek}
+            onRateChange={audio.setPlaybackRate}
+            onSourceChange={(s) => {
+              if (s === "midi") return;
+              audio.setSource(s as "no_vocals" | "original");
+            }}
             onTransposeChange={practice.setTranspose}
             onLoopSet={practice.setLoop}
           />
