@@ -1,39 +1,55 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import type { PanelId } from "../panels/Sidebar";
 import Sidebar from "../panels/Sidebar";
 import MainStage from "../panels/MainStage";
 import TransportBar from "../panels/TransportBar";
+import TabsPanel from "../panels/TabsPanel";
+import LearnPanel from "../panels/LearnPanel";
+import { PracticeProvider, usePractice } from "../hooks/usePractice";
 
-export default function DawLayout() {
+function DawLayoutInner() {
   const navigate = useNavigate();
   const [activePanel, setActivePanel] = useState<PanelId>("tabs");
+  const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
+  const [selectedLesson, setSelectedLesson] = useState<string | null>(null);
 
-  const [isPlaying, setIsPlaying] = useState(false);
-  const [currentTime, setCurrentTime] = useState(0);
-  const [duration, setDuration] = useState(180);
-  const [playbackRate, setPlaybackRate] = useState(1);
-  const [audioSource, setAudioSource] = useState<"midi" | "original" | "no_vocals">("midi");
-  const [transpose, setTranspose] = useState(0);
-  const [currentKey, setCurrentKey] = useState("C");
-  const [bpm, setBpm] = useState(120);
-  const [loopA, setLoopA] = useState<number | null>(null);
-  const [loopB, setLoopB] = useState<number | null>(null);
+  const practice = usePractice();
 
-  const handlePlay = () => setIsPlaying(true);
-  const handlePause = () => setIsPlaying(false);
-  const handleSeek = (t: number) => setCurrentTime(t);
-  const handleRateChange = (r: number) => setPlaybackRate(r);
-  const handleSourceChange = (s: "midi" | "original" | "no_vocals") => setAudioSource(s);
-  const handleTransposeChange = (s: number) => {
-    setTranspose(s);
-    const keys = ["C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"];
-    setCurrentKey(keys[((s % 12) + 12) % 12]);
-  };
-  const handleLoopSet = (type: "A" | "B" | "clear") => {
-    if (type === "clear") { setLoopA(null); setLoopB(null); }
-    else if (type === "A") { setLoopA(currentTime); }
-    else { setLoopB(currentTime); }
+  const handleSelectTab = useCallback((jobId: string) => {
+    setSelectedJobId(jobId);
+    setSelectedLesson(null);
+  }, []);
+
+  const handleSelectSong = useCallback((slug: string) => {
+    setSelectedLesson(slug);
+    setSelectedJobId(null);
+  }, []);
+
+  const renderSidePanel = () => {
+    if (activePanel === "tabs") return null;
+    return (
+      <div className="w-[280px] bg-zinc-900 border-r border-zinc-800 shrink-0 flex flex-col">
+        <div className="h-10 border-b border-zinc-800 flex items-center px-4 shrink-0">
+          <span className="text-xs tracking-widest text-zinc-400 font-mono uppercase">
+            {activePanel === "learn" ? "Teaching" : activePanel === "ai" ? "AI Generate" : "Admin"}
+          </span>
+        </div>
+        <div className="flex-1 overflow-hidden">
+          {activePanel === "learn" && <LearnPanel onSelectSong={handleSelectSong} />}
+          {activePanel === "ai" && (
+            <div className="flex items-center justify-center h-full">
+              <p className="text-zinc-600 text-xs tracking-widest font-mono">AI 制谱入口（即将开放）</p>
+            </div>
+          )}
+          {activePanel === "admin" && (
+            <div className="flex items-center justify-center h-full">
+              <p className="text-zinc-600 text-xs tracking-widest font-mono">管理功能（即将开放）</p>
+            </div>
+          )}
+        </div>
+      </div>
+    );
   };
 
   return (
@@ -49,48 +65,54 @@ export default function DawLayout() {
           >
             ← 旧版
           </button>
-          <div className="flex-1 flex overflow-hidden">
-            {activePanel !== "tabs" && (
+          <div className="flex flex-1 overflow-hidden">
+            {activePanel === "tabs" ? (
               <div className="w-[280px] bg-zinc-900 border-r border-zinc-800 shrink-0 flex flex-col">
-                <div className="h-10 border-b border-zinc-800 flex items-center px-4">
-                  <span className="text-xs tracking-widest text-zinc-400 font-mono uppercase">
-                    {activePanel === "learn" ? "Learn" : activePanel === "ai" ? "AI" : "Admin"}
-                  </span>
+                <div className="h-10 border-b border-zinc-800 flex items-center px-4 shrink-0">
+                  <span className="text-xs tracking-widest text-zinc-400 font-mono uppercase">Tabs</span>
                 </div>
-                <div className="flex-1 flex items-center justify-center">
-                  <p className="text-zinc-600 text-xs tracking-widest font-mono">
-                    {activePanel === "learn" ? "教学曲目列表" : activePanel === "ai" ? "AI 制谱入口" : "管理功能"}
-                  </p>
+                <div className="flex-1 overflow-hidden">
+                  <TabsPanel onSelectTab={handleSelectTab} />
                 </div>
               </div>
+            ) : (
+              renderSidePanel()
             )}
 
             <div className="flex-1 flex flex-col min-w-0">
-              <MainStage />
+              <MainStage jobId={selectedJobId} lessonSlug={selectedLesson} />
             </div>
           </div>
 
           <TransportBar
-            isPlaying={isPlaying}
-            currentTime={currentTime}
-            duration={duration}
-            playbackRate={playbackRate}
-            audioSource={audioSource}
-            transpose={transpose}
-            currentKey={currentKey}
-            bpm={bpm}
-            loopA={loopA}
-            loopB={loopB}
-            onPlay={handlePlay}
-            onPause={handlePause}
-            onSeek={handleSeek}
-            onRateChange={handleRateChange}
-            onSourceChange={handleSourceChange}
-            onTransposeChange={handleTransposeChange}
-            onLoopSet={handleLoopSet}
+            isPlaying={practice.isPlaying}
+            currentTime={practice.currentTime}
+            duration={practice.duration}
+            playbackRate={practice.playbackRate}
+            audioSource={practice.audioSource}
+            transpose={practice.transpose}
+            currentKey={practice.currentKey}
+            bpm={practice.bpm}
+            loopA={practice.loopA}
+            loopB={practice.loopB}
+            onPlay={() => practice.setPlaying(true)}
+            onPause={() => practice.setPlaying(false)}
+            onSeek={practice.seekTo}
+            onRateChange={practice.setPlaybackRate}
+            onSourceChange={practice.setAudioSource}
+            onTransposeChange={practice.setTranspose}
+            onLoopSet={practice.setLoop}
           />
         </div>
       </div>
     </div>
+  );
+}
+
+export default function DawLayout() {
+  return (
+    <PracticeProvider>
+      <DawLayoutInner />
+    </PracticeProvider>
   );
 }
