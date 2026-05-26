@@ -6,6 +6,7 @@ import MainStage from "../panels/MainStage";
 import TransportBar from "../panels/TransportBar";
 import TabsPanel from "../panels/TabsPanel";
 import LearnPanel from "../panels/LearnPanel";
+import AiPanel from "../panels/AiPanel";
 import { PracticeProvider, usePractice } from "../hooks/usePractice";
 
 function DawLayoutInner() {
@@ -13,6 +14,7 @@ function DawLayoutInner() {
   const [activePanel, setActivePanel] = useState<PanelId>("tabs");
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<string | null>(null);
+  const [tabsKey, setTabsKey] = useState(0);
 
   const practice = usePractice();
 
@@ -26,6 +28,13 @@ function DawLayoutInner() {
     setSelectedJobId(null);
   }, []);
 
+  const handleJobCreated = useCallback((jobId: string) => {
+    setSelectedJobId(jobId);
+    setSelectedLesson(null);
+    setTabsKey((k) => k + 1);
+    setActivePanel("tabs");
+  }, []);
+
   const renderSidePanel = () => {
     if (activePanel === "tabs") return null;
     return (
@@ -37,11 +46,7 @@ function DawLayoutInner() {
         </div>
         <div className="flex-1 overflow-hidden">
           {activePanel === "learn" && <LearnPanel onSelectSong={handleSelectSong} />}
-          {activePanel === "ai" && (
-            <div className="flex items-center justify-center h-full">
-              <p className="text-zinc-600 text-xs tracking-widest font-mono">AI 制谱入口（即将开放）</p>
-            </div>
-          )}
+          {activePanel === "ai" && <AiPanel onJobCreated={handleJobCreated} />}
           {activePanel === "admin" && (
             <div className="flex items-center justify-center h-full">
               <p className="text-zinc-600 text-xs tracking-widest font-mono">管理功能（即将开放）</p>
@@ -72,7 +77,7 @@ function DawLayoutInner() {
                   <span className="text-xs tracking-widest text-zinc-400 font-mono uppercase">Tabs</span>
                 </div>
                 <div className="flex-1 overflow-hidden">
-                  <TabsPanel onSelectTab={handleSelectTab} />
+                  <TabsPanel key={tabsKey} onSelectTab={handleSelectTab} />
                 </div>
               </div>
             ) : (
