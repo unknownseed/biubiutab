@@ -156,8 +156,6 @@ export default function TabsPanel({ onSelectTab }: TabsPanelProps) {
               <div className="flex items-center gap-1 ml-2 opacity-0 group-hover:opacity-100 transition-opacity shrink-0">
                 <span onClick={(e) => { e.stopPropagation(); navigate(`/editor/${j.id}`); }}
                   className="text-[10px] px-1.5 py-0.5 rounded text-zinc-400 hover:text-zinc-100 hover:bg-zinc-700">编辑</span>
-                <span onClick={(e) => { e.stopPropagation(); navigate(`/practice/${j.id}`); }}
-                  className="text-[10px] px-1.5 py-0.5 rounded text-zinc-400 hover:text-zinc-100 hover:bg-zinc-700">跟练</span>
                 <span onClick={(e) => { e.stopPropagation(); void remove(j.id); }}
                   className="text-[10px] px-1.5 py-0.5 rounded text-red-400 hover:text-red-300 hover:bg-red-400/10">删除</span>
               </div>

@@ -1,10 +1,9 @@
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import DefaultLayout from "./components/DefaultLayout";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
 import PlayPage from "./pages/PlayPage";
 import EditorPage from "./pages/EditorPage";
-import PracticePage from "./pages/PracticePage";
 import DashboardPage from "./pages/DashboardPage";
 import LearnPage from "./pages/LearnPage";
 import LessonPage from "./pages/LessonPage";
@@ -21,6 +20,7 @@ export default function App() {
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/" element={<DawLayout />} />
+        <Route path="/practice/:jobId" element={<Navigate to="/" replace />} />
         <Route element={<DefaultLayout />}>
           <Route path="/old" element={<HomePage />} />
           <Route path="/play" element={<PlayPage />} />
@@ -32,7 +32,6 @@ export default function App() {
           <Route path="/admin/teaching/:songId" element={<AdminTeachingEditPage />} />
           <Route path="/update-password" element={<UpdatePasswordPage />} />
         </Route>
-        <Route path="/practice/:jobId" element={<PracticePage />} />
       </Routes>
     </>
   );
