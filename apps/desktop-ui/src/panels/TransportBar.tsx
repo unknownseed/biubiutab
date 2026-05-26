@@ -1,3 +1,5 @@
+import { useCallback, useRef, useState } from "react";
+
 type TransportBarProps = {
   isPlaying: boolean;
   currentTime: number;
@@ -30,11 +32,23 @@ export default function TransportBar({
   transpose, currentKey, bpm, loopA, loopB,
   onPlay, onPause, onSeek, onRateChange, onSourceChange, onTransposeChange, onLoopSet,
 }: TransportBarProps) {
-  const pct = duration > 0 ? Math.min(100, Math.max(0, (currentTime / duration) * 100)) : 0;
+  const progressRef = useRef<HTMLDivElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
+  const [dragTime, setDragTime] = useState(0);
+
+  const displayTime = isDragging ? dragTime : currentTime;
+  const pct = duration > 0 ? Math.min(100, Math.max(0, (displayTime / duration) * 100)) : 0;
+
+  const calcTime = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
+    if (!progressRef.current || !duration) return null;
+    const rect = progressRef.current.getBoundingClientRect();
+    const x = Math.max(0, Math.min(e.clientX - rect.left, rect.width));
+    return (x / rect.width) * duration;
+  }, [duration]);
 
   return (
-    <div className="flex items-center gap-4 h-[48px] bg-zinc-900 border-t border-zinc-800 px-4 shrink-0">
-      <div className="flex items-center gap-2">
+    <div className="flex items-center gap-3 h-[48px] bg-zinc-900 border-t border-zinc-800 px-4 shrink-0">
+      <div className="flex items-center gap-1">
         <button onClick={() => onSeek(Math.max(0, currentTime - 5))} className="w-7 h-7 flex items-center justify-center rounded text-zinc-500 hover:text-zinc-200 hover:bg-zinc-800">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="11 19 2 12 11 5"/><polygon points="22 19 13 12 22 5"/></svg>
         </button>
@@ -55,7 +69,7 @@ export default function TransportBar({
         </button>
       </div>
 
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-1">
         <button
           onClick={() => onLoopSet(loopA === null ? "A" : loopB === null ? "B" : "clear")}
           className={`h-6 px-2 text-[10px] font-semibold tracking-wider rounded border ${
@@ -69,10 +83,36 @@ export default function TransportBar({
       </div>
 
       <div className="flex-1 flex items-center gap-3">
-        <span className="text-[11px] font-mono text-zinc-500 tabular-nums w-12 text-right">{fmt(currentTime)}</span>
-        <div className="relative flex-1 h-5 flex items-center group cursor-pointer">
-          <div className="absolute left-0 right-0 h-1 rounded-sm bg-zinc-700" />
-          <div className="absolute left-0 h-1 rounded-sm bg-yellow-500" style={{ width: `${pct}%` }} />
+        <span className="text-[11px] font-mono text-zinc-500 tabular-nums w-12 text-right">{fmt(displayTime)}</span>
+
+        <div
+          ref={progressRef}
+          className="relative flex-1 h-5 flex items-center group cursor-pointer py-1"
+          onPointerDown={(e) => {
+            setIsDragging(true);
+            const t = calcTime(e);
+            if (t !== null) setDragTime(t);
+          }}
+          onPointerMove={(e) => {
+            if (!isDragging) return;
+            const t = calcTime(e);
+            if (t !== null) setDragTime(t);
+          }}
+          onPointerUp={(e) => {
+            if (!isDragging) return;
+            setIsDragging(false);
+            const t = calcTime(e);
+            if (t !== null) onSeek(t);
+          }}
+        >
+          <div className="absolute left-0 right-0 h-1 rounded-sm bg-zinc-700 group-hover:h-1.5 transition-[height]" />
+          <div className="absolute left-0 h-1 rounded-sm bg-yellow-500 group-hover:h-1.5 transition-[height]" style={{ width: `${pct}%` }} />
+          {loopA !== null ? (
+            <div className="absolute top-0 bottom-0 w-0.5 bg-emerald-500" style={{ left: `${duration > 0 ? (loopA / duration) * 100 : 0}%` }} />
+          ) : null}
+          {loopB !== null ? (
+            <div className="absolute top-0 bottom-0 w-0.5 bg-emerald-500" style={{ left: `${duration > 0 ? (loopB / duration) * 100 : 0}%` }} />
+          ) : null}
         </div>
         <span className="text-[11px] font-mono text-zinc-500 tabular-nums w-12">{fmt(duration)}</span>
       </div>

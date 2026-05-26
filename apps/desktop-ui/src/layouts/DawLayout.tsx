@@ -7,6 +7,7 @@ import TransportBar from "../panels/TransportBar";
 import TabsPanel from "../panels/TabsPanel";
 import LearnPanel from "../panels/LearnPanel";
 import AiPanel from "../panels/AiPanel";
+import AdminPanel from "../panels/AdminPanel";
 import { PracticeProvider, usePractice } from "../hooks/usePractice";
 import { useAudioPlayer } from "../hooks/useAudioPlayer";
 
@@ -59,21 +60,16 @@ function DawLayoutInner() {
 
   const renderSidePanel = () => {
     if (activePanel === "tabs") return null;
+    const label = activePanel === "learn" ? "Teaching" : activePanel === "ai" ? "AI Generate" : "Admin";
     return (
       <div className="w-[280px] bg-zinc-900 border-r border-zinc-800 shrink-0 flex flex-col">
         <div className="h-10 border-b border-zinc-800 flex items-center px-4 shrink-0">
-          <span className="text-xs tracking-widest text-zinc-400 font-mono uppercase">
-            {activePanel === "learn" ? "Teaching" : activePanel === "ai" ? "AI Generate" : "Admin"}
-          </span>
+          <span className="text-xs tracking-widest text-zinc-400 font-mono uppercase">{label}</span>
         </div>
         <div className="flex-1 overflow-hidden">
           {activePanel === "learn" && <LearnPanel onSelectSong={handleSelectSong} />}
           {activePanel === "ai" && <AiPanel onJobCreated={handleJobCreated} />}
-          {activePanel === "admin" && (
-            <div className="flex items-center justify-center h-full">
-              <p className="text-zinc-600 text-xs tracking-widest font-mono">管理功能（即将开放）</p>
-            </div>
-          )}
+          {activePanel === "admin" && <AdminPanel />}
         </div>
       </div>
     );
