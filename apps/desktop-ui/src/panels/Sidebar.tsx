@@ -8,9 +8,9 @@ type SidebarProps = {
 };
 
 const ITEMS: { id: PanelId; label: string; icon: string }[] = [
+  { id: "ai", label: "AI", icon: "⚙️" },
   { id: "tabs", label: "Tabs", icon: "📁" },
   { id: "learn", label: "Learn", icon: "🎓" },
-  { id: "ai", label: "AI", icon: "⚙️" },
   { id: "admin", label: "Admin", icon: "🔧" },
 ];
 

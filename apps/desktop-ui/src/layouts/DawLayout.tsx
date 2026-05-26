@@ -15,7 +15,7 @@ function DawLayoutInner() {
   const navigate = useNavigate();
   const sb = useMemo(() => supabase(), []);
   const [userId, setUserId] = useState<string | null>(null);
-  const [activePanel, setActivePanel] = useState<PanelId>("tabs");
+  const [activePanel, setActivePanel] = useState<PanelId>("ai");
   const [selectedJobId, setSelectedJobId] = useState<string | null>(null);
   const [selectedLesson, setSelectedLesson] = useState<string | null>(null);
   const [tabsKey, setTabsKey] = useState(0);
