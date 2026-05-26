@@ -12,6 +12,7 @@ import AdminTeachingListPage from "./pages/AdminTeachingListPage";
 import AdminTeachingEditPage from "./pages/AdminTeachingEditPage";
 import UpdatePasswordPage from "./pages/UpdatePasswordPage";
 import AiOfflineBanner from "./components/AiOfflineBanner";
+import DawLayout from "./layouts/DawLayout";
 
 export default function App() {
   return (
@@ -19,6 +20,7 @@ export default function App() {
       <AiOfflineBanner />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
+        <Route path="/daw" element={<DawLayout />} />
         <Route element={<DefaultLayout />}>
           <Route path="/" element={<HomePage />} />
           <Route path="/play" element={<PlayPage />} />
