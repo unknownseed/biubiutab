@@ -65,16 +65,6 @@ export default function HomePage() {
             <div className="mt-2 text-sm text-ink-700/70">預習 / 基礎 / 進階 / Solo 模組化練習</div>
           </button>
         </div>
-
-        <div className="mt-8 pt-8 border-t border-paper-200">
-          <button
-            type="button"
-            className="rounded-lg border border-dashed border-zinc-400 bg-zinc-900 px-6 py-3 text-sm tracking-widest text-zinc-400 hover:text-zinc-200 hover:border-zinc-300 transition-colors"
-            onClick={() => navigate("/daw")}
-          >
-            🧪 开发预览：新 DAW 界面
-          </button>
-        </div>
       </div>
     </main>
   );

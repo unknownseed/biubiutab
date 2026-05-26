@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect, useMemo } from "react";
-import { useNavigate } from "react-router-dom";
 import { supabase } from "../lib/supabase";
 import type { PanelId } from "../panels/Sidebar";
 import Sidebar from "../panels/Sidebar";
@@ -12,7 +11,6 @@ import { PracticeProvider, usePractice } from "../hooks/usePractice";
 import { useAudioPlayer } from "../hooks/useAudioPlayer";
 
 function DawLayoutInner() {
-  const navigate = useNavigate();
   const sb = useMemo(() => supabase(), []);
   const [userId, setUserId] = useState<string | null>(null);
   const [activePanel, setActivePanel] = useState<PanelId>("ai");
@@ -88,14 +86,7 @@ function DawLayoutInner() {
       <div className="flex flex-1 overflow-hidden">
         <Sidebar activePanel={activePanel} onPanelChange={setActivePanel} />
 
-        <div className="flex flex-1 flex-col min-w-0 relative">
-          <button
-            type="button"
-            className="absolute top-2 right-2 z-20 px-3 py-1 text-[10px] tracking-wider rounded border border-zinc-700 text-zinc-500 hover:text-zinc-300 hover:border-zinc-500 bg-zinc-900/80 backdrop-blur"
-            onClick={() => navigate("/")}
-          >
-            ← 旧版
-          </button>
+        <div className="flex flex-1 flex-col min-w-0">
           <div className="flex flex-1 overflow-hidden">
             {activePanel === "tabs" ? (
               <div className="w-[280px] bg-zinc-900 border-r border-zinc-800 shrink-0 flex flex-col">

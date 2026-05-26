@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
 import DefaultLayout from "./components/DefaultLayout";
 import HomePage from "./pages/HomePage";
 import LoginPage from "./pages/LoginPage";
@@ -20,9 +20,9 @@ export default function App() {
       <AiOfflineBanner />
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/daw" element={<DawLayout />} />
+        <Route path="/" element={<DawLayout />} />
         <Route element={<DefaultLayout />}>
-          <Route path="/" element={<HomePage />} />
+          <Route path="/old" element={<HomePage />} />
           <Route path="/play" element={<PlayPage />} />
           <Route path="/editor/:jobId" element={<EditorPage />} />
           <Route path="/dashboard" element={<DashboardPage />} />
@@ -33,7 +33,6 @@ export default function App() {
           <Route path="/update-password" element={<UpdatePasswordPage />} />
         </Route>
         <Route path="/practice/:jobId" element={<PracticePage />} />
-        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </>
   );
