@@ -1,19 +1,37 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import { usePathname } from "next/navigation";
 import { useHealth } from "./health-provider";
 
+const AI_PAGES = [
+  "/play",
+  "/editor",
+  "/dashboard",
+  "/admin",
+  "/api",
+];
+
+function needsAi(pathname: string): boolean {
+  return AI_PAGES.some((prefix) => pathname.startsWith(prefix));
+}
+
 export default function AiOfflineBanner() {
+  const pathname = usePathname();
   const { health, refresh } = useHealth();
   const [dismissed, setDismissed] = useState(false);
 
   const shouldShow = useMemo(() => {
+    if (!needsAi(pathname)) return false;
     if (dismissed) return false;
     if (health.status === "checking") return false;
     return !health.ok;
-  }, [dismissed, health.ok, health.status]);
+  }, [pathname, dismissed, health.ok, health.status]);
 
   if (!shouldShow) return null;
+
+  const baseUrl = health.baseUrl || "AI_BASE_URL";
+  const displayUrl = baseUrl.includes("onrender") ? "localhost:8001" : baseUrl;
 
   return (
     <div className="sticky top-14 z-30 border-b border-white/10 bg-[#000F27]">
@@ -21,7 +39,7 @@ export default function AiOfflineBanner() {
         <div className="min-w-0">
           <div className="text-sm font-semibold text-white">AI 服务离线</div>
           <div className="mt-0.5 text-xs text-slate-200">
-            当前无法连接后端（{health.baseUrl || "AI_BASE_URL"}）。你仍可浏览页面，但生成/导出相关操作可能失败。
+            无法连接后端 AI 服务（{displayUrl}）。请确认 AI 服务已启动。
           </div>
           {health.error ? <div className="mt-0.5 text-xs text-slate-300">原因：{health.error}</div> : null}
         </div>
