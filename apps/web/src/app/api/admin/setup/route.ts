@@ -35,29 +35,26 @@ export async function POST() {
 
   if (!rpcWorks && adminByEmail) {
     try {
-      const { error: insertErr } = await sb.from("admin_users").upsert({
-        user_id: user.id,
-        created_at: new Date().toISOString(),
-      }).select("user_id").single();
+      const { error: rpcErr } = await sb.rpc("admin_setup", { target_user_id: user.id });
 
-      if (insertErr) {
-        const codeOrMsg = (insertErr as any)?.code || insertErr.message || "";
-        if (codeOrMsg === "42P01" || String(codeOrMsg).includes("does not exist")) {
-          results.push("admin_users 表不存在");
-        } else {
-          results.push(`寫入 admin_users 失敗: ${insertErr.message}`);
+      if (rpcErr) {
+        const codeOrMsg = (rpcErr as any)?.code || rpcErr.message || "";
+        if (codeOrMsg === "42883" || codeOrMsg.includes("does not exist") || codeOrMsg.includes("function") && codeOrMsg.includes("admin_setup")) {
+          results.push("admin_setup RPC 不存在");
+          return NextResponse.json({
+            ok: false,
+            detail: "資料庫缺少 admin_setup RPC 函式。請使用更新後的 supabase_teaching_admin_users.sql（含 admin_setup RPC）。",
+            sql: [
+              "create or replace function public.admin_setup(target_user_id uuid) returns boolean language sql security definer set search_path = public as $$ insert into public.admin_users(user_id) values(target_user_id) on conflict do nothing; select true; $$;",
+              "grant execute on function public.admin_setup to authenticated;",
+            ],
+            steps: results,
+          }, { status: 200 });
         }
+        results.push(`寫入 admin_users 失敗: ${rpcErr.message}`);
         return NextResponse.json({
           ok: false,
-          detail: "資料庫缺少 admin_users 表與 is_admin() 函式。請在 Supabase SQL Editor 執行以下 SQL（已放在 supabase_teaching_admin_users.sql）：",
-          sql: [
-            "create table if not exists public.admin_users (user_id uuid primary key references auth.users(id) on delete cascade, created_at timestamptz not null default now());",
-            "create or replace function public.is_admin() returns boolean language sql stable security definer set search_path = public as $$ select exists (select 1 from public.admin_users au where au.user_id = auth.uid()); $$;",
-            "grant execute on function public.is_admin() to anon, authenticated;",
-            `insert into public.admin_users(user_id) values('${user.id}') on conflict do nothing;`,
-            "drop policy if exists \"Anyone can read published teaching songs\" on public.teaching_songs;",
-            "create policy \"Anyone can read published teaching songs\" on public.teaching_songs for select to anon, authenticated using (status = 'published');",
-          ],
+          detail: "無法透過 RPC 將你加入 admin_users。",
           steps: results,
         }, { status: 200 });
       }
@@ -69,14 +66,6 @@ export async function POST() {
       return NextResponse.json({
         ok: false,
         detail: "無法自動完成初始化。請在 Supabase SQL Editor 執行 supabase_teaching_admin_users.sql。",
-        sql: [
-          "create table if not exists public.admin_users (user_id uuid primary key references auth.users(id) on delete cascade, created_at timestamptz not null default now());",
-          "create or replace function public.is_admin() returns boolean language sql stable security definer set search_path = public as $$ select exists (select 1 from public.admin_users au where au.user_id = auth.uid()); $$;",
-          "grant execute on function public.is_admin() to anon, authenticated;",
-          `insert into public.admin_users(user_id) values('${user.id}') on conflict do nothing;`,
-          "drop policy if exists \"Anyone can read published teaching songs\" on public.teaching_songs;",
-          "create policy \"Anyone can read published teaching songs\" on public.teaching_songs for select to anon, authenticated using (status = 'published');",
-        ],
         steps: results,
       }, { status: 200 });
     }
