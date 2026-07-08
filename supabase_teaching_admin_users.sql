@@ -67,6 +67,7 @@ $$;
 grant execute on function public.is_admin() to anon, authenticated;
 
 drop policy if exists "Admins can manage all teaching songs" on public.teaching_songs;
+drop policy if exists "Anyone can read published teaching songs" on public.teaching_songs;
 
 create policy "Admins can manage all teaching songs"
 on public.teaching_songs
