@@ -37,6 +37,20 @@ $$;
 
 grant execute on function public.admin_setup to authenticated;
 
+create table if not exists public.teaching_songs (
+  id uuid default gen_random_uuid() primary key,
+  user_id uuid references auth.users(id) on delete cascade,
+  slug text not null unique,
+  title text not null,
+  artist text,
+  status text not null default 'draft',
+  manifest jsonb not null default '{}'::jsonb,
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+
+alter table public.teaching_songs enable row level security;
+
 create or replace function public.is_admin()
 returns boolean
 language sql
